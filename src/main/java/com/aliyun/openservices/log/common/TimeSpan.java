@@ -34,6 +34,12 @@ public class TimeSpan implements Serializable {
         this.end = end;
     }
 
+    public void deserialize(JSONObject timeSpan) {
+        type = TimeSpanType.fromString(timeSpan.getString("type"));
+        start = JsonUtils.readOptionalString(timeSpan, "start");
+        end = JsonUtils.readOptionalString(timeSpan, "end");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,7 +50,6 @@ public class TimeSpan implements Serializable {
         if (getType() != period.getType()) return false;
         if (getStart() != null ? !getStart().equals(period.getStart()) : period.getStart() != null) return false;
         return getEnd() != null ? getEnd().equals(period.getEnd()) : period.getEnd() == null;
-
     }
 
     @Override
@@ -55,9 +60,12 @@ public class TimeSpan implements Serializable {
         return result;
     }
 
-    public void deserialize(JSONObject timeSpan) {
-        type = TimeSpanType.fromString(timeSpan.getString("type"));
-        start = JsonUtils.readOptionalString(timeSpan, "start");
-        end = JsonUtils.readOptionalString(timeSpan, "end");
+    @Override
+    public String toString() {
+        return "TimeSpan{" +
+                "type=" + type +
+                ", start='" + start + '\'' +
+                ", end='" + end + '\'' +
+                '}';
     }
 }
