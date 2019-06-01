@@ -30,6 +30,16 @@ public enum JobScheduleType implements JSONSerializable {
      * Custom cron expression.
      */
     CRON("Cron"),
+
+    /**
+     * Only once.
+     */
+    DRY_RUN("DryRun"),
+
+    /**
+     * Long live.
+     */
+    RESIDENT("Resident"),
     ;
 
     private final String value;
