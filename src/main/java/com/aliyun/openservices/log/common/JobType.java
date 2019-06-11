@@ -9,6 +9,7 @@ public enum JobType implements JSONSerializable {
     ALERT("Alert"),
     REPORT("Report"),
     ETL("ETL"),
+    INGESTION("Ingestion"),
     ;
 
     private final String value;

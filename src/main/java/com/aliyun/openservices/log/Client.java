@@ -69,6 +69,7 @@ import com.aliyun.openservices.log.request.CreateDomainRequest;
 import com.aliyun.openservices.log.request.CreateETLRequest;
 import com.aliyun.openservices.log.request.CreateEtlJobRequest;
 import com.aliyun.openservices.log.request.CreateIndexRequest;
+import com.aliyun.openservices.log.request.CreateIngestionRequest;
 import com.aliyun.openservices.log.request.CreateJobRequest;
 import com.aliyun.openservices.log.request.CreateJobScheduleRequest;
 import com.aliyun.openservices.log.request.CreateLogStoreRequest;
@@ -84,6 +85,7 @@ import com.aliyun.openservices.log.request.DeleteDomainRequest;
 import com.aliyun.openservices.log.request.DeleteETLRequest;
 import com.aliyun.openservices.log.request.DeleteEtlJobRequest;
 import com.aliyun.openservices.log.request.DeleteIndexRequest;
+import com.aliyun.openservices.log.request.DeleteIngestionRequest;
 import com.aliyun.openservices.log.request.DeleteJobRequest;
 import com.aliyun.openservices.log.request.DeleteJobScheduleRequest;
 import com.aliyun.openservices.log.request.DeleteLogStoreRequest;
@@ -110,6 +112,7 @@ import com.aliyun.openservices.log.request.GetETLRequest;
 import com.aliyun.openservices.log.request.GetEtlJobRequest;
 import com.aliyun.openservices.log.request.GetHistogramsRequest;
 import com.aliyun.openservices.log.request.GetIndexRequest;
+import com.aliyun.openservices.log.request.GetIngestionRequest;
 import com.aliyun.openservices.log.request.GetJobRequest;
 import com.aliyun.openservices.log.request.GetJobScheduleRequest;
 import com.aliyun.openservices.log.request.GetLogStoreRequest;
@@ -128,6 +131,7 @@ import com.aliyun.openservices.log.request.ListDomainsRequest;
 import com.aliyun.openservices.log.request.ListETLRequest;
 import com.aliyun.openservices.log.request.ListEtlJobRequest;
 import com.aliyun.openservices.log.request.ListEtlMetaRequest;
+import com.aliyun.openservices.log.request.ListIngestionRequest;
 import com.aliyun.openservices.log.request.ListJobSchedulesRequest;
 import com.aliyun.openservices.log.request.ListJobsRequest;
 import com.aliyun.openservices.log.request.ListLogStoresRequest;
@@ -142,7 +146,9 @@ import com.aliyun.openservices.log.request.PullLogsRequest;
 import com.aliyun.openservices.log.request.PutLogsRequest;
 import com.aliyun.openservices.log.request.RemoveConfigFromMachineGroupRequest;
 import com.aliyun.openservices.log.request.SplitShardRequest;
+import com.aliyun.openservices.log.request.StartIngestionRequest;
 import com.aliyun.openservices.log.request.StartJobScheduleRequest;
+import com.aliyun.openservices.log.request.StopIngestionRequest;
 import com.aliyun.openservices.log.request.StopJobScheduleRequest;
 import com.aliyun.openservices.log.request.UpdateACLRequest;
 import com.aliyun.openservices.log.request.UpdateAlertRequest;
@@ -152,6 +158,7 @@ import com.aliyun.openservices.log.request.UpdateDashboardRequest;
 import com.aliyun.openservices.log.request.UpdateETLRequest;
 import com.aliyun.openservices.log.request.UpdateEtlJobRequest;
 import com.aliyun.openservices.log.request.UpdateIndexRequest;
+import com.aliyun.openservices.log.request.UpdateIngestionRequest;
 import com.aliyun.openservices.log.request.UpdateJobRequest;
 import com.aliyun.openservices.log.request.UpdateJobScheduleRequest;
 import com.aliyun.openservices.log.request.UpdateLogStoreRequest;
@@ -179,6 +186,7 @@ import com.aliyun.openservices.log.response.CreateETLResponse;
 import com.aliyun.openservices.log.response.CreateEtlJobResponse;
 import com.aliyun.openservices.log.response.CreateEtlMetaResponse;
 import com.aliyun.openservices.log.response.CreateIndexResponse;
+import com.aliyun.openservices.log.response.CreateIngestionResponse;
 import com.aliyun.openservices.log.response.CreateJobResponse;
 import com.aliyun.openservices.log.response.CreateJobScheduleResponse;
 import com.aliyun.openservices.log.response.CreateLogStoreInternalResponse;
@@ -199,6 +207,7 @@ import com.aliyun.openservices.log.response.DeleteETLResponse;
 import com.aliyun.openservices.log.response.DeleteEtlJobResponse;
 import com.aliyun.openservices.log.response.DeleteEtlMetaResponse;
 import com.aliyun.openservices.log.response.DeleteIndexResponse;
+import com.aliyun.openservices.log.response.DeleteIngestionResponse;
 import com.aliyun.openservices.log.response.DeleteJobResponse;
 import com.aliyun.openservices.log.response.DeleteJobScheduleResponse;
 import com.aliyun.openservices.log.response.DeleteLogStoreResponse;
@@ -228,6 +237,7 @@ import com.aliyun.openservices.log.response.GetEtlJobResponse;
 import com.aliyun.openservices.log.response.GetHistogramsResponse;
 import com.aliyun.openservices.log.response.GetIndexResponse;
 import com.aliyun.openservices.log.response.GetIndexStringResponse;
+import com.aliyun.openservices.log.response.GetIngestionResponse;
 import com.aliyun.openservices.log.response.GetJobResponse;
 import com.aliyun.openservices.log.response.GetJobScheduleResponse;
 import com.aliyun.openservices.log.response.GetLogStoreResponse;
@@ -250,6 +260,7 @@ import com.aliyun.openservices.log.response.ListETLResponse;
 import com.aliyun.openservices.log.response.ListEtlJobResponse;
 import com.aliyun.openservices.log.response.ListEtlMetaNameResponse;
 import com.aliyun.openservices.log.response.ListEtlMetaResponse;
+import com.aliyun.openservices.log.response.ListIngestionResponse;
 import com.aliyun.openservices.log.response.ListJobSchedulesResponse;
 import com.aliyun.openservices.log.response.ListJobsResponse;
 import com.aliyun.openservices.log.response.ListLogStoresResponse;
@@ -265,7 +276,9 @@ import com.aliyun.openservices.log.response.PullLogsResponse;
 import com.aliyun.openservices.log.response.PutLogsResponse;
 import com.aliyun.openservices.log.response.RemoveConfigFromMachineGroupResponse;
 import com.aliyun.openservices.log.response.RetryShipperTasksResponse;
+import com.aliyun.openservices.log.response.StartIngestionResponse;
 import com.aliyun.openservices.log.response.StartJobScheduleResponse;
+import com.aliyun.openservices.log.response.StopIngestionResponse;
 import com.aliyun.openservices.log.response.StopJobScheduleResponse;
 import com.aliyun.openservices.log.response.UpdateACLResponse;
 import com.aliyun.openservices.log.response.UpdateAlertResponse;
@@ -277,6 +290,7 @@ import com.aliyun.openservices.log.response.UpdateETLResponse;
 import com.aliyun.openservices.log.response.UpdateEtlJobResponse;
 import com.aliyun.openservices.log.response.UpdateEtlMetaResponse;
 import com.aliyun.openservices.log.response.UpdateIndexResponse;
+import com.aliyun.openservices.log.response.UpdateIngestionResponse;
 import com.aliyun.openservices.log.response.UpdateJobResponse;
 import com.aliyun.openservices.log.response.UpdateJobScheduleResponse;
 import com.aliyun.openservices.log.response.UpdateLogStoreInternalResponse;
@@ -3649,7 +3663,55 @@ public class Client implements LogService {
         return new ListDomainsResponse(response.getHeaders(), count, total, domains);
 	}
 
-    @Override
+	@Override
+	public CreateIngestionResponse createIngestion(CreateIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new CreateIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public UpdateIngestionResponse updateIngestion(UpdateIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new UpdateIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public DeleteIngestionResponse deleteIngestion(DeleteIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new DeleteIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public GetIngestionResponse getIngestion(GetIngestionRequest request) throws LogException {
+		ResponseMessage response = send(request);
+		JSONObject responseBody = parseResponseBody(response, response.getRequestId());
+		GetIngestionResponse ingestionResponse = new GetIngestionResponse(response.getHeaders());
+		ingestionResponse.deserialize(responseBody, response.getRequestId());
+		return ingestionResponse;
+	}
+
+	@Override
+	public ListIngestionResponse listIngestion(ListIngestionRequest request) throws LogException {
+		ResponseMessage response = send(request);
+		JSONObject responseBody = parseResponseBody(response, response.getRequestId());
+		ListIngestionResponse listIngestionResponse = new ListIngestionResponse(response.getHeaders());
+		listIngestionResponse.deserialize(responseBody, response.getRequestId());
+		return listIngestionResponse;
+	}
+
+	@Override
+	public StopIngestionResponse stopIngestion(StopIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StopIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public StartIngestionResponse startIngestion(StartIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StartIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
     public UpdateAlertResponse updateAlert(UpdateAlertRequest request) throws LogException {
         ResponseMessage message = send(request);
         return new UpdateAlertResponse(message.getHeaders());
