@@ -16,6 +16,6 @@ public enum DataSourceKind {
                 return kind;
             }
         }
-        throw new IllegalArgumentException("Invalid data source kind: " + value);
+        throw new IllegalArgumentException("Invalid data source: " + value);
     }
 }
