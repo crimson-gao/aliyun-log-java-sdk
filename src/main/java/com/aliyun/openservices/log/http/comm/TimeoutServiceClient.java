@@ -56,8 +56,8 @@ public class TimeoutServiceClient extends DefaultServiceClient {
     }
 
     @Override
-    public ResponseMessage sendRequestCore(ServiceClient.Request request, String charset) throws IOException, LogException {
-        HttpRequestBase httpRequest = httpRequestFactory.createHttpRequest(request);
+    public ResponseMessage sendRequestCore(ServiceClient.Request request, String charset) throws IOException {
+        HttpRequestBase httpRequest = httpRequestFactory.createHttpRequest(request, charset);
         HttpClientContext httpContext = HttpClientContext.create();
         httpContext.setRequestConfig(this.requestConfig);
 

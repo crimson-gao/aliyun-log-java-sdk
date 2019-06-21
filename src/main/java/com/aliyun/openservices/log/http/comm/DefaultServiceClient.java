@@ -110,7 +110,7 @@ public class DefaultServiceClient extends ServiceClient {
 
     @Override
     public ResponseMessage sendRequestCore(ServiceClient.Request request, String charset) throws IOException, LogException {
-        HttpRequestBase httpRequest = httpRequestFactory.createHttpRequest(request);
+        HttpRequestBase httpRequest = httpRequestFactory.createHttpRequest(request, charset);
         setProxyAuthorizationIfNeed(httpRequest);
         HttpClientContext httpContext = createHttpContext();
         httpContext.setRequestConfig(this.requestConfig);
