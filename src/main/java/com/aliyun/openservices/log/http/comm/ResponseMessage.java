@@ -1,6 +1,7 @@
 package com.aliyun.openservices.log.http.comm;
 
 import com.aliyun.openservices.log.common.Consts;
+import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
@@ -13,9 +14,10 @@ public class ResponseMessage extends HttpMessage {
     private int statusCode;
     private static final int HTTP_SUCCESS_STATUS_CODE = 200;
     private byte[] body = null;
+    private CloseableHttpResponse httpResponse;
 
-    public ResponseMessage() {
-    }
+    // For convenience of logging invalid response
+    private String errorResponseAsString;
 
     public String getUri() {
         return uri;
@@ -53,6 +55,14 @@ public class ResponseMessage extends HttpMessage {
         }
     }
 
+    public String getErrorResponseAsString() {
+        return errorResponseAsString;
+    }
+
+    public void setErrorResponseAsString(String errorResponseAsString) {
+        this.errorResponseAsString = errorResponseAsString;
+    }
+
     /**
      * @return The request id returned in headers.
      */
@@ -60,5 +70,13 @@ public class ResponseMessage extends HttpMessage {
         final Map<String, String> headers = getHeaders();
         final String requestId = headers.get(Consts.CONST_X_SLS_REQUESTID);
         return requestId == null ? "" : requestId;
+    }
+
+    public CloseableHttpResponse getHttpResponse() {
+        return httpResponse;
+    }
+
+    public void setHttpResponse(CloseableHttpResponse httpResponse) {
+        this.httpResponse = httpResponse;
     }
 }

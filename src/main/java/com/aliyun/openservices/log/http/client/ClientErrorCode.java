@@ -2,24 +2,39 @@
 package com.aliyun.openservices.log.http.client;
 
 public interface ClientErrorCode {
-    
     /**
-     * Unknown error
+     * Unknown error. This means the error is not expected.
      */
-    String UNKNOWN = "Unknown";
-    
+    static final String UNKNOWN = "Unknown";
+
     /**
-     * 远程服务连接超时
+     * Unknown host. This error is returned when a
+     * {@link java.net.UnknownHostException} is thrown.
      */
-    String CONNECTION_TIMEOUT = "ConnectionTimeout";
-    
+    static final String UNKNOWN_HOST = "UnknownHost";
+
     /**
-     * 远程服务socket读写超时
+     * connection times out.
      */
-    String SOCKET_TIMEOUT = "SocketTimeout";
-    
+    static final String CONNECTION_TIMEOUT = "ConnectionTimeout";
+
     /**
-     * The response is unrecognizable.
+     * Socket times out
      */
-    String INVALID_RESPONSE = "InvalidResponse";
+    static final String SOCKET_TIMEOUT = "SocketTimeout";
+
+    /**
+     * Socket exception
+     */
+    static final String SOCKET_EXCEPTION = "SocketException";
+
+    /**
+     * Connection is refused by server side.
+     */
+    static final String CONNECTION_REFUSED = "ConnectionRefused";
+
+    /**
+     * The input stream is not repeatable for reading.
+     */
+    static final String NONREPEATABLE_REQUEST = "NonRepeatableRequest";
 }
