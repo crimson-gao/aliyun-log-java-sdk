@@ -133,7 +133,6 @@ public class DefaultServiceClient extends ServiceClient {
 
         ResponseMessage response = new ResponseMessage();
         response.setUrl(request.getUri());
-        response.setHttpResponse(httpResponse);
 
         if (httpResponse.getStatusLine() != null) {
             response.setStatusCode(httpResponse.getStatusLine().getStatusCode());

@@ -19,55 +19,16 @@
 
 package com.aliyun.openservices.log.http.utils;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 
 public class IOUtils {
 
-    public static String readStreamAsString(InputStream in, String charset) throws IOException {
-
-        if (in == null) {
-            return "";
-        }
-
-        Reader reader = null;
-        Writer writer = new StringWriter();
-        String result;
-
-        char[] buffer = new char[1024];
-        try {
-            int n = -1;
-            reader = new BufferedReader(new InputStreamReader(in, charset));
-            while ((n = reader.read(buffer)) != -1) {
-                writer.write(buffer, 0, n);
-            }
-
-            result = writer.toString();
-        } finally {
-            in.close();
-            if (reader != null) {
-                reader.close();
-            }
-            if (writer != null) {
-                writer.close();
-            }
-        }
-
-        return result;
-    }
-
     public static byte[] readStreamAsByteArray(InputStream in) throws IOException {
-
         if (in == null) {
             return new byte[0];
         }
-
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int len = -1;

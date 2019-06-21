@@ -1,17 +1,16 @@
 package com.aliyun.openservices.log.http.utils;
 
-import java.io.IOException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-
+import com.aliyun.openservices.log.http.client.ClientErrorCode;
+import com.aliyun.openservices.log.http.client.ClientException;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.NonRepeatableRequestException;
 import org.apache.http.conn.ConnectTimeoutException;
-import com.aliyun.openservices.log.http.client.ClientErrorCode;
-import com.aliyun.openservices.log.http.client.ClientException;
-import org.apache.http.conn.HttpHostConnectException;
+
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 public class ExceptionFactory {
     public static ClientException createNetworkException(IOException ex) {
@@ -26,8 +25,6 @@ public class ExceptionFactory {
             errorCode = ClientErrorCode.CONNECTION_TIMEOUT;
         } else if (ex instanceof UnknownHostException) {
             errorCode = ClientErrorCode.UNKNOWN_HOST;
-        } else if (ex instanceof HttpHostConnectException) {
-            errorCode = ClientErrorCode.CONNECTION_REFUSED;
         } else if (ex instanceof NoHttpResponseException) {
             errorCode = ClientErrorCode.CONNECTION_TIMEOUT;
         } else if (ex instanceof ClientProtocolException) {
