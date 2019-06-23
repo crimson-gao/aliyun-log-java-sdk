@@ -5,36 +5,36 @@ public interface ClientErrorCode {
     /**
      * Unknown error. This means the error is not expected.
      */
-    static final String UNKNOWN = "Unknown";
+    String UNKNOWN = "Unknown";
 
     /**
      * Unknown host. This error is returned when a
      * {@link java.net.UnknownHostException} is thrown.
      */
-    static final String UNKNOWN_HOST = "UnknownHost";
+    String UNKNOWN_HOST = "UnknownHost";
 
     /**
      * connection times out.
      */
-    static final String CONNECTION_TIMEOUT = "ConnectionTimeout";
+    String CONNECTION_TIMEOUT = "ConnectionTimeout";
 
     /**
      * Socket times out
      */
-    static final String SOCKET_TIMEOUT = "SocketTimeout";
+    String SOCKET_TIMEOUT = "SocketTimeout";
 
     /**
      * Socket exception
      */
-    static final String SOCKET_EXCEPTION = "SocketException";
+    String SOCKET_EXCEPTION = "SocketException";
 
     /**
      * Connection is refused by server side.
      */
-    static final String CONNECTION_REFUSED = "ConnectionRefused";
+    String CONNECTION_REFUSED = "ConnectionRefused";
 
     /**
      * The input stream is not repeatable for reading.
      */
-    static final String NONREPEATABLE_REQUEST = "NonRepeatableRequest";
+    String NONREPEATABLE_REQUEST = "NonRepeatableRequest";
 }

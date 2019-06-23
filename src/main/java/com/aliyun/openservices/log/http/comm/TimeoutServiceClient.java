@@ -19,7 +19,6 @@
 
 package com.aliyun.openservices.log.http.comm;
 
-import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.http.client.ClientConfiguration;
 import com.aliyun.openservices.log.http.client.ClientException;
 import com.aliyun.openservices.log.http.utils.ExceptionFactory;

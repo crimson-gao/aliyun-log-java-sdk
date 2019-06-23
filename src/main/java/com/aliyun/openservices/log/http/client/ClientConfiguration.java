@@ -7,12 +7,11 @@ package com.aliyun.openservices.log.http.client;
  * The client configuration for accessing Aliyun Log Service.
  */
 public class ClientConfiguration {
-    public static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = -1;
-    public static final long DEFAULT_CONNECTION_TTL = -1;
+    public static final int DEFAULT_CONNECTION_REQUEST_TIMEOUT = 60 * 1000;
     public static final long DEFAULT_IDLE_CONNECTION_TIME = 60 * 1000;
     public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000;
     public static final int DEFAULT_THREAD_POOL_WAIT_TIME = 60 * 1000;
-    public static final int DEFAULT_REQUEST_TIMEOUT = 5 * 60 * 1000;
+    public static final int DEFAULT_REQUEST_TIMEOUT = 60 * 1000;
 
     private int maxConnections = 50;
     private int socketTimeout = 50 * 1000;
@@ -26,7 +25,6 @@ public class ClientConfiguration {
     protected String proxyWorkstation = null;
 
     private boolean requestTimeoutEnabled = false;
-    protected long connectionTTL = DEFAULT_CONNECTION_TTL;
     protected long idleConnectionTime = DEFAULT_IDLE_CONNECTION_TIME;
     protected int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
 
@@ -122,8 +120,7 @@ public class ClientConfiguration {
      * Sets the connection's max idle time. If a connection has been idle for
      * more than this number, it would be closed.
      *
-     * @param idleConnectionTime
-     *            The connection's max idle time in millisecond.
+     * @param idleConnectionTime The connection's max idle time in millisecond.
      */
     public void setIdleConnectionTime(long idleConnectionTime) {
         this.idleConnectionTime = idleConnectionTime;
@@ -139,9 +136,6 @@ public class ClientConfiguration {
         return DEFAULT_VALIDATE_AFTER_INACTIVITY;
     }
 
-    public long getConnectionTTL() {
-        return connectionTTL;
-    }
     /**
      * Gets the flag of enabling request timeout. By default it's disabled.
      *
@@ -152,10 +146,9 @@ public class ClientConfiguration {
     }
 
     /**
-     * Gets the flag of enabling request timeout. By default it's disabled.
+     * Sets the flag of enabling request timeout. By default it's disabled.
      *
-     * @param requestTimeoutEnabled
-     *            true to enable; false to disable.
+     * @param requestTimeoutEnabled true to enable; false to disable.
      */
     public void setRequestTimeoutEnabled(boolean requestTimeoutEnabled) {
         this.requestTimeoutEnabled = requestTimeoutEnabled;
