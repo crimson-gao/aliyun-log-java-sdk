@@ -420,6 +420,10 @@ public class Client implements LogService {
 		this(endpoint, accessId, accessKey, NetworkUtils.getLocalMachineIP());
 	}
 
+	public Client(String endpoint, String accessId, String accessKey, ClientConfiguration configuration) {
+		this(endpoint, accessId, accessKey, NetworkUtils.getLocalMachineIP(), configuration);
+	}
+
 	/**
 	 * Construct the sls client with accessId, accessKey , server address and
 	 * client ip address, all other parameters will be set to default value
@@ -471,8 +475,8 @@ public class Client implements LogService {
 	 * 			  a flag to determine max connect timeout
 	 * @param sendTimeout
 	 * 			  a flag to determine max request timeout
-     * @deprecated Use Client(String endpoint, String accessId, String accessKey, String sourceIp,
-     *                   int connectMaxCount, int connectTimeout, int sendTimeout) instead.
+	 * @deprecated Use Client(String endpoint, String accessId, String accessKey, String sourceIp,
+	 * 	              ClientConfiguration config) instead.
 	 */
 	@Deprecated
 	public Client(String endpoint, String accessId, String accessKey,
@@ -483,6 +487,11 @@ public class Client implements LogService {
 		this(endpoint, accessId, accessKey, sourceIp, connectMaxCount, connectTimeout, sendTimeout);
 	}
 
+	/**
+	 * @deprecated Use Client(String endpoint, String accessId, String accessKey, String sourceIp,
+	 * 	              ClientConfiguration config) instead.
+	 */
+	@Deprecated
     public Client(String endpoint, String accessId, String accessKey, String sourceIp,
                   int connectMaxCount, int connectTimeout, int sendTimeout) {
         configure(endpoint, accessId, accessKey, sourceIp);
@@ -855,6 +864,7 @@ public class Client implements LogService {
 			if (this.mUseDirectMode) {
 				connection_status = GetGlobalConnectionStatus();
 				server_ip = connection_status.GetIpAddress();
+				System.out.println(server_ip);
 			}
 			try {
 				ResponseMessage response = SendData(project, HttpMethod.POST, resourceUri, urlParameter, headParameter,
