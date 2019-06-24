@@ -864,7 +864,6 @@ public class Client implements LogService {
 			if (this.mUseDirectMode) {
 				connection_status = GetGlobalConnectionStatus();
 				server_ip = connection_status.GetIpAddress();
-				System.out.println(server_ip);
 			}
 			try {
 				ResponseMessage response = SendData(project, HttpMethod.POST, resourceUri, urlParameter, headParameter,
