@@ -49,6 +49,7 @@ import com.aliyun.openservices.log.http.comm.DefaultServiceClient;
 import com.aliyun.openservices.log.http.comm.RequestMessage;
 import com.aliyun.openservices.log.http.comm.ResponseMessage;
 import com.aliyun.openservices.log.http.comm.ServiceClient;
+import com.aliyun.openservices.log.http.comm.TimeoutServiceClient;
 import com.aliyun.openservices.log.http.utils.CodingUtils;
 import com.aliyun.openservices.log.http.utils.DateUtil;
 import com.aliyun.openservices.log.internal.ErrorCodes;
@@ -419,6 +420,10 @@ public class Client implements LogService {
 		this(endpoint, accessId, accessKey, NetworkUtils.getLocalMachineIP());
 	}
 
+	public Client(String endpoint, String accessId, String accessKey, ClientConfiguration configuration) {
+		this(endpoint, accessId, accessKey, NetworkUtils.getLocalMachineIP(), configuration);
+	}
+
 	/**
 	 * Construct the sls client with accessId, accessKey , server address and
 	 * client ip address, all other parameters will be set to default value
@@ -470,8 +475,8 @@ public class Client implements LogService {
 	 * 			  a flag to determine max connect timeout
 	 * @param sendTimeout
 	 * 			  a flag to determine max request timeout
-     * @deprecated Use Client(String endpoint, String accessId, String accessKey, String sourceIp,
-     *                   int connectMaxCount, int connectTimeout, int sendTimeout) instead.
+	 * @deprecated Use Client(String endpoint, String accessId, String accessKey, String sourceIp,
+	 * 	              ClientConfiguration config) instead.
 	 */
 	@Deprecated
 	public Client(String endpoint, String accessId, String accessKey,
@@ -482,35 +487,14 @@ public class Client implements LogService {
 		this(endpoint, accessId, accessKey, sourceIp, connectMaxCount, connectTimeout, sendTimeout);
 	}
 
+	/**
+	 * @deprecated Use Client(String endpoint, String accessId, String accessKey, String sourceIp,
+	 * 	              ClientConfiguration config) instead.
+	 */
+	@Deprecated
     public Client(String endpoint, String accessId, String accessKey, String sourceIp,
                   int connectMaxCount, int connectTimeout, int sendTimeout) {
-        Args.notNullOrEmpty(endpoint, "endpoint");
-        Args.notNullOrEmpty(accessId, "accessId");
-        Args.notNullOrEmpty(accessKey, "accessKey");
-        if (endpoint.startsWith("http://")) {
-            this.hostName = endpoint.substring(7);
-            this.httpType = "http://";
-        } else if (endpoint.startsWith("https://")) {
-            this.hostName = endpoint.substring(8);
-            this.httpType = "https://";
-        } else {
-            this.hostName = endpoint;
-            this.httpType = "http://";
-        }
-        while (this.hostName.endsWith("/")) {
-            this.hostName = this.hostName.substring(0,
-                    this.hostName.length() - 1);
-        }
-        if (NetworkUtils.isIPAddr(this.hostName)) {
-            throw new IllegalArgumentException("EndpointInvalid", new Exception(
-                    "The ip address is not supported"));
-        }
-        this.accessId = accessId;
-        this.accessKey = accessKey;
-        this.sourceIp = sourceIp;
-        if (sourceIp == null || sourceIp.isEmpty()) {
-            this.sourceIp = NetworkUtils.getLocalMachineIP();
-        }
+        configure(endpoint, accessId, accessKey, sourceIp);
         ClientConfiguration clientConfig = new ClientConfiguration();
         clientConfig.setMaxConnections(connectMaxCount);
         clientConfig.setConnectionTimeout(connectTimeout);
@@ -518,31 +502,45 @@ public class Client implements LogService {
         this.serviceClient = new DefaultServiceClient(clientConfig);
     }
 
-	/**
-	 * Construct sls client with full parameters
-	 *
-	 * @throws NullPointerException
-	 *             if the input parameter is null
-	 * @throws IllegalArgumentException
-	 *             if the input parameter is empty
-	 *
-	 * @param endpoint
-	 *            the log service server address
-	 * @param accessId
-	 *            aliyun accessId
-	 * @param accessKey
-	 *            aliyun accessKey
-	 * @param sourceIp
-	 *            client ip address
-	 * @param compressFlag
-	 *            a flag to determine if the send data will compressed , default
-	 *            is true ( data compressed)
-     * @deprecated Use {@code Client(String endpoint, String accessId, String accessKey, String SourceIp)} instead.
-	 */
-	@Deprecated
-	public Client(String endpoint, String accessId, String accessKey,
-			String sourceIp, boolean compressFlag) {
-		this(endpoint, accessId, accessKey, sourceIp);
+    private void configure(String endpoint, String accessId, String accessKey, String sourceIp) {
+	    Args.notNullOrEmpty(endpoint, "endpoint");
+	    Args.notNullOrEmpty(accessId, "accessId");
+	    Args.notNullOrEmpty(accessKey, "accessKey");
+	    if (endpoint.startsWith("http://")) {
+		    this.hostName = endpoint.substring(7);
+		    this.httpType = "http://";
+	    } else if (endpoint.startsWith("https://")) {
+		    this.hostName = endpoint.substring(8);
+		    this.httpType = "https://";
+	    } else {
+		    this.hostName = endpoint;
+		    this.httpType = "http://";
+	    }
+	    while (this.hostName.endsWith("/")) {
+		    this.hostName = this.hostName.substring(0,
+				    this.hostName.length() - 1);
+	    }
+	    if (NetworkUtils.isIPAddr(this.hostName)) {
+		    throw new IllegalArgumentException("EndpointInvalid", new Exception(
+				    "The ip address is not supported"));
+	    }
+	    this.accessId = accessId;
+	    this.accessKey = accessKey;
+	    this.sourceIp = sourceIp;
+	    if (sourceIp == null || sourceIp.isEmpty()) {
+		    this.sourceIp = NetworkUtils.getLocalMachineIP();
+	    }
+    }
+
+	public Client(String endpoint, String accessId, String accessKey, String sourceIp,
+	              ClientConfiguration config) {
+		Args.notNull(config, "Config");
+		configure(endpoint, accessId, accessKey, sourceIp);
+		if (config.isRequestTimeoutEnabled()) {
+			this.serviceClient = new TimeoutServiceClient(config);
+		} else {
+			this.serviceClient = new DefaultServiceClient(config);
+		}
 	}
 
 	public String getAccessId() {
@@ -567,6 +565,10 @@ public class Client implements LogService {
 
 	public void setSecurityToken(String securityToken) {
 		this.securityToken = securityToken;
+	}
+
+	public void shutdown() {
+		serviceClient.shutdown();
 	}
 
 	private URI GetHostURI(String project) {
@@ -862,6 +864,7 @@ public class Client implements LogService {
 			if (this.mUseDirectMode) {
 				connection_status = GetGlobalConnectionStatus();
 				server_ip = connection_status.GetIpAddress();
+				System.out.println(server_ip);
 			}
 			try {
 				ResponseMessage response = SendData(project, HttpMethod.POST, resourceUri, urlParameter, headParameter,
