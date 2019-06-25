@@ -502,6 +502,11 @@ public class Client implements LogService {
         this.serviceClient = new DefaultServiceClient(clientConfig);
     }
 
+    public Client(String endpoint, String accessId, String accessKey, ServiceClient serviceClient) {
+        configure(endpoint, accessId, accessKey, NetworkUtils.getLocalMachineIP());
+        this.serviceClient = serviceClient;
+    }
+
     private void configure(String endpoint, String accessId, String accessKey, String sourceIp) {
 	    Args.notNullOrEmpty(endpoint, "endpoint");
 	    Args.notNullOrEmpty(accessId, "accessId");

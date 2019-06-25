@@ -47,11 +47,29 @@ public class TimeoutServiceClient extends DefaultServiceClient {
     public TimeoutServiceClient(ClientConfiguration config) {
         super(config);
         int processors = Runtime.getRuntime().availableProcessors();
-        executor = new ThreadPoolExecutor(processors * 5, processors * 10, 60L, TimeUnit.SECONDS,
-                new ArrayBlockingQueue<Runnable>(processors * 100),
+        this.executor = createThreadPool(processors * 5, processors * 10, processors * 100);
+    }
+
+    public TimeoutServiceClient(ClientConfiguration config,
+                                int corePoolSize,
+                                int maximumPoolSize,
+                                int queueSize) {
+        super(config);
+        this.executor = createThreadPool(corePoolSize, maximumPoolSize, queueSize);
+    }
+
+    private ThreadPoolExecutor createThreadPool(int corePoolSize, int maximumPoolSize, int queueSize) {
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 60L, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<Runnable>(queueSize),
                 Executors.defaultThreadFactory(),
                 new ThreadPoolExecutor.CallerRunsPolicy());
         executor.allowCoreThreadTimeOut(true);
+        return executor;
+    }
+
+    public TimeoutServiceClient(ClientConfiguration config, ThreadPoolExecutor executor) {
+        super(config);
+        this.executor = executor;
     }
 
     @Override
