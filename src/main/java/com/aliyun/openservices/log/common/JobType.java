@@ -10,6 +10,7 @@ public enum JobType implements JSONSerializable {
     REPORT("Report"),
     ETL("ETL"),
     INGESTION("Ingestion"),
+    REBUILD_INDEX("RebuildIndex"),
     ;
 
     private final String value;

@@ -1,6 +1,6 @@
 package com.aliyun.openservices.log.common;
 
-import com.alibaba.fastjson.JSONObject;
+import net.sf.json.JSONObject;
 
 public class MultilineFormat extends DataFormat {
 
@@ -57,7 +57,7 @@ public class MultilineFormat extends DataFormat {
     @Override
     public void deserialize(JSONObject jsonObject) {
         super.deserialize(jsonObject);
-        maxLines = jsonObject.getIntValue("maxLines");
+        maxLines = jsonObject.getInt("maxLines");
         negate = jsonObject.getBoolean("negate");
         match = jsonObject.getString("match");
         pattern = jsonObject.getString("pattern");

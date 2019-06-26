@@ -1,7 +1,9 @@
 package com.aliyun.openservices.log.common;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+
+import com.aliyun.openservices.log.util.JsonUtils;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,10 +93,10 @@ public class CSVFormat extends DataFormat {
         fieldDelimiter = jsonObject.getString("fieldDelimiter");
         quote = jsonObject.getString("quote");
         escape = jsonObject.getString("escape");
-        skipLeadingRows = jsonObject.getIntValue("skipLeadingRows");
-        multilineLimit = jsonObject.getIntValue("multilineLimit");
-        timeField = jsonObject.getString("timeField");
-        timeFormat = jsonObject.getString("timeFormat");
+        skipLeadingRows = jsonObject.getInt("skipLeadingRows");
+        multilineLimit = jsonObject.getInt("multilineLimit");
+        timeField = JsonUtils.readOptionalString(jsonObject, "timeField");
+        timeFormat = JsonUtils.readOptionalString(jsonObject, "timeFormat");
         JSONArray array = jsonObject.getJSONArray("fieldNames");
         if (array != null) {
             fieldNames = new ArrayList<String>(array.size());

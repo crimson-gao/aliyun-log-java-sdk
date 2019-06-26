@@ -1,6 +1,7 @@
 package com.aliyun.openservices.log.common;
 
-import com.alibaba.fastjson.JSONObject;
+
+import net.sf.json.JSONObject;
 
 public abstract class DataFormat {
 

@@ -1,6 +1,8 @@
 package com.aliyun.openservices.log.common;
 
-import com.alibaba.fastjson.JSONObject;
+
+import com.aliyun.openservices.log.util.JsonUtils;
+import net.sf.json.JSONObject;
 
 public class JSONFormat extends DataFormat {
 
@@ -30,7 +32,7 @@ public class JSONFormat extends DataFormat {
     @Override
     public void deserialize(JSONObject jsonObject) {
         super.deserialize(jsonObject);
-        timeField = jsonObject.getString("timeField");
-        timeFormat = jsonObject.getString("timeFormat");
+        timeField = JsonUtils.readOptionalString(jsonObject, "timeField");
+        timeFormat = JsonUtils.readOptionalString(jsonObject, "timeFormat");
     }
 }

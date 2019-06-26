@@ -75,6 +75,7 @@ import com.aliyun.openservices.log.request.CreateJobScheduleRequest;
 import com.aliyun.openservices.log.request.CreateLogStoreRequest;
 import com.aliyun.openservices.log.request.CreateLoggingRequest;
 import com.aliyun.openservices.log.request.CreateMachineGroupRequest;
+import com.aliyun.openservices.log.request.CreateRebuildRequest;
 import com.aliyun.openservices.log.request.CreateReportRequest;
 import com.aliyun.openservices.log.request.CreateSavedSearchRequest;
 import com.aliyun.openservices.log.request.DeleteAlertRequest;
@@ -121,6 +122,7 @@ import com.aliyun.openservices.log.request.GetLogsRequest;
 import com.aliyun.openservices.log.request.GetLogtailProfileRequest;
 import com.aliyun.openservices.log.request.GetMachineGroupRequest;
 import com.aliyun.openservices.log.request.GetProjectLogsRequest;
+import com.aliyun.openservices.log.request.GetRebuildIndexRequest;
 import com.aliyun.openservices.log.request.GetReportRequest;
 import com.aliyun.openservices.log.request.GetSavedSearchRequest;
 import com.aliyun.openservices.log.request.ListACLRequest;
@@ -137,6 +139,7 @@ import com.aliyun.openservices.log.request.ListJobsRequest;
 import com.aliyun.openservices.log.request.ListLogStoresRequest;
 import com.aliyun.openservices.log.request.ListMachineGroupRequest;
 import com.aliyun.openservices.log.request.ListProjectRequest;
+import com.aliyun.openservices.log.request.ListRebuildIndexRequest;
 import com.aliyun.openservices.log.request.ListReportRequest;
 import com.aliyun.openservices.log.request.ListSavedSearchRequest;
 import com.aliyun.openservices.log.request.ListShardRequest;
@@ -150,6 +153,7 @@ import com.aliyun.openservices.log.request.StartIngestionRequest;
 import com.aliyun.openservices.log.request.StartJobScheduleRequest;
 import com.aliyun.openservices.log.request.StopIngestionRequest;
 import com.aliyun.openservices.log.request.StopJobScheduleRequest;
+import com.aliyun.openservices.log.request.StopRebuildIndexRequest;
 import com.aliyun.openservices.log.request.UpdateACLRequest;
 import com.aliyun.openservices.log.request.UpdateAlertRequest;
 import com.aliyun.openservices.log.request.UpdateChartRequest;
@@ -194,6 +198,7 @@ import com.aliyun.openservices.log.response.CreateLogStoreResponse;
 import com.aliyun.openservices.log.response.CreateLoggingResponse;
 import com.aliyun.openservices.log.response.CreateMachineGroupResponse;
 import com.aliyun.openservices.log.response.CreateProjectResponse;
+import com.aliyun.openservices.log.response.CreateRebuildResponse;
 import com.aliyun.openservices.log.response.CreateReportResponse;
 import com.aliyun.openservices.log.response.CreateSavedSearchResponse;
 import com.aliyun.openservices.log.response.CreateShipperResponse;
@@ -246,6 +251,7 @@ import com.aliyun.openservices.log.response.GetLogsResponse;
 import com.aliyun.openservices.log.response.GetLogtailProfileResponse;
 import com.aliyun.openservices.log.response.GetMachineGroupResponse;
 import com.aliyun.openservices.log.response.GetProjectResponse;
+import com.aliyun.openservices.log.response.GetRebuildIndexResponse;
 import com.aliyun.openservices.log.response.GetReportResponse;
 import com.aliyun.openservices.log.response.GetSavedSearchResponse;
 import com.aliyun.openservices.log.response.GetShipperResponse;
@@ -267,6 +273,7 @@ import com.aliyun.openservices.log.response.ListLogStoresResponse;
 import com.aliyun.openservices.log.response.ListMachineGroupResponse;
 import com.aliyun.openservices.log.response.ListMachinesResponse;
 import com.aliyun.openservices.log.response.ListProjectResponse;
+import com.aliyun.openservices.log.response.ListRebuildIndexResponse;
 import com.aliyun.openservices.log.response.ListReportResponse;
 import com.aliyun.openservices.log.response.ListSavedSearchResponse;
 import com.aliyun.openservices.log.response.ListShardResponse;
@@ -280,6 +287,7 @@ import com.aliyun.openservices.log.response.StartIngestionResponse;
 import com.aliyun.openservices.log.response.StartJobScheduleResponse;
 import com.aliyun.openservices.log.response.StopIngestionResponse;
 import com.aliyun.openservices.log.response.StopJobScheduleResponse;
+import com.aliyun.openservices.log.response.StopRebuildIndexResponse;
 import com.aliyun.openservices.log.response.UpdateACLResponse;
 import com.aliyun.openservices.log.response.UpdateAlertResponse;
 import com.aliyun.openservices.log.response.UpdateChartResponse;
@@ -3709,6 +3717,36 @@ public class Client implements LogService {
 	public StartIngestionResponse startIngestion(StartIngestionRequest request) throws LogException {
 		ResponseMessage responseMessage = send(request);
 		return new StartIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public CreateRebuildResponse createRebuildIndex(CreateRebuildRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new CreateRebuildResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public GetRebuildIndexResponse getRebuildIndex(GetRebuildIndexRequest request) throws LogException {
+		ResponseMessage message = send(request);
+		JSONObject responseBody = parseResponseBody(message, message.getRequestId());
+		GetRebuildIndexResponse response = new GetRebuildIndexResponse(message.getHeaders());
+		response.deserialize(responseBody, message.getRequestId());
+		return response;
+	}
+
+	@Override
+	public ListRebuildIndexResponse listRebuildIndex(ListRebuildIndexRequest request) throws LogException {
+		ResponseMessage message = send(request);
+		JSONObject responseBody = parseResponseBody(message, message.getRequestId());
+		ListRebuildIndexResponse response = new ListRebuildIndexResponse(message.getHeaders());
+		response.deserialize(responseBody, message.getRequestId());
+		return response;
+	}
+
+	@Override
+	public StopRebuildIndexResponse stopRebuildIndex(StopRebuildIndexRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StopRebuildIndexResponse(responseMessage.getHeaders());
 	}
 
 	@Override
