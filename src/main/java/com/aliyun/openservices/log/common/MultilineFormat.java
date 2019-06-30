@@ -1,10 +1,11 @@
 package com.aliyun.openservices.log.common;
 
+import com.aliyun.openservices.log.util.JsonUtils;
 import net.sf.json.JSONObject;
 
 public class MultilineFormat extends DataFormat {
 
-    private int maxLines;
+    private int maxLines = -1;
     private boolean negate;
     private String match;
     private String pattern;
@@ -57,10 +58,12 @@ public class MultilineFormat extends DataFormat {
     @Override
     public void deserialize(JSONObject jsonObject) {
         super.deserialize(jsonObject);
-        maxLines = jsonObject.getInt("maxLines");
-        negate = jsonObject.getBoolean("negate");
-        match = jsonObject.getString("match");
-        pattern = jsonObject.getString("pattern");
-        flushPattern = jsonObject.getString("flushPattern");
+        if (jsonObject.containsKey("maxLines")) {
+            maxLines = jsonObject.getInt("maxLines");
+        }
+        negate = JsonUtils.readBool(jsonObject, "negate", false);
+        match = JsonUtils.readOptionalString(jsonObject, "match");
+        pattern = JsonUtils.readOptionalString(jsonObject, "pattern");
+        flushPattern = JsonUtils.readOptionalString(jsonObject, "flushPattern");
     }
 }

@@ -8,19 +8,20 @@ import net.sf.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSVFormat extends DataFormat {
+public class DelimitedTextFormat extends DataFormat {
 
     private List<String> fieldNames;
     private String fieldDelimiter;
-    private String quote;
-    private String escape;
-    private int skipLeadingRows = 0;
-    private int multilineLimit;
+    private String quoteChar;
+    private String escapeChar;
     private String timeField;
     private String timeFormat;
+    private int skipLeadingRows = 0;
+    private boolean firstRowAsHeader = false;
+    private int maxLines;
 
-    public CSVFormat() {
-        super("CSV");
+    public DelimitedTextFormat() {
+        super("DelimitedText");
     }
 
     public List<String> getFieldNames() {
@@ -39,20 +40,20 @@ public class CSVFormat extends DataFormat {
         this.fieldDelimiter = fieldDelimiter;
     }
 
-    public String getQuote() {
-        return quote;
+    public String getQuoteChar() {
+        return quoteChar;
     }
 
-    public void setQuote(String quote) {
-        this.quote = quote;
+    public void setQuoteChar(String quoteChar) {
+        this.quoteChar = quoteChar;
     }
 
-    public String getEscape() {
-        return escape;
+    public String getEscapeChar() {
+        return escapeChar;
     }
 
-    public void setEscape(String escape) {
-        this.escape = escape;
+    public void setEscapeChar(String escapeChar) {
+        this.escapeChar = escapeChar;
     }
 
     public int getSkipLeadingRows() {
@@ -63,12 +64,12 @@ public class CSVFormat extends DataFormat {
         this.skipLeadingRows = skipLeadingRows;
     }
 
-    public int getMultilineLimit() {
-        return multilineLimit;
+    public int getMaxLines() {
+        return maxLines;
     }
 
-    public void setMultilineLimit(int multilineLimit) {
-        this.multilineLimit = multilineLimit;
+    public void setMaxLines(int maxLines) {
+        this.maxLines = maxLines;
     }
 
     public String getTimeField() {
@@ -87,14 +88,26 @@ public class CSVFormat extends DataFormat {
         this.timeFormat = timeFormat;
     }
 
+    public boolean getFirstRowAsHeader() {
+        return firstRowAsHeader;
+    }
+
+    public void setFirstRowAsHeader(boolean firstRowAsHeader) {
+        this.firstRowAsHeader = firstRowAsHeader;
+    }
+
     @Override
     public void deserialize(JSONObject jsonObject) {
         super.deserialize(jsonObject);
-        fieldDelimiter = jsonObject.getString("fieldDelimiter");
-        quote = jsonObject.getString("quote");
-        escape = jsonObject.getString("escape");
-        skipLeadingRows = jsonObject.getInt("skipLeadingRows");
-        multilineLimit = jsonObject.getInt("multilineLimit");
+        fieldDelimiter = JsonUtils.readOptionalString(jsonObject, "fieldDelimiter");
+        quoteChar = JsonUtils.readOptionalString(jsonObject, "quoteChar");
+        escapeChar = JsonUtils.readOptionalString(jsonObject, "escapeChar");
+        if (jsonObject.containsKey("skipLeadingRows")) {
+            skipLeadingRows = jsonObject.getInt("skipLeadingRows");
+        }
+        if (jsonObject.containsKey("maxLines")) {
+            maxLines = jsonObject.getInt("maxLines");
+        }
         timeField = JsonUtils.readOptionalString(jsonObject, "timeField");
         timeFormat = JsonUtils.readOptionalString(jsonObject, "timeFormat");
         JSONArray array = jsonObject.getJSONArray("fieldNames");
@@ -104,5 +117,6 @@ public class CSVFormat extends DataFormat {
                 fieldNames.add(array.getString(i));
             }
         }
+        firstRowAsHeader = JsonUtils.readBool(jsonObject, "firstRowAsHeader", false);
     }
 }

@@ -1,21 +1,22 @@
 package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.aliyun.openservices.log.util.JsonUtils;
 import net.sf.json.JSONObject;
 
-public class OSSSource extends DataSource {
+public class AliyunOSSSource extends DataSource {
 
     @JSONField
     private String bucket;
 
     @JSONField
-    private String roleArn;
+    private String roleARN;
 
     @JSONField
     private String prefix;
 
     @JSONField
-    private String compressType;
+    private String compressionCodec;
 
     @JSONField
     private String encoding;
@@ -23,8 +24,8 @@ public class OSSSource extends DataSource {
     @JSONField
     private DataFormat format;
 
-    public OSSSource() {
-        super(DataSourceKind.OSS);
+    public AliyunOSSSource() {
+        super(DataSourceType.ALIYUN_OSS);
     }
 
     public String getBucket() {
@@ -35,12 +36,12 @@ public class OSSSource extends DataSource {
         this.bucket = bucket;
     }
 
-    public String getRoleArn() {
-        return roleArn;
+    public String getRoleARN() {
+        return roleARN;
     }
 
-    public void setRoleArn(String roleArn) {
-        this.roleArn = roleArn;
+    public void setRoleARN(String roleARN) {
+        this.roleARN = roleARN;
     }
 
     public String getPrefix() {
@@ -51,12 +52,12 @@ public class OSSSource extends DataSource {
         this.prefix = prefix;
     }
 
-    public String getCompressType() {
-        return compressType;
+    public String getCompressionCodec() {
+        return compressionCodec;
     }
 
-    public void setCompressType(String compressType) {
-        this.compressType = compressType;
+    public void setCompressionCodec(String compressionCodec) {
+        this.compressionCodec = compressionCodec;
     }
 
     public String getEncoding() {
@@ -76,14 +77,12 @@ public class OSSSource extends DataSource {
     }
 
     private static DataFormat createFormat(String name) {
-        if ("CSV".equals(name)) {
-            return new CSVFormat();
+        if ("DelimitedText".equals(name)) {
+            return new DelimitedTextFormat();
         } else if ("JSON".equals(name)) {
             return new JSONFormat();
         } else if ("Multiline".equals(name)) {
             return new MultilineFormat();
-        } else if ("SingleRow".equals(name)) {
-            return new SingleRowFormat();
         } else {
             return null;
         }
@@ -93,8 +92,11 @@ public class OSSSource extends DataSource {
     public void deserialize(JSONObject jsonObject) {
         super.deserialize(jsonObject);
         bucket = jsonObject.getString("bucket");
-        roleArn = jsonObject.getString("roleArn");
-        prefix = jsonObject.getString("prefix");
+        roleARN = jsonObject.getString("roleARN");
+        // Optional fields
+        prefix = JsonUtils.readOptionalString(jsonObject, "prefix");
+        compressionCodec = JsonUtils.readOptionalString(jsonObject, "compressionCodec");
+        encoding = JsonUtils.readOptionalString(jsonObject, "encoding");
         JSONObject formatObject = jsonObject.getJSONObject("format");
         if (formatObject != null) {
             String name = formatObject.getString("name");

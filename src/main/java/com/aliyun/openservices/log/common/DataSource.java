@@ -6,18 +6,18 @@ import net.sf.json.JSONObject;
 public abstract class DataSource {
 
     @JSONField
-    protected DataSourceKind kind;
+    protected DataSourceType type;
 
-    DataSource(DataSourceKind kind) {
-        this.kind = kind;
+    public DataSource(DataSourceType type) {
+        this.type = type;
     }
 
-    public DataSourceKind getKind() {
-        return kind;
+    public DataSourceType getType() {
+        return type;
     }
 
-    public void setKind(DataSourceKind kind) {
-        this.kind = kind;
+    public void setType(DataSourceType type) {
+        this.type = type;
     }
 
     public void deserialize(JSONObject jsonObject) {

@@ -5,21 +5,21 @@ import net.sf.json.JSONObject;
 
 public abstract class DataFormat {
 
-    private String name;
+    private String type;
 
-    public DataFormat(String name) {
-        this.name = name;
+    public DataFormat(String type) {
+        this.type = type;
     }
 
-    public String getName() {
-        return name;
+    public String getType() {
+        return type;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void deserialize(JSONObject jsonObject) {
-        this.name = jsonObject.getString("name");
+        this.type = jsonObject.getString("type");
     }
 }

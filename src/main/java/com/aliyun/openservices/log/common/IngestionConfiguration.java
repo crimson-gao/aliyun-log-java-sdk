@@ -9,10 +9,10 @@ public class IngestionConfiguration extends JobConfiguration {
     private String logstore;
 
     @JSONField
-    private String roleArn;
+    private String roleARN;
 
     @JSONField
-    private DataSource dataSource;
+    private DataSource source;
 
     public String getLogstore() {
         return logstore;
@@ -22,31 +22,31 @@ public class IngestionConfiguration extends JobConfiguration {
         this.logstore = logstore;
     }
 
-    public String getRoleArn() {
-        return roleArn;
+    public String getRoleARN() {
+        return roleARN;
     }
 
-    public void setRoleArn(String roleArn) {
-        this.roleArn = roleArn;
+    public void setRoleARN(String roleARN) {
+        this.roleARN = roleARN;
     }
 
-    public DataSource getDataSource() {
-        return dataSource;
+    public DataSource getSource() {
+        return source;
     }
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public void setSource(DataSource source) {
+        this.source = source;
     }
 
     @Override
     public void deserialize(JSONObject value) {
         logstore = value.getString("logstore");
-        roleArn = value.getString("roleArn");
-        JSONObject jsonObject = value.getJSONObject("dataSource");
-        DataSourceKind kind = DataSourceKind.fromString(jsonObject.getString("type"));
-        if (kind == DataSourceKind.OSS) {
-            dataSource = new OSSSource();
-            dataSource.deserialize(jsonObject);
+        roleARN = value.getString("roleARN");
+        JSONObject jsonObject = value.getJSONObject("source");
+        DataSourceType kind = DataSourceType.fromString(jsonObject.getString("type"));
+        if (kind == DataSourceType.ALIYUN_OSS) {
+            source = new AliyunOSSSource();
+            source.deserialize(jsonObject);
         }
     }
 }
