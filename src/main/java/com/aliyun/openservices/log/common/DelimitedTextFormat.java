@@ -17,8 +17,8 @@ public class DelimitedTextFormat extends DataFormat {
     private String timeField;
     private String timeFormat;
     private int skipLeadingRows = 0;
+    private int maxLines = -1;
     private boolean firstRowAsHeader = false;
-    private int maxLines;
 
     public DelimitedTextFormat() {
         super("DelimitedText");
