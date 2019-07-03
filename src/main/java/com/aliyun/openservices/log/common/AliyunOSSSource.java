@@ -10,6 +10,9 @@ public class AliyunOSSSource extends DataSource {
     private String bucket;
 
     @JSONField
+    private String endpoint;
+
+    @JSONField
     private String roleARN;
 
     @JSONField
@@ -34,6 +37,14 @@ public class AliyunOSSSource extends DataSource {
 
     public void setBucket(String bucket) {
         this.bucket = bucket;
+    }
+
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
 
     public String getRoleARN() {
@@ -92,6 +103,7 @@ public class AliyunOSSSource extends DataSource {
     public void deserialize(JSONObject jsonObject) {
         super.deserialize(jsonObject);
         bucket = jsonObject.getString("bucket");
+        endpoint = jsonObject.getString("endpoint");
         roleARN = jsonObject.getString("roleARN");
         // Optional fields
         prefix = JsonUtils.readOptionalString(jsonObject, "prefix");

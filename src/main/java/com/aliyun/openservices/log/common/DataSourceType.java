@@ -1,6 +1,11 @@
 package com.aliyun.openservices.log.common;
 
-public enum DataSourceType {
+import com.alibaba.fastjson.serializer.JSONSerializable;
+import com.alibaba.fastjson.serializer.JSONSerializer;
+
+import java.lang.reflect.Type;
+
+public enum DataSourceType implements JSONSerializable {
     ALIYUN_OSS("AliyunOSS");
 
     private final String name;
@@ -19,5 +24,10 @@ public enum DataSourceType {
             }
         }
         return null;
+    }
+
+    @Override
+    public void write(JSONSerializer serializer, Object fieldName, Type fieldType, int features) {
+        serializer.write(name);
     }
 }

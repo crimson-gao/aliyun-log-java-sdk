@@ -13,7 +13,7 @@ public class RebuildIndex extends AbstractJob implements Serializable {
     private RebuildIndexConfiguration configuration;
 
     public RebuildIndex() {
-        setType(JobType.ETL);
+        setType(JobType.REBUILD_INDEX);
     }
 
     @Override

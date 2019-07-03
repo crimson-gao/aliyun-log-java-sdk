@@ -12,6 +12,10 @@ public class Ingestion extends ScheduledJob implements Serializable {
     @JSONField
     private IngestionConfiguration configuration;
 
+    public Ingestion() {
+        setType(JobType.INGESTION);
+    }
+
     public void setConfiguration(IngestionConfiguration configuration) {
         this.configuration = configuration;
     }
