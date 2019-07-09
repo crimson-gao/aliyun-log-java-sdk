@@ -87,12 +87,12 @@ public class AliyunOSSSource extends DataSource {
         this.format = format;
     }
 
-    private static DataFormat createFormat(String name) {
-        if ("DelimitedText".equals(name)) {
+    private static DataFormat createFormat(String type) {
+        if ("DelimitedText".equals(type)) {
             return new DelimitedTextFormat();
-        } else if ("JSON".equals(name)) {
+        } else if ("JSON".equals(type)) {
             return new JSONFormat();
-        } else if ("Multiline".equals(name)) {
+        } else if ("Multiline".equals(type)) {
             return new MultilineFormat();
         } else {
             return null;
@@ -111,8 +111,8 @@ public class AliyunOSSSource extends DataSource {
         encoding = JsonUtils.readOptionalString(jsonObject, "encoding");
         JSONObject formatObject = jsonObject.getJSONObject("format");
         if (formatObject != null) {
-            String name = formatObject.getString("name");
-            format = createFormat(name);
+            String type = formatObject.getString("type");
+            format = createFormat(type);
             if (format != null) {
                 format.deserialize(formatObject);
             }
