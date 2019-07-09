@@ -105,7 +105,6 @@ public class AliyunOSSSource extends DataSource {
         bucket = jsonObject.getString("bucket");
         endpoint = jsonObject.getString("endpoint");
         roleARN = jsonObject.getString("roleARN");
-        // Optional fields
         prefix = JsonUtils.readOptionalString(jsonObject, "prefix");
         compressionCodec = JsonUtils.readOptionalString(jsonObject, "compressionCodec");
         encoding = JsonUtils.readOptionalString(jsonObject, "encoding");
