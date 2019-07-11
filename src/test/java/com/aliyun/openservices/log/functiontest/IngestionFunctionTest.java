@@ -57,19 +57,20 @@ public class IngestionFunctionTest extends JobIntgTest {
     @Test
     public void testCrud() throws Exception {
         Ingestion ingestion = createIngestion();
+        System.out.println(ingestion.getName());
         client.createIngestion(new CreateIngestionRequest("ali-sls-etl-staging", ingestion));
     }
 
     @Test
     public void testGet() throws Exception {
-        GetIngestionResponse response = client.getIngestion(new GetIngestionRequest("ali-sls-etl-staging", "ingestion-1562155062"));
+        GetIngestionResponse response = client.getIngestion(new GetIngestionRequest("ali-sls-etl-staging", "ingestion-1562644788"));
         Ingestion ingestion = response.getIngestion();
         System.out.println(ingestion.getName());
     }
 
     @Test
     public void testDelete() throws Exception {
-        client.deleteIngestion(new DeleteIngestionRequest("ali-sls-etl-staging", "ingestion-1562155062"));
+        client.deleteIngestion(new DeleteIngestionRequest("ali-sls-etl-staging", "ingestion-1562825615"));
     }
 
     @Test
