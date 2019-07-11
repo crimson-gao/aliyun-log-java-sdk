@@ -12,6 +12,7 @@ public class UpdateIngestionRequest extends JobRequest {
     public UpdateIngestionRequest(String project, Ingestion ingestion) {
         super(project);
         this.ingestion = ingestion;
+        setName(ingestion.getName());
     }
 
     @Override
