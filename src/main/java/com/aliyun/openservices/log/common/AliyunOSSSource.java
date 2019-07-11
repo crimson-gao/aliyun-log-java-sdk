@@ -19,6 +19,9 @@ public class AliyunOSSSource extends DataSource {
     private String prefix;
 
     @JSONField
+    private String pattern;
+
+    @JSONField
     private String compressionCodec;
 
     @JSONField
@@ -61,6 +64,14 @@ public class AliyunOSSSource extends DataSource {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
 
     public String getCompressionCodec() {
@@ -106,6 +117,7 @@ public class AliyunOSSSource extends DataSource {
         endpoint = jsonObject.getString("endpoint");
         roleARN = jsonObject.getString("roleARN");
         prefix = JsonUtils.readOptionalString(jsonObject, "prefix");
+        pattern = JsonUtils.readOptionalString(jsonObject, "pattern");
         compressionCodec = JsonUtils.readOptionalString(jsonObject, "compressionCodec");
         encoding = JsonUtils.readOptionalString(jsonObject, "encoding");
         JSONObject formatObject = jsonObject.getJSONObject("format");
