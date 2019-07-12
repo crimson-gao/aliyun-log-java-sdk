@@ -7,6 +7,6 @@ public class ListRebuildIndexRequest extends ListJobsRequest {
     private static final long serialVersionUID = 8998948994921812733L;
 
     public ListRebuildIndexRequest(String project) {
-        super(project, JobType.INGESTION);
+        super(project, JobType.REBUILD_INDEX);
     }
 }
