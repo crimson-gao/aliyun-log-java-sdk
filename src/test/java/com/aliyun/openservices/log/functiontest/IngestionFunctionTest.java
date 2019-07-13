@@ -9,8 +9,13 @@ import com.aliyun.openservices.log.common.JobScheduleType;
 import com.aliyun.openservices.log.common.JobState;
 import com.aliyun.openservices.log.request.CreateIngestionRequest;
 import com.aliyun.openservices.log.request.DeleteIngestionRequest;
+import com.aliyun.openservices.log.request.DisableJobRequest;
+import com.aliyun.openservices.log.request.EnableJobRequest;
 import com.aliyun.openservices.log.request.GetIngestionRequest;
 import com.aliyun.openservices.log.request.ListIngestionRequest;
+import com.aliyun.openservices.log.request.StartIngestionRequest;
+import com.aliyun.openservices.log.request.StopIngestionRequest;
+import com.aliyun.openservices.log.request.UpdateIngestionRequest;
 import com.aliyun.openservices.log.response.GetIngestionResponse;
 import com.aliyun.openservices.log.response.ListIngestionResponse;
 import org.junit.Test;
@@ -29,7 +34,7 @@ public class IngestionFunctionTest extends JobIntgTest {
         ingestion.setDisplayName("OSS-test");
         IngestionConfiguration configuration = new IngestionConfiguration();
         configuration.setLogstore("test-logstore2");
-        configuration.setRoleARN("acs:ram::1654218965343050:role/osstologservicerole");
+//        configuration.setRoleARN("acs:ram::1654218965343050:role/osstologservicerole");
 
         AliyunOSSSource source = new AliyunOSSSource();
         source.setBucket("yunlei-bill");
@@ -63,14 +68,35 @@ public class IngestionFunctionTest extends JobIntgTest {
 
     @Test
     public void testGet() throws Exception {
-        GetIngestionResponse response = client.getIngestion(new GetIngestionRequest("ali-sls-etl-staging", "ingestion-1562644788"));
+        GetIngestionResponse response = client.getIngestion(new GetIngestionRequest("ali-sls-etl-staging", "ingestion-1562994571"));
         Ingestion ingestion = response.getIngestion();
         System.out.println(ingestion.getName());
     }
 
     @Test
+    public void testUpdate() throws Exception {
+        GetIngestionResponse response = client.getIngestion(new GetIngestionRequest("ali-sls-etl-staging", "ingestion-1562994571"));
+        Ingestion ingestion = response.getIngestion();
+        AliyunOSSSource source = (AliyunOSSSource) ingestion.getConfiguration().getSource();
+        source.setPattern("1654218965343050_InstanceDetail_\\d{8}");
+        client.updateIngestion(new UpdateIngestionRequest("ali-sls-etl-staging", ingestion));
+    }
+
+    @Test
+    public void testInvalidOperation() throws Exception {
+//        client.enableJob(new EnableJobRequest("ali-sls-etl-staging", "ingestion-1562994887"));
+        client.disableJob(new DisableJobRequest("ali-sls-etl-staging", "ingestion-1562994887"));
+    }
+
+    @Test
     public void testDelete() throws Exception {
-        client.deleteIngestion(new DeleteIngestionRequest("ali-sls-etl-staging", "ingestion-1562825615"));
+        client.getIngestion(new GetIngestionRequest("ali-sls-etl-staging", "ingestion-1562994571"));
+     //   client.stopIngestion(new StopIngestionRequest("ali-sls-etl-staging", "ingestion-1562994571"));
+        client.stopIngestion(new StopIngestionRequest("ali-sls-etl-staging", "ingestion-1562994571"));
+//        client.startIngestion(new StartIngestionRequest("ali-sls-etl-staging", "ingestion-1562994571"));
+//        client.startIngestion(new StartIngestionRequest("ali-sls-etl-staging", "ingestion-1562994571"));
+        client.startIngestion(new StartIngestionRequest("ali-sls-etl-staging", "ingestion-1562994571"));
+        client.deleteIngestion(new DeleteIngestionRequest("ali-sls-etl-staging", "ingestion-1562994571"));
     }
 
     @Test
