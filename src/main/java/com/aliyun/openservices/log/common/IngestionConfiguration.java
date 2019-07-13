@@ -9,9 +9,6 @@ public class IngestionConfiguration extends JobConfiguration {
     private String logstore;
 
     @JSONField
-    private String roleARN;
-
-    @JSONField
     private DataSource source;
 
     public String getLogstore() {
@@ -20,14 +17,6 @@ public class IngestionConfiguration extends JobConfiguration {
 
     public void setLogstore(String logstore) {
         this.logstore = logstore;
-    }
-
-    public String getRoleARN() {
-        return roleARN;
-    }
-
-    public void setRoleARN(String roleARN) {
-        this.roleARN = roleARN;
     }
 
     public DataSource getSource() {
@@ -41,7 +30,6 @@ public class IngestionConfiguration extends JobConfiguration {
     @Override
     public void deserialize(JSONObject value) {
         logstore = value.getString("logstore");
-        roleARN = value.getString("roleARN");
         JSONObject jsonObject = value.getJSONObject("source");
         DataSourceType kind = DataSourceType.fromString(jsonObject.getString("type"));
         if (kind == DataSourceType.ALIYUN_OSS) {
