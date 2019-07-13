@@ -10,7 +10,6 @@ import com.aliyun.openservices.log.common.JobState;
 import com.aliyun.openservices.log.request.CreateIngestionRequest;
 import com.aliyun.openservices.log.request.DeleteIngestionRequest;
 import com.aliyun.openservices.log.request.DisableJobRequest;
-import com.aliyun.openservices.log.request.EnableJobRequest;
 import com.aliyun.openservices.log.request.GetIngestionRequest;
 import com.aliyun.openservices.log.request.ListIngestionRequest;
 import com.aliyun.openservices.log.request.StartIngestionRequest;
@@ -53,7 +52,7 @@ public class IngestionFunctionTest extends JobIntgTest {
         configuration.setSource(source);
         ingestion.setConfiguration(configuration);
         JobSchedule schedule = new JobSchedule();
-        schedule.setInterval("5m");
+        schedule.setInterval("1h");
         schedule.setType(JobScheduleType.FIXED_RATE);
         ingestion.setSchedule(schedule);
         return ingestion;

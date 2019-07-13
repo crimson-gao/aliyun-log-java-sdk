@@ -1,11 +1,9 @@
 package com.aliyun.openservices.log.common;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import net.sf.json.JSONObject;
 
 public abstract class DataSource {
 
-    @JSONField
     protected DataSourceType type;
 
     public DataSource(DataSourceType type) {

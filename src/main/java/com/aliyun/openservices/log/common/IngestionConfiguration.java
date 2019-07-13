@@ -1,14 +1,11 @@
 package com.aliyun.openservices.log.common;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import net.sf.json.JSONObject;
 
 public class IngestionConfiguration extends JobConfiguration {
 
-    @JSONField
     private String logstore;
 
-    @JSONField
     private DataSource source;
 
     public String getLogstore() {

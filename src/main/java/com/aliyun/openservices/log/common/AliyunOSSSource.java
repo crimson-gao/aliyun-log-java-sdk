@@ -1,33 +1,24 @@
 package com.aliyun.openservices.log.common;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.aliyun.openservices.log.util.JsonUtils;
 import net.sf.json.JSONObject;
 
 public class AliyunOSSSource extends DataSource {
 
-    @JSONField
     private String bucket;
 
-    @JSONField
     private String endpoint;
 
-    @JSONField
     private String roleARN;
 
-    @JSONField
     private String prefix;
 
-    @JSONField
     private String pattern;
 
-    @JSONField
     private String compressionCodec;
 
-    @JSONField
     private String encoding;
 
-    @JSONField
     private DataFormat format;
 
     public AliyunOSSSource() {
