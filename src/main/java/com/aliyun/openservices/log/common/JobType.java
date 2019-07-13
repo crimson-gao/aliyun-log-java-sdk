@@ -30,7 +30,7 @@ public enum JobType implements JSONSerializable {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Illegal job type: " + value);
+        return null;
     }
 
     @Override
