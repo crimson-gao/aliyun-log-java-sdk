@@ -8,6 +8,7 @@ public class JSONFormat extends DataFormat {
 
     private String timeField;
     private String timeFormat;
+    private boolean skipInvalidRows = false;
 
     public JSONFormat() {
         super("JSON");
@@ -29,10 +30,19 @@ public class JSONFormat extends DataFormat {
         this.timeFormat = timeFormat;
     }
 
+    public boolean getSkipInvalidRows() {
+        return skipInvalidRows;
+    }
+
+    public void setSkipInvalidRows(boolean skipInvalidRows) {
+        this.skipInvalidRows = skipInvalidRows;
+    }
+
     @Override
     public void deserialize(JSONObject jsonObject) {
         super.deserialize(jsonObject);
         timeField = JsonUtils.readOptionalString(jsonObject, "timeField");
         timeFormat = JsonUtils.readOptionalString(jsonObject, "timeFormat");
+        skipInvalidRows = JsonUtils.readBool(jsonObject, "skipInvalidRows", false);
     }
 }
