@@ -1,6 +1,5 @@
 package com.aliyun.openservices.log.common;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import net.sf.json.JSONObject;
 
 import java.io.Serializable;
@@ -16,7 +15,6 @@ public class Export extends ScheduledJob implements Serializable {
         setSchedule(schedule);
     }
 
-    @JSONField
     private ExportConfiguration configuration;
 
     @Override

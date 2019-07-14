@@ -1,14 +1,12 @@
 package com.aliyun.openservices.log.common;
 
 
-import com.alibaba.fastjson.annotation.JSONField;
 import net.sf.json.JSONObject;
 
 import java.io.Serializable;
 
 public class DataSink implements Serializable {
 
-    @JSONField
     private DataSinkType type;
 
     public DataSinkType getType() {

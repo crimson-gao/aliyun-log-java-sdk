@@ -1,7 +1,6 @@
 package com.aliyun.openservices.log.common;
 
 
-import com.alibaba.fastjson.annotation.JSONField;
 import net.sf.json.JSONObject;
 
 import java.util.HashMap;
@@ -9,34 +8,22 @@ import java.util.Iterator;
 
 public class AliyunADBSink extends DataSink {
 
-    @JSONField
     private String url;
 
-    @JSONField
     private String user;
 
-    @JSONField
     private String password;
 
-    @JSONField
     private String dbType;
 
-    @JSONField
     private String database;
 
-    @JSONField
     private String table;
 
-    @JSONField
     private int batchSize;
 
-    @JSONField
-    private int queueSize;
-
-    @JSONField
     private boolean strictMode;
 
-    @JSONField
     private HashMap<String, String> columnMapping;
 
     public AliyunADBSink() {
@@ -52,7 +39,6 @@ public class AliyunADBSink extends DataSink {
         this.database = database;
         this.table = table;
         this.batchSize = batchSize;
-        this.queueSize = queueSize;
         this.strictMode = strictMode;
         this.columnMapping = columnMapping;
     }
@@ -113,14 +99,6 @@ public class AliyunADBSink extends DataSink {
         this.batchSize = batchSize;
     }
 
-    public int getQueueSize() {
-        return queueSize;
-    }
-
-    public void setQueueSize(int queueSize) {
-        this.queueSize = queueSize;
-    }
-
     public boolean isStrictMode() {
         return strictMode;
     }
@@ -146,7 +124,6 @@ public class AliyunADBSink extends DataSink {
         database = value.getString("database");
         table = value.getString("table");
         batchSize = value.getInt("batchSize");
-        queueSize = value.getInt("queueSize");
         strictMode = value.getBoolean("strictMode");
         JSONObject cm = value.getJSONObject("columnMapping");
         Iterator iterator = cm.keys();

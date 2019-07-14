@@ -1,26 +1,19 @@
 package com.aliyun.openservices.log.common;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import net.sf.json.JSONObject;
 
 public class ExportConfiguration extends JobConfiguration {
 
-    @JSONField
     private String logstore;
 
-    @JSONField
     private String accessKeyId;
 
-    @JSONField
     private String accessKeySecret;
 
-    @JSONField
     private String instanceType;
 
-    @JSONField
     private int fromTime;
 
-    @JSONField
     private DataSink sink;
 
     public String getLogstore() {
