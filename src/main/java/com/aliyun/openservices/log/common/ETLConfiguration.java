@@ -123,7 +123,7 @@ public class ETLConfiguration extends JobConfiguration {
         JSONArray sinks = value.getJSONArray("sinks");
         this.sinks = new ArrayList<DataSink>(sinks.size());
         for (int i = 0; i < sinks.size(); i++) {
-            DataSink sink = new DataSink();
+            AliyunLOGSink sink = new AliyunLOGSink();
             sink.deserialize(sinks.getJSONObject(i));
             this.sinks.add(sink);
         }
