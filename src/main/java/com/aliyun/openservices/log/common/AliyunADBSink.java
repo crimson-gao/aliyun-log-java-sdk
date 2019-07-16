@@ -16,7 +16,13 @@ public class AliyunADBSink extends DataSink {
 
     private String dbType;
 
+    private String regionId;
+
+    private String zoneId;
+
     private String database;
+
+    private String tableGroupName;
 
     private String table;
 
@@ -30,13 +36,16 @@ public class AliyunADBSink extends DataSink {
         super(DataSinkType.ALIYUN_ADB);
     }
 
-    public AliyunADBSink(DataSinkType type, String url, String user, String password, String dbType, String database, String table, int batchSize, int queueSize, boolean strictMode, HashMap<String, String> columnMapping) {
+    public AliyunADBSink(DataSinkType type, String url, String user, String password, String dbType, String regionId, String zoneId, String database, String tableGroupName, String table, int batchSize, boolean strictMode, HashMap<String, String> columnMapping) {
         super(type);
         this.url = url;
         this.user = user;
         this.password = password;
         this.dbType = dbType;
+        this.regionId = regionId;
+        this.zoneId = zoneId;
         this.database = database;
+        this.tableGroupName = tableGroupName;
         this.table = table;
         this.batchSize = batchSize;
         this.strictMode = strictMode;
@@ -111,6 +120,30 @@ public class AliyunADBSink extends DataSink {
         return columnMapping;
     }
 
+    public String getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(String regionId) {
+        this.regionId = regionId;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
+    }
+
+    public String getTableGroupName() {
+        return tableGroupName;
+    }
+
+    public void setTableGroupName(String tableGroupName) {
+        this.tableGroupName = tableGroupName;
+    }
+
     public void setColumnMapping(HashMap<String, String> columnMapping) {
         this.columnMapping = columnMapping;
     }
@@ -121,7 +154,10 @@ public class AliyunADBSink extends DataSink {
         user = value.getString("user");
         password = value.getString("password");
         dbType = value.getString("dbType");
+        regionId = value.getString("regionId");
+        zoneId = value.getString("zoneId");
         database = value.getString("database");
+        tableGroupName = value.getString("tableGroupName");
         table = value.getString("table");
         batchSize = value.getInt("batchSize");
         strictMode = value.getBoolean("strictMode");

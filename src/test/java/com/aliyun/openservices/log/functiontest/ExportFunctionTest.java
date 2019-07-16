@@ -36,9 +36,11 @@ public class ExportFunctionTest extends JobIntgTest {
         conf.setInstanceType("Standard");
         AliyunADBSink sink = new AliyunADBSink();
         sink.setBatchSize(10240);
-        sink.setQueueSize(1024);
         sink.setStrictMode(false);
         sink.setDbType("adb20");
+        sink.setRegionId("cn-hangzhou");
+        sink.setZoneId("cn-hangzhou-1");
+        sink.setTableGroupName("test-group");
         sink.setDatabase("aaa");
         sink.setTable("bbb");
         sink.setUrl("host:port");
@@ -107,5 +109,18 @@ public class ExportFunctionTest extends JobIntgTest {
         } catch (LogException ex) {
             assertEquals("Job " + export.getName() + " does not exist", ex.GetErrorMessage());
         }
+    }
+
+    @Test
+    public void testExportAction() throws Exception {
+        String testExportName = "test-export-job";
+        client.stopExport(new StopExportRequest(testProject, testExportName));
+
+        Thread.sleep(3000); //wait status changed
+        System.out.println("status: " + client.getExport(new GetExportRequest(testProject, testExportName)).getExport().getState());
+
+        client.startExport(new StartExportRequest(testProject, testExportName));
+        Thread.sleep(3000); //wait status changed
+        System.out.println("status: " + client.getExport(new GetExportRequest(testProject, testExportName)).getExport().getState());
     }
 }
