@@ -16,10 +16,12 @@ public abstract class ScheduledJob extends AbstractJob {
 
     private JobSchedule schedule;
 
+    @Deprecated
     public JobState getState() {
         return state;
     }
 
+    @Deprecated
     public void setState(JobState state) {
         this.state = state;
     }
