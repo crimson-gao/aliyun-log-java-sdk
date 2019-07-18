@@ -75,7 +75,7 @@ import com.aliyun.openservices.log.request.CreateJobScheduleRequest;
 import com.aliyun.openservices.log.request.CreateLogStoreRequest;
 import com.aliyun.openservices.log.request.CreateLoggingRequest;
 import com.aliyun.openservices.log.request.CreateMachineGroupRequest;
-import com.aliyun.openservices.log.request.CreateRebuildRequest;
+import com.aliyun.openservices.log.request.CreateRebuildIndexRequest;
 import com.aliyun.openservices.log.request.CreateReportRequest;
 import com.aliyun.openservices.log.request.CreateSavedSearchRequest;
 import com.aliyun.openservices.log.request.DeleteAlertRequest;
@@ -3720,7 +3720,7 @@ public class Client implements LogService {
 	}
 
 	@Override
-	public CreateRebuildResponse createRebuildIndex(CreateRebuildRequest request) throws LogException {
+	public CreateRebuildResponse createRebuildIndex(CreateRebuildIndexRequest request) throws LogException {
 		ResponseMessage responseMessage = send(request);
 		return new CreateRebuildResponse(responseMessage.getHeaders());
 	}

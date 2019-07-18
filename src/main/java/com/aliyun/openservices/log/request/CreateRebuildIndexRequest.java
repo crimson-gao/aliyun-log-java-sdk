@@ -4,13 +4,13 @@ import com.aliyun.openservices.log.common.Consts;
 import com.aliyun.openservices.log.common.RebuildIndex;
 import com.aliyun.openservices.log.http.client.HttpMethod;
 
-public class CreateRebuildRequest extends JobRequest {
+public class CreateRebuildIndexRequest extends JobRequest {
 
     private static final long serialVersionUID = -289518691743568346L;
 
     private final RebuildIndex rebuildIndex;
 
-    public CreateRebuildRequest(String project, RebuildIndex rebuildIndex) {
+    public CreateRebuildIndexRequest(String project, RebuildIndex rebuildIndex) {
         super(project);
         this.rebuildIndex = rebuildIndex;
     }

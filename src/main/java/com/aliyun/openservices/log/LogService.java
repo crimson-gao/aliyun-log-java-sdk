@@ -37,7 +37,7 @@ import com.aliyun.openservices.log.request.CreateJobScheduleRequest;
 import com.aliyun.openservices.log.request.CreateLogStoreRequest;
 import com.aliyun.openservices.log.request.CreateLoggingRequest;
 import com.aliyun.openservices.log.request.CreateMachineGroupRequest;
-import com.aliyun.openservices.log.request.CreateRebuildRequest;
+import com.aliyun.openservices.log.request.CreateRebuildIndexRequest;
 import com.aliyun.openservices.log.request.CreateReportRequest;
 import com.aliyun.openservices.log.request.CreateSavedSearchRequest;
 import com.aliyun.openservices.log.request.DeleteAlertRequest;
@@ -3475,7 +3475,7 @@ public interface LogService {
 	StopIngestionResponse stopIngestion(StopIngestionRequest request) throws LogException;
 	StartIngestionResponse startIngestion(StartIngestionRequest request) throws LogException;
 
-	CreateRebuildResponse createRebuildIndex(CreateRebuildRequest request) throws LogException;
+	CreateRebuildResponse createRebuildIndex(CreateRebuildIndexRequest request) throws LogException;
 	GetRebuildIndexResponse getRebuildIndex(GetRebuildIndexRequest request) throws LogException;
 	ListRebuildIndexResponse listRebuildIndex(ListRebuildIndexRequest request) throws LogException;
 	StopRebuildIndexResponse stopRebuildIndex(StopRebuildIndexRequest request) throws LogException;
