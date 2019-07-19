@@ -8,14 +8,12 @@ import net.sf.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DelimitedTextFormat extends DataFormat {
+public class DelimitedTextFormat extends StructuredDataFormat {
 
     private List<String> fieldNames;
     private String fieldDelimiter;
     private String quoteChar;
     private String escapeChar;
-    private String timeField;
-    private String timeFormat;
     private int skipLeadingRows = 0;
     private int maxLines = -1;
     private boolean firstRowAsHeader = false;
@@ -72,22 +70,6 @@ public class DelimitedTextFormat extends DataFormat {
         this.maxLines = maxLines;
     }
 
-    public String getTimeField() {
-        return timeField;
-    }
-
-    public void setTimeField(String timeField) {
-        this.timeField = timeField;
-    }
-
-    public String getTimeFormat() {
-        return timeFormat;
-    }
-
-    public void setTimeFormat(String timeFormat) {
-        this.timeFormat = timeFormat;
-    }
-
     public boolean getFirstRowAsHeader() {
         return firstRowAsHeader;
     }
@@ -108,8 +90,6 @@ public class DelimitedTextFormat extends DataFormat {
         if (jsonObject.containsKey("maxLines")) {
             maxLines = jsonObject.getInt("maxLines");
         }
-        timeField = JsonUtils.readOptionalString(jsonObject, "timeField");
-        timeFormat = JsonUtils.readOptionalString(jsonObject, "timeFormat");
         JSONArray array = jsonObject.getJSONArray("fieldNames");
         if (array != null) {
             fieldNames = new ArrayList<String>(array.size());
