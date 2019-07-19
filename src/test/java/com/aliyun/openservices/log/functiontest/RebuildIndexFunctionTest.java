@@ -42,11 +42,12 @@ public class RebuildIndexFunctionTest extends JobIntgTest {
         client.createRebuildIndex(new CreateRebuildIndexRequest(project, job));
         GetRebuildIndexResponse response = client.getRebuildIndex(new GetRebuildIndexRequest(project, jobName));
         RebuildIndex rebuildIndex = response.getRebuildIndex();
+        assertEquals("STARTING", rebuildIndex.getStatus());
         assertEquals(jobName, rebuildIndex.getName());
         client.stopRebuildIndex(new StopRebuildIndexRequest(project, jobName));
         response = client.getRebuildIndex(new GetRebuildIndexRequest(project, jobName));
-        RebuildIndex RebuildIndex2 = response.getRebuildIndex();
-        assertEquals(jobName, RebuildIndex2.getName());
+        RebuildIndex rebuildIndex1 = response.getRebuildIndex();
+        assertEquals(jobName, rebuildIndex1.getName());
         try {
             client.stopRebuildIndex(new StopRebuildIndexRequest(project, jobName));
             fail();
