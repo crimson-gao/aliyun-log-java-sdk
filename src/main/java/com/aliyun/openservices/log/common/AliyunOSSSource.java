@@ -98,6 +98,8 @@ public class AliyunOSSSource extends DataSource {
             return new MultilineFormat();
         } else if ("Parquet".equals(type)) {
             return new ParquetFormat();
+        } else if ("Line".equals(type)) {
+            return new LineFormat();
         } else {
             return null;
         }

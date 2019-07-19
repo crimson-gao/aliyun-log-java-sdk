@@ -3,7 +3,7 @@ package com.aliyun.openservices.log.common;
 import com.aliyun.openservices.log.util.JsonUtils;
 import net.sf.json.JSONObject;
 
-public class MultilineFormat extends DataFormat {
+public class MultilineFormat extends LineFormat {
 
     private int maxLines = -1;
     private boolean negate;
