@@ -2726,7 +2726,7 @@ public interface LogService {
      * Lists job schedules.
      *
      * @param request
-     * @return
+     * @return List of {@code JobSchedule} objects.
      * @throws LogException
      */
     ListJobSchedulesResponse listJobSchedules(ListJobSchedulesRequest request) throws LogException;
@@ -3176,7 +3176,7 @@ public interface LogService {
      * Enables alert.
      *
      * @param request
-     * @return
+     * @return The response of enable alert.
      * @throws LogException
      */
     EnableAlertResponse enableAlert(EnableAlertRequest request) throws LogException;
