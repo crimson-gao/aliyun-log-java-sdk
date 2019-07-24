@@ -8,6 +8,7 @@ public abstract class ScheduledJob extends AbstractJob {
 
     /**
      * @deprecated use {@code status} instead.
+     * Use status instead.
      */
     @Deprecated
     private JobState state;
