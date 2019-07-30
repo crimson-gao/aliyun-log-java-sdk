@@ -116,11 +116,13 @@ public class AliyunOSSSource extends DataSource {
         compressionCodec = JsonUtils.readOptionalString(jsonObject, "compressionCodec");
         encoding = JsonUtils.readOptionalString(jsonObject, "encoding");
         JSONObject formatObject = jsonObject.getJSONObject("format");
-        if (formatObject != null) {
-            String type = formatObject.getString("type");
-            format = createFormat(type);
-            if (format != null) {
-                format.deserialize(formatObject);
+        if (formatObject != null && !formatObject.isNullObject()) {
+            String type = JsonUtils.readOptionalString(formatObject, "type");
+            if (type != null) {
+                format = createFormat(type);
+                if (format != null) {
+                    format.deserialize(formatObject);
+                }
             }
         }
     }
