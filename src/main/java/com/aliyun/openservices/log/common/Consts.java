@@ -131,6 +131,7 @@ public class Consts {
     public static final String CONST_X_SLS_NEXT_TOKEN = "x-log-nexttoken";
     public static final String CONST_X_SLS_CONTENTENCODING = "x-log-contentencoding";
     public static final String CONST_X_ACS_SECURITY_TOKEN = "x-acs-security-token";
+    public static final String CONST_X_LOG_RESOURCEOWNERACCOUNT = "x-log-resourceowneraccount";
 
     public static final String CONST_X_LOG_AGGQUERY = "x-log-agg-query";
     public static final String CONST_X_LOG_WHEREQUERY = "x-log-where-query";

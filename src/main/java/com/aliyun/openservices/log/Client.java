@@ -105,6 +105,7 @@ public class Client implements LogService {
 	 * Real backend server's IP address. If not null, skip resolving DNS
 	 */
 	private String realServerIP = null;
+	private String resourceOwnerAccount = null;
 
 	public String getUserAgent() {
 		return userAgent;
@@ -164,6 +165,14 @@ public class Client implements LogService {
 
 	public void DisableDirectMode() {
 		mUseDirectMode = false;
+	}
+
+	public String getResourceOwnerAccount() {
+		return resourceOwnerAccount;
+	}
+
+	public void setResourceOwnerAccount(String resourceOwnerAccount) {
+		this.resourceOwnerAccount = resourceOwnerAccount;
 	}
 
 	/**
@@ -2049,6 +2058,9 @@ public class Client implements LogService {
 			throws LogException {
 		if (body.length > 0) {
 			headers.put(Consts.CONST_CONTENT_MD5, DigestUtils.md5Crypt(body));
+		}
+		if (resourceOwnerAccount != null && !resourceOwnerAccount.isEmpty()) {
+			headers.put(Consts.CONST_X_LOG_RESOURCEOWNERACCOUNT, resourceOwnerAccount);
 		}
 		headers.put(Consts.CONST_CONTENT_LENGTH, String.valueOf(body.length));
 
