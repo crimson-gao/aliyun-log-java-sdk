@@ -48,7 +48,7 @@ public class ETLIntgTest extends JobIntgTest {
         configuration.setAccessKeyId("dummy");
         configuration.setAccessKeySecret("dummy");
         configuration.setParameters(Collections.<String, String>emptyMap());
-        List<DataSink> sinks = new ArrayList<DataSink>();
+        List<AliyunLOGSink> sinks = new ArrayList<AliyunLOGSink>();
         AliyunLOGSink sink = new AliyunLOGSink("test", "project", "logstore-test");
         sink.setAccessKeyId("1111");
         sink.setAccessKeySecret("111111");
