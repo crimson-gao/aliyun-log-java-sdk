@@ -7,6 +7,7 @@ import net.sf.json.JSONObject;
 public abstract class ScheduledJob extends AbstractJob {
 
     /**
+     * @deprecated use {@code status} instead.
      * Use status instead.
      */
     @Deprecated
@@ -16,10 +17,12 @@ public abstract class ScheduledJob extends AbstractJob {
 
     private JobSchedule schedule;
 
+    @Deprecated
     public JobState getState() {
         return state;
     }
 
+    @Deprecated
     public void setState(JobState state) {
         this.state = state;
     }

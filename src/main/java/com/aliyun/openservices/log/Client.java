@@ -105,6 +105,7 @@ public class Client implements LogService {
 	 * Real backend server's IP address. If not null, skip resolving DNS
 	 */
 	private String realServerIP = null;
+	private String resourceOwnerAccount = null;
 
 	public String getUserAgent() {
 		return userAgent;
@@ -164,6 +165,14 @@ public class Client implements LogService {
 
 	public void DisableDirectMode() {
 		mUseDirectMode = false;
+	}
+
+	public String getResourceOwnerAccount() {
+		return resourceOwnerAccount;
+	}
+
+	public void setResourceOwnerAccount(String resourceOwnerAccount) {
+		this.resourceOwnerAccount = resourceOwnerAccount;
 	}
 
 	/**
@@ -2050,6 +2059,9 @@ public class Client implements LogService {
 		if (body.length > 0) {
 			headers.put(Consts.CONST_CONTENT_MD5, DigestUtils.md5Crypt(body));
 		}
+		if (resourceOwnerAccount != null && !resourceOwnerAccount.isEmpty()) {
+			headers.put(Consts.CONST_X_LOG_RESOURCEOWNERACCOUNT, resourceOwnerAccount);
+		}
 		headers.put(Consts.CONST_CONTENT_LENGTH, String.valueOf(body.length));
 
 		DigestUtils.addSignature(this.accessId, this.accessKey, method.toString(), headers, resourceUri, parameters);
@@ -3422,7 +3434,85 @@ public class Client implements LogService {
         return new ListDomainsResponse(response.getHeaders(), count, total, domains);
 	}
 
-    @Override
+	@Override
+	public CreateIngestionResponse createIngestion(CreateIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new CreateIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public UpdateIngestionResponse updateIngestion(UpdateIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new UpdateIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public DeleteIngestionResponse deleteIngestion(DeleteIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new DeleteIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public GetIngestionResponse getIngestion(GetIngestionRequest request) throws LogException {
+		ResponseMessage response = send(request);
+		JSONObject responseBody = parseResponseBody(response, response.getRequestId());
+		GetIngestionResponse ingestionResponse = new GetIngestionResponse(response.getHeaders());
+		ingestionResponse.deserialize(responseBody, response.getRequestId());
+		return ingestionResponse;
+	}
+
+	@Override
+	public ListIngestionResponse listIngestion(ListIngestionRequest request) throws LogException {
+		ResponseMessage response = send(request);
+		JSONObject responseBody = parseResponseBody(response, response.getRequestId());
+		ListIngestionResponse listIngestionResponse = new ListIngestionResponse(response.getHeaders());
+		listIngestionResponse.deserialize(responseBody, response.getRequestId());
+		return listIngestionResponse;
+	}
+
+	@Override
+	public StopIngestionResponse stopIngestion(StopIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StopIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public StartIngestionResponse startIngestion(StartIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StartIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public CreateRebuildResponse createRebuildIndex(CreateRebuildIndexRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new CreateRebuildResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public GetRebuildIndexResponse getRebuildIndex(GetRebuildIndexRequest request) throws LogException {
+		ResponseMessage message = send(request);
+		JSONObject responseBody = parseResponseBody(message, message.getRequestId());
+		GetRebuildIndexResponse response = new GetRebuildIndexResponse(message.getHeaders());
+		response.deserialize(responseBody, message.getRequestId());
+		return response;
+	}
+
+	@Override
+	public ListRebuildIndexResponse listRebuildIndex(ListRebuildIndexRequest request) throws LogException {
+		ResponseMessage message = send(request);
+		JSONObject responseBody = parseResponseBody(message, message.getRequestId());
+		ListRebuildIndexResponse response = new ListRebuildIndexResponse(message.getHeaders());
+		response.deserialize(responseBody, message.getRequestId());
+		return response;
+	}
+
+	@Override
+	public StopRebuildIndexResponse stopRebuildIndex(StopRebuildIndexRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StopRebuildIndexResponse(responseMessage.getHeaders());
+	}
+
+	@Override
     public UpdateAlertResponse updateAlert(UpdateAlertRequest request) throws LogException {
         ResponseMessage message = send(request);
         return new UpdateAlertResponse(message.getHeaders());

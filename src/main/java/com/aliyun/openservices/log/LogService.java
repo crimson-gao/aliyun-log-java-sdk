@@ -2726,7 +2726,7 @@ public interface LogService {
      * Lists job schedules.
      *
      * @param request
-     * @return
+     * @return List of {@code JobSchedule} objects.
      * @throws LogException
      */
     ListJobSchedulesResponse listJobSchedules(ListJobSchedulesRequest request) throws LogException;
@@ -3176,7 +3176,7 @@ public interface LogService {
      * Enables alert.
      *
      * @param request
-     * @return
+     * @return The response of enable alert.
      * @throws LogException
      */
     EnableAlertResponse enableAlert(EnableAlertRequest request) throws LogException;
@@ -3231,4 +3231,17 @@ public interface LogService {
 
 	ListDomainsResponse listDomains(String project, String domainName, int offset, int size) throws LogException;
 	ListDomainsResponse listDomains(ListDomainsRequest request) throws LogException;
+
+	CreateIngestionResponse createIngestion(CreateIngestionRequest request) throws LogException;
+	UpdateIngestionResponse updateIngestion(UpdateIngestionRequest request) throws LogException;
+	DeleteIngestionResponse deleteIngestion(DeleteIngestionRequest request) throws LogException;
+	GetIngestionResponse getIngestion(GetIngestionRequest request) throws LogException;
+	ListIngestionResponse listIngestion(ListIngestionRequest request) throws LogException;
+	StopIngestionResponse stopIngestion(StopIngestionRequest request) throws LogException;
+	StartIngestionResponse startIngestion(StartIngestionRequest request) throws LogException;
+
+	CreateRebuildResponse createRebuildIndex(CreateRebuildIndexRequest request) throws LogException;
+	GetRebuildIndexResponse getRebuildIndex(GetRebuildIndexRequest request) throws LogException;
+	ListRebuildIndexResponse listRebuildIndex(ListRebuildIndexRequest request) throws LogException;
+	StopRebuildIndexResponse stopRebuildIndex(StopRebuildIndexRequest request) throws LogException;
 }
