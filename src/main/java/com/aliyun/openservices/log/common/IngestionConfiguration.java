@@ -34,7 +34,7 @@ public class IngestionConfiguration extends JobConfiguration {
             source.deserialize(jsonObject);
         }
         if(kind == DataSourceType.JDBC) {
-            source = new AliyunJDBCSource();
+            source = new JDBCSource();
             source.deserialize(jsonObject);
         }
     }
