@@ -202,15 +202,6 @@ public abstract class LocalFileConfigInputDetail extends CommonConfigInputDetail
 		jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_DELAYSKIPBYTES, delaySkipBytes);
 		jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_DISCARDUNMATCH, discardUnmatch);
 		jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_ADVANCED, advanced);
-		if (!pluginDetail.isEmpty()) {
-			try {
-				JSONObject pluginObject = JSONObject.parseObject(pluginDetail);
-				if (pluginObject != null) {
-					jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_PLUGINDETAIL, pluginObject);
-				}
-			} catch (JSONException e) {
-			}
-		}
 
 		JSONObject dockerIncludeEnvJson = new JSONObject();
 		for (Map.Entry<String, String> entry : dockerIncludeEnv.entrySet()) {
@@ -235,6 +226,13 @@ public abstract class LocalFileConfigInputDetail extends CommonConfigInputDetail
 			dockerExcludeLabelJson.put(entry.getKey(), entry.getValue());
 		}
 		jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_DOCKER_EXCLUDE_LABEL, dockerExcludeLabelJson);
+
+		if (!pluginDetail.isEmpty()) {
+			JSONObject pluginObject = JSONObject.parseObject(pluginDetail);
+			if (pluginObject != null) {
+				jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_PLUGINDETAIL, pluginObject);
+			}
+		}
 	}
 	
 	protected void LocalFileConfigFromJsonObject(JSONObject inputDetail) throws LogException {
@@ -327,7 +325,6 @@ public abstract class LocalFileConfigInputDetail extends CommonConfigInputDetail
 				JSONObject exists = inputDetail.getJSONObject(Consts.CONST_CONFIG_INPUTDETAIL_PLUGINDETAIL);
 				this.pluginDetail = exists == null ? "" : exists.toString();
 			}
-
 		} catch (JSONException e) {
 			throw new LogException("FailToGenerateInputDetail", e.getMessage(), e, "");
 		}
