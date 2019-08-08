@@ -231,6 +231,7 @@ public class Consts {
     public static final String CONST_CONFIG_INPUTDETAIL_DELAYSKIPBYTES = "delaySkipBytes";
     public static final String CONST_CONFIG_INPUTDETAIL_CUSTOMIZEDFIELDS = "customizedFields";
     public static final String CONST_CONFIG_INPUTDETAIL_ACCEPTNOENOUGHKEYS = "acceptNoEnoughKeys";
+    public static final String CONST_CONFIG_INPUTDETAIL_PLUGINDETAIL = "plugin";
 
     public static final String CONST_TYPE = "type";
     public static final String CONST_TYPE_CURSOR = "cursor";
