@@ -22,7 +22,7 @@ public class AliyunJDBCSource extends DataSource{
     private String timeKey;
 
     public AliyunJDBCSource() {
-        super(DataSourceType.ALIYUN_JDBC);
+        super(DataSourceType.JDBC);
     }
 
 	public String getDBType() {

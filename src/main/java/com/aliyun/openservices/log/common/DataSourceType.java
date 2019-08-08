@@ -7,7 +7,7 @@ import java.lang.reflect.Type;
 
 public enum DataSourceType implements JSONSerializable {
     ALIYUN_OSS("AliyunOSS"),
-    ALIYUN_JDBC("JDBC");
+    JDBC("JDBC");
 
     private final String name;
 
