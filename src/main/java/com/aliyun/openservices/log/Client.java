@@ -2054,7 +2054,7 @@ public class Client implements LogService {
 
 	protected ResponseMessage SendData(String project, HttpMethod method, String resourceUri,
 			Map<String, String> parameters, Map<String, String> headers, byte[] body,
-			Map<String, String> output_header, String serverIp)
+			Map<String, String> outputHeader, String serverIp)
 			throws LogException {
 		if (body.length > 0) {
 			headers.put(Consts.CONST_CONTENT_MD5, DigestUtils.md5Crypt(body));
@@ -2063,7 +2063,6 @@ public class Client implements LogService {
 			headers.put(Consts.CONST_X_LOG_RESOURCEOWNERACCOUNT, resourceOwnerAccount);
 		}
 		headers.put(Consts.CONST_CONTENT_LENGTH, String.valueOf(body.length));
-
 		DigestUtils.addSignature(this.accessId, this.accessKey, method.toString(), headers, resourceUri, parameters);
 		URI uri;
 		if (serverIp == null) {
@@ -2071,17 +2070,15 @@ public class Client implements LogService {
 		} else {
 			uri = GetHostURIByIp(serverIp);
 		}
-
 		RequestMessage request = BuildRequest(uri, method,
 				resourceUri, parameters, headers,
 				new ByteArrayInputStream(body), body.length);
 		ResponseMessage response = null;
 		try {
-			response = this.serviceClient.sendRequest(request,
-					Consts.UTF_8_ENCODING);
+			response = this.serviceClient.sendRequest(request, Consts.UTF_8_ENCODING);
 			ExtractResponseBody(response);
-			if (output_header != null) {
-				output_header.putAll(response.getHeaders());
+			if (outputHeader != null) {
+				outputHeader.putAll(response.getHeaders());
 			}
 			int statusCode = response.getStatusCode();
 			if (statusCode != Consts.CONST_HTTP_OK) {
@@ -2090,21 +2087,25 @@ public class Client implements LogService {
 				ErrorCheck(object, requestId, statusCode);
 			}
 		} catch (ServiceException e) {
-			throw new LogException("RequestError", "Web request failed: "
-					+ e.getMessage(), e, "");
+			throw decorateException(e, response);
 		} catch (ClientException e) {
-			throw new LogException("RequestError", "Web request failed: "
-					+ e.getMessage(), e, "");
+			throw decorateException(e, response);
 		} finally {
 			try {
 				if (response != null) {
 					response.close();
 				}
-			} catch (IOException e) {
-			}
-
+			} catch (IOException ignore) {}
 		}
 		return response;
+	}
+
+	private static LogException decorateException(Exception ex, ResponseMessage responseMessage) {
+		LogException requestError = new LogException("RequestError", "Web request failed: " + ex.getMessage(), ex, "");
+		if (responseMessage != null) {
+			requestError.SetHttpCode(responseMessage.getStatusCode());
+		}
+		return requestError;
 	}
 
 	private static RequestMessage BuildRequest(URI endpoint,
