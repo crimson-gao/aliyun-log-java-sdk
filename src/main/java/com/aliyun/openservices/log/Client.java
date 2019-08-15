@@ -2052,9 +2052,9 @@ public class Client implements LogService {
 		return SendData(project, method, resourceUri, parameters, headers, body, null, null);
 	}
 
-	protected ResponseMessage SendData(String project, HttpMethod method, String resourceUri,
-			Map<String, String> parameters, Map<String, String> headers, byte[] body,
-			Map<String, String> outputHeader, String serverIp)
+	private ResponseMessage SendData(String project, HttpMethod method, String resourceUri,
+									 Map<String, String> parameters, Map<String, String> headers, byte[] body,
+									 Map<String, String> outputHeader, String serverIp)
 			throws LogException {
 		if (body.length > 0) {
 			headers.put(Consts.CONST_CONTENT_MD5, DigestUtils.md5Crypt(body));
@@ -2083,13 +2083,18 @@ public class Client implements LogService {
 			int statusCode = response.getStatusCode();
 			if (statusCode != Consts.CONST_HTTP_OK) {
 				String requestId = GetRequestId(response.getHeaders());
-				JSONObject object = parseResponseBody(response, requestId);
-				ErrorCheck(object, requestId, statusCode);
+				try {
+					JSONObject object = parseResponseBody(response, requestId);
+					ErrorCheck(object, requestId, statusCode);
+				} catch (LogException ex) {
+					ex.SetHttpCode(response.getStatusCode());
+					throw ex;
+				}
 			}
 		} catch (ServiceException e) {
-			throw decorateException(e, response);
+			throw new LogException("RequestError", "Web request failed: " + e.getMessage(), e, "");
 		} catch (ClientException e) {
-			throw decorateException(e, response);
+			throw new LogException("RequestError", "Web request failed: " + e.getMessage(), e, "");
 		} finally {
 			try {
 				if (response != null) {
@@ -2098,14 +2103,6 @@ public class Client implements LogService {
 			} catch (IOException ignore) {}
 		}
 		return response;
-	}
-
-	private static LogException decorateException(Exception ex, ResponseMessage responseMessage) {
-		LogException requestError = new LogException("RequestError", "Web request failed: " + ex.getMessage(), ex, "");
-		if (responseMessage != null) {
-			requestError.SetHttpCode(responseMessage.getStatusCode());
-		}
-		return requestError;
 	}
 
 	private static RequestMessage BuildRequest(URI endpoint,
