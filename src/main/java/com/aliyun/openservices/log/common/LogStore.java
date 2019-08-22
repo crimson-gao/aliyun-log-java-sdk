@@ -22,6 +22,7 @@ public class LogStore implements Serializable {
     private int lastModifyTime = -1;
     private long preserveStorage = -1;
     private long usedStorage = 0;
+    private String decription;
 
     public LogStore() {
         super();
@@ -56,6 +57,7 @@ public class LogStore implements Serializable {
         this.mMaxSplitShard = logStore.getmMaxSplitShard();
         this.preserveStorage = logStore.preserveStorage;
         this.usedStorage = logStore.usedStorage;
+        this.decription = logStore.getDecription();
     }
 
     public long getPreserveStorage() {
@@ -162,7 +164,15 @@ public class LogStore implements Serializable {
         this.shardCount = shardCount;
     }
 
-    public JSONObject ToRequestJson() {
+    public String getDecription() {
+		return decription;
+	}
+
+	public void setDecription(String decription) {
+		this.decription = decription;
+	}
+
+	public JSONObject ToRequestJson() {
         JSONObject logStoreDict = new JSONObject();
         logStoreDict.put("logstoreName", GetLogStoreName());
         logStoreDict.put("ttl", GetTtl());
