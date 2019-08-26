@@ -92,10 +92,10 @@ public class Advanced {
                     advObj.setDirBlacklist(fromJSONArray(obj.getJSONArray(Consts.CONST_CONFIG_INPUTDETAIL_ADVANCED_BLACKLIST_DIR)));
                 }
                 if (obj.containsKey(Consts.CONST_CONFIG_INPUTDETAIL_ADVANCED_BLACKLIST_FILENAME)) {
-                    advObj.setDirBlacklist(fromJSONArray(obj.getJSONArray(Consts.CONST_CONFIG_INPUTDETAIL_ADVANCED_BLACKLIST_FILENAME)));
+                    advObj.setFileNameBlacklist(fromJSONArray(obj.getJSONArray(Consts.CONST_CONFIG_INPUTDETAIL_ADVANCED_BLACKLIST_FILENAME)));
                 }
                 if (obj.containsKey(Consts.CONST_CONFIG_INPUTDETAIL_ADVANCED_BLACKLIST_FILEPATH)) {
-                    advObj.setDirBlacklist(fromJSONArray(obj.getJSONArray(Consts.CONST_CONFIG_INPUTDETAIL_ADVANCED_BLACKLIST_FILEPATH)));
+                    advObj.setFilePathBlacklist(fromJSONArray(obj.getJSONArray(Consts.CONST_CONFIG_INPUTDETAIL_ADVANCED_BLACKLIST_FILEPATH)));
                 }
             }
 
