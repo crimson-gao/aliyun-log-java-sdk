@@ -201,7 +201,7 @@ public abstract class LocalFileConfigInputDetail extends CommonConfigInputDetail
 		jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_ISDOCKERFILE, isDockerFile);
 		jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_DELAYSKIPBYTES, delaySkipBytes);
 		jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_DISCARDUNMATCH, discardUnmatch);
-		jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_ADVANCED, advanced);
+		jsonObj.put(Consts.CONST_CONFIG_INPUTDETAIL_ADVANCED, advanced.toJsonObject());
 
 		JSONObject dockerIncludeEnvJson = new JSONObject();
 		for (Map.Entry<String, String> entry : dockerIncludeEnv.entrySet()) {
