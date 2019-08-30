@@ -9,17 +9,24 @@ public class RebuildIndexConfiguration extends JobConfiguration {
     @JSONField
     private String logstore;
 
+    /**
+     * Read only.
+     */
     @JSONField
-    private Integer startTime;
+    private String id;
 
     @JSONField
-    private Integer endTime;
+    private Integer fromTime;
+
+    @JSONField
+    private Integer toTime;
 
     @Override
     public void deserialize(JSONObject value) {
         logstore = value.getString("logstore");
-        startTime = JsonUtils.readOptionalInt(value, "startTime");
-        endTime = JsonUtils.readOptionalInt(value, "endTime");
+        id = value.getString("id");
+        fromTime = JsonUtils.readOptionalInt(value, "fromTime");
+        toTime = JsonUtils.readOptionalInt(value, "toTime");
     }
 
     public String getLogstore() {
@@ -30,28 +37,37 @@ public class RebuildIndexConfiguration extends JobConfiguration {
         this.logstore = logstore;
     }
 
-    public Integer getStartTime() {
-        return startTime;
+    public String getId() {
+        return id;
     }
 
-    public void setStartTime(Integer startTime) {
-        this.startTime = startTime;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public Integer getEndTime() {
-        return endTime;
+    public Integer getFromTime() {
+        return fromTime;
     }
 
-    public void setEndTime(Integer endTime) {
-        this.endTime = endTime;
+    public void setFromTime(Integer fromTime) {
+        this.fromTime = fromTime;
+    }
+
+    public Integer getToTime() {
+        return toTime;
+    }
+
+    public void setToTime(Integer toTime) {
+        this.toTime = toTime;
     }
 
     @Override
     public String toString() {
         return "RebuildIndexConfiguration{" +
                 "logstore='" + logstore + '\'' +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
+                ", id='" + id + '\'' +
+                ", fromTime=" + fromTime +
+                ", toTime=" + toTime +
                 '}';
     }
 }
