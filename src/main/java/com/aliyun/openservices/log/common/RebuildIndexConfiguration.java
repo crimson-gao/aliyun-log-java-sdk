@@ -9,12 +9,6 @@ public class RebuildIndexConfiguration extends JobConfiguration {
     @JSONField
     private String logstore;
 
-    /**
-     * Read only.
-     */
-    @JSONField
-    private String id;
-
     @JSONField
     private Integer fromTime;
 
@@ -24,7 +18,6 @@ public class RebuildIndexConfiguration extends JobConfiguration {
     @Override
     public void deserialize(JSONObject value) {
         logstore = value.getString("logstore");
-        id = value.getString("id");
         fromTime = JsonUtils.readOptionalInt(value, "fromTime");
         toTime = JsonUtils.readOptionalInt(value, "toTime");
     }
@@ -35,14 +28,6 @@ public class RebuildIndexConfiguration extends JobConfiguration {
 
     public void setLogstore(String logstore) {
         this.logstore = logstore;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public Integer getFromTime() {
@@ -65,7 +50,6 @@ public class RebuildIndexConfiguration extends JobConfiguration {
     public String toString() {
         return "RebuildIndexConfiguration{" +
                 "logstore='" + logstore + '\'' +
-                ", id='" + id + '\'' +
                 ", fromTime=" + fromTime +
                 ", toTime=" + toTime +
                 '}';

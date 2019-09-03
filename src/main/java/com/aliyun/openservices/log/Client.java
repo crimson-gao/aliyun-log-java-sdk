@@ -3496,6 +3496,12 @@ public class Client implements LogService {
 	}
 
 	@Override
+	public DeleteRebuildIndexResponse deleteRebuildIndex(DeleteRebuildIndexRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new DeleteRebuildIndexResponse(responseMessage.getHeaders());
+	}
+
+	@Override
 	public ListRebuildIndexResponse listRebuildIndex(ListRebuildIndexRequest request) throws LogException {
 		ResponseMessage message = send(request);
 		JSONObject responseBody = parseResponseBody(message, message.getRequestId());
