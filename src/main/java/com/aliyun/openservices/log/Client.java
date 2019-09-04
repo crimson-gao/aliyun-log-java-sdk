@@ -720,6 +720,26 @@ public class Client implements LogService {
 		return GetLogs(request);
 	}
 
+	/**
+	 * GetContextLogs uses @packID and @packMeta to specify a log as start log and queries logs around it.
+	 *
+	 * @param packID  package ID of the start log, such as 895CEA449A52FE-1 ({hex prefix}-{hex sequence number}).
+	 * @param packMeta  package meta of the start log, such as 0|MTU1OTI4NTExMjg3NTQ2MjQ3MQ==|2|1.
+	 * @param backLines  the number of logs to request backward, at most 100.
+	 * @param forwardLines  the number of logs to request forward, at most 100.
+	 * @return see getter in GetContextLogsResponse for more information.
+	 * @throws LogException
+	 */
+	public GetContextLogsResponse GetContextLogs(String project, String logstore,
+			String packID, String packMeta,
+			int backLines, int forwardLines) throws LogException{
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(logstore, "logStore");
+		GetContextLogsRequest request = new GetContextLogsRequest(project, logstore,
+				packID, packMeta, backLines, forwardLines);
+		return GetContextLogs(request);
+	}
+
 	public GetLogsResponse GetProjectLogs(String project,String query) throws  LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertParameterNotNull(query, "query");
@@ -755,28 +775,53 @@ public class Client implements LogService {
 		}
 	}
 
+	private com.alibaba.fastjson.JSONObject parseResponseMessageToObjectWithFastJSON(ResponseMessage response,
+			String requestId) throws LogException {
+		String returnStr = encodeResponseBodyToUtf8String(response, requestId);
+		try {
+            return com.alibaba.fastjson.JSONObject.parseObject(returnStr);
+		} catch (com.alibaba.fastjson.JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE,
+					"The response is not valid json string : " + returnStr, e,
+					requestId);
+		}
+	}
+
 	private void ExtractLogsWithFastJson(GetLogsResponse response, com.alibaba.fastjson.JSONArray logs) {
 		try {
 			for (int i = 0; i < logs.size(); i++) {
-				com.alibaba.fastjson.JSONObject log = logs.getJSONObject(i);
-				String source = "";
-				LogItem logItem = new LogItem();
-				Set<String> keySet = log.keySet();
-				for (String key:keySet) {
-					String value = log.getString(key);
-					if (key.equals(Consts.CONST_RESULT_SOURCE)) {
-						source = value;
-					} else if (key.equals(Consts.CONST_RESULT_TIME)) {
-						logItem.mLogTime = Integer.parseInt(value);
-					} else {
-						logItem.PushBack(key, value);
-					}
-				}
-				response.AddLog(new QueriedLog(source, logItem));
+				response.AddLog(extractLogFromJSON(logs.getJSONObject(i)));
 			}
 		} catch (JSONException e) {
 			// ignore;
 		}
+	}
+
+	private void extractLogsWithFastJson(GetContextLogsResponse response, com.alibaba.fastjson.JSONArray logs) {
+		try {
+			for (int i = 0; i < logs.size(); i++) {
+				response.addLog(extractLogFromJSON(logs.getJSONObject(i)));
+			}
+		} catch (JSONException e) {
+			// ignore;
+		}
+	}
+
+	private QueriedLog extractLogFromJSON(com.alibaba.fastjson.JSONObject log) throws JSONException {
+		String source = "";
+		LogItem logItem = new LogItem();
+		Set<String> keySet = log.keySet();
+		for (String key:keySet) {
+			String value = log.getString(key);
+			if (key.equals(Consts.CONST_RESULT_SOURCE)) {
+				source = value;
+			} else if (key.equals(Consts.CONST_RESULT_TIME)) {
+				logItem.mLogTime = Integer.parseInt(value);
+			} else {
+				logItem.PushBack(key, value);
+			}
+		}
+		return new QueriedLog(source, logItem);
 	}
 
 	public GetLogsResponse GetLogs(GetLogsRequest request) throws LogException {
@@ -794,6 +839,23 @@ public class Client implements LogService {
 		GetLogsResponse getLogsResponse = new GetLogsResponse(resHeaders);
 		ExtractLogsWithFastJson(getLogsResponse, object);
 		return getLogsResponse;
+	}
+
+	public GetContextLogsResponse GetContextLogs(GetContextLogsRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		Map<String, String> urlParameter = request.GetAllParams();
+		String project = request.GetProject();
+		String logStore = request.getLogstore();
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		String resourceUri = "/logstores/" + logStore;
+		ResponseMessage response = SendData(project, HttpMethod.GET,
+				resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		com.alibaba.fastjson.JSONObject object = parseResponseMessageToObjectWithFastJSON(response, requestId);
+		GetContextLogsResponse logsResponse = new GetContextLogsResponse(resHeaders, object);
+		extractLogsWithFastJson(logsResponse, object.getJSONArray("logs"));
+		return logsResponse;
 	}
 
 	public ListLogStoresResponse ListLogStores(String project, int offset,
