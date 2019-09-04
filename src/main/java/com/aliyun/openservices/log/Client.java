@@ -721,7 +721,7 @@ public class Client implements LogService {
 	}
 
 	/**
-	 * GetContextLogs uses @packID and @packMeta to specify a log as start log and queries logs around it.
+	 * getContextLogs uses @packID and @packMeta to specify a log as start log and queries logs around it.
 	 *
 	 * @param packID  package ID of the start log, such as 895CEA449A52FE-1 ({hex prefix}-{hex sequence number}).
 	 * @param packMeta  package meta of the start log, such as 0|MTU1OTI4NTExMjg3NTQ2MjQ3MQ==|2|1.
@@ -730,14 +730,14 @@ public class Client implements LogService {
 	 * @return see getter in GetContextLogsResponse for more information.
 	 * @throws LogException
 	 */
-	public GetContextLogsResponse GetContextLogs(String project, String logstore,
+	public GetContextLogsResponse getContextLogs(String project, String logstore,
 			String packID, String packMeta,
 			int backLines, int forwardLines) throws LogException{
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(logstore, "logStore");
 		GetContextLogsRequest request = new GetContextLogsRequest(project, logstore,
 				packID, packMeta, backLines, forwardLines);
-		return GetContextLogs(request);
+		return getContextLogs(request);
 	}
 
 	public GetLogsResponse GetProjectLogs(String project,String query) throws  LogException {
@@ -841,7 +841,7 @@ public class Client implements LogService {
 		return getLogsResponse;
 	}
 
-	public GetContextLogsResponse GetContextLogs(GetContextLogsRequest request) throws LogException {
+	public GetContextLogsResponse getContextLogs(GetContextLogsRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		Map<String, String> urlParameter = request.GetAllParams();
 		String project = request.GetProject();

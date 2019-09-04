@@ -104,15 +104,15 @@ public class GetContextLogsFunctionTest extends LogTest {
             startPackMeta = info.packMeta;
         }
 
-        // GetContextLogs: both directions.
-        GetContextLogsResponse response = client.GetContextLogs(TEST_PROJECT, logstore,
+        // getContextLogs: both directions.
+        GetContextLogsResponse response = client.getContextLogs(TEST_PROJECT, logstore,
                 startPackID, startPackMeta, 100, 100);
         assertTrue(response.isCompleted());
         assertEquals(response.getTotalLines(), 201);
         assertEquals(response.getBackLines(), 100);
         assertEquals(response.getForwardLines(), 100);
         assertEquals(response.getLogs().size(), 201);
-        ArrayList<QueriedLog> logs = response.getLogs();
+        List<QueriedLog> logs = response.getLogs();
 
         // Use the first log to fetch backward continuously.
         {
@@ -122,7 +122,7 @@ public class GetContextLogsFunctionTest extends LogTest {
             QueriedLog log = logs.get(0);
             while (true) {
                 PackInfo info = extractPackInfo(log);
-                response = client.GetContextLogs(TEST_PROJECT, logstore,
+                response = client.getContextLogs(TEST_PROJECT, logstore,
                         info.packID, info.packMeta, STEP_SIZE, 0);
                 int expectedCount = Math.min(STEP_SIZE, totalCount);
                 assertTrue(response.isCompleted());
@@ -139,7 +139,7 @@ public class GetContextLogsFunctionTest extends LogTest {
 
             // No log is returned.
             PackInfo info = extractPackInfo(log);
-            response = client.GetContextLogs(TEST_PROJECT, logstore,
+            response = client.getContextLogs(TEST_PROJECT, logstore,
                     info.packID, info.packMeta, STEP_SIZE, 0);
             assertTrue(response.isCompleted());
             assertEquals(response.getTotalLines(), 0);
@@ -153,7 +153,7 @@ public class GetContextLogsFunctionTest extends LogTest {
             QueriedLog log = logs.get(logs.size() - 1);
             while (true) {
                 PackInfo info = extractPackInfo(log);
-                response = client.GetContextLogs(TEST_PROJECT, logstore,
+                response = client.getContextLogs(TEST_PROJECT, logstore,
                         info.packID, info.packMeta, 0, STEP_SIZE);
                 int expectedCount = Math.min(STEP_SIZE, totalCount);
                 assertTrue(response.isCompleted());
@@ -170,7 +170,7 @@ public class GetContextLogsFunctionTest extends LogTest {
 
             // No log is returned.
             PackInfo info = extractPackInfo(log);
-            response = client.GetContextLogs(TEST_PROJECT, logstore,
+            response = client.getContextLogs(TEST_PROJECT, logstore,
                     info.packID, info.packMeta, 0, STEP_SIZE);
             assertTrue(response.isCompleted());
             assertEquals(response.getTotalLines(), 0);

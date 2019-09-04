@@ -4,10 +4,11 @@ import com.aliyun.openservices.log.common.Consts;
 import com.aliyun.openservices.log.common.QueriedLog;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class GetContextLogsResponse extends Response {
-    private ArrayList<QueriedLog> logs = new ArrayList<QueriedLog>();
+    private List<QueriedLog> logs = new ArrayList<QueriedLog>();
     private boolean isCompleted = false;
     private int totalLines;
     private int backLines;
@@ -24,10 +25,10 @@ public class GetContextLogsResponse extends Response {
     /**
      * @return the logs returned, the start log is included (at middle) if it is not empty.
      *   Each log has three extra fields: __tag__:__pack_id__, __pack_meta__ and __index_number__.
-     *   Use the first two fields as parameters of GetContextLogs to query more logs.
+     *   Use the first two fields as parameters of getContextLogs to query more logs.
      *   The last one is the relative position of the start log whose __index_number__ is 0.
      */
-    public ArrayList<QueriedLog> getLogs() { return this.logs; }
+    public List<QueriedLog> getLogs() { return this.logs; }
 
     /**
      * Check if the result is completed, true at most time.
@@ -52,7 +53,7 @@ public class GetContextLogsResponse extends Response {
     public int getForwardLines() { return forwardLines; }
 
     /**
-     * @note Users of GetContextLogs can ignore following methods.
+     * @note Users of getContextLogs can ignore following methods.
      */
     public void addLog(QueriedLog log) { logs.add(log); }
     public void setProcessStatus(String processStatus) {
