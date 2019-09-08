@@ -167,6 +167,13 @@ public class Consts {
     public static final String CONST_ACTION_MERGE = "merge";
     public static final String CONST_ROUTE_KEY = "key";
 
+    // context logs
+    public static final String CONST_PACK_META = "pack_meta";
+    public static final String CONST_PACK_ID = "pack_id";
+    public static final String CONST_TOTAL_LINES = "total_lines";
+    public static final String CONST_BACK_LINES = "back_lines";
+    public static final String CONST_FORWARD_LINES = "forward_lines";
+
     // logtail config related
     public static final String CONST_CONFIG_INPUTTYPE_FILE = "file";
     public static final String CONST_CONFIG_INPUTTYPE_STREAMLOG = "streamlog";
@@ -243,6 +250,7 @@ public class Consts {
     public static final String CONST_TYPE_CURSOR_TIME = "cursor_time";
     public static final String CONST_TYPE_HISTOGRAM = "histogram";
     public static final String CONST_TYPE_LOG = "log";
+    public static final String CONST_TYPE_CONTEXT_LOG = "context_log";
     public static final String CONST_TYPE_TOPIC = "topic";
 
     public static final String CONST_RESULT_LOGS = "logs";
