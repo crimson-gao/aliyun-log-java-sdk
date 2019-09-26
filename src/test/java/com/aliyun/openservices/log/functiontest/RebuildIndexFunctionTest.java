@@ -25,8 +25,8 @@ public class RebuildIndexFunctionTest extends JobIntgTest {
         RebuildIndex.setDisplayName("test rebuild index");
         RebuildIndexConfiguration configuration = new RebuildIndexConfiguration();
         configuration.setLogstore(logstore);
-        configuration.setFromTime(1567132200);
-        configuration.setToTime(1567480000);
+        configuration.setFromTime((int)((System.currentTimeMillis() / (long)1000) - 864000));
+        configuration.setToTime((int)((System.currentTimeMillis() / (long)1000) - 900));
         RebuildIndex.setConfiguration(configuration);
         return RebuildIndex;
     }

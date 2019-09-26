@@ -121,6 +121,7 @@ public class ExportFunctionTest extends JobIntgTest {
         assertEquals(1, (int) listExportResponse.getCount());
         assertEquals(1, (int) listExportResponse.getTotal());
 
+        Thread.sleep(3000); //wait status changed
         //stop
         client.stopExport(new StopExportRequest(testProject, export.getName()));
         Thread.sleep(3000); //wait status changed
