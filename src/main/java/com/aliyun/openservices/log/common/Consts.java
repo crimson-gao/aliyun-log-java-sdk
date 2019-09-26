@@ -144,7 +144,6 @@ public class Consts {
     public static final String CONST_DATE = "Date";
 
     public static final String CONST_USER_AGENT = "User-Agent";
-    public static final String CONST_USER_AGENT_VALUE = "sls-java-sdk-v-0.6.1";
     public static final String CONST_TOPIC = "topic";
     public static final String CONST_FROM = "from";
     public static final String CONST_TO = "to";
