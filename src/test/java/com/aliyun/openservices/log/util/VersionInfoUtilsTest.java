@@ -8,7 +8,7 @@ import org.junit.Test;
  */
 public class VersionInfoUtilsTest {
     @Test
-    public void getVersion() {
+    public void testGetVersion() {
         String userAgent = VersionInfoUtils.getDefaultUserAgent();
         Assert.assertTrue(userAgent.startsWith("aliyun-log-sdk-java-0.6.39"));
     }
