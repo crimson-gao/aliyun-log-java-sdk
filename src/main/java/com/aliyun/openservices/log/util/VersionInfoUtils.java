@@ -3,14 +3,9 @@ package com.aliyun.openservices.log.util;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * @author jiashuangkai
- * @version 1.0
- * @since 2019-09-26 16:21
- */
 public class VersionInfoUtils {
     private static final String VERSION_INFO_FILE = "versioninfo.properties";
-    private static final String USER_AGENT_PREFIX = "aliyun-sdk-java";
+    private static final String USER_AGENT_PREFIX = "aliyun-log-sdk-java";
 
     private static String version = null;
 
@@ -25,7 +20,7 @@ public class VersionInfoUtils {
 
     public static String getDefaultUserAgent() {
         if (defaultUserAgent == null) {
-            defaultUserAgent = getVersion()+"/" + System.getProperty("java.version");
+            defaultUserAgent = USER_AGENT_PREFIX + "-" + getVersion()+"/" + System.getProperty("java.version1");
         }
         return defaultUserAgent;
     }
@@ -41,7 +36,6 @@ public class VersionInfoUtils {
             versionInfoProperties.load(inputStream);
             version = versionInfoProperties.getProperty("version");
         } catch (Exception e) {
-            System.out.println("Unable to load version information for the running SDK: " + e.getMessage());
             version = "unknown-version";
         }
     }

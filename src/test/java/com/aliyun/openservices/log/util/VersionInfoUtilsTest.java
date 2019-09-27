@@ -1,16 +1,15 @@
 package com.aliyun.openservices.log.util;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author jiashuangkai
- * @version 1.0
- * @since 2019-09-26 16:45
+ * Unit test for VersionInfo.
  */
 public class VersionInfoUtilsTest {
     @Test
     public void getVersion() {
         String userAgent = VersionInfoUtils.getDefaultUserAgent();
-        System.out.println(userAgent);
+        Assert.assertTrue(userAgent.startsWith("aliyun-log-sdk-java-0.6.39"));
     }
 }
