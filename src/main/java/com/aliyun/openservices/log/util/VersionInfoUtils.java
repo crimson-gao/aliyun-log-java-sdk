@@ -3,6 +3,9 @@ package com.aliyun.openservices.log.util;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Unit test for VersionInfo.
+ */
 public class VersionInfoUtils {
     private static final String VERSION_INFO_FILE = "versioninfo.properties";
     private static final String USER_AGENT_PREFIX = "aliyun-log-sdk-java";
