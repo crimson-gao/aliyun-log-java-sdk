@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class EtlFunctionTest extends FunctionTest {
+public class FcTriggerFunctionTest extends FunctionTest {
 
     private static String project = "ali-slstest-trigger";
     private static String fcEndpoint = "http://fc.cn-shanghai.aliyuncs.com";
