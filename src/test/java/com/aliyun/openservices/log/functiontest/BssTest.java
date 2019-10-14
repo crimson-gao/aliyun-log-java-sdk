@@ -28,11 +28,9 @@ public class BssTest extends JobIntgTest {
         ingestion.setDisplayName("BSS-test");
         IngestionConfiguration configuration = new IngestionConfiguration();
         configuration.setLogstore("test-logstore2");
-//        configuration.setRoleARN("acs:ram::1654218965343050:role/osstologservicerole");
-
         AliyunBSSSource source = new AliyunBSSSource();
         source.setHistoryMonth(1);
-        source.setRoleARN("acs:ram::1654218965343050:role/AliyunLogImportBSSRole");
+        source.setRoleARN("acs:ram::xx:role/AliyunLogImportBSSRole");
         configuration.setSource(source);
         ingestion.setConfiguration(configuration);
         JobSchedule schedule = new JobSchedule();

@@ -37,14 +37,11 @@ public class IngestionFunctionTest extends JobIntgTest {
         ingestion.setDisplayName("OSS-test");
         IngestionConfiguration configuration = new IngestionConfiguration();
         configuration.setLogstore("test-logstore2");
-//        configuration.setRoleARN("acs:ram::1654218965343050:role/osstologservicerole");
-
         AliyunOSSSource source = new AliyunOSSSource();
         source.setBucket("yunlei-bill");
         source.setEncoding("UTF-8");
         source.setEndpoint("oss-cn-beijing.aliyuncs.com");
-        source.setRoleARN("acs:ram::1654218965343050:role/osstologservicerole");
-
+        source.setRoleARN("acs:ram::xxx:role/osstologservicerole");
         DelimitedTextFormat format = new DelimitedTextFormat();
         format.setEscapeChar("\\");
 //        format.setFieldNames(Arrays.asList("账期,财务单元,账号ID,账号,Owner账号,产品Code,产品,产品明细Code,产品明细,消费类型,消费时间,账单开始时间,账单结束时间,服务时长,订单号/账单号,账单类型,计费方式,实例ID,实例昵称,资源组,实例标签,实例配置,实例规格,公网IP,私网IP,地域,可用区,计费项,单价,单价单位,用量,用量单位,资源包抵扣,原价,优惠金额,优惠券抵扣,应付金额,现金支付,代金券抵扣,储值卡支付金额,欠费金额".split(",")));
@@ -120,7 +117,7 @@ public class IngestionFunctionTest extends JobIntgTest {
         GetIngestionResponse response = client.getIngestion(new GetIngestionRequest("ali-sls-etl-staging", "ingestion-1562994571"));
         Ingestion ingestion = response.getIngestion();
         AliyunOSSSource source = (AliyunOSSSource) ingestion.getConfiguration().getSource();
-        source.setPattern("1654218965343050_InstanceDetail_\\d{8}");
+        source.setPattern("xxx_InstanceDetail_\\d{8}");
         client.updateIngestion(new UpdateIngestionRequest("ali-sls-etl-staging", ingestion));
     }
 
