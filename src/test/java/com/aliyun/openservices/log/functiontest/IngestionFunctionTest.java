@@ -36,7 +36,7 @@ public class IngestionFunctionTest extends JobIntgTest {
         ingestion.setState(JobState.ENABLED);
         ingestion.setDisplayName("OSS-test");
         IngestionConfiguration configuration = new IngestionConfiguration();
-        configuration.setLogstore("test-logstore2");
+        configuration.setLogstore("test-logstore1");
         AliyunOSSSource source = new AliyunOSSSource();
         source.setBucket("yunlei-bill");
         source.setEncoding("UTF-8");
@@ -50,6 +50,7 @@ public class IngestionFunctionTest extends JobIntgTest {
         format.setQuoteChar("\"");
         format.setFieldDelimiter(",");
         source.setFormat(format);
+        source.setRestoreObjectEnabled(true);
         configuration.setSource(source);
         ingestion.setConfiguration(configuration);
         JobSchedule schedule = new JobSchedule();

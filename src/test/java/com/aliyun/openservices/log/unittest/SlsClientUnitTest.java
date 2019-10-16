@@ -2461,67 +2461,6 @@ public class SlsClientUnitTest {
 	}
 	
 	@Test
-	public void TestListTopic() {
-		JSONArray topicArray = new JSONArray();
-		topicArray.add("topic1");
-		topicArray.add("topic2");
-		topicArray.add("topic3");
-		
-		 
-		String jsonStr = topicArray.toString();
-		byte[] body = null;
-		try {
-			body = jsonStr.getBytes("utf-8");
-		} catch (UnsupportedEncodingException e) {
-			assertTrue(e.getMessage(), false);
-		}
-		InputStream content = new ByteArrayInputStream(body);
-		
-		ResponseMessage response = new ResponseMessage();
-		
-		Map<String, String> resHeaders = new HashMap<String, String>();
-		resHeaders.put(Consts.CONST_X_SLS_REQUESTID, "TESTREQID");
-		resHeaders.put(Consts.CONST_X_SLS_COUNT, "3");
-		resHeaders.put(Consts.CONST_X_SLS_NEXT_TOKEN, "nt");
-		
-		response.setHeaders(resHeaders);
-		response.setStatusCode(200);
-		response.setContent(content);
-		response.SetBody(body);
-		try {
-			mock.ChangeResponse(response);
-			ListTopicsResponse res = mock.ListTopics("project", "logStore", "token", 0);
-			assertEquals("nt", res.GetNextToken());
-			assertEquals(topicArray.size(), res.GetCount());
-			
-			for(int i = 0;i < res.GetCount();i++) {
-				assertEquals(topicArray.get(i), res.GetTopics().get(i));
-			}
-			
-		} catch (LogException e) {
-			System.out.println(e.getMessage());
-			assertTrue(e.getMessage(), false);
-		}
-		
-		byte[] errorBody = null;
-		try {
-			errorBody = SlsClientTestData.TEST_STANDARD_ERROR.getBytes("utf-8");
-		} catch (UnsupportedEncodingException e) {
-			assertTrue(e.getMessage(), false);
-		}
-		InputStream errorContent = new ByteArrayInputStream(errorBody);
-		response.setStatusCode(400);
-		response.setContent(errorContent);
-		mock.ChangeResponse(response);
-		try {
-			mock.ListTopics("project", "logStore", "token", 0);
-		} catch (LogException e) {
-			assertEquals("code", e.GetErrorCode());
-			assertEquals("message", e.GetErrorMessage());
-		}
-	}
-	
-	@Test
 	public void TestListLogStores() {
 		JSONArray logstoreArray = new JSONArray();
 		logstoreArray.add("logstore1");

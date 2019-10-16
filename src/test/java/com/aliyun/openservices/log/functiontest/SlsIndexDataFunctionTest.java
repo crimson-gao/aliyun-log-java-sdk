@@ -203,28 +203,6 @@ public class SlsIndexDataFunctionTest {
 		}
 	}
 
-	public void TestListTopics() {
-		try {
-			ArrayList<String> returnTopics = new ArrayList<String>();
-			String token = topic_prefix;
-			ListTopicsResponse res = client.ListTopics(project, logStore,
-					token, 5);
-			returnTopics.addAll(res.GetTopics());
-			assertEquals(res.GetNextToken(), topic_prefix
-					+ 5);
-			token = res.GetNextToken();
-			res = client.ListTopics(project, logStore, token, 5);
-			returnTopics.addAll(res.GetTopics());
-			assertFalse(res.GetNextToken().startsWith(topic_prefix));
-			assertEquals(returnTopics.size(), 10);
-			for (int i = 0; i < returnTopics.size(); i++) {
-				assertEquals(returnTopics.get(i), topic_prefix + i);
-			}
-		} catch (LogException e) {
-			fail(e.GetErrorCode() + ":" + e.GetErrorMessage());
-		}
-	}
-
 	public void TestGetHistogram() {
 		try {
 			GetHistogramsResponse res = client.GetHistograms(project, logStore,
@@ -277,7 +255,6 @@ public class SlsIndexDataFunctionTest {
 
 		}
 		TestGetLogStore();
-		TestListTopics();
 		TestGetHistogram();
 		TestGetLogs();
 		TestUpdateIndex();

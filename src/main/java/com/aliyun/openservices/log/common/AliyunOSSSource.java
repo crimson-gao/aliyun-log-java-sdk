@@ -21,6 +21,8 @@ public class AliyunOSSSource extends DataSource {
 
     private DataFormat format;
 
+    private boolean restoreObjectEnabled;
+
     public AliyunOSSSource() {
         super(DataSourceType.ALIYUN_OSS);
     }
@@ -87,6 +89,14 @@ public class AliyunOSSSource extends DataSource {
 
     public void setFormat(DataFormat format) {
         this.format = format;
+    }
+
+    public boolean isRestoreObjectEnabled() {
+        return restoreObjectEnabled;
+    }
+
+    public void setRestoreObjectEnabled(boolean restoreObjectEnabled) {
+        this.restoreObjectEnabled = restoreObjectEnabled;
     }
 
     private static DataFormat createFormat(String type) {
