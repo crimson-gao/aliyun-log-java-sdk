@@ -886,37 +886,6 @@ public class Client implements LogService {
 		return listLogStoresResponse;
 	}
 
-	public ListTopicsResponse ListTopics(String project, String logStore,
-			String token, int line) throws LogException {
-		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
-		CodingUtils.assertParameterNotNull(token, "token");
-		ListTopicsRequest request = new ListTopicsRequest(project, logStore, token, line);
-		return ListTopics(request);
-	}
-
-	public ListTopicsResponse ListTopics(ListTopicsRequest request)
-			throws LogException {
-		CodingUtils.assertParameterNotNull(request, "request");
-		Map<String, String> urlParameter = request.GetAllParams();
-		String project = request.GetProject();
-		String logStore = request.GetLogStore();
-		Map<String, String> headParameter = GetCommonHeadPara(project);
-		String resourceUri = "/logstores/" + logStore + "/index";
-		ResponseMessage response = SendData(project, HttpMethod.GET,
-				resourceUri, urlParameter, headParameter);
-		Map<String, String> resHeaders = response.getHeaders();
-		String requestId = GetRequestId(resHeaders);
-		JSONArray json_array = this.ParseResponseMessageToArray(response, requestId);
-		ListTopicsResponse listTopicResponse = new ListTopicsResponse(resHeaders);
-		List<String> string_array = new ArrayList<String>();
-		for (int index = 0; index < json_array.size(); index++) {
-			string_array.add(json_array.getString(index));
-		}
-		listTopicResponse.SetTopics(string_array);
-		return listTopicResponse;
-	}
-
 	public GetCursorResponse GetCursor(String project, String logStore,
 			int shardId, long fromTime) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
@@ -1077,31 +1046,6 @@ public class Client implements LogService {
         JSONArray array = ParseResponseMessageToArray(response, requestId);
         ArrayList<Shard> shards = ExtractShards(array, requestId);
         return new ListShardResponse(resHeaders, shards);
-	}
-
-	public DeleteShardResponse DeleteShard(String project, String logStore,
-			int shardId) throws LogException {
-		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "shardId");
-		return DeleteShard(new DeleteShardRequest(project, logStore, shardId));
-	}
-
-	public DeleteShardResponse DeleteShard(DeleteShardRequest request)
-			throws LogException {
-		CodingUtils.assertParameterNotNull(request, "request");
-		String project = request.GetProject();
-		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
-		int shardId = request.GetShardId();
-		Map<String, String> headParameter = GetCommonHeadPara(project);
-        String resourceUri = "/logstores/" + logStore + "/shards/" + shardId;
-		Map<String, String> urlParameter = request.GetAllParams();
-        ResponseMessage response = SendData(project, HttpMethod.DELETE, resourceUri,
-				urlParameter, headParameter);
-		Map<String, String> resHeaders = response.getHeaders();
-        return new DeleteShardResponse(resHeaders);
 	}
 
 	public ListShardResponse ListShard(String project, String logStore)

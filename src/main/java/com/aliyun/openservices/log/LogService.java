@@ -240,42 +240,6 @@ public interface LogService {
 			throws LogException;
 
 	/**
-	 * Get the topics in the logtstore
-	 *
-	 * @param project
-	 *            the project name
-	 * @param logStore
-	 *            where the topic belongs to
-	 * @param token
-	 *            all the returned topics are equal or larger than the given
-	 *            token according to topics' lexicographical order
-	 * @param line
-	 *            the topic number from log service server
-	 * @return the log store's topics response
-	 * @throws LogException
-	 *             if any error happen when get the data from log service server
-	 * @throws NullPointerException
-	 *             if any parameter is null
-	 * @throws IllegalArgumentException
-	 *             if project or logstore is empty
-	 */
-    ListTopicsResponse ListTopics(String project, String logStore,
-                                  String token, int line) throws LogException;
-
-	/**
-	 * Get the topics in the logtstore
-	 *
-	 * @param request
-	 *            the list topics request
-	 * @return the log store's topics response
-	 * @throws LogException
-	 *             if any error happen when get the data from log service server
-	 * @throws NullPointerException
-	 *             if required parameter is null
-	 */
-    ListTopicsResponse ListTopics(ListTopicsRequest request) throws LogException;
-
-	/**
 	 * Send Data to log service server
 	 *
 	 * @param project
@@ -592,45 +556,6 @@ public interface LogService {
 	 *             if project or logstore in request is empty
 	 */
     ListShardResponse MergeShards(MergeShardsRequest request) throws LogException;
-
-	/**
-	 * delete a readonly shard in the logtstore
-	 *
-	 * @param project
-	 *            the project name
-	 * @param logStore
-	 *            where the shard belongs to
-	 * @param shardId
-	 *            the shard id to delete
-	 *
-	 * @return the merges shards and new generated readwrite shard
-	 *
-	 * @throws LogException
-	 *             if any error happen when get the data from log service server
-	 * @throws NullPointerException
-	 *             if any parameter is null
-	 * @throws IllegalArgumentException
-	 *             if project or logstore in request is empty
-	 */
-    DeleteShardResponse DeleteShard(String project, String logStore,
-                                    int shardId) throws LogException;
-
-	/**
-	 * delete a readonly shard in the logtstore
-	 *
-	 * @param request
-	 *            delete shard request
-	 *
-	 * @return the merges shards and new generated readwrite shard
-	 *
-	 * @throws LogException
-	 *             if any error happen when get the data from log service server
-	 * @throws NullPointerException
-	 *             if any parameter is null
-	 * @throws IllegalArgumentException
-	 *             if project or logstore in request is empty
-	 */
-    DeleteShardResponse DeleteShard(DeleteShardRequest request) throws LogException;
 
 	/**
 	 * Batch get log
