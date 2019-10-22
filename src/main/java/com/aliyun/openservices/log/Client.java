@@ -2863,27 +2863,27 @@ public class Client implements LogService {
 		return new ConsumerGroupUpdateCheckPointResponse(resHeaders);
 	}
 
+	@Override
 	public ConsumerGroupHeartBeatResponse HeartBeat(String project,
 			String logStore, String consumerGroup, String consumer,
-			ArrayList<Integer> shards) throws LogException {
+			List<Integer> shards) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
 		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
 		CodingUtils.assertStringNotNullOrEmpty(consumer, "consumer");
-		String resourceUri = "/logstores/" + logStore + "/consumergroups/"
-				+ consumerGroup;
+		String resourceUri = "/logstores/" + logStore + "/consumergroups/" + consumerGroup;
+		if (shards == null) {
+			shards = Collections.emptyList();
+		}
 		ConsumerGroupHeartBeatRequest request = new ConsumerGroupHeartBeatRequest(
-				project, logStore, consumerGroup, consumer,
-				shards == null ? new ArrayList<Integer>() : shards);
+				project, logStore, consumer, shards);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		Map<String, String> urlParameter = request.GetAllParams();
-
 		byte[] body = encodeToUtf8(request.GetRequestBody());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		List<Integer> responseShards = new ArrayList<Integer>();
 		ResponseMessage response = SendData(project, HttpMethod.POST,
 				resourceUri, urlParameter, headParameter, body);
-
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
 		JSONArray array = ParseResponseMessageToArray(response, requestId);

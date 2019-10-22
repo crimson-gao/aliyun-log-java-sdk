@@ -2155,8 +2155,10 @@ public interface LogService {
 	 *             if any required string parameter is empty
 	 */
     ConsumerGroupHeartBeatResponse HeartBeat(String project,
-                                             String logStore, String consumerGroup, String consumer,
-                                             ArrayList<Integer> shards) throws LogException;
+                                             String logStore,
+											 String consumerGroup,
+											 String consumer,
+											 List<Integer> shards) throws LogException;
 
 	/**
 	 * get shard checkpoint in the consumer group
