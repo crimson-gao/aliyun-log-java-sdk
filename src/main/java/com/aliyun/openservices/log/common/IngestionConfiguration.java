@@ -32,6 +32,8 @@ public class IngestionConfiguration extends JobConfiguration {
                 return new AliyunBSSSource();
             case ALIYUN_OSS:
                 return new AliyunOSSSource();
+            case ALIYUN_MAX_COMPUTE:
+                return new AliyunMaxComputeSource();
             default:
                 return null;
         }
