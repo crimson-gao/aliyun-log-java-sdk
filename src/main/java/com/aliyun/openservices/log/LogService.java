@@ -3167,9 +3167,13 @@ public interface LogService {
 	StopIngestionResponse stopIngestion(StopIngestionRequest request) throws LogException;
 	StartIngestionResponse startIngestion(StartIngestionRequest request) throws LogException;
 
-	CreateRebuildResponse createRebuildIndex(CreateRebuildIndexRequest request) throws LogException;
+	CreateRebuildIndexResponse createRebuildIndex(CreateRebuildIndexRequest request) throws LogException;
 	DeleteRebuildIndexResponse deleteRebuildIndex(DeleteRebuildIndexRequest request) throws LogException;
 	GetRebuildIndexResponse getRebuildIndex(GetRebuildIndexRequest request) throws LogException;
 	ListRebuildIndexResponse listRebuildIndex(ListRebuildIndexRequest request) throws LogException;
 	StopRebuildIndexResponse stopRebuildIndex(StopRebuildIndexRequest request) throws LogException;
+
+	CreateAuditJobResponse createAuditJob(CreateAuditJobRequest request) throws LogException;
+	GetAuditJobResponse getAuditJob(GetAuditJobRequest request) throws LogException;
+	DeleteAuditJobResponse deleteAuditJob(DeleteAuditJobRequest request) throws LogException;
 }

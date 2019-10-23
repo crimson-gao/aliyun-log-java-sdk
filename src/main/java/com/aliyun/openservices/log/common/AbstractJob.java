@@ -1,5 +1,6 @@
 package com.aliyun.openservices.log.common;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.aliyun.openservices.log.util.JsonUtils;
 import com.aliyun.openservices.log.util.Utils;
@@ -95,5 +96,13 @@ abstract class AbstractJob {
         recyclable = JsonUtils.readBool(value, "recyclable", false);
         createTime = Utils.timestampToDate(value.getLong("createTime"));
         lastModifiedTime = Utils.timestampToDate(value.getLong("lastModifiedTime"));
+    }
+
+    public void serialize(JSONObject value) {
+        value.put("name", name);
+        value.put("type", type.toString());
+        value.put("displayName", displayName);
+        value.put("description", description);
+        value.put("recyclable", recyclable);
     }
 }

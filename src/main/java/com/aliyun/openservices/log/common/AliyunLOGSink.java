@@ -12,6 +12,9 @@ public class AliyunLOGSink extends DataSink {
     private String name;
 
     @JSONField
+    private String endpoint;
+
+    @JSONField
     private String project;
 
     @JSONField
@@ -25,13 +28,25 @@ public class AliyunLOGSink extends DataSink {
 
     public AliyunLOGSink() {
         super(DataSinkType.ALIYUN_LOG);
+        this.endpoint = "";
     }
 
     public AliyunLOGSink(String name, String project, String logstore) {
         super(DataSinkType.ALIYUN_LOG);
         this.name = name;
+        this.endpoint = "";
         this.project = project;
         this.logstore = logstore;
+    }
+
+    public AliyunLOGSink(DataSinkType type, String name, String endpoint, String project, String logstore, String accessKeyId, String accessKeySecret) {
+        super(type);
+        this.name = name;
+        this.endpoint = endpoint;
+        this.project = project;
+        this.logstore = logstore;
+        this.accessKeyId = accessKeyId;
+        this.accessKeySecret = accessKeySecret;
     }
 
     public String getName() {
@@ -74,8 +89,21 @@ public class AliyunLOGSink extends DataSink {
         this.accessKeySecret = accessKeySecret;
     }
 
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
     public void deserialize(JSONObject value) {
         name = value.getString("name");
+        if (value.has("endpoint")) {
+            endpoint = value.getString("endpoint");
+        } else {
+            endpoint = "";
+        }
         project = value.getString("project");
         logstore = value.getString("logstore");
         accessKeyId = value.getString("accessKeyId");
@@ -84,23 +112,35 @@ public class AliyunLOGSink extends DataSink {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         AliyunLOGSink sink = (AliyunLOGSink) o;
-
-        if (getName() != null ? !getName().equals(sink.getName()) : sink.getName() != null) return false;
-        if (getProject() != null ? !getProject().equals(sink.getProject()) : sink.getProject() != null) return false;
-        if (getLogstore() != null ? !getLogstore().equals(sink.getLogstore()) : sink.getLogstore() != null)
+        if (getName() != null ? !getName().equals(sink.getName()) : sink.getName() != null) {
             return false;
-        if (getAccessKeyId() != null ? !getAccessKeyId().equals(sink.getAccessKeyId()) : sink.getAccessKeyId() != null)
+        }
+        if (getEndpoint() != null ? !getEndpoint().equals(sink.getEndpoint()) : sink.getEndpoint() != null) {
             return false;
+        }
+        if (getProject() != null ? !getProject().equals(sink.getProject()) : sink.getProject() != null) {
+            return false;
+        }
+        if (getLogstore() != null ? !getLogstore().equals(sink.getLogstore()) : sink.getLogstore() != null) {
+            return false;
+        }
+        if (getAccessKeyId() != null ? !getAccessKeyId().equals(sink.getAccessKeyId()) : sink.getAccessKeyId() != null) {
+            return false;
+        }
         return getAccessKeySecret() != null ? getAccessKeySecret().equals(sink.getAccessKeySecret()) : sink.getAccessKeySecret() == null;
     }
 
     @Override
     public int hashCode() {
         int result = getName() != null ? getName().hashCode() : 0;
+        result = 31 * result + (getEndpoint() != null ? getEndpoint().hashCode() : 0);
         result = 31 * result + (getProject() != null ? getProject().hashCode() : 0);
         result = 31 * result + (getLogstore() != null ? getLogstore().hashCode() : 0);
         result = 31 * result + (getAccessKeyId() != null ? getAccessKeyId().hashCode() : 0);

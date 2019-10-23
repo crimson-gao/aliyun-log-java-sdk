@@ -3487,9 +3487,9 @@ public class Client implements LogService {
 	}
 
 	@Override
-	public CreateRebuildResponse createRebuildIndex(CreateRebuildIndexRequest request) throws LogException {
+	public CreateRebuildIndexResponse createRebuildIndex(CreateRebuildIndexRequest request) throws LogException {
 		ResponseMessage responseMessage = send(request);
-		return new CreateRebuildResponse(responseMessage.getHeaders());
+		return new CreateRebuildIndexResponse(responseMessage.getHeaders());
 	}
 
 	@Override
@@ -3520,6 +3520,27 @@ public class Client implements LogService {
 	public StopRebuildIndexResponse stopRebuildIndex(StopRebuildIndexRequest request) throws LogException {
 		ResponseMessage responseMessage = send(request);
 		return new StopRebuildIndexResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public CreateAuditJobResponse createAuditJob(CreateAuditJobRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request, request.getBody().toString());
+		return new CreateAuditJobResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public GetAuditJobResponse getAuditJob(GetAuditJobRequest request) throws LogException {
+		ResponseMessage message = send(request);
+		JSONObject responseBody = parseResponseBody(message, message.getRequestId());
+		GetAuditJobResponse response = new GetAuditJobResponse(message.getHeaders());
+		response.deserialize(responseBody, message.getRequestId());
+		return response;
+	}
+
+	@Override
+	public DeleteAuditJobResponse deleteAuditJob(DeleteAuditJobRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new DeleteAuditJobResponse(responseMessage.getHeaders());
 	}
 
 	@Override
@@ -4195,6 +4216,14 @@ public class Client implements LogService {
         final byte[] requestBody = body == null ? new byte[0] : encodeToUtf8(JsonUtils.serialize(body));
         return SendData(project, request.getMethod(), request.getUri(), request.GetAllParams(), headers, requestBody);
     }
+
+	private ResponseMessage send(BasicRequest request, String body) throws LogException {
+		Args.notNull(request, "request");
+		final String project = request.GetProject();
+		final Map<String, String> headers = GetCommonHeadPara(project);
+		final byte[] requestBody = encodeToUtf8(body);
+		return SendData(project, request.getMethod(), request.getUri(), request.GetAllParams(), headers, requestBody);
+	}
 
 	public String getRealServerIP() {
 		return realServerIP;
