@@ -239,6 +239,22 @@ public interface LogService {
     ListLogStoresResponse ListLogStores(ListLogStoresRequest request)
 			throws LogException;
 
+	ListTopicsResponse ListTopics(String project, String logStore,
+								  String token, int line) throws LogException;
+
+	/**
+	 * Get the topics in the logtstore
+	 *
+	 * @param request
+	 *            the list topics request
+	 * @return the log store's topics response
+	 * @throws LogException
+	 *             if any error happen when get the data from log service server
+	 * @throws NullPointerException
+	 *             if required parameter is null
+	 */
+	ListTopicsResponse ListTopics(ListTopicsRequest request) throws LogException;
+
 	/**
 	 * Send Data to log service server
 	 *
