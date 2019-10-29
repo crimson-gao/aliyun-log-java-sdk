@@ -96,12 +96,4 @@ abstract class AbstractJob {
         createTime = Utils.timestampToDate(value.getLong("createTime"));
         lastModifiedTime = Utils.timestampToDate(value.getLong("lastModifiedTime"));
     }
-
-    public void serialize(JSONObject value) {
-        value.put("name", name);
-        value.put("type", type.toString());
-        value.put("displayName", displayName);
-        value.put("description", description);
-        value.put("recyclable", recyclable);
-    }
 }

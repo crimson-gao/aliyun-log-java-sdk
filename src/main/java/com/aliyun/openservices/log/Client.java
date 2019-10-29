@@ -3560,6 +3560,12 @@ public class Client implements LogService {
 	}
 
 	@Override
+	public UpdateAuditJobResponse updateAuditJob(UpdateAuditJobRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request, request.getBody().toString());
+		return new UpdateAuditJobResponse(responseMessage.getHeaders());
+	}
+
+	@Override
 	public GetAuditJobResponse getAuditJob(GetAuditJobRequest request) throws LogException {
 		ResponseMessage message = send(request);
 		JSONObject responseBody = parseResponseBody(message, message.getRequestId());
@@ -3572,6 +3578,27 @@ public class Client implements LogService {
 	public DeleteAuditJobResponse deleteAuditJob(DeleteAuditJobRequest request) throws LogException {
 		ResponseMessage responseMessage = send(request);
 		return new DeleteAuditJobResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public ListAuditJobResponse listAuditJob(ListAuditJobRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		ListAuditJobResponse listResp = new ListAuditJobResponse(resp.getHeaders());
+		listResp.deserialize(respBody, resp.getRequestId());
+		return listResp;
+	}
+
+	@Override
+	public StopAuditJobResponse stopAuditJob(StopAuditJobRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StopAuditJobResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public StartAuditJobResponse startAuditJob(StartAuditJobRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StartAuditJobResponse(responseMessage.getHeaders());
 	}
 
 	@Override

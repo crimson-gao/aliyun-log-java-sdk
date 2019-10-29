@@ -3,8 +3,8 @@ package com.aliyun.openservices.log.functiontest;
 import com.aliyun.openservices.log.common.AuditJob;
 import com.aliyun.openservices.log.common.AuditJobConfiguration;
 import com.aliyun.openservices.log.request.*;
-import com.aliyun.openservices.log.response.DeleteAuditJobResponse;
-import com.aliyun.openservices.log.response.GetAuditJobResponse;
+import com.aliyun.openservices.log.response.*;
+import net.sf.json.JSONObject;
 import org.junit.Test;
 
 public class AuditJobFunctionTest extends FunctionTest {
@@ -18,18 +18,36 @@ public class AuditJobFunctionTest extends FunctionTest {
         auditJob.setName(jobName);
         auditJob.setDisplayName("test audit job");
         auditJob.setDescription("...");
-        auditJob.setStatus("xxx");
-        AuditJobConfiguration configuration = new AuditJobConfiguration();
-        configuration.setDetail("{}");
+        AuditJobConfiguration configuration = new AuditJobConfiguration("{\"test\":\"abc\"}");
         auditJob.setConfiguration(configuration);
         client.createAuditJob(new CreateAuditJobRequest(project, auditJob));
     }
 
     @Test
-    public void testGet() throws Exception {
-        GetAuditJobResponse response = client.getAuditJob(new GetAuditJobRequest(project, jobName));
-        AuditJob ri = response.getAuditJob();
-        System.out.println("audit_job: " + ri.getName() + "\nstatus: " +  ri.getStatus());
+    public void testRead() throws Exception {
+        ListAuditJobResponse listResp = client.listAuditJob(new ListAuditJobRequest(project));
+        for (AuditJob aj : listResp.getResults()) {
+            System.out.println("list audit_job, name: " + aj.getName() + "status: " +  aj.getStatus());
+        }
+
+        GetAuditJobResponse getResp = client.getAuditJob(new GetAuditJobRequest(project, jobName));
+        AuditJob aj = getResp.getAuditJob();
+        System.out.println("get audit_job, name: " + aj.getName() + ", status: " +  aj.getStatus());
+
+        ((AuditJobConfiguration)aj.getConfiguration()).setDetail("{\"code\":\"200\",\"data\":{\"requestData\":\"build_attributes\"}}");
+        UpdateAuditJobResponse upResp = client.updateAuditJob(new UpdateAuditJobRequest(project, aj));
+    }
+
+    @Test
+    public void testStop() throws Exception {
+        StopAuditJobResponse response = client.stopAuditJob(new StopAuditJobRequest(project, jobName));
+        System.out.println(response.GetAllHeaders());
+    }
+
+    @Test
+    public void testStart() throws Exception {
+        StartAuditJobResponse response = client.startAuditJob(new StartAuditJobRequest(project, jobName));
+        System.out.println(response.GetAllHeaders());
     }
 
     @Test

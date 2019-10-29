@@ -6,6 +6,13 @@ public class AuditJobConfiguration extends JobConfiguration {
 
     private String detail;
 
+    public AuditJobConfiguration() {
+    }
+
+    public AuditJobConfiguration(String detail) {
+        this.detail = detail;
+    }
+
     public String getDetail() {
         return detail;
     }

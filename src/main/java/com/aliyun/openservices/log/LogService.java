@@ -3190,6 +3190,10 @@ public interface LogService {
 	StopRebuildIndexResponse stopRebuildIndex(StopRebuildIndexRequest request) throws LogException;
 
 	CreateAuditJobResponse createAuditJob(CreateAuditJobRequest request) throws LogException;
+	UpdateAuditJobResponse updateAuditJob(UpdateAuditJobRequest request) throws LogException;
 	GetAuditJobResponse getAuditJob(GetAuditJobRequest request) throws LogException;
 	DeleteAuditJobResponse deleteAuditJob(DeleteAuditJobRequest request) throws LogException;
+	ListAuditJobResponse listAuditJob(ListAuditJobRequest request) throws LogException;
+	StartAuditJobResponse startAuditJob(StartAuditJobRequest request) throws LogException;
+	StopAuditJobResponse stopAuditJob(StopAuditJobRequest request) throws LogException;
 }
