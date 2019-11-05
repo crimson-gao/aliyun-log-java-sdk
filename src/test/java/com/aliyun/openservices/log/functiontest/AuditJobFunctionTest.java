@@ -5,6 +5,7 @@ import com.aliyun.openservices.log.common.AuditJobConfiguration;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.*;
 import net.sf.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AuditJobFunctionTest extends FunctionTest {
@@ -37,13 +38,13 @@ public class AuditJobFunctionTest extends FunctionTest {
         ((AuditJobConfiguration)aj.getConfiguration()).setDetail("{\"code\":\"200\",\"data\":{\"requestData\":\"build_attributes\"}}");
         UpdateAuditJobResponse upResp = client.updateAuditJob(new UpdateAuditJobRequest(project, aj));
     }
-
+    @Ignore
     @Test
     public void testStop() throws Exception {
         StopAuditJobResponse response = client.stopAuditJob(new StopAuditJobRequest(project, jobName));
         System.out.println(response.GetAllHeaders());
     }
-
+    @Ignore
     @Test
     public void testStart() throws Exception {
         StartAuditJobResponse response = client.startAuditJob(new StartAuditJobRequest(project, jobName));

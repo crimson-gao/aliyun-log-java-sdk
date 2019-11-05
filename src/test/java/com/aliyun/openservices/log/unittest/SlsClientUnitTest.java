@@ -21,6 +21,7 @@ import java.util.zip.Deflater;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.aliyun.openservices.log.http.client.HttpMethod;
@@ -88,6 +89,7 @@ import com.aliyun.openservices.log.response.Response;
  * @author bozhi.ch
  * 
  */
+@Ignore
 public class SlsClientUnitTest {
 
 	private SlsClientMock logClientMock = new SlsClientMock();

@@ -8,6 +8,7 @@ import com.aliyun.openservices.log.response.DeleteRebuildIndexResponse;
 import com.aliyun.openservices.log.response.GetRebuildIndexResponse;
 import com.aliyun.openservices.log.response.ListRebuildIndexResponse;
 import com.aliyun.openservices.log.response.StopRebuildIndexResponse;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -38,14 +39,14 @@ public class RebuildIndexFunctionTest extends JobIntgTest {
         Thread.sleep(3000);
         testGet();
     }
-
+    @Ignore
     @Test
     public void testGet() throws Exception {
         GetRebuildIndexResponse response = client.getRebuildIndex(new GetRebuildIndexRequest(project, jobName));
         RebuildIndex ri = response.getRebuildIndex();
         System.out.println("job: " + ri.getName() + "\nstatus: " +  ri.getStatus() + "\nexecutionDetails: " + ri.getExecutionDetails());
     }
-
+    @Ignore
     @Test
     public void testStop() throws Exception {
         StopRebuildIndexResponse response = client.stopRebuildIndex(new StopRebuildIndexRequest(project, jobName));
@@ -68,7 +69,7 @@ public class RebuildIndexFunctionTest extends JobIntgTest {
             System.out.println(rebuildIndex.getName());
         }
     }
-
+    @Ignore
     @Test
     public void testInvalidOperation() throws Exception {
         client.enableJob(new EnableJobRequest(project, jobName));

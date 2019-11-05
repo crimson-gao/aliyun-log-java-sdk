@@ -12,6 +12,7 @@ import com.aliyun.openservices.log.request.UpdateLoggingRequest;
 import com.aliyun.openservices.log.response.GetLoggingResponse;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-
+@Ignore
 public class LoggingFunctionTest extends FunctionTest {
 
     private static final String[] TYPES_ALLOWED = new String[]{

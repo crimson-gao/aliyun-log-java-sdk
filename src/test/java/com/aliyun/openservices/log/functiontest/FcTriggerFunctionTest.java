@@ -18,12 +18,13 @@ import com.aliyun.openservices.log.response.ListEtlJobResponse;
 import com.aliyun.openservices.log.response.UpdateEtlJobResponse;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
+@Ignore
 public class FcTriggerFunctionTest extends FunctionTest {
 
     private static String project = "ali-slstest-trigger";

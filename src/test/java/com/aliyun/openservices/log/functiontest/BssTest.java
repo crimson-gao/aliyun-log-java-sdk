@@ -4,6 +4,7 @@ import com.aliyun.openservices.log.common.*;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.GetIngestionResponse;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -15,6 +16,7 @@ import static org.junit.Assert.fail;
  * @version 1.0
  * @since 2019-10-11 17:41
  */
+@Ignore
 public class BssTest extends JobIntgTest {
     private static String getIngestionName() {
         return "ingestion-" + getNowTimestamp();
