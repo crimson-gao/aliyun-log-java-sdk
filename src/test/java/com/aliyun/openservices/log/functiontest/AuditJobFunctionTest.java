@@ -24,6 +24,7 @@ public class AuditJobFunctionTest extends FunctionTest {
         client.createAuditJob(new CreateAuditJobRequest(project, auditJob));
     }
 
+    @Ignore
     @Test
     public void testRead() throws Exception {
         ListAuditJobResponse listResp = client.listAuditJob(new ListAuditJobRequest(project));
