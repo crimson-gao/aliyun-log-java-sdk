@@ -27,6 +27,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
+@Ignore
 public class SlsScmFunctionTest extends FunctionTest {
 	static private String project = "project-test-scm";
 	static private String logStore = "test-java-sdk";

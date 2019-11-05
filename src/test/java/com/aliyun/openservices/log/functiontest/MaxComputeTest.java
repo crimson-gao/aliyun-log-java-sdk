@@ -4,11 +4,12 @@ import com.aliyun.openservices.log.common.*;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.GetIngestionResponse;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
+@Ignore
 public class MaxComputeTest extends JobIntgTest{
 	private static String getIngestionName() {
 		return "ingestion-" + getNowTimestamp();

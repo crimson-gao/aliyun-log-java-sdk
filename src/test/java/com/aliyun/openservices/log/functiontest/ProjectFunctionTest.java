@@ -5,11 +5,12 @@ import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.UpdateProjectRequest;
 import com.aliyun.openservices.log.response.GetProjectResponse;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-
+@Ignore
 public class ProjectFunctionTest extends FunctionTest {
 
     // For testing environment, please make sure the endpoint

@@ -19,6 +19,7 @@ import com.aliyun.openservices.log.response.PullLogsResponse;
 import com.aliyun.openservices.log.response.PutLogsResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+@Ignore
 public class SlsPerformanceTest extends FunctionTest {
 
     private String project = "ali-cn-yunlei-sls-admin";
