@@ -145,8 +145,18 @@ public class Job implements Serializable {
                 return new AlertConfiguration();
             case REPORT:
                 return new ReportConfiguration();
+            case ETL:
+                return new ETLConfiguration();
+            case EXPORT:
+                return new ExportConfiguration();
+            case AUDIT_JOB:
+                return new AuditJobConfiguration();
+            case INGESTION:
+                return new IngestionConfiguration();
+            case REBUILD_INDEX:
+                return new RebuildIndexConfiguration();
             default:
-                throw new IllegalArgumentException("Unimplemented job type: " + type);
+                return null;
         }
     }
 
@@ -154,14 +164,22 @@ public class Job implements Serializable {
         name = value.getString("name");
         displayName = JsonUtils.readOptionalString(value, "displayName");
         type = JobType.fromString(value.getString("type"));
-        state = JobState.fromString(value.getString("state"));
+        if (value.has("state")) {
+            state = JobState.fromString(value.getString("state"));
+        }
         description = JsonUtils.readOptionalString(value, "description");
-        createTime = Utils.timestampToDate(value.getLong("createTime"));
-        lastModifiedTime = Utils.timestampToDate(value.getLong("lastModifiedTime"));
+        if (value.has("createTime")) {
+            createTime = Utils.timestampToDate(value.getLong("createTime"));
+        }
+        if (value.has("lastModifiedTime")) {
+            lastModifiedTime = Utils.timestampToDate(value.getLong("lastModifiedTime"));
+        }
         schedule = new JobSchedule();
         schedule.deserialize(value.getJSONObject("schedule"));
         configuration = createConfiguration(type);
-        configuration.deserialize(value.getJSONObject("configuration"));
+        if (configuration != null) {
+            configuration.deserialize(value.getJSONObject("configuration"));
+        }
     }
 
     @Override

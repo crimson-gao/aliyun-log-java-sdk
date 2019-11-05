@@ -121,4 +121,30 @@ public class JobTest {
         assertEquals("60s", schedule1.getInterval());
         assertEquals(JobScheduleType.FIXED_RATE, schedule1.getType());
     }
+
+    @Test
+    public void testDeserializeIngestion() {
+        String body = "{\n" +
+                "\"configuration\": {\n" +
+                "   \"logstore\": \"aliyun_bill\",\n" +
+                "   \"source\": {\n" +
+                "      \"type\": \"AliyunBSS\",\n" +
+                "       \"roleARN\": \"acs:ram::1654218965343050:role/aliyunlogimportbssrole\",\n" +
+                "       \"historyMonth\": 6\n" +
+                "   }\n" +
+                "},\n" +
+                "\"displayName\": \"ingestion\",\n" +
+                "\"name\": \"ingestion-muzi-test\",\n" +
+                "\"schedule\": {\n" +
+                "   \"delay\": 0,\n" +
+                "   \"type\": \"FixedRate\",\n" +
+                "   \"interval\": \"1h\"\n" +
+                "},\n" +
+                "\"state\": \"Enabled\",\n" +
+                "\"type\": \"Ingestion\"\n" +
+                "}";
+        Job job = new Job();
+        job.deserialize(JSONObject.fromObject(body));
+        assertEquals(JobType.INGESTION, job.getType());
+    }
 }
