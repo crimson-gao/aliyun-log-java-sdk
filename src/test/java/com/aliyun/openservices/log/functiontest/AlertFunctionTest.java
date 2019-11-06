@@ -241,6 +241,7 @@ public class AlertFunctionTest extends JobIntgTest {
         client.deleteAlert(new DeleteAlertRequest(TEST_PROJECT, alert.getName()));
     }
 
+    @Ignore
     @Test
     public void testCreateEmail() throws Exception {
         createDashboard();
