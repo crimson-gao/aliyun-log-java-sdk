@@ -76,7 +76,7 @@ public class AlertFunctionTest extends JobIntgTest {
         configuration.setThrottling("0s");
         configuration.setNotifyThreshold(100);
         alert.setConfiguration(configuration);
-        alert.setSchedule(createSchedule());
+        alert.setSchedule(createSchedule(true));
         return alert;
     }
 

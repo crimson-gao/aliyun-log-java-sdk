@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 abstract class JobIntgTest extends FunctionTest {
 
@@ -37,9 +38,20 @@ abstract class JobIntgTest extends FunctionTest {
         }
     }
 
-    protected JobSchedule createSchedule() {
+    private static JobScheduleType randomScheduleType(boolean scheduled) {
+        if (scheduled) {
+            return randomFrom(Arrays.asList(JobScheduleType.DAILY,
+                    JobScheduleType.HOURLY,
+                    JobScheduleType.WEEKLY,
+                    JobScheduleType.FIXED_RATE,
+                    JobScheduleType.CRON));
+        }
+        return randomFrom(JobScheduleType.values());
+    }
+
+    protected JobSchedule createSchedule(boolean scheduled) {
         JobSchedule schedule = new JobSchedule();
-        schedule.setType(randomFrom(JobScheduleType.values()));
+        schedule.setType(randomScheduleType(scheduled));
         switch (schedule.getType()) {
             case DAILY:
                 schedule.setHour(0);
