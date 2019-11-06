@@ -55,11 +55,7 @@ import com.aliyun.openservices.log.http.utils.DateUtil;
 import com.aliyun.openservices.log.internal.ErrorCodes;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.*;
-import com.aliyun.openservices.log.util.Args;
-import com.aliyun.openservices.log.util.DigestUtils;
-import com.aliyun.openservices.log.util.JsonUtils;
-import com.aliyun.openservices.log.util.NetworkUtils;
-import com.aliyun.openservices.log.util.Utils;
+import com.aliyun.openservices.log.util.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
@@ -89,6 +85,7 @@ import java.util.zip.Deflater;
  * server to put/get data.
  */
 public class Client implements LogService {
+	private static final String DEFAULT_USER_AGENT = VersionInfoUtils.getDefaultUserAgent();
 	private String httpType;
 	private String hostName;
 	private String accessId;
@@ -98,7 +95,7 @@ public class Client implements LogService {
 	private String securityToken;
 	private String realIpForConsole;
 	private Boolean useSSLForConsole;
-	private String userAgent = Consts.CONST_USER_AGENT_VALUE;
+	private String userAgent = DEFAULT_USER_AGENT;
 	private boolean mUUIDTag = false;
 	private Boolean mUseDirectMode = false;
 	/**
