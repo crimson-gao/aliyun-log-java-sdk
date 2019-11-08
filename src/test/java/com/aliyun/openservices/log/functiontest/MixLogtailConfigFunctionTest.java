@@ -2,7 +2,7 @@ package com.aliyun.openservices.log.functiontest;
 
 import com.aliyun.openservices.log.common.LocalFileConfigInputDetail;
 import com.aliyun.openservices.log.exception.LogException;
-import net.sf.json.JSONException;
+import com.alibaba.fastjson.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 import com.aliyun.openservices.log.common.Config;

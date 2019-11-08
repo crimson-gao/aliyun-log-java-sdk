@@ -1,10 +1,10 @@
 package com.aliyun.openservices.log.common;
 
 
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Set;
 
 public class AliyunADBSink extends DataSink {
 
@@ -159,13 +159,12 @@ public class AliyunADBSink extends DataSink {
         database = value.getString("database");
         tableGroupName = value.getString("tableGroupName");
         table = value.getString("table");
-        batchSize = value.getInt("batchSize");
+        batchSize = value.getIntValue("batchSize");
         strictMode = value.getBoolean("strictMode");
         JSONObject cm = value.getJSONObject("columnMapping");
-        Iterator iterator = cm.keys();
+        Set<String> keySet = cm.keySet();
         columnMapping = new HashMap<String, String>();
-        while (iterator.hasNext()) {
-            String key = (String) iterator.next();
+        for (String key : keySet) {
             columnMapping.put(key, cm.getString(key));
         }
     }

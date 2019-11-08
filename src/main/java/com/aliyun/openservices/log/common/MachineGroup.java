@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 import com.aliyun.openservices.log.exception.LogException;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * The config of a machine group
@@ -226,11 +226,11 @@ public class MachineGroup implements Serializable {
 			}
 			
 			if (dict.containsKey("createTime")) {
-				SetCreateTime(dict.getInt("createTime"));
+				SetCreateTime(dict.getIntValue("createTime"));
 			}
 			
 			if (dict.containsKey("lastModifyTime")) {
-				SetLastModifyTime(dict.getInt("lastModifyTime"));
+				SetLastModifyTime(dict.getIntValue("lastModifyTime"));
 			}
 			
 		} catch (JSONException e) {
@@ -240,7 +240,7 @@ public class MachineGroup implements Serializable {
 	
 	public void FromJsonString(String machineGroupString) throws LogException {
 		try {
-			JSONObject dict = JSONObject.fromObject(machineGroupString);
+			JSONObject dict = JSONObject.parseObject(machineGroupString);
 			FromJsonObject(dict);
 		} catch (JSONException e) {
 			throw new LogException("FailToGenerateMachineGroup", e.getMessage(), e, "");

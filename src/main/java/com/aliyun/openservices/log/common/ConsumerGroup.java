@@ -2,7 +2,7 @@ package com.aliyun.openservices.log.common;
 
 import java.io.Serializable;
 
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 public class ConsumerGroup implements Serializable {
 	private String consumerGroupName;

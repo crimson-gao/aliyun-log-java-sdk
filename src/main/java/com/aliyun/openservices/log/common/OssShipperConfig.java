@@ -1,7 +1,7 @@
 package com.aliyun.openservices.log.common;
 
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 
 import com.aliyun.openservices.log.exception.LogException;
 
@@ -76,8 +76,8 @@ public class OssShipperConfig implements ShipperConfig {
 			this.mOssBucket = obj.getString("ossBucket");
 			this.mOssPrefix = obj.getString("ossPrefix");
 			this.mRoleArn = obj.getString("roleArn");
-			this.mBufferInterval = obj.getInt("bufferInterval");
-			this.mBufferMb = obj.getInt("bufferSize");
+			this.mBufferInterval = obj.getIntValue("bufferInterval");
+			this.mBufferMb = obj.getIntValue("bufferSize");
 			this.mCompressType = obj.getString("compressType");
 			this.mPathFormat = obj.getString("pathFormat");
 			JSONObject storage = obj.getJSONObject("storage");

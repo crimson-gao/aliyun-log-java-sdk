@@ -1,7 +1,7 @@
 package com.aliyun.openservices.log.common;
 
 import com.aliyun.openservices.log.util.JsonUtils;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 public class AliyunOSSSource extends DataSource {
 
@@ -126,7 +126,7 @@ public class AliyunOSSSource extends DataSource {
         compressionCodec = JsonUtils.readOptionalString(jsonObject, "compressionCodec");
         encoding = JsonUtils.readOptionalString(jsonObject, "encoding");
         JSONObject formatObject = jsonObject.getJSONObject("format");
-        if (formatObject != null && !formatObject.isNullObject()) {
+        if (formatObject != null && !formatObject.isEmpty()) {
             String type = JsonUtils.readOptionalString(formatObject, "type");
             if (type != null) {
                 format = createFormat(type);

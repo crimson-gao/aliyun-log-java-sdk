@@ -1952,13 +1952,13 @@ public class SlsClientUnitTest {
 		
 		JSONObject aclDict1 = new JSONObject();
 		aclDict1.put("principle", acl2.GetPrinciple());
-		aclDict1.put("privilege", JSONArray.fromObject(acl2.GetPrivilege().ToJsonString()));
+		aclDict1.put("privilege", JSONArray.parseArray(acl2.GetPrivilege().ToJsonString()));
 		aclDict1.put("createTime", acl2.GetCreateTime());
 		aclDict1.put("lastModifyTime", acl2.GetLastModifyTime());
 		
 		JSONObject aclDict2 = new JSONObject();
 		aclDict2.put("principle", acl1.GetPrinciple());
-		aclDict2.put("privilege", JSONArray.fromObject( acl1.GetPrivilege().ToJsonString()));
+		aclDict2.put("privilege", JSONArray.parseArray( acl1.GetPrivilege().ToJsonString()));
 		aclDict2.put("createTime", acl1.GetCreateTime());
 		aclDict2.put("lastModifyTime", acl1.GetLastModifyTime());
 		
@@ -3040,12 +3040,12 @@ public class SlsClientUnitTest {
 		group1.SetLastModifyTime(543212);
 		
 		String groupJsonStr = group1.ToJsonString();
-		JSONObject groupJsonObj = JSONObject.fromObject(groupJsonStr);
+		JSONObject groupJsonObj = JSONObject.parseObject(groupJsonStr);
 		
 		assertEquals("groupName", groupJsonObj.getString("groupName"));
 		assertEquals("type1", groupJsonObj.getString("groupType"));
-		assertEquals(543211, groupJsonObj.getInt("createTime"));
-		assertEquals(543212, groupJsonObj.getInt("lastModifyTime"));
+		assertEquals(543211, groupJsonObj.getIntValue("createTime"));
+		assertEquals(543212, groupJsonObj.getIntValue("lastModifyTime"));
 		
 		assertEquals("externalName2", groupJsonObj.getJSONObject("groupAttribute").getString("externalName"));
 		assertEquals("groupTopic2", groupJsonObj.getJSONObject("groupAttribute").getString("groupTopic"));
@@ -3063,10 +3063,10 @@ public class SlsClientUnitTest {
 		Config config1 = new Config("configName");
 		config1.SetCreateTime(32321);
 		config1.SetLastModifyTime(32322);
-		JSONObject configObj = JSONObject.fromObject(config1.ToJsonString());
+		JSONObject configObj = JSONObject.parseObject(config1.ToJsonString());
 		assertEquals("configName", configObj.getString("configName"));
-		assertEquals(32321, configObj.getInt("createTime"));
-		assertEquals(32322, configObj.getInt("lastModifyTime"));
+		assertEquals(32321, configObj.getIntValue("createTime"));
+		assertEquals(32322, configObj.getIntValue("lastModifyTime"));
 		
 		try {
 			config1.FromJsonString("af");
@@ -3105,9 +3105,9 @@ public class SlsClientUnitTest {
 		acl1.SetPrivilege(privileges);
 		
 		try {
-			JSONObject aclDict = JSONObject.fromObject(acl1.ToJsonString());
-			assertEquals(3321, aclDict.getInt("createTime"));
-			assertEquals(3322, aclDict.getInt("lastModifyTime"));
+			JSONObject aclDict = JSONObject.parseObject(acl1.ToJsonString());
+			assertEquals(3321, aclDict.getIntValue("createTime"));
+			assertEquals(3322, aclDict.getIntValue("lastModifyTime"));
 			assertEquals("principle", aclDict.getString("principle"));
 			
 			JSONArray privilegesArray = aclDict.getJSONArray("privilege");

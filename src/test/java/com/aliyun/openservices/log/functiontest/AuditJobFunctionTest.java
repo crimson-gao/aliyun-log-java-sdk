@@ -4,7 +4,7 @@ import com.aliyun.openservices.log.common.AuditJob;
 import com.aliyun.openservices.log.common.AuditJobConfiguration;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.*;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
 

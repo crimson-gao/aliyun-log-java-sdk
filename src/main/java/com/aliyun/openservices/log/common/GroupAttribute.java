@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import com.aliyun.openservices.log.exception.LogException;
 
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 
 public class GroupAttribute implements Serializable {
 
@@ -69,7 +69,7 @@ public class GroupAttribute implements Serializable {
 	
 	public void FromJsonString(String groupAttributeString) throws LogException {
 		try {
-			JSONObject groupAttribute = JSONObject.fromObject(groupAttributeString);
+			JSONObject groupAttribute = JSONObject.parseObject(groupAttributeString);
 			FromJsonObject(groupAttribute);
 		} catch (JSONException e) {
 			throw new LogException("FailToGenerateGroupAttribute", e.getMessage(), e, "");

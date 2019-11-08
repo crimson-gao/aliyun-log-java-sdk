@@ -3,7 +3,7 @@ package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.aliyun.openservices.log.util.JsonUtils;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -230,11 +230,11 @@ public class JobSchedule implements Serializable {
                 interval = value.getString("interval");
                 break;
             case DAILY:
-                hour = value.getInt("hour");
+                hour = value.getIntValue("hour");
                 break;
             case WEEKLY:
-                dayOfWeek = value.getInt("dayOfWeek");
-                hour = value.getInt("hour");
+                dayOfWeek = value.getIntValue("dayOfWeek");
+                hour = value.getIntValue("hour");
                 break;
         }
         status = JsonUtils.readOptionalString(value, "status");

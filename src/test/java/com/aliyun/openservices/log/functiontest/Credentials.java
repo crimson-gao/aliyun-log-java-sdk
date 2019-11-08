@@ -1,6 +1,6 @@
 package com.aliyun.openservices.log.functiontest;
 
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 import java.io.File;
 import java.util.Scanner;
@@ -50,7 +50,7 @@ public final class Credentials {
         }
         try {
             final String text = new Scanner(file).useDelimiter("\\A").next();
-            JSONObject object = JSONObject.fromObject(text);
+            JSONObject object = JSONObject.parseObject(text);
             String endpoint = object.getString("endpoint");
             String accessKeyId = object.getString("accessKeyId");
             String accessKey = object.getString("accessKey");

@@ -6,8 +6,8 @@ import com.aliyun.openservices.log.internal.Unmarshaller;
 import com.aliyun.openservices.log.util.Args;
 import com.aliyun.openservices.log.util.JsonUtils;
 import com.aliyun.openservices.log.util.Utils;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.Date;
 import java.util.List;
@@ -95,7 +95,7 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
                 return query;
             }
         });
-        if (value.has("muteUntil")) {
+        if (value.containsKey("muteUntil")) {
             muteUntil = Utils.timestampToDate(value.getLong("muteUntil"));
         }
         notifyThreshold = JsonUtils.readOptionalInt(value, "notifyThreshold");

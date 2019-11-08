@@ -2,7 +2,7 @@ package com.aliyun.openservices.log.common;
 
 
 import com.alibaba.fastjson.annotation.JSONField;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 import java.io.Serializable;
 
@@ -99,7 +99,7 @@ public class AliyunLOGSink extends DataSink {
 
     public void deserialize(JSONObject value) {
         name = value.getString("name");
-        if (value.has("endpoint")) {
+        if (value.containsKey("endpoint")) {
             endpoint = value.getString("endpoint");
         } else {
             endpoint = "";

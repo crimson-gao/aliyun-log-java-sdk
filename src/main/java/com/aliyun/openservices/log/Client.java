@@ -56,10 +56,9 @@ import com.aliyun.openservices.log.internal.ErrorCodes;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.*;
 import com.aliyun.openservices.log.util.*;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.ByteArrayInputStream;
@@ -393,8 +392,8 @@ public class Client implements LogService {
 
 	public GetLogtailProfileResponse ExtractLogtailProfile(Map<String, String> resHeaders, JSONObject object) throws LogException {
 		try {
-			int count = object.getInt("count");
-			int total = object.getInt("total");
+			int count = object.getIntValue("count");
+			int total = object.getIntValue("total");
 			JSONArray array = object.getJSONArray("profile");
 			List<LogtailProfile> logtailProfiles = new ArrayList<LogtailProfile>();
 			for (int i = 0; i < array.size(); i++) {
@@ -987,7 +986,7 @@ public class Client implements LogService {
 			String requestId = GetRequestId(resHeaders);
 			JSONObject object = parseResponseBody(response, requestId);
 			getCursorTimeResponse = new GetCursorTimeResponse(resHeaders,
-					object.getInt("cursor_time"));
+					object.getIntValue("cursor_time"));
 		} catch (JSONException e) {
 			throw new LogException("FailToCreateCursor", e.getMessage(), e,
 					GetRequestId(response.getHeaders()));
@@ -1403,8 +1402,8 @@ public class Client implements LogService {
 			Map<String, String> resHeaders = response.getHeaders();
 			String requestId = GetRequestId(resHeaders);
 			object = parseResponseBody(response, requestId);
-			int total = object.getInt("total");
-			int count = object.getInt("count");
+			int total = object.getIntValue("total");
+			int count = object.getIntValue("count");
             List<String> configs = ExtractConfigs(object, requestId);
 			listConfigResponse = new ListConfigResponse(resHeaders, count,
 					total, configs);
@@ -1601,8 +1600,8 @@ public class Client implements LogService {
 			Map<String, String> resHeaders, JSONObject dict)
 			throws LogException {
 		try {
-			int count = dict.getInt("count");
-			int total = dict.getInt("total");
+			int count = dict.getIntValue("count");
+			int total = dict.getIntValue("total");
 			JSONArray array = dict.getJSONArray("machines");
 			List<Machine> machines = new ArrayList<Machine>();
 			for (int i = 0; i < array.size(); i++) {
@@ -1716,8 +1715,8 @@ public class Client implements LogService {
 			Map<String, String> resHeaders = response.getHeaders();
 			String requestId = GetRequestId(resHeaders);
 			object = parseResponseBody(response, requestId);
-			int total = object.getInt("total");
-			int count = object.getInt("count");
+			int total = object.getIntValue("total");
+			int count = object.getIntValue("count");
             List<String>  groups = ExtractMachineGroups(object, requestId);
 			listMachineGroupResponse = new ListMachineGroupResponse(resHeaders,
 					count, total, groups);
@@ -1901,8 +1900,8 @@ public class Client implements LogService {
 			Map<String, String> resHeaders = response.getHeaders();
             String requestId = GetRequestId(resHeaders);
 			object = parseResponseBody(response, requestId);
-			int total = object.getInt("total");
-			int count = object.getInt("count");
+			int total = object.getIntValue("total");
+			int count = object.getIntValue("count");
             List<ACL> acls = ExtractACLs(object, requestId);
 			listACLResponse = new ListACLResponse(resHeaders, count, total, acls);
 		} catch (JSONException e) {
@@ -1916,7 +1915,7 @@ public class Client implements LogService {
 
 	private int ExtractJsonInteger(String nodeKey, JSONObject object) {
 		try {
-			return object.getInt(nodeKey);
+			return object.getIntValue(nodeKey);
 		} catch (JSONException e) {
 			// ignore
 		}
@@ -1950,8 +1949,8 @@ public class Client implements LogService {
 			for (int i = 0; i < items.size(); i++) {
 				JSONObject item = items.getJSONObject(i);
 				Histogram histogram = new Histogram(
-						item.getInt(Consts.CONST_FROM),
-						item.getInt(Consts.CONST_TO),
+						item.getIntValue(Consts.CONST_FROM),
+						item.getIntValue(Consts.CONST_TO),
 						item.getLong(Consts.CONST_RESULT_COUNT),
 						item.getString(Consts.CONST_RESULT_PROCESS));
 				response.AddHistogram(histogram);
@@ -2005,7 +2004,7 @@ public class Client implements LogService {
     private JSONObject parseResponseBody(ResponseMessage response, String requestId) throws LogException {
         String body = encodeResponseBodyToUtf8String(response, requestId);
         try {
-            return JSONObject.fromObject(body);
+            return JSONObject.parseObject(body);
         } catch (JSONException ex) {
             throw new LogException(ErrorCodes.BAD_RESPONSE,
                     "The response is not valid json string : " + body, ex, requestId);
@@ -2028,9 +2027,7 @@ public class Client implements LogService {
 			String requestId) throws LogException {
 		String returnStr = encodeResponseBodyToUtf8String(response, requestId);
 		try {
-			JsonConfig jsonConfig = new JsonConfig();
-			jsonConfig.setIgnoreDefaultExcludes(true);
-            return JSONArray.fromObject(returnStr, jsonConfig);
+            return JSONArray.parseArray(returnStr);
 		} catch (JSONException e) {
 			throw new LogException(ErrorCodes.BAD_RESPONSE,
 					"The response is not valid json string : " + returnStr, e,
@@ -2160,11 +2157,11 @@ public class Client implements LogService {
 		try {
 			for (int i = 0; i < array.size(); i++) {
 				JSONObject shardDict = array.getJSONObject(i);
-				int shardId = shardDict.getInt("shardID");
+				int shardId = shardDict.getIntValue("shardID");
 				String status = shardDict.getString("status");
 				String begin = shardDict.getString("inclusiveBeginKey");
 				String end = shardDict.getString("exclusiveEndKey");
-				int createTime = shardDict.getInt("createTime");
+				int createTime = shardDict.getIntValue("createTime");
 				Shard shard = new Shard(shardId, status, begin, end, createTime);
 				if (shardDict.containsKey("serverIp"))
 				{
@@ -2706,8 +2703,8 @@ public class Client implements LogService {
 
 	private ShipperTasksStatistic ExtractTasksStatisTic(JSONObject obj) {
 		JSONObject statistic_obj = obj.getJSONObject("statistics");
-		return new ShipperTasksStatistic(statistic_obj.getInt("running"),
-				statistic_obj.getInt("success"), statistic_obj.getInt("fail"));
+		return new ShipperTasksStatistic(statistic_obj.getIntValue("running"),
+				statistic_obj.getIntValue("success"), statistic_obj.getIntValue("fail"));
 	}
 
 	private List<ShipperTask> ExtractShipperTask(JSONObject object) {
@@ -2839,7 +2836,7 @@ public class Client implements LogService {
 			for (int i = 0; i < array.size(); i++) {
 				JSONObject consumerGroup = array.getJSONObject(i);
 				consumerGroups.add(new ConsumerGroup(consumerGroup.getString("name"),
-                        consumerGroup.getInt("timeout"),
+                        consumerGroup.getIntValue("timeout"),
 						consumerGroup.getBoolean("order")));
 			}
 		} catch (JSONException e) {
@@ -2922,7 +2919,7 @@ public class Client implements LogService {
 	protected void ExtractShards(JSONArray array, String requestId, List<Integer> shards) throws LogException {
 		try {
 			for (int i = 0; i < array.size(); i++) {
-				shards.add(array.getInt(i));
+				shards.add(array.getIntValue(i));
 			}
 		} catch (JSONException e) {
 			throw new LogException(ErrorCodes.BAD_RESPONSE,
@@ -3109,8 +3106,8 @@ public class Client implements LogService {
 			Map<String, String> resHeaders = response.getHeaders();
 			String requestId = GetRequestId(resHeaders);
 			object = parseResponseBody(response, requestId);
-			int total = object.getInt(Consts.CONST_TOTAL);
-			int count = object.getInt(Consts.CONST_COUNT);
+			int total = object.getIntValue(Consts.CONST_TOTAL);
+			int count = object.getIntValue(Consts.CONST_COUNT);
             List<Project> projects = ExtractProjects(object, requestId);
 			listProjectResponse = new ListProjectResponse(resHeaders, total, count, projects);
 		} catch (JSONException e) {
@@ -3281,8 +3278,8 @@ public class Client implements LogService {
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
 		String requestId = GetRequestId(response.getHeaders());
 		JSONObject object = parseResponseBody(response, requestId);
-		int total = object.getInt(Consts.CONST_TOTAL);
-		int count = object.getInt(Consts.CONST_COUNT);
+		int total = object.getIntValue(Consts.CONST_TOTAL);
+		int count = object.getIntValue(Consts.CONST_COUNT);
         List<Dashboard> dashboards = ExtractDashboards(object, requestId);
         return new ListDashboardResponse(response.getHeaders(), count, total, dashboards);
 	}
@@ -3384,8 +3381,8 @@ public class Client implements LogService {
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
 		String requestId = GetRequestId(response.getHeaders());
 		JSONObject object = parseResponseBody(response, requestId);
-		int total = object.getInt(Consts.CONST_TOTAL);
-		int count = object.getInt(Consts.CONST_COUNT);
+		int total = object.getIntValue(Consts.CONST_TOTAL);
+		int count = object.getIntValue(Consts.CONST_COUNT);
         List<SavedSearch> savedSearches = ExtractSavedSearches(object, requestId);
         return new ListSavedSearchResponse(response.getHeaders(), count, total, savedSearches);
 	}
@@ -3460,8 +3457,8 @@ public class Client implements LogService {
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
 		String requestId = GetRequestId(response.getHeaders());
 		JSONObject object = parseResponseBody(response, requestId);
-		int total = object.getInt(Consts.CONST_TOTAL);
-		int count = object.getInt(Consts.CONST_COUNT);
+		int total = object.getIntValue(Consts.CONST_TOTAL);
+		int count = object.getIntValue(Consts.CONST_COUNT);
         List<Domain> domains = ExtractDomains(object, requestId);
         return new ListDomainsResponse(response.getHeaders(), count, total, domains);
 	}
@@ -3803,7 +3800,7 @@ public class Client implements LogService {
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
 		String requestId = GetRequestId(response.getHeaders());
 		JSONObject object = parseResponseBody(response, requestId);
-		ListEtlJobResponse listResp = new ListEtlJobResponse(response.getHeaders(), object.getInt(Consts.CONST_TOTAL));
+		ListEtlJobResponse listResp = new ListEtlJobResponse(response.getHeaders(), object.getIntValue(Consts.CONST_TOTAL));
 		listResp.setEtlJobNameList(ExtractJsonArray("etlJobNameList", object));
 		return listResp;
 	}
@@ -3978,7 +3975,7 @@ public class Client implements LogService {
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
 		JSONObject object = parseResponseBody(response, requestId);
-		ListEtlMetaNameResponse listResp = new ListEtlMetaNameResponse(response.getHeaders(), object.getInt(Consts.CONST_TOTAL));
+		ListEtlMetaNameResponse listResp = new ListEtlMetaNameResponse(response.getHeaders(), object.getIntValue(Consts.CONST_TOTAL));
 		listResp.setEtlMetaNameList(ExtractJsonArray("etlMetaNameList", object));
 		return listResp;
 	}
@@ -3990,7 +3987,7 @@ public class Client implements LogService {
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
 		String requestId = GetRequestId(response.getHeaders());
 		JSONObject object = parseResponseBody(response, requestId);
-		ListEtlMetaResponse listResp = new ListEtlMetaResponse(response.getHeaders(), object.getInt(Consts.CONST_TOTAL));
+		ListEtlMetaResponse listResp = new ListEtlMetaResponse(response.getHeaders(), object.getIntValue(Consts.CONST_TOTAL));
 		try {
 			JSONArray items = object.getJSONArray("etlMetaList");
 			for (int i = 0; i < items.size(); i++) {

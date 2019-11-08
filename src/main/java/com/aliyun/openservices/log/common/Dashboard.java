@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 import com.aliyun.openservices.log.exception.LogException;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 
 public class Dashboard implements Serializable {
 
@@ -85,9 +85,9 @@ public class Dashboard implements Serializable {
 		dashboardJson.put("displayName", getDisplayName());
 		
 		if (getAttribute().length() > 0) {
-			dashboardJson.put("attribute", JSONObject.fromObject(getAttribute()));
+			dashboardJson.put("attribute", JSONObject.parseObject(getAttribute()));
 		} else {
-			dashboardJson.put("attribute", JSONObject.fromObject("{}"));
+			dashboardJson.put("attribute", JSONObject.parseObject("{}"));
 		}
 		
 		JSONArray chartArray = new JSONArray();
@@ -105,7 +105,7 @@ public class Dashboard implements Serializable {
 			setDashboardName(dict.getString("dashboardName"));
 			setDescription(dict.getString("description"));
 			// displayName
-			if (dict.has("displayName")) {
+			if (dict.containsKey("displayName")) {
 				setDisplayName(dict.getString("displayName"));
 			}
 			// attribute
@@ -132,7 +132,7 @@ public class Dashboard implements Serializable {
 	}
 	public void FromJsonString(String dashboardString) throws LogException {
 		try {
-			JSONObject dict = JSONObject.fromObject(dashboardString);
+			JSONObject dict = JSONObject.parseObject(dashboardString);
 			FromJsonObject(dict);
 		} catch (JSONException e) {
 			throw new LogException("FailToGenerateDashboard", e.getMessage(), e, "");
