@@ -1924,7 +1924,7 @@ public class SlsClientUnitTest {
 		}
 	}
 
-	/*
+
 	@Test
 	public void TestListACL() {
 		String project = "test-project";
@@ -2072,7 +2072,7 @@ public class SlsClientUnitTest {
 		} catch (LogException e) {
 			assertEquals("BadResponse", e.GetErrorCode());
 		}
-	}*/
+	}
 	@Ignore
 	@Test
 	public void TestBatchGetLog() {
