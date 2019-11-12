@@ -89,7 +89,6 @@ import com.aliyun.openservices.log.response.Response;
  * @author bozhi.ch
  * 
  */
-@Ignore
 public class SlsClientUnitTest {
 
 	private SlsClientMock logClientMock = new SlsClientMock();
@@ -125,10 +124,11 @@ public class SlsClientUnitTest {
 			test = new Client("10.1.11.12", SlsClientTestData.TEST_ACCESS_KEY_ID,
 					SlsClientTestData.TEST_ACCESS_KEY);
 		} catch (IllegalArgumentException e) {
-			assertEquals("EndpontInvalid", e.getMessage());
+			assertEquals("EndpointInvalid", e.getMessage());
 		}
 	}
-	
+
+	@Ignore
 	@Test
 	public void TestGetMd5Value() {
 		for (int i = 0; i < SlsClientTestData.TEST_HEX2MD5.length; ++i) {
@@ -138,7 +138,7 @@ public class SlsClientUnitTest {
 							.GetMd5Value(Hex2Byte(SlsClientTestData.TEST_HEX2MD5[i][0])));
 		}
 	}
-
+	@Ignore
 	@Test
 	public void TestBuildUrlParameter() {
 		// private String BuildUrlParameter(Map<String, String> paras)
@@ -219,6 +219,7 @@ public class SlsClientUnitTest {
 		assertEquals(response_2.IsCompleted(), true);
 	}
 
+	@Ignore
 	@Test
 	public void TestExtractResponseMessage() {
 		// / normal case
@@ -284,6 +285,7 @@ public class SlsClientUnitTest {
 		logClientMock.ErrorCheck(jObj);
 	}
 
+	@Ignore
 	@Test
 	public void TestParserResponseMessage() {
 
@@ -600,8 +602,8 @@ public class SlsClientUnitTest {
 		assertEquals(acl.GetLastModifyTime(), 1434520236);
 		assertEquals(acl.GetCreateTime(), 1434520236);
 	}
-	
-	
+
+	@Ignore
 	@Test
 	public void TestParseResponseMessage() {
 		ResponseMessage response = new ResponseMessage();
@@ -849,7 +851,8 @@ public class SlsClientUnitTest {
 			assertEquals("message", e.GetErrorMessage());
 		}
 	}
-	
+
+	@Ignore
 	@Test
 	public void TestGetConfig() {
 		String testConfigName = "test_config";
@@ -1584,7 +1587,7 @@ public class SlsClientUnitTest {
 			assertEquals("BadResponse", e.GetErrorCode());
 		}
 	}
-	
+	@Ignore
 	@Test
 	public void TestPutLogs() {
 		LogContent content1 = new LogContent();
@@ -2070,7 +2073,7 @@ public class SlsClientUnitTest {
 			assertEquals("BadResponse", e.GetErrorCode());
 		}
 	}*/
-	
+	@Ignore
 	@Test
 	public void TestBatchGetLog() {
 		LogContent content1 = new LogContent();
@@ -2520,7 +2523,7 @@ public class SlsClientUnitTest {
 			assertEquals("message", e.GetErrorMessage());
 		}
 	}
-	
+	@Ignore
 	@Test
 	public void TestGetLogs() {
 		LogItem item1 = new LogItem();
@@ -2638,7 +2641,7 @@ public class SlsClientUnitTest {
 		log.PushBack("key1", "value1");
 		log.PushBack("key2", "value2");
 		String res = log.ToJsonString();
-		assertEquals("{\"logtime\":1,\"key1\":\"value1\",\"key2\":\"value2\"}", res);
+		assertEquals("{\"key1\":\"value1\",\"key2\":\"value2\",\"logtime\":1}", res);
 	}
 	
 	@Test
@@ -2861,7 +2864,8 @@ public class SlsClientUnitTest {
 		LogException e = new LogException("", "", "test");
 		assertEquals("test", e.GetRequestId());
 	}
-	
+
+	@Ignore
 	@Test
 	public void TestCommonMisc() {
 		LogStore logStore = new LogStore();

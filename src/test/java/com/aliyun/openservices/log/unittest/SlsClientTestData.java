@@ -1,5 +1,7 @@
 package com.aliyun.openservices.log.unittest;
 
+import com.aliyun.openservices.log.functiontest.Credentials;
+
 /**
  * SlsClientData defines the test data used by the unittest
  * 
@@ -7,9 +9,9 @@ package com.aliyun.openservices.log.unittest;
  *
  */
 public class SlsClientTestData {
-
-	public static final String TEST_ACCESS_KEY = "";
-	public static final String TEST_ACCESS_KEY_ID = "";
+	static final Credentials credentials = Credentials.load();
+	public static final String TEST_ACCESS_KEY = credentials.getAccessKey();
+	public static final String TEST_ACCESS_KEY_ID = credentials.getAccessKeyId();
 
 	public static final String TEST_CATEGORY = "mock%5Fcategory";
 	public static final String TEST_TOPIC = "mock";
