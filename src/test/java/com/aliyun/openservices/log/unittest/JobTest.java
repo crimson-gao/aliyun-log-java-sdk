@@ -63,7 +63,7 @@ public class JobTest {
                 "\"type\":\"SMS\"}],\"notifyThreshold\":1,\"queryList\":[{\"chartTitle\":\"chart1\",\"end\":\"now\"," +
                 "\"logStore\":\"logstore-test\",\"query\":\"*\",\"start\":\"-60s\",\"timeSpanType\":\"Custom\"}]}," +
                 "\"name\":\"alertTest\",\"schedule\":" +
-                "{\"interval\":\"60s\",\"type\":\"FixedRate\"},\"state\":\"Enabled\",\"type\":\"Alert\"}", body);
+                "{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"state\":\"Enabled\",\"type\":\"Alert\"}", body);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class JobTest {
         JobSchedule schedule = new JobSchedule();
         schedule.setType(JobScheduleType.FIXED_RATE);
         schedule.setInterval("60s");
-        assertEquals("{\"interval\":\"60s\",\"type\":\"FixedRate\"}", JsonUtils.serialize(schedule));
+        assertEquals("{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"}", JsonUtils.serialize(schedule));
         JobSchedule schedule1 = new JobSchedule();
         schedule1.deserialize(JSONObject.fromObject("{\"interval\":\"60s\",\"type\":\"FixedRate\"}"));
         assertEquals("60s", schedule1.getInterval());
