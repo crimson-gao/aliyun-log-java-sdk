@@ -76,7 +76,8 @@ public class JobSchedule implements Serializable {
     private Date startTime;
 
     private Date completeTime;
-    private boolean runImmediately;
+
+    private boolean runImmediately = false;
 
     public String getId() {
         return id;
