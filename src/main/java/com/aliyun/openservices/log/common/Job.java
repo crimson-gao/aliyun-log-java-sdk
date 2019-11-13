@@ -4,7 +4,7 @@ package com.aliyun.openservices.log.common;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.aliyun.openservices.log.util.JsonUtils;
 import com.aliyun.openservices.log.util.Utils;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -164,14 +164,14 @@ public class Job implements Serializable {
         name = value.getString("name");
         displayName = JsonUtils.readOptionalString(value, "displayName");
         type = JobType.fromString(value.getString("type"));
-        if (value.has("state")) {
+        if (value.containsKey("state")) {
             state = JobState.fromString(value.getString("state"));
         }
         description = JsonUtils.readOptionalString(value, "description");
-        if (value.has("createTime")) {
+        if (value.containsKey("createTime")) {
             createTime = Utils.timestampToDate(value.getLong("createTime"));
         }
-        if (value.has("lastModifiedTime")) {
+        if (value.containsKey("lastModifiedTime")) {
             lastModifiedTime = Utils.timestampToDate(value.getLong("lastModifiedTime"));
         }
         schedule = new JobSchedule();

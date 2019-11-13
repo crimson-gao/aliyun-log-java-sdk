@@ -2,7 +2,7 @@ package com.aliyun.openservices.log.common;
 
 import java.io.Serializable;
 
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 public class ConsumerGroupShardCheckPoint implements Serializable {
 	/**
@@ -64,7 +64,7 @@ public class ConsumerGroupShardCheckPoint implements Serializable {
 	}
 	public void Deserialize(JSONObject obj)
 	{
-		shard = obj.getInt("shard");
+		shard = obj.getIntValue("shard");
 		checkPoint = obj.getString("checkpoint");
 		updateTime = obj.getLong("updateTime");
 		

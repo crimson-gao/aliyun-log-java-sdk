@@ -2,8 +2,8 @@ package com.aliyun.openservices.log.unittest;
 
 import com.aliyun.openservices.log.common.Logging;
 import com.aliyun.openservices.log.common.LoggingDetail;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 
 import java.util.ArrayList;

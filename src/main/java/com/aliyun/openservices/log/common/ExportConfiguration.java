@@ -1,6 +1,6 @@
 package com.aliyun.openservices.log.common;
 
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 public class ExportConfiguration extends JobConfiguration {
 
@@ -70,7 +70,7 @@ public class ExportConfiguration extends JobConfiguration {
         accessKeyId = value.getString("accessKeyId");
         accessKeySecret = value.getString("accessKeySecret");
         instanceType = value.getString("instanceType");
-        fromTime = value.getInt("fromTime");
+        fromTime = value.getIntValue("fromTime");
         JSONObject obj = value.getJSONObject("sink");
         DataSinkType type = DataSinkType.fromString(obj.getString("type"));
         if (type == DataSinkType.ALIYUN_ADB) {

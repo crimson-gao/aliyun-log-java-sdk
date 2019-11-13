@@ -3,7 +3,7 @@ package com.aliyun.openservices.log.request;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.json.JSONArray;
+import com.alibaba.fastjson.JSONArray;
 
 public class ConsumerGroupHeartBeatRequest extends ConsumerGroupRequest {
 

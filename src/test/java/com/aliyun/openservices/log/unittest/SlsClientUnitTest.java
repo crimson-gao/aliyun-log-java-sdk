@@ -89,7 +89,6 @@ import com.aliyun.openservices.log.response.Response;
  * @author bozhi.ch
  * 
  */
-@Ignore
 public class SlsClientUnitTest {
 
 	private SlsClientMock logClientMock = new SlsClientMock();
@@ -125,10 +124,11 @@ public class SlsClientUnitTest {
 			test = new Client("10.1.11.12", SlsClientTestData.TEST_ACCESS_KEY_ID,
 					SlsClientTestData.TEST_ACCESS_KEY);
 		} catch (IllegalArgumentException e) {
-			assertEquals("EndpontInvalid", e.getMessage());
+			assertEquals("EndpointInvalid", e.getMessage());
 		}
 	}
-	
+
+	@Ignore
 	@Test
 	public void TestGetMd5Value() {
 		for (int i = 0; i < SlsClientTestData.TEST_HEX2MD5.length; ++i) {
@@ -138,7 +138,7 @@ public class SlsClientUnitTest {
 							.GetMd5Value(Hex2Byte(SlsClientTestData.TEST_HEX2MD5[i][0])));
 		}
 	}
-
+	@Ignore
 	@Test
 	public void TestBuildUrlParameter() {
 		// private String BuildUrlParameter(Map<String, String> paras)
@@ -219,6 +219,7 @@ public class SlsClientUnitTest {
 		assertEquals(response_2.IsCompleted(), true);
 	}
 
+	@Ignore
 	@Test
 	public void TestExtractResponseMessage() {
 		// / normal case
@@ -284,6 +285,7 @@ public class SlsClientUnitTest {
 		logClientMock.ErrorCheck(jObj);
 	}
 
+	@Ignore
 	@Test
 	public void TestParserResponseMessage() {
 
@@ -600,8 +602,8 @@ public class SlsClientUnitTest {
 		assertEquals(acl.GetLastModifyTime(), 1434520236);
 		assertEquals(acl.GetCreateTime(), 1434520236);
 	}
-	
-	
+
+	@Ignore
 	@Test
 	public void TestParseResponseMessage() {
 		ResponseMessage response = new ResponseMessage();
@@ -849,7 +851,8 @@ public class SlsClientUnitTest {
 			assertEquals("message", e.GetErrorMessage());
 		}
 	}
-	
+
+	@Ignore
 	@Test
 	public void TestGetConfig() {
 		String testConfigName = "test_config";
@@ -1584,7 +1587,7 @@ public class SlsClientUnitTest {
 			assertEquals("BadResponse", e.GetErrorCode());
 		}
 	}
-	
+	@Ignore
 	@Test
 	public void TestPutLogs() {
 		LogContent content1 = new LogContent();
@@ -1921,7 +1924,7 @@ public class SlsClientUnitTest {
 		}
 	}
 
-	/*
+
 	@Test
 	public void TestListACL() {
 		String project = "test-project";
@@ -1952,13 +1955,13 @@ public class SlsClientUnitTest {
 		
 		JSONObject aclDict1 = new JSONObject();
 		aclDict1.put("principle", acl2.GetPrinciple());
-		aclDict1.put("privilege", JSONArray.fromObject(acl2.GetPrivilege().ToJsonString()));
+		aclDict1.put("privilege", JSONArray.parseArray(acl2.GetPrivilege().ToJsonString()));
 		aclDict1.put("createTime", acl2.GetCreateTime());
 		aclDict1.put("lastModifyTime", acl2.GetLastModifyTime());
 		
 		JSONObject aclDict2 = new JSONObject();
 		aclDict2.put("principle", acl1.GetPrinciple());
-		aclDict2.put("privilege", JSONArray.fromObject( acl1.GetPrivilege().ToJsonString()));
+		aclDict2.put("privilege", JSONArray.parseArray( acl1.GetPrivilege().ToJsonString()));
 		aclDict2.put("createTime", acl1.GetCreateTime());
 		aclDict2.put("lastModifyTime", acl1.GetLastModifyTime());
 		
@@ -2069,8 +2072,8 @@ public class SlsClientUnitTest {
 		} catch (LogException e) {
 			assertEquals("BadResponse", e.GetErrorCode());
 		}
-	}*/
-	
+	}
+	@Ignore
 	@Test
 	public void TestBatchGetLog() {
 		LogContent content1 = new LogContent();
@@ -2520,7 +2523,7 @@ public class SlsClientUnitTest {
 			assertEquals("message", e.GetErrorMessage());
 		}
 	}
-	
+	@Ignore
 	@Test
 	public void TestGetLogs() {
 		LogItem item1 = new LogItem();
@@ -2638,7 +2641,7 @@ public class SlsClientUnitTest {
 		log.PushBack("key1", "value1");
 		log.PushBack("key2", "value2");
 		String res = log.ToJsonString();
-		assertEquals("{\"logtime\":1,\"key1\":\"value1\",\"key2\":\"value2\"}", res);
+		assertEquals("{\"key1\":\"value1\",\"key2\":\"value2\",\"logtime\":1}", res);
 	}
 	
 	@Test
@@ -2861,7 +2864,8 @@ public class SlsClientUnitTest {
 		LogException e = new LogException("", "", "test");
 		assertEquals("test", e.GetRequestId());
 	}
-	
+
+	@Ignore
 	@Test
 	public void TestCommonMisc() {
 		LogStore logStore = new LogStore();
@@ -3040,12 +3044,12 @@ public class SlsClientUnitTest {
 		group1.SetLastModifyTime(543212);
 		
 		String groupJsonStr = group1.ToJsonString();
-		JSONObject groupJsonObj = JSONObject.fromObject(groupJsonStr);
+		JSONObject groupJsonObj = JSONObject.parseObject(groupJsonStr);
 		
 		assertEquals("groupName", groupJsonObj.getString("groupName"));
 		assertEquals("type1", groupJsonObj.getString("groupType"));
-		assertEquals(543211, groupJsonObj.getInt("createTime"));
-		assertEquals(543212, groupJsonObj.getInt("lastModifyTime"));
+		assertEquals(543211, groupJsonObj.getIntValue("createTime"));
+		assertEquals(543212, groupJsonObj.getIntValue("lastModifyTime"));
 		
 		assertEquals("externalName2", groupJsonObj.getJSONObject("groupAttribute").getString("externalName"));
 		assertEquals("groupTopic2", groupJsonObj.getJSONObject("groupAttribute").getString("groupTopic"));
@@ -3063,10 +3067,10 @@ public class SlsClientUnitTest {
 		Config config1 = new Config("configName");
 		config1.SetCreateTime(32321);
 		config1.SetLastModifyTime(32322);
-		JSONObject configObj = JSONObject.fromObject(config1.ToJsonString());
+		JSONObject configObj = JSONObject.parseObject(config1.ToJsonString());
 		assertEquals("configName", configObj.getString("configName"));
-		assertEquals(32321, configObj.getInt("createTime"));
-		assertEquals(32322, configObj.getInt("lastModifyTime"));
+		assertEquals(32321, configObj.getIntValue("createTime"));
+		assertEquals(32322, configObj.getIntValue("lastModifyTime"));
 		
 		try {
 			config1.FromJsonString("af");
@@ -3105,9 +3109,9 @@ public class SlsClientUnitTest {
 		acl1.SetPrivilege(privileges);
 		
 		try {
-			JSONObject aclDict = JSONObject.fromObject(acl1.ToJsonString());
-			assertEquals(3321, aclDict.getInt("createTime"));
-			assertEquals(3322, aclDict.getInt("lastModifyTime"));
+			JSONObject aclDict = JSONObject.parseObject(acl1.ToJsonString());
+			assertEquals(3321, aclDict.getIntValue("createTime"));
+			assertEquals(3322, aclDict.getIntValue("lastModifyTime"));
 			assertEquals("principle", aclDict.getString("principle"));
 			
 			JSONArray privilegesArray = aclDict.getJSONArray("privilege");

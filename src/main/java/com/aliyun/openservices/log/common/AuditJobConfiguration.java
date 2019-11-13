@@ -1,6 +1,6 @@
 package com.aliyun.openservices.log.common;
 
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 public class AuditJobConfiguration extends JobConfiguration {
 
@@ -50,6 +50,6 @@ public class AuditJobConfiguration extends JobConfiguration {
     }
 
     public JSONObject toJsonObject() {
-        return JSONObject.fromObject(this.detail);
+        return JSONObject.parseObject(this.detail);
     }
 }

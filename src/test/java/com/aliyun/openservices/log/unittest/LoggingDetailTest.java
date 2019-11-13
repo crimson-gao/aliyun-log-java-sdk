@@ -1,7 +1,7 @@
 package com.aliyun.openservices.log.unittest;
 
 import com.aliyun.openservices.log.common.LoggingDetail;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

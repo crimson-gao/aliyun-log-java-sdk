@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 import com.aliyun.openservices.log.exception.LogException;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 
 public class OssShipperCsvStorageDetail extends OssShipperStorageDetail implements Serializable{
 	private static final long serialVersionUID = -9072422584563361211L;

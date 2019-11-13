@@ -3,8 +3,8 @@ package com.aliyun.openservices.log.common;
 import java.io.Serializable;
 
 import com.aliyun.openservices.log.util.Args;
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 
 import com.aliyun.openservices.log.exception.LogException;
 
@@ -208,24 +208,24 @@ public class LogStore implements Serializable {
     public void FromJsonObject(JSONObject dict) throws LogException {
         try {
             SetLogStoreName(dict.getString("logstoreName"));
-            SetTtl(dict.getInt("ttl"));
-            SetShardCount(dict.getInt("shardCount"));
+            SetTtl(dict.getIntValue("ttl"));
+            SetShardCount(dict.getIntValue("shardCount"));
             if (dict.containsKey("enable_tracking")) {
                 this.setEnableWebTracking(dict.getBoolean("enable_tracking"));
             }
             if (dict.containsKey("createTime")) {
-                createTime = dict.getInt("createTime");
+                createTime = dict.getIntValue("createTime");
             }
 
             if (dict.containsKey("lastModifyTime")) {
-                lastModifyTime = dict.getInt("lastModifyTime");
+                lastModifyTime = dict.getIntValue("lastModifyTime");
             }
 
             if (dict.containsKey("autoSplit")) {
                 mAutoSplit = dict.getBoolean("autoSplit");
             }
             if (dict.containsKey("maxSplitShard")) {
-                mMaxSplitShard = dict.getInt("maxSplitShard");
+                mMaxSplitShard = dict.getIntValue("maxSplitShard");
             }
             appendMeta = dict.containsKey("appendMeta") && dict.getBoolean("appendMeta");
             
@@ -252,7 +252,7 @@ public class LogStore implements Serializable {
 
     public void FromJsonString(String logStoreString) throws LogException {
         try {
-            JSONObject dict = JSONObject.fromObject(logStoreString);
+            JSONObject dict = JSONObject.parseObject(logStoreString);
             FromJsonObject(dict);
         } catch (JSONException e) {
             throw new LogException("FailToGenerateLogStore", e.getMessage(), e, "");

@@ -12,7 +12,7 @@ import com.aliyun.openservices.log.common.Query;
 import com.aliyun.openservices.log.common.SmsNotification;
 import com.aliyun.openservices.log.common.TimeSpanType;
 import com.aliyun.openservices.log.util.JsonUtils;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public class JobTest {
                 "\"Custom\"}]},\"name\":\"alertTest\",\"schedule\":{\"interval\":\"60s\"," +
                 "\"type\":\"FixedRate\"},\"state\":\"Enabled\",\"type\":\"Alert\",\"createTime\":1542763714,\"lastModifiedTime\":1542763714}";
         Job job = new Job();
-        job.deserialize(JSONObject.fromObject(body));
+        job.deserialize(JSONObject.parseObject(body));
 
         assertEquals("alertTest", job.getName());
         assertNull(job.getDescription());
@@ -117,7 +117,7 @@ public class JobTest {
         schedule.setInterval("60s");
         assertEquals("{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"}", JsonUtils.serialize(schedule));
         JobSchedule schedule1 = new JobSchedule();
-        schedule1.deserialize(JSONObject.fromObject("{\"interval\":\"60s\",\"type\":\"FixedRate\"}"));
+        schedule1.deserialize(JSONObject.parseObject("{\"interval\":\"60s\",\"type\":\"FixedRate\"}"));
         assertEquals("60s", schedule1.getInterval());
         assertEquals(JobScheduleType.FIXED_RATE, schedule1.getType());
     }
@@ -144,7 +144,7 @@ public class JobTest {
                 "\"type\": \"Ingestion\"\n" +
                 "}";
         Job job = new Job();
-        job.deserialize(JSONObject.fromObject(body));
+        job.deserialize(JSONObject.parseObject(body));
         assertEquals(JobType.INGESTION, job.getType());
     }
 }

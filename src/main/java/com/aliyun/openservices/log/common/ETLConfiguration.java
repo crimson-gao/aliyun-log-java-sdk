@@ -3,8 +3,8 @@ package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.aliyun.openservices.log.util.JsonUtils;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +116,7 @@ public class ETLConfiguration extends JobConfiguration {
     public void deserialize(JSONObject value) {
         script = value.getString("script");
         logstore = value.getString("logstore");
-        version = value.getInt("version");
+        version = value.getIntValue("version");
         instanceType = JsonUtils.readOptionalString(value, "instanceType");
         containerImage = JsonUtils.readOptionalString(value, "containerImage");
         parameters = JsonUtils.readOptionalMap(value, "parameters");

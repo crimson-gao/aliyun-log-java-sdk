@@ -3,9 +3,9 @@ package com.aliyun.openservices.log.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 
 import com.aliyun.openservices.log.exception.LogException;
 
@@ -135,7 +135,7 @@ public class OdpsShipperConfig implements ShipperConfig {
 			this.mLogFieldsList = FromJsonArray(obj.getJSONArray("fields"));
 			this.mPartitionColumn = FromJsonArray(obj.getJSONArray("partitionColumn"));
 			this.mPartitionTimeFormat = obj.getString("partitionTimeFormat");
-			this.mBufferInterval = obj.getInt("bufferInterval");
+			this.mBufferInterval = obj.getIntValue("bufferInterval");
 		} catch (JSONException e) {
 			throw new LogException("FailToParseOssShipperConfig",
 					e.getMessage(), e, "");
