@@ -52,6 +52,7 @@ abstract class JobIntgTest extends FunctionTest {
     protected JobSchedule createSchedule(boolean scheduled) {
         JobSchedule schedule = new JobSchedule();
         schedule.setType(randomScheduleType(scheduled));
+        schedule.setRunImmediately(randomBoolean());
         switch (schedule.getType()) {
             case DAILY:
                 schedule.setHour(0);
@@ -64,7 +65,7 @@ abstract class JobIntgTest extends FunctionTest {
                 schedule.setInterval("60s");
                 break;
             case CRON:
-                schedule.setCronExpression("0 0 12 * * ?");
+                schedule.setCronExpression("0 12 * * ?");
                 break;
         }
         schedule.setDelay(0);
