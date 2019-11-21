@@ -23,6 +23,15 @@ public class LogStore implements Serializable {
     private long preserveStorage = -1;
     private long usedStorage = 0;
     private String description;
+    private String productType="";
+
+    public String getProductType() {
+        return productType;
+    }
+
+    public void setProductType(String productType) {
+        this.productType = productType;
+    }
 
     public LogStore() {
         super();
