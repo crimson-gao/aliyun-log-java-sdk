@@ -22,8 +22,8 @@ public class LogStore implements Serializable {
     private int lastModifyTime = -1;
     private long preserveStorage = -1;
     private long usedStorage = 0;
-    private String description;
-    private String productType="";
+    private String description = "";
+    private String productType = "";
 
     public String getProductType() {
         return productType;
@@ -67,6 +67,7 @@ public class LogStore implements Serializable {
         this.preserveStorage = logStore.preserveStorage;
         this.usedStorage = logStore.usedStorage;
         this.description = logStore.getDescription();
+        this.productType = logStore.getProductType();
     }
 
     public long getPreserveStorage() {
@@ -191,6 +192,7 @@ public class LogStore implements Serializable {
         logStoreDict.put("maxSplitShard", getmMaxSplitShard());
         logStoreDict.put("appendMeta", isAppendMeta());
         logStoreDict.put("description", getDescription());
+        logStoreDict.put("productType",getProductType());
         JSONObject resourceQuota = new JSONObject();
         JSONObject storage = new JSONObject();
         storage.put("preserved", preserveStorage);
@@ -237,7 +239,9 @@ public class LogStore implements Serializable {
                 mMaxSplitShard = dict.getIntValue("maxSplitShard");
             }
             appendMeta = dict.containsKey("appendMeta") && dict.getBoolean("appendMeta");
-            
+            if (dict.containsKey("productType")) {
+                productType = dict.getString("productType");
+            }
             if (dict.containsKey("description")) {
                 description = dict.getString("description");
             }

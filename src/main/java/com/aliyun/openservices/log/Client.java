@@ -3,6 +3,7 @@
  */
 package com.aliyun.openservices.log;
 
+import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.log.common.ACL;
 import com.aliyun.openservices.log.common.Chart;
 import com.aliyun.openservices.log.common.Config;
@@ -2335,7 +2336,7 @@ public class Client implements LogService {
 	}
 
 	@Override
-	public GetLogStoreResponse GetLogStore(GetLogStoreRequest request)
+	public GetLogStoreResponse  GetLogStore(GetLogStoreRequest request)
 			throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		String project = request.GetProject();
