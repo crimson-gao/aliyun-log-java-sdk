@@ -29,10 +29,6 @@ public class LogStore implements Serializable {
         return productType;
     }
 
-    public void setProductType(String productType) {
-        this.productType = productType;
-    }
-
     public LogStore() {
         super();
     }
@@ -192,7 +188,6 @@ public class LogStore implements Serializable {
         logStoreDict.put("maxSplitShard", getmMaxSplitShard());
         logStoreDict.put("appendMeta", isAppendMeta());
         logStoreDict.put("description", getDescription());
-        logStoreDict.put("productType",getProductType());
         JSONObject resourceQuota = new JSONObject();
         JSONObject storage = new JSONObject();
         storage.put("preserved", preserveStorage);
