@@ -28,7 +28,6 @@ import com.aliyun.openservices.log.request.UpdateAlertRequest;
 import com.aliyun.openservices.log.response.GetAlertResponse;
 import com.aliyun.openservices.log.response.ListAlertResponse;
 import com.aliyun.openservices.log.response.ListDashboardResponse;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -187,7 +186,7 @@ public class AlertFunctionTest extends JobIntgTest {
         client.deleteAlert(new DeleteAlertRequest(TEST_PROJECT, alert.getName()));
     }
 
-    @Ignore
+    //    @Ignore
     @Test
     public void testCreateWebHookWithHeaders() throws Exception {
         createDashboard();
@@ -241,7 +240,7 @@ public class AlertFunctionTest extends JobIntgTest {
         client.deleteAlert(new DeleteAlertRequest(TEST_PROJECT, alert.getName()));
     }
 
-    @Ignore
+    //    @Ignore
     @Test
     public void testCreateEmail() throws Exception {
         createDashboard();
