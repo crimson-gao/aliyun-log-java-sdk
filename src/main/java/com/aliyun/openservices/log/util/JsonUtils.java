@@ -75,6 +75,14 @@ public final class JsonUtils {
         return object.containsKey(key) ? object.getString(key) : null;
     }
 
+    public static String readOptionalString(JSONObject object, String key, String defaultValue) {
+        if (object.containsKey(key)) {
+            return object.getString(key);
+        } else {
+            return defaultValue;
+        }
+    }
+
     public static boolean readBool(JSONObject object, String key, boolean defaultValue) {
         return object.containsKey(key) ? object.getBoolean(key) : defaultValue;
     }
@@ -123,4 +131,5 @@ public final class JsonUtils {
             }
         }
     }
+
 }
