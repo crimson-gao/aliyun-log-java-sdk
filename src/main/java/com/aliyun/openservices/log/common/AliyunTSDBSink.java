@@ -3,12 +3,23 @@ package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.openservices.log.util.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class AliyunTSDBSink extends DataSink {
+
+    private static final String DEFAULT_TSDB_INSTANCE_PORT = "8242";
+
+    public String getInstancePort() {
+        return instancePort;
+    }
+
+    public void setInstancePort(String instancePort) {
+        this.instancePort = instancePort;
+    }
 
     public static class MappingField {
         private String name;
@@ -78,6 +89,8 @@ public class AliyunTSDBSink extends DataSink {
 
     private String instanceId;
 
+    private String instancePort = DEFAULT_TSDB_INSTANCE_PORT;
+
     private String dbType;
 
     private String dbVersion;
@@ -96,11 +109,12 @@ public class AliyunTSDBSink extends DataSink {
         this.tagMapping = new ArrayList<MappingTag>();
     }
 
-    public AliyunTSDBSink(String endpoint, String vpcId, String instanceId, String dbType, String dbVersion, String metric, boolean strictMode) {
+    public AliyunTSDBSink(String endpoint, String vpcId, String instanceId, String instancePort, String dbType, String dbVersion, String metric, boolean strictMode) {
         super(DataSinkType.ALIYUN_TSDB);
         this.endpoint = endpoint;
         this.vpcId = vpcId;
         this.instanceId = instanceId;
+        this.instancePort = instancePort;
         this.dbType = dbType;
         this.dbVersion = dbVersion;
         this.metric = metric;
@@ -194,6 +208,7 @@ public class AliyunTSDBSink extends DataSink {
         endpoint = value.getString("endpoint");
         vpcId = value.getString("vpcId");
         instanceId = value.getString("instanceId");
+        instancePort = JsonUtils.readOptionalString(value, "instancePort", DEFAULT_TSDB_INSTANCE_PORT);
         dbType = value.getString("dbType");
         dbVersion = value.getString("dbVersion");
         metric = value.getString("metric");
