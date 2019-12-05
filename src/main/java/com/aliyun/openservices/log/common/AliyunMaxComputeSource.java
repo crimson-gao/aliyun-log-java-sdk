@@ -19,11 +19,11 @@ public class AliyunMaxComputeSource extends DataSource {
         super(DataSourceType.ALIYUN_MAX_COMPUTE);
     }
 
-    public String getAccessKeyId() {
+    public String getAccessKeyID() {
         return accessKeyID;
     }
 
-    public void setAccessKeyId(String accessKeyID) {
+    public void setAccessKeyID(String accessKeyID) {
         this.accessKeyID = accessKeyID;
     }
 
