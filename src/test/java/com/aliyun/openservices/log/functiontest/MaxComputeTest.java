@@ -24,7 +24,7 @@ public class MaxComputeTest extends JobIntgTest{
 		IngestionConfiguration configuration = new IngestionConfiguration();
 		configuration.setLogstore("test-logstore2");
 		AliyunMaxComputeSource source = new AliyunMaxComputeSource();
-		source.setAccessKeyId("accessKeyId");
+		source.setAccessKeyID("accessKeyId");
 		source.setAccessKeySecret("accessKeySecret");
 		source.setEndpoint("endpoint");
 		source.setProject("project");
