@@ -10,6 +10,8 @@ public class ExportConfiguration extends JobConfiguration {
 
     private String accessKeySecret;
 
+    private String roleArn;
+
     private String instanceType;
 
     private int fromTime;
@@ -40,6 +42,14 @@ public class ExportConfiguration extends JobConfiguration {
         this.accessKeySecret = accessKeySecret;
     }
 
+    public String getRoleArn() {
+        return roleArn;
+    }
+
+    public void setRoleArn(String roleArn) {
+        this.roleArn = roleArn;
+    }
+
     public String getInstanceType() {
         return instanceType;
     }
@@ -67,6 +77,7 @@ public class ExportConfiguration extends JobConfiguration {
     @Override
     public void deserialize(JSONObject value) {
         logstore = value.getString("logstore");
+        roleArn = value.getString("roleArn");
         accessKeyId = value.getString("accessKeyId");
         accessKeySecret = value.getString("accessKeySecret");
         instanceType = value.getString("instanceType");
@@ -81,5 +92,4 @@ public class ExportConfiguration extends JobConfiguration {
             sink.deserialize(obj);
         }
     }
-
 }
