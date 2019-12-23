@@ -2055,7 +2055,6 @@ public class Client implements LogService {
 
     private JSONObject parseResponseBody(ResponseMessage response, String requestId) throws LogException {
         String body = encodeResponseBodyToUtf8String(response, requestId);
-        System.out.println(body);
         try {
             return JSONObject.parseObject(body);
         } catch (JSONException ex) {
