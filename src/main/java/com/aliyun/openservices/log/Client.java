@@ -397,11 +397,16 @@ public class Client implements LogService {
 			int total = object.getIntValue("total");
 			JSONArray array = object.getJSONArray("profile");
 			List<LogtailProfile> logtailProfiles = new ArrayList<LogtailProfile>();
-			for (int i = 0; i < array.size(); i++) {
-				JSONObject profileObj = array.getJSONObject(i);
-				LogtailProfile logtailProfile = new LogtailProfile();
-				logtailProfile.FromJsonObject(profileObj);
-				logtailProfiles.add(logtailProfile);
+			if (array != null) {
+				for (int i = 0; i < array.size(); i++) {
+					JSONObject profileObj = array.getJSONObject(i);
+					if (profileObj == null) {
+						continue;
+					}
+					LogtailProfile logtailProfile = new LogtailProfile();
+					logtailProfile.FromJsonObject(profileObj);
+					logtailProfiles.add(logtailProfile);
+				}
 			}
 			return new GetLogtailProfileResponse(resHeaders, count, total, logtailProfiles);
 		} catch (LogException e) {
@@ -785,9 +790,16 @@ public class Client implements LogService {
 	}
 
 	private void ExtractLogsWithFastJson(GetLogsResponse response, com.alibaba.fastjson.JSONArray logs) {
+		if (logs == null) {
+			return;
+		}
 		try {
 			for (int i = 0; i < logs.size(); i++) {
-				response.AddLog(extractLogFromJSON(logs.getJSONObject(i)));
+				JSONObject jsonObject = logs.getJSONObject(i);
+				if (jsonObject == null) {
+					continue;
+				}
+				response.AddLog(extractLogFromJSON(jsonObject));
 			}
 		} catch (JSONException e) {
 			// ignore;
@@ -795,9 +807,16 @@ public class Client implements LogService {
 	}
 
 	private void extractLogsWithFastJson(GetContextLogsResponse response, com.alibaba.fastjson.JSONArray logs) {
+		if (logs == null) {
+			return;
+		}
 		try {
 			for (int i = 0; i < logs.size(); i++) {
-				response.addLog(extractLogFromJSON(logs.getJSONObject(i)));
+				JSONObject jsonObject = logs.getJSONObject(i);
+				if (jsonObject == null) {
+					continue;
+				}
+				response.addLog(extractLogFromJSON(jsonObject));
 			}
 		} catch (JSONException e) {
 			// ignore;
@@ -1347,6 +1366,9 @@ public class Client implements LogService {
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("configs");
+			if (array == null) {
+				return configs;
+			}
 			for (int i = 0; i < array.size(); i++) {
 				String configName = array.getString(i);
 				configs.add(configName);
@@ -1484,6 +1506,9 @@ public class Client implements LogService {
 	protected ArrayList<String> ExtractConfigsFromResponse(JSONObject object) {
 		ArrayList<String> configs = new ArrayList<String>();
 		JSONArray configobj = object.getJSONArray("configs");
+		if (configobj == null) {
+			return configs;
+		}
 		for (int i = 0; i < configobj.size(); ++i) {
 			configs.add(configobj.getString(i));
 		}
@@ -1493,6 +1518,9 @@ public class Client implements LogService {
 	protected ArrayList<String> ExtractConfigMachineGroupFromResponse(JSONObject object) {
 		ArrayList<String> configs = new ArrayList<String>();
 		JSONArray configobj = object.getJSONArray("machinegroups");
+		if (configobj == null) {
+			return configs;
+		}
 		for (int i = 0; i < configobj.size(); ++i) {
 			configs.add(configobj.getString(i));
 		}
@@ -1605,11 +1633,16 @@ public class Client implements LogService {
 			int total = dict.getIntValue("total");
 			JSONArray array = dict.getJSONArray("machines");
 			List<Machine> machines = new ArrayList<Machine>();
-			for (int i = 0; i < array.size(); i++) {
-				JSONObject machine_obj = array.getJSONObject(i);
-				Machine machine = new Machine();
-				machine.FromJsonObject(machine_obj);
-				machines.add(machine);
+			if (array != null) {
+				for (int i = 0; i < array.size(); i++) {
+					JSONObject machine_obj = array.getJSONObject(i);
+					if (machine_obj == null) {
+						continue;
+					}
+					Machine machine = new Machine();
+					machine.FromJsonObject(machine_obj);
+					machines.add(machine);
+				}
 			}
 			return new ListMachinesResponse(resHeaders, count, total, machines);
 		} catch (LogException e) {
@@ -1670,6 +1703,9 @@ public class Client implements LogService {
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("machinegroups");
+			if (array == null) {
+				return machineGroups;
+			}
 			for (int i = 0; i < array.size(); i++) {
 				String groupName = array.getString(i);
 				machineGroups.add(groupName);
@@ -1867,8 +1903,14 @@ public class Client implements LogService {
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("acls");
+			if (array == null) {
+				return acls;
+			}
 			for (int i = 0; i < array.size(); i++) {
 				JSONObject aclDict = array.getJSONObject(i);
+				if (aclDict == null) {
+					continue;
+				}
 				ACL acl = ExtractACLFromResponse(aclDict, requestId);
 				acls.add(acl);
 			}
@@ -1933,7 +1975,10 @@ public class Client implements LogService {
 	}
 
 	private List<String> ExtractJsonArray(JSONArray object) {
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
+		if (object == null || object.isEmpty()) {
+			return result;
+		}
 		try {
 			for (int i = 0; i < object.size(); i++) {
 				result.add(object.getString(i));
@@ -1946,9 +1991,15 @@ public class Client implements LogService {
 
 	private void ExtractHistograms(GetHistogramsResponse response,
 			JSONArray items) {
+		if (items == null) {
+			return;
+		}
 		try {
 			for (int i = 0; i < items.size(); i++) {
 				JSONObject item = items.getJSONObject(i);
+				if (item == null) {
+					continue;
+				}
 				Histogram histogram = new Histogram(
 						item.getIntValue(Consts.CONST_FROM),
 						item.getIntValue(Consts.CONST_TO),
@@ -2004,6 +2055,7 @@ public class Client implements LogService {
 
     private JSONObject parseResponseBody(ResponseMessage response, String requestId) throws LogException {
         String body = encodeResponseBodyToUtf8String(response, requestId);
+        System.out.println(body);
         try {
             return JSONObject.parseObject(body);
         } catch (JSONException ex) {
@@ -2155,9 +2207,15 @@ public class Client implements LogService {
 	protected ArrayList<Shard> ExtractShards(JSONArray array, String requestId)
 			throws LogException {
 		ArrayList<Shard> shards = new ArrayList<Shard>();
+		if (array == null) {
+			return shards;
+		}
 		try {
 			for (int i = 0; i < array.size(); i++) {
 				JSONObject shardDict = array.getJSONObject(i);
+				if (shardDict == null) {
+					continue;
+				}
 				int shardId = shardDict.getIntValue("shardID");
 				String status = shardDict.getString("status");
 				String begin = shardDict.getString("inclusiveBeginKey");
@@ -2711,8 +2769,14 @@ public class Client implements LogService {
 	private List<ShipperTask> ExtractShipperTask(JSONObject object) {
 		List<ShipperTask> res = new ArrayList<ShipperTask>();
 		JSONArray array = object.getJSONArray("tasks");
+		if (array == null) {
+			return res;
+		}
 		for (int i = 0; i < array.size(); i++) {
 			JSONObject item = array.getJSONObject(i);
+			if (item == null) {
+				continue;
+			}
 			ShipperTask task = new ShipperTask();
 			task.FromJsonObject(item);
 			res.add(task);
@@ -2836,6 +2900,9 @@ public class Client implements LogService {
 		try {
 			for (int i = 0; i < array.size(); i++) {
 				JSONObject consumerGroup = array.getJSONObject(i);
+				if (consumerGroup == null) {
+					continue;
+				}
 				consumerGroups.add(new ConsumerGroup(consumerGroup.getString("name"),
                         consumerGroup.getIntValue("timeout"),
 						consumerGroup.getBoolean("order")));
@@ -3077,9 +3144,16 @@ public class Client implements LogService {
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("projects");
+			if (array == null) {
+				return projects;
+			}
 			for (int i = 0; i < array.size(); i++) {
 				Project tempProject = new Project();
-				tempProject.FromJsonObject(array.getJSONObject(i));
+				JSONObject jsonObject = array.getJSONObject(i);
+				if (jsonObject == null) {
+					continue;
+				}
+				tempProject.FromJsonObject(jsonObject);
 				projects.add(tempProject);
 			}
 		} catch (JSONException e) {
@@ -3256,10 +3330,17 @@ public class Client implements LogService {
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("dashboardItems");
+			if (array == null) {
+				return dashboards;
+			}
 			for (int index = 0; index < array.size(); index++) {
+				JSONObject jsonObject = array.getJSONObject(index);
+				if (jsonObject == null) {
+					continue;
+				}
 				Dashboard dashboard = new Dashboard();
-				dashboard.setDashboardName(array.getJSONObject(index).getString("dashboardName"));
-				dashboard.setDisplayName(array.getJSONObject(index).getString("displayName"));
+				dashboard.setDashboardName(jsonObject.getString("dashboardName"));
+				dashboard.setDisplayName(jsonObject.getString("displayName"));
 				dashboards.add(dashboard);
 			}
 		} catch (JSONException e) {
@@ -3358,10 +3439,17 @@ public class Client implements LogService {
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("savedsearchItems");
+			if (array == null) {
+				return savedSearches;
+			}
 			for (int index = 0; index < array.size(); index++) {
+				JSONObject jsonObject = array.getJSONObject(index);
+				if (jsonObject == null) {
+					continue;
+				}
 				SavedSearch savedSearch = new SavedSearch();
-				savedSearch.setSavedSearchName(array.getJSONObject(index).getString("savedsearchName"));
-				savedSearch.setDisplayName(array.getJSONObject(index).getString("displayName"));
+				savedSearch.setSavedSearchName(jsonObject.getString("savedsearchName"));
+				savedSearch.setDisplayName(jsonObject.getString("displayName"));
 				savedSearches.add(savedSearch);
 			}
 		} catch (JSONException e) {
@@ -3436,6 +3524,9 @@ public class Client implements LogService {
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("domains");
+			if (array == null) {
+				return domains;
+			}
 			for (int index = 0; index < array.size(); index++) {
 				Domain domain = new Domain();
 				domain.setDomainName(array.getString(index));
@@ -3991,9 +4082,16 @@ public class Client implements LogService {
 		ListEtlMetaResponse listResp = new ListEtlMetaResponse(response.getHeaders(), object.getIntValue(Consts.CONST_TOTAL));
 		try {
 			JSONArray items = object.getJSONArray("etlMetaList");
+			if (items == null) {
+				return listResp;
+			}
 			for (int i = 0; i < items.size(); i++) {
+				JSONObject jsonObject = items.getJSONObject(i);
+				if (jsonObject == null) {
+					continue;
+				}
 				EtlMeta meta = new EtlMeta();
-				meta.fromJsonObject(items.getJSONObject(i));
+				meta.fromJsonObject(jsonObject);
 				listResp.addEtlMeta(meta);
 			}
 		} catch (JSONException e) {
