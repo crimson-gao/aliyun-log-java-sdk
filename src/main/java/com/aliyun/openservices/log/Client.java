@@ -3,7 +3,6 @@
  */
 package com.aliyun.openservices.log;
 
-import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.log.common.ACL;
 import com.aliyun.openservices.log.common.Chart;
 import com.aliyun.openservices.log.common.Config;
@@ -460,8 +459,7 @@ public class Client implements LogService {
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
 		JSONArray object = ParseResponseMessageToArray(response, requestId);
-		GetHistogramsResponse histogramResponse = new GetHistogramsResponse(
-				resHeaders);
+		GetHistogramsResponse histogramResponse = new GetHistogramsResponse(resHeaders);
 		ExtractHistograms(histogramResponse, object);
 		return histogramResponse;
 	}
@@ -759,17 +757,17 @@ public class Client implements LogService {
 				resourceUri, urlParameter, headParameter);
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
-		com.alibaba.fastjson.JSONArray object = ParseResponseMessageToArrayWithFastJson(response, requestId);
+		JSONArray object = ParseResponseMessageToArrayWithFastJson(response, requestId);
 		GetLogsResponse getLogsResponse = new GetLogsResponse(resHeaders);
 		ExtractLogsWithFastJson(getLogsResponse, object);
 		return getLogsResponse;
 	}
 
-	private com.alibaba.fastjson.JSONArray ParseResponseMessageToArrayWithFastJson(ResponseMessage response,
+	private JSONArray ParseResponseMessageToArrayWithFastJson(ResponseMessage response,
 			String requestId) throws LogException {
 		String returnStr = encodeResponseBodyToUtf8String(response, requestId);
 		try {
-            return com.alibaba.fastjson.JSONArray.parseArray(returnStr);
+            return JSONArray.parseArray(returnStr);
 		} catch (com.alibaba.fastjson.JSONException e) {
 			throw new LogException(ErrorCodes.BAD_RESPONSE,
 					"The response is not valid json string : " + returnStr, e,
@@ -777,11 +775,11 @@ public class Client implements LogService {
 		}
 	}
 
-	private com.alibaba.fastjson.JSONObject parseResponseMessageToObjectWithFastJSON(ResponseMessage response,
+	private JSONObject parseResponseMessageToObjectWithFastJSON(ResponseMessage response,
 			String requestId) throws LogException {
 		String returnStr = encodeResponseBodyToUtf8String(response, requestId);
 		try {
-            return com.alibaba.fastjson.JSONObject.parseObject(returnStr);
+            return JSONObject.parseObject(returnStr);
 		} catch (com.alibaba.fastjson.JSONException e) {
 			throw new LogException(ErrorCodes.BAD_RESPONSE,
 					"The response is not valid json string : " + returnStr, e,
@@ -789,41 +787,39 @@ public class Client implements LogService {
 		}
 	}
 
-	private void ExtractLogsWithFastJson(GetLogsResponse response, com.alibaba.fastjson.JSONArray logs) {
+	private void ExtractLogsWithFastJson(GetLogsResponse response, JSONArray logs) {
 		if (logs == null) {
 			return;
 		}
 		try {
 			for (int i = 0; i < logs.size(); i++) {
 				JSONObject jsonObject = logs.getJSONObject(i);
-				if (jsonObject == null) {
-					continue;
+				if (jsonObject != null) {
+					response.AddLog(extractLogFromJSON(jsonObject));
 				}
-				response.AddLog(extractLogFromJSON(jsonObject));
 			}
 		} catch (JSONException e) {
 			// ignore;
 		}
 	}
 
-	private void extractLogsWithFastJson(GetContextLogsResponse response, com.alibaba.fastjson.JSONArray logs) {
+	private void extractLogsWithFastJson(GetContextLogsResponse response, JSONArray logs) {
 		if (logs == null) {
 			return;
 		}
 		try {
 			for (int i = 0; i < logs.size(); i++) {
 				JSONObject jsonObject = logs.getJSONObject(i);
-				if (jsonObject == null) {
-					continue;
+				if (jsonObject != null) {
+					response.addLog(extractLogFromJSON(jsonObject));
 				}
-				response.addLog(extractLogFromJSON(jsonObject));
 			}
 		} catch (JSONException e) {
 			// ignore;
 		}
 	}
 
-	private QueriedLog extractLogFromJSON(com.alibaba.fastjson.JSONObject log) throws JSONException {
+	private QueriedLog extractLogFromJSON(JSONObject log) throws JSONException {
 		String source = "";
 		LogItem logItem = new LogItem();
 		Set<String> keySet = log.keySet();
@@ -851,7 +847,7 @@ public class Client implements LogService {
 				resourceUri, urlParameter, headParameter);
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
-		com.alibaba.fastjson.JSONArray object = ParseResponseMessageToArrayWithFastJson(response, requestId);
+		JSONArray object = ParseResponseMessageToArrayWithFastJson(response, requestId);
 		GetLogsResponse getLogsResponse = new GetLogsResponse(resHeaders);
 		ExtractLogsWithFastJson(getLogsResponse, object);
 		return getLogsResponse;
@@ -868,7 +864,7 @@ public class Client implements LogService {
 				resourceUri, urlParameter, headParameter);
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
-		com.alibaba.fastjson.JSONObject object = parseResponseMessageToObjectWithFastJSON(response, requestId);
+		JSONObject object = parseResponseMessageToObjectWithFastJSON(response, requestId);
 		GetContextLogsResponse logsResponse = new GetContextLogsResponse(resHeaders, object);
 		extractLogsWithFastJson(logsResponse, object.getJSONArray("logs"));
 		return logsResponse;
@@ -897,8 +893,7 @@ public class Client implements LogService {
 		ListLogStoresResponse listLogStoresResponse = new ListLogStoresResponse(resHeaders);
 		listLogStoresResponse.SetLogStores(ExtractJsonArray(
 				Consts.CONST_RESULT_LOG_STORES, object));
-		listLogStoresResponse.SetTotal(this.ExtractJsonInteger(
-				Consts.CONST_TOTAL, object));
+		listLogStoresResponse.SetTotal(object.getIntValue(Consts.CONST_TOTAL));
 		return listLogStoresResponse;
 	}
 
@@ -926,8 +921,10 @@ public class Client implements LogService {
 		JSONArray json_array = this.ParseResponseMessageToArray(response, requestId);
 		ListTopicsResponse listTopicResponse = new ListTopicsResponse(resHeaders);
 		List<String> string_array = new ArrayList<String>();
-		for (int index = 0; index < json_array.size(); index++) {
-			string_array.add(json_array.getString(index));
+		if (json_array != null) {
+			for (int index = 0; index < json_array.size(); index++) {
+				string_array.add(json_array.getString(index));
+			}
 		}
 		listTopicResponse.SetTopics(string_array);
 		return listTopicResponse;
@@ -1052,9 +1049,6 @@ public class Client implements LogService {
 		String logStore = request.GetLogStore();
 		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
 		int shardId = request.GetShardId();
-		//String midHash = request.GetMidHash();
-		//CodingUtils.assertStringNotNullOrEmpty(midHash, "midHashKey");
-
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shards/" + shardId;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -1363,6 +1357,9 @@ public class Client implements LogService {
 	protected List<String> ExtractConfigs(JSONObject object, String requestId)
 			throws LogException {
 		List<String> configs = new ArrayList<String>();
+		if (object == null) {
+			return configs;
+		}
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("configs");
@@ -1503,7 +1500,7 @@ public class Client implements LogService {
 		return group;
 	}
 
-	protected ArrayList<String> ExtractConfigsFromResponse(JSONObject object) {
+	private ArrayList<String> ExtractConfigsFromResponse(JSONObject object) {
 		ArrayList<String> configs = new ArrayList<String>();
 		JSONArray configobj = object.getJSONArray("configs");
 		if (configobj == null) {
@@ -1956,15 +1953,6 @@ public class Client implements LogService {
 		return listACLResponse;
 	}
 
-	private int ExtractJsonInteger(String nodeKey, JSONObject object) {
-		try {
-			return object.getIntValue(nodeKey);
-		} catch (JSONException e) {
-			// ignore
-		}
-		return -1;
-	}
-
 	private List<String> ExtractJsonArray(String nodeKey, JSONObject object) {
 		try {
 			JSONArray items = object.getJSONArray(nodeKey);
@@ -2063,11 +2051,11 @@ public class Client implements LogService {
         }
     }
 
-	private com.alibaba.fastjson.JSONObject ParserResponseMessageWithFastJson(ResponseMessage response,
+	private JSONObject ParserResponseMessageWithFastJson(ResponseMessage response,
                                                                               String requestId) throws LogException {
 		String res = encodeResponseBodyToUtf8String(response, requestId);
 		try {
-            return com.alibaba.fastjson.JSONObject.parseObject(res);
+            return JSONObject.parseObject(res);
 		} catch (com.alibaba.fastjson.JSONException e) {
 			throw new LogException(ErrorCodes.BAD_RESPONSE,
 					"The response is not valid json string : " + res, e,
@@ -2549,7 +2537,7 @@ public class Client implements LogService {
 	    return GetIndexString(new GetIndexRequest(project, logStore));
     }
 
-	private Index ExtractIndexFromResponseWithFastJson(com.alibaba.fastjson.JSONObject dict, String requestId)
+	private Index ExtractIndexFromResponseWithFastJson(JSONObject dict, String requestId)
 			throws LogException {
 		Index index = new Index();
 		try {
@@ -2575,7 +2563,7 @@ public class Client implements LogService {
 				resourceUri, urlParameter, headParameter);
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
-		com.alibaba.fastjson.JSONObject object = ParserResponseMessageWithFastJson(response, requestId);
+		JSONObject object = ParserResponseMessageWithFastJson(response, requestId);
 		Index index = ExtractIndexFromResponseWithFastJson(object, requestId);
 		return new GetIndexResponse(resHeaders, index);
 	}
@@ -2706,8 +2694,8 @@ public class Client implements LogService {
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
 		JSONObject object = parseResponseBody(response, requestId);
-		return new ListShipperResponse(resHeaders, ExtractJsonInteger("count", object),
-                ExtractJsonInteger("total", object), ExtractJsonArray("shipper", object));
+		return new ListShipperResponse(resHeaders, object.getIntValue("count"),
+                object.getIntValue("total"), ExtractJsonArray("shipper", object));
 	}
 
 	@Override
@@ -2732,8 +2720,9 @@ public class Client implements LogService {
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
 		JSONObject object = parseResponseBody(response, requestId);
-		return new GetShipperTasksResponse(resHeaders, ExtractJsonInteger("count", object),
-                ExtractJsonInteger("total", object),
+		return new GetShipperTasksResponse(resHeaders,
+				object.getIntValue("count"),
+				object.getIntValue("total"),
 				ExtractTasksStatisTic(object), ExtractShipperTask(object));
 	}
 
@@ -2984,6 +2973,9 @@ public class Client implements LogService {
 	}
 
 	protected void ExtractShards(JSONArray array, String requestId, List<Integer> shards) throws LogException {
+		if (array == null) {
+			return;
+		}
 		try {
 			for (int i = 0; i < array.size(); i++) {
 				shards.add(array.getIntValue(i));
@@ -3140,6 +3132,9 @@ public class Client implements LogService {
 	protected List<Project> ExtractProjects(JSONObject object, String requestId)
 			throws LogException {
 		List<Project> projects = new ArrayList<Project>();
+		if (object == null) {
+			return projects;
+		}
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("projects");
@@ -3326,6 +3321,9 @@ public class Client implements LogService {
 	protected List<Dashboard> ExtractDashboards(JSONObject object, String requestId)
 			throws LogException {
 		List<Dashboard> dashboards = new ArrayList<Dashboard>();
+		if (object == null) {
+			return dashboards;
+		}
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("dashboardItems");
@@ -3435,6 +3433,9 @@ public class Client implements LogService {
 	protected List<SavedSearch> ExtractSavedSearches(JSONObject object, String requestId)
 			throws LogException {
 		List<SavedSearch> savedSearches = new ArrayList<SavedSearch>();
+		if (object == null) {
+			return savedSearches;
+		}
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("savedsearchItems");
@@ -3520,6 +3521,9 @@ public class Client implements LogService {
 	protected List<Domain> ExtractDomains(JSONObject object, String requestId)
 			throws LogException {
 		List<Domain> domains = new ArrayList<Domain>();
+		if (object == null) {
+			return domains;
+		}
 		JSONArray array = new JSONArray();
 		try {
 			array = object.getJSONArray("domains");
