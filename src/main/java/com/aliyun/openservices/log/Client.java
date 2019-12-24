@@ -1500,30 +1500,6 @@ public class Client implements LogService {
 		return group;
 	}
 
-	private ArrayList<String> ExtractConfigsFromResponse(JSONObject object) {
-		ArrayList<String> configs = new ArrayList<String>();
-		JSONArray configobj = object.getJSONArray("configs");
-		if (configobj == null) {
-			return configs;
-		}
-		for (int i = 0; i < configobj.size(); ++i) {
-			configs.add(configobj.getString(i));
-		}
-		return configs;
-	}
-
-	protected ArrayList<String> ExtractConfigMachineGroupFromResponse(JSONObject object) {
-		ArrayList<String> configs = new ArrayList<String>();
-		JSONArray configobj = object.getJSONArray("machinegroups");
-		if (configobj == null) {
-			return configs;
-		}
-		for (int i = 0; i < configobj.size(); ++i) {
-			configs.add(configobj.getString(i));
-		}
-		return configs;
-	}
-
 	public GetAppliedConfigResponse GetAppliedConfig(String project,
 			String groupName) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
@@ -1546,7 +1522,7 @@ public class Client implements LogService {
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
 		JSONObject object = parseResponseBody(response, requestId);
-		ArrayList<String> group = ExtractConfigsFromResponse(object);
+		List<String> group = ExtractJsonArray("configs", object);
 		return new GetAppliedConfigResponse(resHeaders, group);
 	}
 
@@ -1573,7 +1549,7 @@ public class Client implements LogService {
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
 		JSONObject object = parseResponseBody(response, requestId);
-		ArrayList<String> group = this.ExtractConfigMachineGroupFromResponse(object);
+		List<String> group = ExtractJsonArray("machinegroups", object);
 		return new GetAppliedMachineGroupsResponse(resHeaders, group);
 	}
 
@@ -1696,23 +1672,12 @@ public class Client implements LogService {
 
 	protected List<String> ExtractMachineGroups(JSONObject object,
 			String requestId) throws LogException {
-		List<String> machineGroups = new ArrayList<String>();
-		JSONArray array = new JSONArray();
 		try {
-			array = object.getJSONArray("machinegroups");
-			if (array == null) {
-				return machineGroups;
-			}
-			for (int i = 0; i < array.size(); i++) {
-				String groupName = array.getString(i);
-				machineGroups.add(groupName);
-			}
+			return JsonUtils.readOptionalStrings(object, "machinegroups");
 		} catch (JSONException e) {
 			throw new LogException(ErrorCodes.BAD_RESPONSE,
-					"The response is not valid machine group json array string : "
-							+ array.toString(), e, requestId);
+					"The response is not valid machine group json array string : " + object, e, requestId);
 		}
-		return machineGroups;
 	}
 
 	public ListMachineGroupResponse ListMachineGroup(String project) throws LogException {
@@ -1955,26 +1920,10 @@ public class Client implements LogService {
 
 	private List<String> ExtractJsonArray(String nodeKey, JSONObject object) {
 		try {
-			JSONArray items = object.getJSONArray(nodeKey);
-			return ExtractJsonArray(items);
+			return JsonUtils.readOptionalStrings(object, nodeKey);
 		} catch (JSONException e) {
 			return new ArrayList<String>();
 		}
-	}
-
-	private List<String> ExtractJsonArray(JSONArray object) {
-		List<String> result = new ArrayList<String>();
-		if (object == null || object.isEmpty()) {
-			return result;
-		}
-		try {
-			for (int i = 0; i < object.size(); i++) {
-				result.add(object.getString(i));
-			}
-		} catch (JSONException e) {
-			// ignore
-		}
-		return result;
 	}
 
 	private void ExtractHistograms(GetHistogramsResponse response,

@@ -52,7 +52,7 @@ public final class JsonUtils {
     }
 
     public static List<String> readOptionalStrings(JSONObject object, String key) {
-        if (!object.containsKey(key)) {
+        if (object == null || !object.containsKey(key)) {
             return Collections.emptyList();
         }
         try {
