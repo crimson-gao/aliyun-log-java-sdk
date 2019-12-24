@@ -77,9 +77,6 @@ public abstract class FunctionTest {
                     + ", httpCode=" + ex.GetHttpCode()
                     + ", errorMessage=" + ex.GetErrorMessage()
                     + ", requestId=" + ex.GetRequestId());
-            if (!ex.GetErrorCode().equals("LogStoreNotExist")) {
-                fail("Delete logStore " + logStore + " failed");
-            }
             assertEquals(ex.GetHttpCode(), 404);
         }
         return false;
