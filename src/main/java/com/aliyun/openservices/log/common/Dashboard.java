@@ -116,16 +116,21 @@ public class Dashboard implements Serializable {
 			ArrayList<Chart> chartList = new ArrayList<Chart>();
 			try {
 				JSONArray chartJsonArray = dict.getJSONArray("charts");
-				for (int index = 0; index != chartJsonArray.size(); index++) {
-					Chart chart = new Chart();
-					chart.FromJsonObject(chartJsonArray.getJSONObject(index));
-					chartList.add(chart);
+				if (chartJsonArray != null) {
+					for (int index = 0; index != chartJsonArray.size(); index++) {
+						JSONObject jsonObject = chartJsonArray.getJSONObject(index);
+						if (jsonObject == null) {
+							continue;
+						}
+						Chart chart = new Chart();
+						chart.FromJsonObject(jsonObject);
+						chartList.add(chart);
+					}
 				}
 			} catch (JSONException e) {
 				// ignore
 			}
 			setChartList(chartList);
-			
 		} catch (JSONException e) {
 			throw new LogException("FailToGenerateDashboard",  e.getMessage(), e, "");
 		}
