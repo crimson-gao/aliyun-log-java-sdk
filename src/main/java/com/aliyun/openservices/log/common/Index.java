@@ -178,17 +178,13 @@ public class Index {
 
 		if (logReduceWhiteList.size() > 0) {
 			JSONArray logReduceWhiteListDict = new JSONArray();
-			for (String v:logReduceWhiteList) {
-				logReduceWhiteListDict.add(v);
-			}
+			logReduceWhiteListDict.addAll(logReduceWhiteList);
 			index.put("log_reduce_white_list", logReduceWhiteListDict);
 		}
 
 		if (logReduceBlackList.size() > 0) {
 			JSONArray logReduceBlackListDict = new JSONArray();
-			for (String v:logReduceBlackList) {
-				logReduceBlackListDict.add(v);
-			}
+			logReduceBlackListDict.addAll(logReduceBlackList);
 			index.put("log_reduce_black_list", logReduceBlackListDict);
 		}
 

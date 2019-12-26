@@ -16,12 +16,12 @@ import com.alibaba.fastjson.JSONObject;
 public class MachineGroup implements Serializable {
     private static final long serialVersionUID = -4402651900796187066L;
     protected String groupName = "";
-    protected String groupType = "";
-    protected String machineIdentifyType = "";
-    protected GroupAttribute groupAttribute = new GroupAttribute();
-    protected ArrayList<String> machineList = new ArrayList<String>();
-    protected int createTime = 0;
-    protected int lastModifyTime = 0;
+    private String groupType = "";
+	private String machineIdentifyType = "";
+	private GroupAttribute groupAttribute = new GroupAttribute();
+	private ArrayList<String> machineList = new ArrayList<String>();
+	private int createTime = 0;
+	private int lastModifyTime = 0;
 
     public MachineGroup() {
     }

@@ -9,12 +9,9 @@ import com.alibaba.fastjson.JSONObject;
 
 public class GroupAttribute implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -537679331882943768L;
-	protected String externalName = "";
-	protected String groupTopic = "";
+	private String externalName = "";
+	private String groupTopic = "";
 	
 	public GroupAttribute() {
 	}
@@ -47,10 +44,8 @@ public class GroupAttribute implements Serializable {
 	
 	public JSONObject ToJsonObject() {
 		JSONObject groupAttributeDict = new JSONObject();
-		
 		groupAttributeDict.put("groupTopic", GetGroupTopic());
 		groupAttributeDict.put("externalName", GetExternalName());
-		
 		return groupAttributeDict;
 	}
 	

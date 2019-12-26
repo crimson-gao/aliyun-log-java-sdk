@@ -65,9 +65,7 @@ public class OssShipperCsvStorageDetail extends OssShipperStorageDetail implemen
 	public JSONObject ToJsonObject() {
 		JSONObject obj = new JSONObject();
 		JSONArray columns = new JSONArray();
-		for (int index = 0; index < this.mStorageColumns.size(); index++) {
-			columns.add(this.mStorageColumns.get(index));
-		}
+		columns.addAll(this.mStorageColumns);
 		JSONObject detail = new JSONObject();
 		detail.put("columns", columns);
 		detail.put("delimiter", this.delimiter);

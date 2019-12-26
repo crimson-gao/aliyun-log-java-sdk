@@ -116,19 +116,13 @@ public class InternalLogStore extends LogStore implements Serializable {
 
     @Override
     public JSONObject ToJsonObject() {
-        JSONObject jsonObj = new JSONObject();
-        jsonObj = ToRequestJson();
-
+        JSONObject jsonObj = ToRequestJson();
         JSONArray operatingAccountJson = new JSONArray();
-        for (String account : operatingAccount) {
-            operatingAccountJson.add(account);
-        }
+        operatingAccountJson.addAll(operatingAccount);
         jsonObj.put("operatingAccount", operatingAccountJson);
 
         JSONArray restrictedActionJson = new JSONArray();
-        for (String action : restrictedAction) {
-            restrictedActionJson.add(action);
-        }
+        restrictedActionJson.addAll(restrictedAction);
         jsonObj.put("restrictedAction", restrictedActionJson);
 
         JSONObject freeCreditJson = new JSONObject();
