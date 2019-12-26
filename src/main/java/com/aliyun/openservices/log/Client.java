@@ -3,6 +3,7 @@
  */
 package com.aliyun.openservices.log;
 
+import com.alibaba.fastjson.parser.Feature;
 import com.aliyun.openservices.log.common.ACL;
 import com.aliyun.openservices.log.common.Chart;
 import com.aliyun.openservices.log.common.Config;
@@ -709,7 +710,7 @@ public class Client implements LogService {
 			String requestId) throws LogException {
 		String returnStr = encodeResponseBodyToUtf8String(response, requestId);
 		try {
-            return JSONArray.parseArray(returnStr);
+			return (JSONArray) JSONObject.parse(returnStr, Feature.DisableSpecialKeyDetect);
 		} catch (com.alibaba.fastjson.JSONException e) {
 			throw new LogException(ErrorCodes.BAD_RESPONSE,
 					"The response is not valid json string : " + returnStr, e,
