@@ -487,8 +487,7 @@ public class Client implements LogService {
 					tagBuilder.setKey("__pack_unique_id__");
 					tagBuilder.setValue(UUID.randomUUID().toString() + "-" + String.valueOf(Math.random()));
 				}
-				for (int i = 0; i < logItems.size(); i++) {
-					LogItem item = logItems.get(i);
+				for (LogItem item : logItems) {
 					Logs.Log.Builder log = logs.addLogsBuilder();
 					log.setTime(item.mLogTime);
 					for (LogContent content : item.mContents) {
@@ -513,8 +512,7 @@ public class Client implements LogService {
 					jsonObj.put("__source__", source);
 				}
 				JSONArray logsArray = new JSONArray();
-				for (int i = 0; i < logItems.size(); i++) {
-					LogItem item = logItems.get(i);
+				for (LogItem item : logItems) {
 					JSONObject jsonObjInner = new JSONObject();
 					jsonObjInner.put("__time__", item.mLogTime);
 					for (LogContent content : item.mContents) {
