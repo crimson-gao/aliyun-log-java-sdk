@@ -136,25 +136,6 @@ public class Client implements LogService {
 
 	public void DisableUUIDTag() { mUUIDTag = false; }
 
-	/**
-	 * @deprecated Use getSecurityToken instead.
-	 */
-	public String GetSecurityToken() {
-		return securityToken;
-	}
-
-	/**
-	 * @deprecated Use setSecurityToken instead.
-	 */
-	@Deprecated
-	public void SetSecurityToken(String securityToken) {
-		this.securityToken = securityToken;
-	}
-
-	public void RemoveSecurityToken() {
-		securityToken = null;
-	}
-
 	public void EnableDirectMode() {
 		mUseDirectMode = true;
 	}
@@ -219,43 +200,6 @@ public class Client implements LogService {
                 Consts.HTTP_CONNECT_MAX_COUNT,
                 Consts.HTTP_CONNECT_TIME_OUT,
                 Consts.HTTP_SEND_TIME_OUT);
-	}
-
-	/**
-	 * Construct sls client with full parameters
-	 *
-	 * @throws NullPointerException
-	 *             if the input parameter is null
-	 * @throws IllegalArgumentException
-	 *             if the input parameter is empty
-	 *
-	 * @param endpoint
-	 *            the log service server address
-	 * @param accessId
-	 *            aliyun accessId
-	 * @param accessKey
-	 *            aliyun accessKey
-	 * @param sourceIp
-	 *            client ip address
-	 * @param compressFlag
-	 *            a flag to determine if the send data will compressed , default
-	 *            is true ( data compressed)
-	 * @param connectMaxCount
-	 * 			  a flag to determine max count connection
-	 * @param connectTimeout
-	 * 			  a flag to determine max connect timeout
-	 * @param sendTimeout
-	 * 			  a flag to determine max request timeout
-	 * @deprecated Use Client(String endpoint, String accessId, String accessKey, String sourceIp,
-	 * 	              ClientConfiguration config) instead.
-	 */
-	@Deprecated
-	public Client(String endpoint, String accessId, String accessKey,
-				  String sourceIp, boolean compressFlag,
-				  int connectMaxCount,
-				  int connectTimeout,
-				  int sendTimeout) {
-		this(endpoint, accessId, accessKey, sourceIp, connectMaxCount, connectTimeout, sendTimeout);
 	}
 
 	/**
