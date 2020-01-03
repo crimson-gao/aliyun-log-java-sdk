@@ -74,7 +74,7 @@ public class ShipperSample {
 
     public static void createJsonOssShipper() throws LogException {
         String shipperName = "ossjsonshipper";
-        OssShipperConfig ossConfig = new OssShipperConfig(ossBucket, ossPrefix, roleArn, bufferInterval, bufferSize, compressType, pathFormat, "json");
+        OssShipperConfig ossConfig = new OssShipperConfig(ossBucket, ossPrefix, roleArn, bufferInterval, bufferSize, compressType, pathFormat, "json", "");
 		OssShipperJsonStorageDetail detail = (OssShipperJsonStorageDetail) ossConfig.GetStorageDetail();
 		detail.setEnableTag(false);
 		client.CreateShipper(project, logStore, shipperName, ossConfig);
@@ -88,7 +88,7 @@ public class ShipperSample {
 
     public static void createParquetOssShipper() throws LogException {
         String shipperName = "ossparquetshipper";
-        OssShipperConfig ossConfig = new OssShipperConfig(ossBucket, ossPrefix, roleArn, bufferInterval, bufferSize, compressType, pathFormat, "parquet");
+        OssShipperConfig ossConfig = new OssShipperConfig(ossBucket, ossPrefix, roleArn, bufferInterval, bufferSize, compressType, pathFormat, "parquet", "+1000");
         ArrayList<OssShipperStorageColumn> columns = new ArrayList<OssShipperStorageColumn>();
         columns.add(new OssShipperStorageColumn("MachineName", "string"));
         columns.add(new OssShipperStorageColumn("Role", "string"));
@@ -108,7 +108,7 @@ public class ShipperSample {
 
     public static void createCsvOssShipper() throws LogException {
         String shipperName = "osscsvshipper";
-        OssShipperConfig ossConfig = new OssShipperConfig(ossBucket, ossPrefix, roleArn, bufferInterval, bufferSize, compressType, pathFormat, "csv");
+        OssShipperConfig ossConfig = new OssShipperConfig(ossBucket, ossPrefix, roleArn, bufferInterval, bufferSize, compressType, pathFormat, "csv", "+0800");
         ArrayList<String> columns = new ArrayList<String>();
         columns.add("__topic__");
         columns.add("alarm_count");
@@ -134,8 +134,8 @@ public class ShipperSample {
     public static void main(String[] args) throws LogException {
 
         createOdpsShipper();
+        createJsonOssShipper();
         createCsvOssShipper();
         createParquetOssShipper();
-        createJsonOssShipper();
     }
 }
