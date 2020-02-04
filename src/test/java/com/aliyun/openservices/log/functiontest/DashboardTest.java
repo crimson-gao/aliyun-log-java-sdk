@@ -23,7 +23,7 @@ public class DashboardTest extends FunctionTest {
 
     @Before
     public void setUp() {
-        safeCreateProject(TEST_PROJECT, "dashboard test");
+        safeCreateProject(TEST_PROJECT, "dashboardtest");
         waitForSeconds(5);
     }
 

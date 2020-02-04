@@ -61,7 +61,7 @@ public class JobTest {
         assertEquals("{\"configuration\":{\"condition\":\"ID > 100\",\"dashboard\":\"dashboardtest\"," +
                 "\"notificationList\":[{\"content\":\"messagetest\",\"mobileList\":[\"86-13738162867\"]," +
                 "\"type\":\"SMS\"}],\"notifyThreshold\":1,\"queryList\":[{\"chartTitle\":\"chart1\",\"end\":\"now\"," +
-                "\"logStore\":\"logstore-test\",\"query\":\"*\",\"start\":\"-60s\",\"timeSpanType\":\"Custom\"}]}," +
+                "\"logStore\":\"logstore-test\",\"query\":\"*\",\"start\":\"-60s\",\"timeSpanType\":\"Custom\"}],\"sendRecoveryMessage\":false}," +
                 "\"name\":\"alertTest\",\"schedule\":" +
                 "{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"state\":\"Enabled\",\"type\":\"Alert\"}", body);
     }

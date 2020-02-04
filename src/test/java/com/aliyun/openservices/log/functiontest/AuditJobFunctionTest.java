@@ -13,6 +13,7 @@ public class AuditJobFunctionTest extends FunctionTest {
     String project = "project-to-test-alert";
     String jobName = "test_audit_job";
 
+    @Ignore
     @Test
     public void testCreate() throws Exception {
         AuditJob auditJob = new AuditJob();
@@ -52,6 +53,7 @@ public class AuditJobFunctionTest extends FunctionTest {
         System.out.println(response.GetAllHeaders());
     }
 
+    @Ignore
     @Test
     public void testDelete() throws Exception {
         DeleteAuditJobResponse response = client.deleteAuditJob(new DeleteAuditJobRequest(project, jobName));
