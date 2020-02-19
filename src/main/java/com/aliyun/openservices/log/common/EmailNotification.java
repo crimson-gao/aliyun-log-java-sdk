@@ -56,14 +56,21 @@ public class EmailNotification extends Notification {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         EmailNotification that = (EmailNotification) o;
 
-        if (getSubject() != null ? !getSubject().equals(that.getSubject()) : that.getSubject() != null) return false;
-        if (getCountryCode() != null ? !getCountryCode().equals(that.getCountryCode()) : that.getCountryCode() != null)
+        if (getSubject() != null ? !getSubject().equals(that.getSubject()) : that.getSubject() != null) {
             return false;
+        }
+        if (getCountryCode() != null ? !getCountryCode().equals(that.getCountryCode()) : that.getCountryCode() != null) {
+            return false;
+        }
         return getEmailList() != null ? getEmailList().equals(that.getEmailList()) : that.getEmailList() == null;
     }
 
