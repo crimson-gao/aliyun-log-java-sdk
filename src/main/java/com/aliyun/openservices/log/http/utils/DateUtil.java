@@ -22,7 +22,7 @@ public class DateUtil {
     // RFC 822 Date Format
     private static final String RFC822_DATE_FORMAT =
             "EEE, dd MMM yyyy HH:mm:ss z";
-
+    private static final String FORMAT_TYPE = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     /**
      * Formats Date to GMT string.
      * @param date
@@ -48,5 +48,11 @@ public class DateUtil {
         rfc822DateFormat.setTimeZone(new SimpleTimeZone(0, "GMT"));
 
         return rfc822DateFormat;
+    }
+
+    public static long stringToLong(String time) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_TYPE);
+        Date date = dateFormat.parse(time);
+        return date.getTime();
     }
 }

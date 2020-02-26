@@ -38,6 +38,9 @@ import com.aliyun.openservices.log.common.ShipperConfig;
 import com.aliyun.openservices.log.common.ShipperTask;
 import com.aliyun.openservices.log.common.ShipperTasksStatistic;
 import com.aliyun.openservices.log.common.TagContent;
+import com.aliyun.openservices.log.common.auth.Credentials;
+import com.aliyun.openservices.log.common.auth.DefaultCredentails;
+import com.aliyun.openservices.log.common.auth.ECSRoleCredentials;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.http.client.ClientConfiguration;
 import com.aliyun.openservices.log.http.client.ClientConnectionContainer;
@@ -88,11 +91,9 @@ public class Client implements LogService {
 	private static final String DEFAULT_USER_AGENT = VersionInfoUtils.getDefaultUserAgent();
 	private String httpType;
 	private String hostName;
-	private String accessId;
-	private String accessKey;
+	private Credentials credentials;
 	private String sourceIp;
 	private ServiceClient serviceClient;
-	private String securityToken;
 	private String realIpForConsole;
 	private Boolean useSSLForConsole;
 	private String userAgent = DEFAULT_USER_AGENT;
@@ -170,11 +171,15 @@ public class Client implements LogService {
 	 *            aliyun accessKey
 	 */
 	public Client(String endpoint, String accessId, String accessKey) {
-		this(endpoint, accessId, accessKey, NetworkUtils.getLocalMachineIP());
+		this(endpoint, new DefaultCredentails(accessId, accessKey), null);
 	}
 
 	public Client(String endpoint, String accessId, String accessKey, ClientConfiguration configuration) {
-		this(endpoint, accessId, accessKey, NetworkUtils.getLocalMachineIP(), configuration);
+		this(endpoint, accessId, accessKey, null, configuration);
+	}
+
+	public Client(String endpoint, String roleName) {
+		this(endpoint, new ECSRoleCredentials(roleName), null);
 	}
 
 	/**
@@ -193,14 +198,20 @@ public class Client implements LogService {
 	 *            aliyun accessId
 	 * @param accessKey
 	 *            aliyun accessKey
-	 * @param SourceIp
+	 * @param sourceIp
 	 *            client ip address
 	 */
-	public Client(String endpoint, String accessId, String accessKey, String SourceIp) {
-		this(endpoint, accessId, accessKey, SourceIp,
-                Consts.HTTP_CONNECT_MAX_COUNT,
-                Consts.HTTP_CONNECT_TIME_OUT,
-                Consts.HTTP_SEND_TIME_OUT);
+	public Client(String endpoint, String accessId, String accessKey, String sourceIp) {
+		this(endpoint, new DefaultCredentails(accessId, accessKey), sourceIp);
+	}
+
+	public Client(String endpoint, Credentials credentials, String sourceIp) {
+		configure(endpoint, credentials, sourceIp);
+		ClientConfiguration clientConfig = new ClientConfiguration();
+		clientConfig.setMaxConnections(Consts.HTTP_CONNECT_MAX_COUNT);
+		clientConfig.setConnectionTimeout(Consts.HTTP_CONNECT_TIME_OUT);
+		clientConfig.setSocketTimeout(Consts.HTTP_SEND_TIME_OUT);
+		this.serviceClient = new DefaultServiceClient(clientConfig);
 	}
 
 	/**
@@ -210,7 +221,7 @@ public class Client implements LogService {
 	@Deprecated
     public Client(String endpoint, String accessId, String accessKey, String sourceIp,
                   int connectMaxCount, int connectTimeout, int sendTimeout) {
-        configure(endpoint, accessId, accessKey, sourceIp);
+        configure(endpoint, new DefaultCredentails(accessId, accessKey), sourceIp);
         ClientConfiguration clientConfig = new ClientConfiguration();
         clientConfig.setMaxConnections(connectMaxCount);
         clientConfig.setConnectionTimeout(connectTimeout);
@@ -219,14 +230,12 @@ public class Client implements LogService {
     }
 
     public Client(String endpoint, String accessId, String accessKey, ServiceClient serviceClient) {
-        configure(endpoint, accessId, accessKey, NetworkUtils.getLocalMachineIP());
+        configure(endpoint, new DefaultCredentails(accessId, accessKey), null);
         this.serviceClient = serviceClient;
     }
 
-    private void configure(String endpoint, String accessId, String accessKey, String sourceIp) {
+    private void configure(String endpoint, Credentials credentials, String sourceIp) {
 	    Args.notNullOrEmpty(endpoint, "endpoint");
-	    Args.notNullOrEmpty(accessId, "accessId");
-	    Args.notNullOrEmpty(accessKey, "accessKey");
 	    if (endpoint.startsWith("http://")) {
 		    this.hostName = endpoint.substring(7);
 		    this.httpType = "http://";
@@ -245,8 +254,7 @@ public class Client implements LogService {
 		    throw new IllegalArgumentException("EndpointInvalid", new Exception(
 				    "The ip address is not supported"));
 	    }
-	    this.accessId = accessId;
-	    this.accessKey = accessKey;
+	    this.credentials = credentials;
 	    this.sourceIp = sourceIp;
 	    if (sourceIp == null || sourceIp.isEmpty()) {
 		    this.sourceIp = NetworkUtils.getLocalMachineIP();
@@ -256,7 +264,7 @@ public class Client implements LogService {
 	public Client(String endpoint, String accessId, String accessKey, String sourceIp,
 	              ClientConfiguration config) {
 		Args.notNull(config, "Config");
-		configure(endpoint, accessId, accessKey, sourceIp);
+		configure(endpoint, new DefaultCredentails(accessId, accessKey), sourceIp);
 		if (config.isRequestTimeoutEnabled()) {
 			this.serviceClient = new TimeoutServiceClient(config);
 		} else {
@@ -265,27 +273,27 @@ public class Client implements LogService {
 	}
 
 	public String getAccessId() {
-		return accessId;
+		return credentials.getAccessKeyId();
 	}
 
 	public void setAccessId(String accessId) {
-		this.accessId = accessId;
+		credentials.setAccessKeyId(accessId);
 	}
 
 	public String getAccessKey() {
-		return accessKey;
+		return credentials.getAccessKeySecret();
 	}
 
 	public void setAccessKey(String accessKey) {
-		this.accessKey = accessKey;
+		credentials.setAccessKeySecret(accessKey);
 	}
 
 	public String getSecurityToken() {
-		return securityToken;
+		return credentials.getSecurityToken();
 	}
 
 	public void setSecurityToken(String securityToken) {
-		this.securityToken = securityToken;
+		credentials.setSecurityToken(securityToken);
 	}
 
 	public void shutdown() {
@@ -615,7 +623,7 @@ public class Client implements LogService {
 
 	private ClientConnectionStatus GetGlobalConnectionStatus() throws LogException {
 		ClientConnectionContainer connection_container = ClientConnectionHelper.getInstance()
-				.GetConnectionContainer(this.hostName, this.accessId, this.accessKey);
+				.GetConnectionContainer(this.hostName, credentials.getAccessKeyId(), credentials.getAccessKeySecret());
 		ClientConnectionStatus connection_status = connection_container.GetGlobalConnection();
 		if (connection_status == null || !connection_status.IsValidConnection()) {
 			connection_container.UpdateGlobalConnection();
@@ -632,7 +640,7 @@ public class Client implements LogService {
 	private ClientConnectionStatus GetShardConnectionStatus(String project, String logstore, int shard_id)
 			throws LogException {
 		ClientConnectionContainer connection_container = ClientConnectionHelper.getInstance()
-				.GetConnectionContainer(this.hostName, this.accessId, this.accessKey);
+				.GetConnectionContainer(this.hostName, credentials.getAccessKeyId(), credentials.getAccessKeySecret());
 		ClientConnectionStatus connection_status = connection_container.GetShardConnection(project, logstore, shard_id);
 		if (connection_status != null && connection_status.IsValidConnection()) {
 			return connection_status;
@@ -1984,6 +1992,7 @@ public class Client implements LogService {
 		headParameter.put(Consts.CONST_X_SLS_APIVERSION,
 				Consts.DEFAULT_API_VESION);
 		headParameter.put(Consts.CONST_X_SLS_SIGNATUREMETHOD, Consts.HMAC_SHA1);
+		String securityToken = credentials.getSecurityToken();
 		if (securityToken != null && !securityToken.isEmpty()) {
 			headParameter.put(Consts.CONST_X_ACS_SECURITY_TOKEN, securityToken);
 		}
@@ -2026,7 +2035,7 @@ public class Client implements LogService {
 			headers.put(Consts.CONST_X_LOG_RESOURCEOWNERACCOUNT, resourceOwnerAccount);
 		}
 		headers.put(Consts.CONST_CONTENT_LENGTH, String.valueOf(body.length));
-		DigestUtils.addSignature(this.accessId, this.accessKey, method.toString(), headers, resourceUri, parameters);
+		DigestUtils.addSignature(credentials.getAccessKeyId(), credentials.getAccessKeySecret(), method.toString(), headers, resourceUri, parameters);
 		URI uri;
 		if (serverIp == null) {
 			uri = GetHostURI(project);
