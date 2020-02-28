@@ -82,4 +82,13 @@ public class FastLog {
             return null;
         }
     }
+
+    public int getByteSize(){
+        int size = 0;
+        for (FastLogContent fastLogContent : contents) {
+            size += fastLogContent.getKeyBytes().length;
+            size += fastLogContent.getValueBytes().length;
+        }
+        return size;
+    }
 }
