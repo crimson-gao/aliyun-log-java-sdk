@@ -131,16 +131,7 @@ public class FastLogGroup {
     }
 
     public int getBytesSize(){
-        int size = 0;
-        size += logGroupBytes.length;
-        for (FastLog log : logs) {
-            size += log.getByteSize();
-        }
-        for (FastLogTag tag : tags) {
-            size += tag.getKeyBytes().length;
-            size += tag.getValueBytes().length;
-        }
-        return size;
+        return endOffset - beginOffset;
     }
 
     public String getCategory() {
