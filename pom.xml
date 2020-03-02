@@ -187,7 +187,6 @@
                     <artifactSet>
                         <excludes>
                             <exclude>com.alibaba:fastjson:jar:</exclude>
-                            <exclude>net.sf.json-lib:json-lib:jar:</exclude>
                             <exclude>commons-validator:commons-validator:jar:</exclude>
                             <exclude>net.jpountz.lz4:lz4:jar:</exclude>
                         </excludes>
