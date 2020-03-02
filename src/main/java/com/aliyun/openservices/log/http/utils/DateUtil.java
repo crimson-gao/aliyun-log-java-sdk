@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 /**
  * Util class for Date.
@@ -52,6 +53,7 @@ public class DateUtil {
 
     public static long stringToLong(String time) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_TYPE);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         Date date = dateFormat.parse(time);
         return date.getTime();
     }
