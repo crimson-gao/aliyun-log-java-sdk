@@ -56,8 +56,9 @@ public class MethodTest extends FunctionTest {
             testDataSet[i] = logGroupListBuilder.build().toByteArray();
         }
         for (int i = 0; i < testDataSet.length; i++) {
-            assertEquals(i * 1000, new FastLogGroup(testDataSet[i], 0, i * 1000).getBytesSize());
-            assertEquals(i * 1000, new FastLog(testDataSet[i], 0, i * 1000).getByteSize());
+            int count = randomInt(2000);
+            assertEquals(logGroupSerialize(0, count), new FastLogGroup(testDataSet[i], 0, count).getByteSize());
+            assertEquals(logSerialize(0, count), new FastLog(testDataSet[i], 0, count).getByteSize());
         }
     }
 
@@ -70,5 +71,19 @@ public class MethodTest extends FunctionTest {
             i++;
         }
         return " " + randString;
+    }
+
+    private int logGroupSerialize(int offset, int length) {
+        FastLogGroupSer.FastLogGroup.Builder builder = FastLogGroupSer.FastLogGroup.newBuilder();
+        builder.setBeginOffset(offset).setEndOffset(length);
+        FastLogGroupSer.FastLogGroup fastLogGroup = builder.build();
+        return fastLogGroup.getEndOffset() - fastLogGroup.getBeginOffset();
+    }
+
+    private int logSerialize(int offset, int length) {
+        FastLogSer.FastLog.Builder builder = FastLogSer.FastLog.newBuilder();
+        builder.setBeginOffset(offset).setEndOffset(length);
+        FastLogSer.FastLog fastLog = builder.build();
+        return fastLog.getEndOffset() - fastLog.getBeginOffset();
     }
 }

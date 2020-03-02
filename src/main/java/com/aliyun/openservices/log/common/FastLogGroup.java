@@ -130,7 +130,7 @@ public class FastLogGroup {
         return this.logGroupBytes;
     }
 
-    public int getBytesSize(){
+    public int getByteSize(){
         return endOffset - beginOffset;
     }
 
