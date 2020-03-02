@@ -10,14 +10,14 @@ import static org.junit.Assert.assertEquals;
 public class MethodTest extends FunctionTest {
     @Test
     public void testGetByte() {
-        final int LOGGROUP_LIST_COUNT = 5;
-        byte[][] testDataSet = new byte[LOGGROUP_LIST_COUNT][];
+        final int logGroupListCount = 5;
+        byte[][] testDataSet = new byte[logGroupListCount][];
         int minTime = (int) (System.currentTimeMillis() / (long) 1000) - 86400;
         int maxTime = minTime + 86400;
-        for (int i = 0; i < LOGGROUP_LIST_COUNT; ++i) {
+        for (int i = 0; i < logGroupListCount; ++i) {
             Logs.LogGroupList.Builder logGroupListBuilder = Logs.LogGroupList.newBuilder();
-            int LOGGROUP_COUNT = randomInt(30) + 1;
-            for (int j = 0; j < LOGGROUP_COUNT; ++j) {
+            int logGroupCount = randomInt(30) + 1;
+            for (int j = 0; j < logGroupCount; ++j) {
                 Logs.LogGroup.Builder logGroupBuilder = Logs.LogGroup.newBuilder();
                 if (randomInt(3) != 0) {
                     logGroupBuilder.setCategory(randomString(0, 64));
@@ -31,18 +31,18 @@ public class MethodTest extends FunctionTest {
                 if (randomInt(3) != 0) {
                     logGroupBuilder.setMachineUUID(randomString(0, 64));
                 }
-                int TAG_COUNT = randomInt(3);
-                for (int k = 0; k < TAG_COUNT; ++k) {
+                int tagCount = randomInt(3);
+                for (int k = 0; k < tagCount; ++k) {
                     Logs.LogTag.Builder tagBuilder = Logs.LogTag.newBuilder();
                     tagBuilder.setKey(randomString(0, 8));
                     tagBuilder.setValue(randomString(0, 64));
                     logGroupBuilder.addLogTags(tagBuilder.build());
                 }
-                int LOG_COUNT = randomInt(2000);
-                for (int k = 0; k < LOG_COUNT; ++k) {
+                int logCount = randomInt(2000);
+                for (int k = 0; k < logCount; ++k) {
                     Logs.Log.Builder logBuilder = Logs.Log.newBuilder();
-                    int CONTENT_COUNT = randomInt(30) + 1;
-                    for (int l = 0; l < CONTENT_COUNT; ++l) {
+                    int contentCount = randomInt(30) + 1;
+                    for (int l = 0; l < contentCount; ++l) {
                         Logs.Log.Content.Builder contentBuilder = Logs.Log.Content.newBuilder();
                         contentBuilder.setKey(randomString(0, 8));
                         contentBuilder.setValue(randomString(0, 128));
