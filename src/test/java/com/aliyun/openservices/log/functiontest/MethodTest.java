@@ -17,7 +17,26 @@ public class MethodTest extends FunctionTest {
     @Test
     public void testGetByte() {
         byte[][] testDate = getTestDate();
-        assertEquals(getProtoLength(testDate), getFastLength(testDate));
+        assertEquals(getProtoLength(testDate), getLength(testDate));
+        assertEquals(getProtoLogsLength(testDate),getLogsLength(testDate));
+    }
+
+    private int getLength(byte[][] testDataSet) {
+        int count = 0;
+        for (int i = 0; i < testDataSet.length; i++) {
+            try {
+                BatchGetLogResponse logResponse = new BatchGetLogResponse(new HashMap<String, String>());
+                logResponse.ParseFastLogGroupList(testDataSet[i]);
+                List<LogGroupData> logGroups = logResponse.GetLogGroups();
+                for (int j = 0; j < logGroups.size(); j++) {
+                    FastLogGroup fastLogGroup = logGroups.get(j).GetFastLogGroup();
+                    count += fastLogGroup.getByteSize();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return count;
     }
 
     private int getProtoLength(byte[][] testDataSet) {
@@ -39,7 +58,7 @@ public class MethodTest extends FunctionTest {
         return count;
     }
 
-    private int getFastLength(byte[][] testDataSet) {
+    private int getLogsLength(byte[][] testDataSet) {
         int count = 0;
         for (int i = 0; i < testDataSet.length; i++) {
             try {
@@ -48,10 +67,33 @@ public class MethodTest extends FunctionTest {
                 List<LogGroupData> logGroups = logResponse.GetLogGroups();
                 for (int j = 0; j < logGroups.size(); j++) {
                     FastLogGroup fastLogGroup = logGroups.get(j).GetFastLogGroup();
-                    count += fastLogGroup.getByteSize();
+                    for (int k = 0; k < fastLogGroup.getLogsCount(); k++) {
+                        count += fastLogGroup.getLogs(k).getByteSize();
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+        return count;
+    }
+
+    private int getProtoLogsLength(byte[][] testDataSet) {
+        int count = 0;
+        for (int i = 0; i < testDataSet.length; i++) {
+            try {
+                Logs.LogGroupList logGroupList = Logs.LogGroupList.parseFrom(testDataSet[i]);
+                for (int j = 0; j < logGroupList.getLogGroupListCount(); j++) {
+                    LogGroupData logGroupData = new LogGroupData(logGroupList.getLogGroupList(j));
+                    Logs.LogGroup logGroup = logGroupData.GetLogGroup();
+                    for (int k = 0; k < logGroup.getLogsCount(); k++) {
+                        count += logGroup.getLogs(k).getSerializedSize();
+                    }
+                }
+            } catch (InvalidProtocolBufferException e) {
+                e.printStackTrace();
+            } catch (LogException e) {
+                System.err.println((e.getStackTrace()));
             }
         }
         return count;
