@@ -1,15 +1,74 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.aliyun.openservices.log.common.FastLog;
 import com.aliyun.openservices.log.common.FastLogGroup;
+import com.aliyun.openservices.log.common.LogGroupData;
 import com.aliyun.openservices.log.common.Logs;
+import com.aliyun.openservices.log.exception.LogException;
+import com.aliyun.openservices.log.response.BatchGetLogResponse;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class MethodTest extends FunctionTest {
     @Test
     public void testGetByte() {
+        byte[][] testDate = getTestDate();
+        assertEquals(getProtoLength(testDate), getFastLength(testDate));
+    }
+
+    private int getProtoLength(byte[][] testDataSet) {
+        int count = 0;
+        for (int i = 0; i < testDataSet.length; i++) {
+            try {
+                Logs.LogGroupList logGroupList = Logs.LogGroupList.parseFrom(testDataSet[i]);
+                for (int j = 0; j < logGroupList.getLogGroupListCount(); j++) {
+                    LogGroupData logGroupData = new LogGroupData(logGroupList.getLogGroupList(j));
+                    Logs.LogGroup logGroup = logGroupData.GetLogGroup();
+                    count += logGroup.getSerializedSize();
+                }
+            } catch (InvalidProtocolBufferException e) {
+                e.printStackTrace();
+            } catch (LogException e) {
+                System.err.println((e.getStackTrace()));
+            }
+        }
+        return count;
+    }
+
+    private int getFastLength(byte[][] testDataSet) {
+        int count = 0;
+        for (int i = 0; i < testDataSet.length; i++) {
+            try {
+                BatchGetLogResponse logResponse = new BatchGetLogResponse(new HashMap<String, String>());
+                logResponse.ParseFastLogGroupList(testDataSet[i]);
+                List<LogGroupData> logGroups = logResponse.GetLogGroups();
+                for (int j = 0; j < logGroups.size(); j++) {
+                    FastLogGroup fastLogGroup = logGroups.get(j).GetFastLogGroup();
+                    count += fastLogGroup.getByteSize();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return count;
+    }
+
+    private String randomString(int minLength, int maxLength) {
+        int length = randomBetween(minLength, maxLength);
+        StringBuilder randString = new StringBuilder();
+        int i = 0;
+        while (i < length) {
+            randString.append((char) (randomBetween(33, 126)));
+            i++;
+        }
+        return " " + randString;
+    }
+
+    private byte[][] getTestDate() {
         final int logGroupListCount = 5;
         byte[][] testDataSet = new byte[logGroupListCount][];
         int minTime = (int) (System.currentTimeMillis() / (long) 1000) - 86400;
@@ -55,35 +114,6 @@ public class MethodTest extends FunctionTest {
             }
             testDataSet[i] = logGroupListBuilder.build().toByteArray();
         }
-        for (int i = 0; i < testDataSet.length; i++) {
-            int count = randomInt(2000);
-            assertEquals(logGroupSerialize(0, count), new FastLogGroup(testDataSet[i], 0, count).getByteSize());
-            assertEquals(logSerialize(0, count), new FastLog(testDataSet[i], 0, count).getByteSize());
-        }
-    }
-
-    private String randomString(int minLength, int maxLength) {
-        int length = randomBetween(minLength, maxLength);
-        StringBuilder randString = new StringBuilder();
-        int i = 0;
-        while (i < length) {
-            randString.append((char) (randomBetween(33, 126)));
-            i++;
-        }
-        return " " + randString;
-    }
-
-    private int logGroupSerialize(int offset, int length) {
-        FastLogGroupSer.FastLogGroup.Builder builder = FastLogGroupSer.FastLogGroup.newBuilder();
-        builder.setBeginOffset(offset).setEndOffset(length);
-        FastLogGroupSer.FastLogGroup fastLogGroup = builder.build();
-        return fastLogGroup.getEndOffset() - fastLogGroup.getBeginOffset();
-    }
-
-    private int logSerialize(int offset, int length) {
-        FastLogSer.FastLog.Builder builder = FastLogSer.FastLog.newBuilder();
-        builder.setBeginOffset(offset).setEndOffset(length);
-        FastLogSer.FastLog fastLog = builder.build();
-        return fastLog.getEndOffset() - fastLog.getBeginOffset();
+        return testDataSet;
     }
 }
