@@ -130,6 +130,10 @@ public class FastLogGroup {
         return this.logGroupBytes;
     }
 
+    public int getByteSize(){
+        return endOffset - beginOffset;
+    }
+
     public String getCategory() {
         if (this.categoryOffset < 0) {
             return null;
