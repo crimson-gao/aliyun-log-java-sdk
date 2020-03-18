@@ -2035,7 +2035,7 @@ public class Client implements LogService {
 			headers.put(Consts.CONST_X_LOG_RESOURCEOWNERACCOUNT, resourceOwnerAccount);
 		}
 		headers.put(Consts.CONST_CONTENT_LENGTH, String.valueOf(body.length));
-		DigestUtils.addSignature(credentials.getAccessKeyId(), credentials.getAccessKeySecret(), method.toString(), headers, resourceUri, parameters);
+		DigestUtils.addSignature(credentials, method.toString(), headers, resourceUri, parameters);
 		URI uri;
 		if (serverIp == null) {
 			uri = GetHostURI(project);

@@ -12,6 +12,7 @@ public class ClientConfiguration {
     public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000;
     public static final int DEFAULT_THREAD_POOL_WAIT_TIME = 60 * 1000;
     public static final int DEFAULT_REQUEST_TIMEOUT = 60 * 1000;
+    public static final boolean DEFAULT_USE_REAPER = true;
 
     private int maxConnections = 50;
     private int socketTimeout = 50 * 1000;
@@ -27,7 +28,7 @@ public class ClientConfiguration {
     private boolean requestTimeoutEnabled = false;
     protected long idleConnectionTime = DEFAULT_IDLE_CONNECTION_TIME;
     protected int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
-
+    protected boolean useReaper = DEFAULT_USE_REAPER;
 
     public ClientConfiguration() {
     }
@@ -166,5 +167,22 @@ public class ClientConfiguration {
      */
     public int getRequestTimeout() {
         return requestTimeout;
+    }
+
+
+    /**
+     * Gets the flag of using {@link com.aliyun.openservices.log.http.comm.IdleConnectionReaper} to manage expired
+     * connection.
+     */
+    public boolean isUseReaper() {
+        return useReaper;
+    }
+
+    /**
+     * Sets the flag of using {@link com.aliyun.openservices.log.http.comm.IdleConnectionReaper} to manage expired
+     * connection.
+     */
+    public void setUseReaper(boolean useReaper) {
+        this.useReaper = useReaper;
     }
 }
