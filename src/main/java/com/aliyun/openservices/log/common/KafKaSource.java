@@ -11,7 +11,6 @@ import java.util.Map;
 public class KafKaSource extends DataSource {
     private String topics;
     private String bootstrapServers;
-    private boolean skipExceedRecords;
     private ValueType valueType;
     private KafkaPosition fromPosition;
     private long fromTimestamp;
@@ -78,14 +77,6 @@ public class KafKaSource extends DataSource {
         this.bootstrapServers = bootstrapServers;
     }
 
-    public boolean isSkipExceedRecords() {
-        return skipExceedRecords;
-    }
-
-    public void setSkipExceedRecords(boolean skipExceedRecords) {
-        this.skipExceedRecords = skipExceedRecords;
-    }
-
     public ValueType getValueType() {
         return valueType;
     }
@@ -131,7 +122,6 @@ public class KafKaSource extends DataSource {
         super.deserialize(jsonObject);
         topics = JsonUtils.readOptionalString(jsonObject, "topics");
         bootstrapServers = JsonUtils.readOptionalString(jsonObject, "bootstrapServers");
-        skipExceedRecords = JsonUtils.readBool(jsonObject, "skipExceedRecords", false);
         valueType = ValueType.fromString(jsonObject.getString("valueType"));
         fromPosition = KafkaPosition.fromString(jsonObject.getString("fromPosition"));
         fromTimestamp = jsonObject.getLongValue("fromTimestamp");
