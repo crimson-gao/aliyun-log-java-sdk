@@ -8,6 +8,8 @@ public class IngestionConfiguration extends JobConfiguration {
 
     private DataSource source;
 
+    private Integer numberOfInstances;
+
     public String getLogstore() {
         return logstore;
     }
@@ -22,6 +24,14 @@ public class IngestionConfiguration extends JobConfiguration {
 
     public void setSource(DataSource source) {
         this.source = source;
+    }
+
+    public Integer getNumberOfInstances() {
+        return numberOfInstances;
+    }
+
+    public void setNumberOfInstances(Integer numberOfInstances) {
+        this.numberOfInstances = numberOfInstances;
     }
 
     private DataSource createSource(DataSourceType type) {
@@ -44,6 +54,7 @@ public class IngestionConfiguration extends JobConfiguration {
     @Override
     public void deserialize(JSONObject value) {
         logstore = value.getString("logstore");
+        numberOfInstances = value.getIntValue("numberOfInstances");
         JSONObject jsonObject = value.getJSONObject("source");
         DataSourceType kind = DataSourceType.fromString(jsonObject.getString("type"));
         source = createSource(kind);
