@@ -1,21 +1,22 @@
 package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.JSONObject;
-import com.aliyun.openservices.log.util.JsonUtils;
 
 import java.io.Serializable;
 
 public class TimeSpan implements Serializable {
-    private TimeSpanType type;
+    private int queryTimeType;
     private String start;
     private String end;
+    private Integer startTime;
+    private Integer endTime;
 
-    public TimeSpanType getType() {
-        return type;
+    public int getQueryTimeType() {
+        return queryTimeType;
     }
 
-    public void setType(TimeSpanType type) {
-        this.type = type;
+    public void setQueryTimeType(int queryTimeType) {
+        this.queryTimeType = queryTimeType;
     }
 
     public String getStart() {
@@ -26,6 +27,14 @@ public class TimeSpan implements Serializable {
         this.start = start;
     }
 
+    public Integer getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Integer startTime) {
+        this.startTime = startTime;
+    }
+
     public String getEnd() {
         return end;
     }
@@ -34,38 +43,19 @@ public class TimeSpan implements Serializable {
         this.end = end;
     }
 
+    public Integer getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Integer endTime) {
+        this.endTime = endTime;
+    }
+
     public void deserialize(JSONObject timeSpan) {
-        type = TimeSpanType.fromString(timeSpan.getString("type"));
-        start = JsonUtils.readOptionalString(timeSpan, "start");
-        end = JsonUtils.readOptionalString(timeSpan, "end");
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TimeSpan period = (TimeSpan) o;
-
-        if (getType() != period.getType()) return false;
-        if (getStart() != null ? !getStart().equals(period.getStart()) : period.getStart() != null) return false;
-        return getEnd() != null ? getEnd().equals(period.getEnd()) : period.getEnd() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getType() != null ? getType().hashCode() : 0;
-        result = 31 * result + (getStart() != null ? getStart().hashCode() : 0);
-        result = 31 * result + (getEnd() != null ? getEnd().hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "TimeSpan{" +
-                "type=" + type +
-                ", start='" + start + '\'' +
-                ", end='" + end + '\'' +
-                '}';
+        queryTimeType = timeSpan.getIntValue("queryTimeType");
+        start = timeSpan.getString("start");
+        end = timeSpan.getString("end");
+        startTime = timeSpan.getIntValue("startTime");
+        endTime = timeSpan.getIntValue("endTime");
     }
 }
