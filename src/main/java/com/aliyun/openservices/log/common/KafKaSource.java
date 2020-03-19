@@ -15,15 +15,20 @@ public class KafKaSource extends DataSource {
     private KafkaPosition fromPosition;
     private long fromTimestamp;
     private long toTimestamp;
+    private String timeField;
+    private String timePattern;
+    // Do not specify timeFormat if use ingest time.
+    private String timeFormat;
+    private String timeZone;
     private Map<String, String> additionalProps;
 
-    private enum KafkaPosition implements JSONSerializable {
+    public enum KafkaPosition implements JSONSerializable {
         GROUP_OFFSETS,
         EARLIEST,
         LATEST,
         TIMESTAMP;
 
-        static KafkaPosition fromString(String value) {
+        public static KafkaPosition fromString(String value) {
             for (KafkaPosition position : KafkaPosition.values()) {
                 if (position.name().equalsIgnoreCase(value)) {
                     return position;
@@ -38,11 +43,11 @@ public class KafKaSource extends DataSource {
         }
     }
 
-    private enum ValueType implements JSONSerializable {
+    public enum ValueType implements JSONSerializable {
         JSON,
         TEXT;
 
-        static ValueType fromString(String value) {
+        public static ValueType fromString(String value) {
             for (ValueType type : ValueType.values()) {
                 if (type.name().equalsIgnoreCase(value)) {
                     return type;
@@ -109,6 +114,38 @@ public class KafKaSource extends DataSource {
         this.toTimestamp = toTimestamp;
     }
 
+    public String getTimeField() {
+        return timeField;
+    }
+
+    public void setTimeField(String timeField) {
+        this.timeField = timeField;
+    }
+
+    public String getTimePattern() {
+        return timePattern;
+    }
+
+    public void setTimePattern(String timePattern) {
+        this.timePattern = timePattern;
+    }
+
+    public String getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
     public Map<String, String> getAdditionalProps() {
         return additionalProps;
     }
@@ -126,6 +163,10 @@ public class KafKaSource extends DataSource {
         fromPosition = KafkaPosition.fromString(jsonObject.getString("fromPosition"));
         fromTimestamp = jsonObject.getLongValue("fromTimestamp");
         toTimestamp = jsonObject.getLongValue("toTimestamp");
+        timeField = jsonObject.getString("timeField");
+        timePattern = jsonObject.getString("timePattern");
+        timeFormat = jsonObject.getString("timeFormat");
+        timeZone = jsonObject.getString("timeZone");
         additionalProps = JsonUtils.readOptionalMap(jsonObject, "additionalProps");
     }
 }
