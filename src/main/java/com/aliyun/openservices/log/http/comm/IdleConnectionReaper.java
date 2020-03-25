@@ -13,7 +13,7 @@ import org.apache.http.conn.HttpClientConnectionManager;
  */
 public final class IdleConnectionReaper extends Thread {
     private static final int REAP_INTERVAL_MILLISECONDS = 5 * 1000;
-    private static final List<HttpClientConnectionManager> connectionManagers = new ArrayList<HttpClientConnectionManager>();
+    private static final ArrayList<HttpClientConnectionManager> connectionManagers = new ArrayList<HttpClientConnectionManager>();
 
     private static IdleConnectionReaper instance;
     private static long idleConnectionTime = 60 * 1000;
@@ -54,7 +54,8 @@ public final class IdleConnectionReaper extends Thread {
             try {
                 List<HttpClientConnectionManager> connectionManagers = null;
                 synchronized (IdleConnectionReaper.class) {
-                    connectionManagers = new ArrayList<HttpClientConnectionManager>(IdleConnectionReaper.connectionManagers);
+                    connectionManagers = (List<HttpClientConnectionManager>) IdleConnectionReaper.connectionManagers
+                            .clone();
                 }
                 for (HttpClientConnectionManager connectionManager : connectionManagers) {
                     try {

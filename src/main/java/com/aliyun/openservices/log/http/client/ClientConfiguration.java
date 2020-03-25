@@ -12,7 +12,7 @@ public class ClientConfiguration {
     public static final int DEFAULT_VALIDATE_AFTER_INACTIVITY = 2 * 1000;
     public static final int DEFAULT_THREAD_POOL_WAIT_TIME = 60 * 1000;
     public static final int DEFAULT_REQUEST_TIMEOUT = 60 * 1000;
-    public static final boolean DEFAULT_USE_REAPER = true;
+    public static final boolean DEFAULT_USE_REAPER = false;
 
     private int maxConnections = 50;
     private int socketTimeout = 50 * 1000;
