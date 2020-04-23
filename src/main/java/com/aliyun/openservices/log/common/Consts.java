@@ -254,6 +254,8 @@ public class Consts {
 
     public static final String CONST_RESULT_LOGS = "logs";
     public static final String CONST_RESULT_LOG_STORES = "logstores";
+    public static final String CONST_RESULT_EXTERNAL_STORES = "externalstores";
+    public static final String CONST_EXTERNAL_NAME = "externalStoreName";
     public static final String CONST_RESULT_HISTOGRAMS = "histograms";
     public static final String CONST_RESULT_PROCESS = "progress";
     public static final String CONST_RESULT_COUNT = "count";

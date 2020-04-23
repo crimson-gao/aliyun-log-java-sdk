@@ -38,6 +38,7 @@ import com.aliyun.openservices.log.common.ShipperConfig;
 import com.aliyun.openservices.log.common.ShipperTask;
 import com.aliyun.openservices.log.common.ShipperTasksStatistic;
 import com.aliyun.openservices.log.common.TagContent;
+import com.aliyun.openservices.log.common.ExternalStore;
 import com.aliyun.openservices.log.common.auth.Credentials;
 import com.aliyun.openservices.log.common.auth.DefaultCredentails;
 import com.aliyun.openservices.log.common.auth.ECSRoleCredentials;
@@ -2299,6 +2300,90 @@ public class Client implements LogService {
 		JSONObject object = parseResponseBody(response, requestId);
 		LogStore logStore = ExtractLogStoreFromResponse(object, requestId);
 		return new GetLogStoreResponse(resHeaders, logStore);
+	}
+
+	public CreateExternalStoreResponse createExternalStore(CreateExternalStoreRequest request) throws LogException {
+		String project = request.GetProject();
+		Args.notNullOrEmpty(project, "project");
+		ExternalStore externalStore = request.getExternalStore();
+		Args.notNull(externalStore, "ExternalStore");
+		String externalStoreName = externalStore.getExternalStoreName();
+		Args.notNullOrEmpty(externalStoreName, "externalStoreName");
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		byte[] body = encodeToUtf8(externalStore.toJson().toJSONString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = "/externalstores";
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(project, HttpMethod.POST,
+				resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new CreateExternalStoreResponse(resHeaders);
+	}
+
+	public DeleteExternalStoreResponse deleteExternalStore(DeleteExternalStoreRequest request) throws LogException {
+		String project = request.GetProject();
+		Args.notNullOrEmpty(project, "project");
+		String externalStoreName = request.getExternalStoreName();
+		Args.notNullOrEmpty(externalStoreName, "externalStoreName");
+		Map<String, String> urlParameter = request.GetAllParams();
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		String resourceUri = "/externalstores/" + externalStoreName;
+		ResponseMessage response = SendData(project, HttpMethod.DELETE, resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new DeleteExternalStoreResponse(resHeaders);
+	}
+
+	public UpdateExternalStoreResponse updateExternalStore(UpdateExternalStoreRequest request) throws LogException {
+		String project = request.GetProject();
+		Args.notNullOrEmpty(project, "project");
+		ExternalStore externalStore = request.getExternalStore();
+		Args.notNull(externalStore, "ExternalStore");
+		String externalStoreName = externalStore.getExternalStoreName();
+		Args.notNull(externalStoreName, "externalStoreName");
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		byte[] body = encodeToUtf8(externalStore.toJson().toJSONString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = "/externalstores/" + externalStoreName;
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(project, HttpMethod.PUT,
+				resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new UpdateExternalStoreResponse(resHeaders);
+	}
+
+	public GetExternalStoreResponse getExternalStore(GetExternalStoreRequest request) throws LogException {
+		String project = request.GetProject();
+		Args.notNullOrEmpty(project, "project");
+		String externalStoreName = request.getExternalStoreName();
+		Args.notNullOrEmpty(externalStoreName, "externalStoreName");
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		String resourceUri = "/externalstores/" + externalStoreName;
+		Map<String, String> urlParameter = request.GetAllParams();
+		ResponseMessage response = SendData(project, HttpMethod.GET, resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		JSONObject object = parseResponseBody(response, requestId);
+		ExternalStore externalStore = new ExternalStore(object);
+		externalStore.setExternalStoreName(externalStoreName);
+		return new GetExternalStoreResponse(resHeaders, externalStore);
+	}
+
+	public ListExternalStroesResponse listExternalStores(ListExternalStoresRequest request) throws LogException {
+		Args.notNull(request, "request");
+		String project = request.GetProject();
+		Args.notNullOrEmpty(project, "project");
+		Map<String, String> urlParameter = request.GetAllParams();
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		String resourceUri = "/externalstores";
+		ResponseMessage response = SendData(project, HttpMethod.GET, resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		JSONObject object = parseResponseBody(response, requestId);
+		ListExternalStroesResponse listExternalStroesResponse = new ListExternalStroesResponse(resHeaders);
+		listExternalStroesResponse.setExternalStores(ExtractJsonArray(Consts.CONST_RESULT_EXTERNAL_STORES, object));
+		listExternalStroesResponse.setTotal(object.getIntValue(Consts.CONST_TOTAL));
+		listExternalStroesResponse.setCount(object.getIntValue(Consts.CONST_COUNT));
+		return listExternalStroesResponse;
 	}
 
 	@Override
