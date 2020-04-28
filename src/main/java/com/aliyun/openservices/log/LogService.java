@@ -17,6 +17,7 @@ import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.common.MachineGroup;
 import com.aliyun.openservices.log.common.MachineList;
 import com.aliyun.openservices.log.common.ShipperConfig;
+import com.aliyun.openservices.log.common.SubStore;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.*;
@@ -3165,6 +3166,96 @@ public interface LogService {
      * @throws LogException if any error occurs
      */
 	ClearLogStoreStorageResponse ClearLogStoreStorage(String project, String logStoreName) throws LogException;
+
+	/**
+	 *
+	 * @param project name
+	 * @param logstore name
+	 * @return An instance of {@link ListSubStoreResponse}
+	 * @throws LogException if any error occurs
+	 */
+	ListSubStoreResponse listSubStore(String project, String logstore) throws LogException;
+
+	/**
+	 *
+	 * @param request An instance of {@link ListSubStoreRequest}
+	 * @return An instance of {@link ListSubStoreResponse}
+	 * @throws LogException if any error occurs
+	 */
+	ListSubStoreResponse listSubStore(ListSubStoreRequest request) throws LogException;
+
+	/**
+	 *
+	 * @param project name
+	 * @param logstore name
+	 * @param name substore name
+	 * @return An instance of {@link GetSubStoreResponse}
+	 * @throws LogException if any error occurs
+	 */
+	GetSubStoreResponse getSubStore(String project, String logstore, String name) throws LogException;
+
+	/**
+	 *
+	 * @param request An instance of {@link GetSubStoreRequest}
+	 * @return An instance of {@link GetSubStoreResponse}
+	 * @throws LogException if any error occurs
+	 */
+	GetSubStoreResponse getSubStore(GetSubStoreRequest request) throws LogException;
+
+	/**
+	 *
+	 * @param project name
+	 * @param logstore name
+	 * @param subStore An instance of {@link SubStore}
+	 * @return An instance of {@link CreateSubStoreResponse}
+	 * @throws LogException if any error occurs
+	 */
+	CreateSubStoreResponse createSubStore(String project, String logstore, SubStore subStore) throws LogException;
+
+	/**
+	 *
+	 * @param request An instance of {@link CreateSubStoreRequest}
+	 * @return An instance of {@link CreateSubStoreResponse}
+	 * @throws LogException if any error occurs
+	 */
+	CreateSubStoreResponse createSubStore(CreateSubStoreRequest request) throws LogException;
+
+	/**
+	 *
+	 * @param project name
+	 * @param logstore name
+	 * @param subStore An instance of {@link SubStore}
+	 * @return An instance of {@link UpdateSubStoreResponse}
+	 * @throws LogException if any error occurs
+	 */
+	UpdateSubStoreResponse updateSubStore(String project, String logstore, SubStore subStore) throws LogException;
+
+	/**
+	 *
+	 * @param request An instance of {@link UpdateSubStoreRequest}
+	 * @return An instance of {@link UpdateSubStoreResponse}
+	 * @throws LogException if any error occurs
+	 */
+	UpdateSubStoreResponse updateSubStore(UpdateSubStoreRequest request) throws LogException;
+
+	/**
+	 *
+	 * @param project name
+	 * @param logstore name
+	 * @param subStoreName subStore name
+	 * @return An instance of {@link DeleteSubStoreResponse}
+	 * @throws LogException if any error occurs
+	 */
+	DeleteSubStoreResponse deleteSubStore(String project, String logstore, String subStoreName) throws LogException;
+
+	/**
+	 *
+	 * @param request An instance of {@link DeleteSubStoreRequest}
+	 * @return An instance of {@link DeleteSubStoreResponse}
+	 * @throws LogException if any error occurs
+	 */
+	DeleteSubStoreResponse deleteSubStore(DeleteSubStoreRequest request) throws LogException;
+
 
 	CreateDomainResponse createDomain(String project, Domain domain) throws LogException;
 	CreateDomainResponse createDomain(CreateDomainRequest requset) throws LogException;
