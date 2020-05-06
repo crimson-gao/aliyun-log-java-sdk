@@ -10,38 +10,41 @@ import com.aliyun.openservices.log.common.Consts;
  * @author sls_dev
  *
  */
-public class ListLogStoresRequest extends Request {
+public class ListLogStoreV2Request extends Request {
 
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1380724751189149725L;
-	
+	private int offset;
+	private int size;
+	private String telemetryType;
 
-	
-	public ListLogStoresRequest(String project, int offset, int size, String logstoreName)
+	public ListLogStoreV2Request(String project, int offset, int size, String telemetryType)
 	{
 		super(project);
-		SetOffset(offset);
-		SetSize(size);
-		SetLogstoreName(logstoreName);
-	}
-	
-
-	public void SetOffset(int offset)
-	{
-		SetParam(Consts.CONST_OFFSET, String.valueOf(offset));
-	}
-	
-
-	public void SetSize(int size)
-	{
-		SetParam(Consts.CONST_SIZE,String.valueOf(size));
+		this.offset = offset;
+		this.size = size;
+		this.telemetryType =telemetryType;
 	}
 
-	public void SetLogstoreName(String logstoreName)
-	{
-		SetParam(Consts.CONST_LOGSTORE_NAME,logstoreName);
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	public String getTelemetryType() {
+		return telemetryType;
+	}
+
+	public void setTelemetryType(String telemetryType) {
+		this.telemetryType = telemetryType;
 	}
 }

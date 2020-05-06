@@ -15,7 +15,7 @@ public class SubStore {
     private int timeIndex;
     private List<SubStoreKey> keys;
 
-    public SubStore(){
+    public SubStore() {
         super();
     }
 
@@ -25,22 +25,22 @@ public class SubStore {
         this.sortedKeyCount = sortedKeyCount;
         this.timeIndex = timeIndex;
         this.keys = keys;
-        if (!isValid()){
+        if (!isValid()) {
             throw new IllegalArgumentException("SubStore is invalid");
         }
     }
 
-    public boolean isValid(){
+    public boolean isValid() {
         if (this.sortedKeyCount <= 0 || this.sortedKeyCount >= this.keys.size()) {
             return false;
         }
-        if (this.timeIndex < 0 || this.timeIndex <= this.sortedKeyCount) {
+        if (this.timeIndex >= this.keys.size() || this.timeIndex <= this.sortedKeyCount) {
             return false;
         }
         if (this.ttl <= 0 || this.ttl > 3650) {
             return false;
         }
-        for (int i=0;i<this.keys.size();i++) {
+        for (int i = 0; i < this.keys.size(); i++) {
             if (!this.keys.get(i).isValid()) {
                 return false;
             }
@@ -112,11 +112,11 @@ public class SubStore {
         if (dict.containsKey("keys")) {
             JSONArray keysDict = dict.getJSONArray("keys");
             keys = new ArrayList<SubStoreKey>();
-            for (int i = 0;i < keysDict.size();i++) {
+            for (int i = 0; i < keysDict.size(); i++) {
                 JSONObject keyDict = keysDict.getJSONObject(i);
                 String keyName = keyDict.getString("name");
                 String keyType = keyDict.getString("type");
-                SubStoreKey subStoreKey = new SubStoreKey(keyName,keyType);
+                SubStoreKey subStoreKey = new SubStoreKey(keyName, keyType);
                 keys.add(subStoreKey);
             }
         }
@@ -135,13 +135,13 @@ public class SubStore {
         subStoreDict.put("timeIndex", getTimeIndex());
 
         JSONArray keysDict = new JSONArray();
-        for(SubStoreKey key:getKeys()){
+        for (SubStoreKey key : getKeys()) {
             JSONObject keyDict = new JSONObject();
-            keyDict.put("name",key.getName());
-            keyDict.put("type",key.getType());
+            keyDict.put("name", key.getName());
+            keyDict.put("type", key.getType());
             keysDict.add(keyDict);
         }
-        subStoreDict.put("keys",keysDict);
+        subStoreDict.put("keys", keysDict);
         return subStoreDict;
     }
 }

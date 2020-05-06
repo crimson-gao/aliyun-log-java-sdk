@@ -1,4 +1,10 @@
 package com.aliyun.openservices.log.response;
 
-public class UpdateSubStoreTTLResponse {
+import java.util.Map;
+
+public class UpdateSubStoreTTLResponse extends Response {
+
+    public UpdateSubStoreTTLResponse(Map<String, String> headers) {
+        super(headers);
+    }
 }
