@@ -1,5 +1,7 @@
 package com.aliyun.openservices.log.request;
 
+import com.aliyun.openservices.log.common.Consts;
+
 public class UpdateSubStoreTTLRequest extends Request{
     private String logstoreName;
     private int ttl;
@@ -11,7 +13,7 @@ public class UpdateSubStoreTTLRequest extends Request{
     public UpdateSubStoreTTLRequest(String project,String logstoreName,int ttl) {
         super(project);
         this.logstoreName = logstoreName;
-        this.ttl = ttl;
+        setTtl(ttl);
     }
 
     public String getLogstoreName() {
@@ -22,11 +24,7 @@ public class UpdateSubStoreTTLRequest extends Request{
         this.logstoreName = logstoreName;
     }
 
-    public int getTtl() {
-        return ttl;
-    }
-
     public void setTtl(int ttl) {
-        this.ttl = ttl;
+        SetParam(Consts.CONST_TTL, String.valueOf(ttl));
     }
 }

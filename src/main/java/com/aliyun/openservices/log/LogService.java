@@ -3281,52 +3281,12 @@ public interface LogService {
 	 * @param project       name
 	 * @param offset        offset
 	 * @param size          size
+	 * @param logstoreName  logstore name
 	 * @param telemetryType telemetry type
-	 * @return An instance of {@link ListLogStoreV2Response}
+	 * @return An instance of {@link ListLogStoresResponse}
 	 * @throws LogException if any error occurs
 	 */
-	ListLogStoreV2Response listLogStoreV2(String project, int offset, int size, String telemetryType) throws LogException;
-
-	/**
-	 * @param request An instance of {@link ListLogStoreV2Request}
-	 * @return An instance of {@link ListLogStoreV2Response}
-	 * @throws LogException if any error occurs
-	 */
-	ListLogStoreV2Response listLogStoreV2(ListLogStoreV2Request request) throws LogException;
-
-	/**
-	 *
-	 * @param project name
-	 * @param logStore An instance of {@link LogStore}
-	 * @return An instance of {@link CreateLogStoreV2Response}
-	 * @throws LogException if any error occurs
-	 */
-	CreateLogStoreV2Response createLogStoreV2(String project, LogStore logStore) throws LogException;
-
-	/**
-	 *
-	 * @param request An instance of {@link CreateLogStoreV2Request}
-	 * @return An instance of {@link CreateLogStoreV2Response}
-	 * @throws LogException if any error occurs
-	 */
-	CreateLogStoreV2Response createLogStoreV2(CreateLogStoreV2Request request) throws LogException;
-
-	/**
-	 *
-	 * @param project name
-	 * @param logStore An instance of {@link LogStore}
-	 * @return An instance of {@link UpdateLogStoreV2Response}
-	 * @throws LogException if any error occurs
-	 */
-	UpdateLogStoreV2Response updateLogStoreV2(String project, LogStore logStore) throws LogException;
-
-	/**
-	 *
-	 * @param request An instance of {@link UpdateLogStoreV2Request}
-	 * @return An instance of {@link UpdateLogStoreV2Response}
-	 * @throws LogException if any error occurs
-	 */
-	UpdateLogStoreV2Response updateLogStoreV2(UpdateLogStoreV2Request request) throws LogException;
+	ListLogStoresResponse listLogStores(String project, int offset, int size,String logstoreName, String telemetryType) throws LogException;
 
 	CreateDomainResponse createDomain(String project, Domain domain) throws LogException;
 	CreateDomainResponse createDomain(CreateDomainRequest requset) throws LogException;

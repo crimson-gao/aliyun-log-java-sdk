@@ -159,6 +159,7 @@ public class Consts {
     public static final String CONST_GROUPNAME = "groupName";
     public static final String CONST_PRINCIPLEID = "principleId";
     public static final String CONST_LOGSTORE_NAME = "logstoreName";
+    public static final String CONST_TETEMETRY_TYPE = "telemetryType";
     public static final String CONST_SPLIT_MID_HASH = "key";
     public static final String CONST_SPLIT_SHARDCOUNT = "shardCount";
     public static final String CONST_ACTION = "action";
@@ -251,11 +252,11 @@ public class Consts {
     public static final String CONST_TYPE_LOG = "log";
     public static final String CONST_TYPE_CONTEXT_LOG = "context_log";
     public static final String CONST_TYPE_TOPIC = "topic";
+    public static final String CONST_TTL = "ttl";
 
     public static final String CONST_RESULT_LOGS = "logs";
     public static final String CONST_RESULT_LOG_STORES = "logstores";
     public static final String CONST_RESULT_SUB_STORES = "substores";
-    public static final String CONST_RESULT_TTL = "ttl";
     public static final String CONST_RESULT_EXTERNAL_STORES = "externalstores";
     public static final String CONST_EXTERNAL_NAME = "externalStoreName";
     public static final String CONST_RESULT_HISTOGRAMS = "histograms";

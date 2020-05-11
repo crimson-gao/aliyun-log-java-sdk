@@ -2470,7 +2470,7 @@ public class Client implements LogService {
 		String requestId = GetRequestId(resHeaders);
 		JSONObject object = parseResponseBody(response, requestId);
 		GetSubStoreTTLResponse getSubStoreTTLResponse = new GetSubStoreTTLResponse(resHeaders);
-		int ttl = object.getIntValue(Consts.CONST_RESULT_TTL);
+		int ttl = object.getIntValue(Consts.CONST_TTL);
 		getSubStoreTTLResponse.setTtl(ttl);
 		return getSubStoreTTLResponse;
 	}
@@ -2488,8 +2488,7 @@ public class Client implements LogService {
 		Map<String, String> urlParameter = request.GetAllParams();
 		String logstoreName = request.getLogstoreName();
 		CodingUtils.assertStringNotNullOrEmpty(logstoreName, "logstoreName");
-		int ttl = request.getTtl();
-		String resourceUri = "/logstores/" + logstoreName + "/substores/storage/ttl?ttl=" + ttl;
+		String resourceUri = "/logstores/" + logstoreName + "/substores/storage/ttl";
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		ResponseMessage response = SendData(project, HttpMethod.PUT,
 				resourceUri, urlParameter, headParameter);
@@ -2501,84 +2500,8 @@ public class Client implements LogService {
 	}
 
 	@Override
-	public ListLogStoreV2Response listLogStoreV2(String project, int offset, int size, String telemetryType) throws LogException {
-		return listLogStoreV2(new ListLogStoreV2Request(project, offset, size, telemetryType));
-	}
-
-	@Override
-	public ListLogStoreV2Response listLogStoreV2(ListLogStoreV2Request request) throws LogException {
-		CodingUtils.assertParameterNotNull(request, "request");
-		String project = request.GetProject();
-		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		Map<String, String> urlParameter = request.GetAllParams();
-		int offset = request.getOffset();
-		int size = request.getSize();
-		String telemetryType = request.getTelemetryType();
-		CodingUtils.assertStringNotNullOrEmpty(telemetryType, "telemetryType");
-		String resourceUri = "/logstores?offset=" + offset + "&size=" + size + "&telemetryType=" + telemetryType;
-		Map<String, String> headParameter = GetCommonHeadPara(project);
-		ResponseMessage response = SendData(project, HttpMethod.GET,
-				resourceUri, urlParameter, headParameter);
-		Map<String, String> resHeaders = response.getHeaders();
-		String requestId = GetRequestId(resHeaders);
-		JSONObject object = parseResponseBody(response, requestId);
-		ListLogStoreV2Response listLogStoreV2Response = new ListLogStoreV2Response(resHeaders);
-		listLogStoreV2Response.SetLogStores(ExtractJsonArray(
-				Consts.CONST_RESULT_LOG_STORES, object));
-		listLogStoreV2Response.SetTotal(object.getIntValue(Consts.CONST_TOTAL));
-		return listLogStoreV2Response;
-	}
-
-	@Override
-	public CreateLogStoreV2Response createLogStoreV2(String project, LogStore logStore) throws LogException {
-		return createLogStoreV2(new CreateLogStoreV2Request(project, logStore));
-	}
-
-	@Override
-	public CreateLogStoreV2Response createLogStoreV2(CreateLogStoreV2Request request) throws LogException {
-		CodingUtils.assertParameterNotNull(request, "request");
-		String project = request.GetProject();
-		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		LogStore logStore = request.getLogStore();
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
-		Map<String, String> headParameter = GetCommonHeadPara(project);
-		byte[] body = encodeToUtf8(logStore.ToRequestString());
-		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-		String resourceUri = "/logstores";
-		Map<String, String> urlParameter = new HashMap<String, String>();
-		ResponseMessage response = SendData(project, HttpMethod.POST,
-				resourceUri, urlParameter, headParameter, body);
-		Map<String, String> resHeaders = response.getHeaders();
-		return new CreateLogStoreV2Response(resHeaders);
-	}
-
-	@Override
-	public UpdateLogStoreV2Response updateLogStoreV2(String project,
-													 LogStore logStore) throws LogException {
-		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
-		return updateLogStoreV2(new UpdateLogStoreV2Request(project, logStore));
-	}
-
-	@Override
-	public UpdateLogStoreV2Response updateLogStoreV2(UpdateLogStoreV2Request request)
-			throws LogException {
-		CodingUtils.assertParameterNotNull(request, "request");
-		String project = request.GetProject();
-		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		LogStore logStore = request.getLogStore();
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
-		String logStoreName = logStore.GetLogStoreName();
-		CodingUtils.assertStringNotNullOrEmpty(logStoreName, "logStoreName");
-		Map<String, String> headParameter = GetCommonHeadPara(project);
-		byte[] body = encodeToUtf8(logStore.ToRequestString());
-		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-		String resourceUri = "/logstores/" + logStoreName;
-		Map<String, String> urlParameter = new HashMap<String, String>();
-		ResponseMessage response = SendData(project, HttpMethod.PUT,
-				resourceUri, urlParameter, headParameter, body);
-		Map<String, String> resHeaders = response.getHeaders();
-		return new UpdateLogStoreV2Response(resHeaders);
+	public ListLogStoresResponse listLogStores(String project, int offset, int size,String logstoreName, String telemetryType) throws LogException {
+		return ListLogStores(new ListLogStoresRequest(project, offset, size, logstoreName, telemetryType));
 	}
 
 	public CreateExternalStoreResponse createExternalStore(CreateExternalStoreRequest request) throws LogException {
