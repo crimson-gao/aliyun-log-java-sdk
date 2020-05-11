@@ -22,7 +22,6 @@ public class LogStore implements Serializable {
     private int lastModifyTime = -1;
     private long preserveStorage = -1;
     private long usedStorage = 0;
-    private String description = "";
     private String productType = "";
     private int archiveSeconds = 0;
     private String telemetryType = "";
@@ -80,7 +79,6 @@ public class LogStore implements Serializable {
         this.mMaxSplitShard = logStore.getmMaxSplitShard();
         this.preserveStorage = logStore.preserveStorage;
         this.usedStorage = logStore.usedStorage;
-        this.description = logStore.getDescription();
         this.productType = logStore.getProductType();
         this.archiveSeconds = logStore.getArchiveSeconds();
         this.telemetryType = logStore.getTelemetryType();
@@ -190,14 +188,6 @@ public class LogStore implements Serializable {
         this.shardCount = shardCount;
     }
 
-    public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public JSONObject ToRequestJson() {
         JSONObject logStoreDict = new JSONObject();
         logStoreDict.put("logstoreName", GetLogStoreName());
@@ -207,7 +197,6 @@ public class LogStore implements Serializable {
         logStoreDict.put("autoSplit", ismAutoSplit());
         logStoreDict.put("maxSplitShard", getmMaxSplitShard());
         logStoreDict.put("appendMeta", isAppendMeta());
-        logStoreDict.put("description", getDescription());
         JSONObject resourceQuota = new JSONObject();
         JSONObject storage = new JSONObject();
         storage.put("preserved", preserveStorage);
@@ -258,9 +247,6 @@ public class LogStore implements Serializable {
             appendMeta = dict.containsKey("appendMeta") && dict.getBoolean("appendMeta");
             if (dict.containsKey("productType")) {
                 productType = dict.getString("productType");
-            }
-            if (dict.containsKey("description")) {
-                description = dict.getString("description");
             }
             if (dict.containsKey("archiveSeconds")) {
                 archiveSeconds = dict.getIntValue("archiveSeconds");

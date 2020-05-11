@@ -1,6 +1,9 @@
 package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.openservices.log.util.JsonUtils;
+
+import java.util.Map;
 
 public class ExportConfiguration extends JobConfiguration {
 
@@ -17,6 +20,8 @@ public class ExportConfiguration extends JobConfiguration {
     private int fromTime;
 
     private DataSink sink;
+
+    private Map<String, String> parameters;
 
     public String getLogstore() {
         return logstore;
@@ -74,6 +79,14 @@ public class ExportConfiguration extends JobConfiguration {
         this.sink = sink;
     }
 
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
     @Override
     public void deserialize(JSONObject value) {
         logstore = value.getString("logstore");
@@ -91,5 +104,6 @@ public class ExportConfiguration extends JobConfiguration {
             sink = new AliyunTSDBSink();
             sink.deserialize(obj);
         }
+        parameters = JsonUtils.readOptionalMap(value, "parameters");
     }
 }
