@@ -23,6 +23,24 @@ public class LogStore implements Serializable {
     private long preserveStorage = -1;
     private long usedStorage = 0;
     private String productType = "";
+    private int archiveSeconds = 0;
+    private String telemetryType = "";
+
+    public int getArchiveSeconds() {
+        return archiveSeconds;
+    }
+
+    public void setArchiveSeconds(int archiveSeconds) {
+        this.archiveSeconds = archiveSeconds;
+    }
+
+    public String getTelemetryType() {
+        return telemetryType;
+    }
+
+    public void setTelemetryType(String telemetryType) {
+        this.telemetryType = telemetryType;
+    }
 
     public String getProductType() {
         return productType;
@@ -62,6 +80,8 @@ public class LogStore implements Serializable {
         this.preserveStorage = logStore.preserveStorage;
         this.usedStorage = logStore.usedStorage;
         this.productType = logStore.getProductType();
+        this.archiveSeconds = logStore.getArchiveSeconds();
+        this.telemetryType = logStore.getTelemetryType();
     }
 
     public long getPreserveStorage() {
@@ -182,6 +202,8 @@ public class LogStore implements Serializable {
         storage.put("preserved", preserveStorage);
         resourceQuota.put("storage", storage);
         logStoreDict.put("resourceQuota", resourceQuota);
+        logStoreDict.put("archiveSeconds", archiveSeconds);
+        logStoreDict.put("telemetryType", telemetryType);
         return logStoreDict;
     }
 
@@ -225,6 +247,12 @@ public class LogStore implements Serializable {
             appendMeta = dict.containsKey("appendMeta") && dict.getBoolean("appendMeta");
             if (dict.containsKey("productType")) {
                 productType = dict.getString("productType");
+            }
+            if (dict.containsKey("archiveSeconds")) {
+                archiveSeconds = dict.getIntValue("archiveSeconds");
+            }
+            if (dict.containsKey("telemetryType")) {
+                telemetryType = dict.getString("telemetryType");
             }
             // set resourceQuota
             if (dict.containsKey("resourceQuota")) {

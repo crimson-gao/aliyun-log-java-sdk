@@ -37,6 +37,7 @@ import com.aliyun.openservices.log.common.Shard;
 import com.aliyun.openservices.log.common.ShipperConfig;
 import com.aliyun.openservices.log.common.ShipperTask;
 import com.aliyun.openservices.log.common.ShipperTasksStatistic;
+import com.aliyun.openservices.log.common.SubStore;
 import com.aliyun.openservices.log.common.TagContent;
 import com.aliyun.openservices.log.common.ExternalStore;
 import com.aliyun.openservices.log.common.auth.Credentials;
@@ -2300,6 +2301,207 @@ public class Client implements LogService {
 		JSONObject object = parseResponseBody(response, requestId);
 		LogStore logStore = ExtractLogStoreFromResponse(object, requestId);
 		return new GetLogStoreResponse(resHeaders, logStore);
+	}
+
+	@Override
+	public ListSubStoreResponse listSubStore(String project, String logstore) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(logstore, "logstore");
+		return listSubStore(new ListSubStoreRequest(project, logstore));
+	}
+
+	@Override
+	public ListSubStoreResponse listSubStore(ListSubStoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		String project = request.GetProject();
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		Map<String, String> urlParameter = request.GetAllParams();
+		String resourceUri = "/logstores/" + request.getLogstoreName() + "/substores";
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		ResponseMessage response = SendData(project, HttpMethod.GET,
+				resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		JSONObject object = parseResponseBody(response, requestId);
+		ListSubStoreResponse listSubStoreResponse = new ListSubStoreResponse(resHeaders);
+		listSubStoreResponse.setSubStoreNames(ExtractJsonArray(
+				Consts.CONST_RESULT_SUB_STORES, object));
+		return listSubStoreResponse;
+	}
+
+	@Override
+	public GetSubStoreResponse getSubStore(String project, String logstore, String subStoreName) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(logstore, "logstore");
+		CodingUtils.assertStringNotNullOrEmpty(subStoreName, "subStoreName");
+		return getSubStore(new GetSubStoreRequest(project, logstore, subStoreName));
+	}
+
+	@Override
+	public GetSubStoreResponse getSubStore(GetSubStoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		String project = request.GetProject();
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		String subStoreName = request.getSubStoreName();
+		CodingUtils.assertStringNotNullOrEmpty(project, "subStoreName");
+		Map<String, String> urlParameter = request.GetAllParams();
+		String resourceUri = "/logstores/" + request.getLogstoreName() + "/substores/" + subStoreName;
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		ResponseMessage response = SendData(project, HttpMethod.GET,
+				resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		JSONObject object = parseResponseBody(response, requestId);
+
+		SubStore subStore = new SubStore();
+		subStore.fromJsonString(object.toString());
+
+		return new GetSubStoreResponse(resHeaders, subStore);
+	}
+
+	@Override
+	public CreateSubStoreResponse createSubStore(String project, String logStoreName, SubStore subStore) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertParameterNotNull(logStoreName, "logStoreName");
+		CodingUtils.assertParameterNotNull(subStore, "subStore");
+		return createSubStore(new CreateSubStoreRequest(project, logStoreName, subStore));
+	}
+
+	@Override
+	public CreateSubStoreResponse createSubStore(CreateSubStoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		String project = request.GetProject();
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		String logStoreName = request.getLogStoreName();
+		CodingUtils.assertParameterNotNull(logStoreName, "logStoreName");
+		SubStore subStore = request.getSubStore();
+		CodingUtils.assertParameterNotNull(subStore, "subStore");
+		if (!subStore.isValid()) {
+			throw new IllegalArgumentException("SubStore is invalid");
+		}
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		byte[] body = encodeToUtf8(subStore.toRequestString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = "/logstores/" + logStoreName + "/substores";
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(project, HttpMethod.POST,
+				resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new CreateSubStoreResponse(resHeaders);
+	}
+
+	@Override
+	public UpdateSubStoreResponse updateSubStore(String project, String logStoreName, SubStore subStore) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertParameterNotNull(logStoreName, "logStoreName");
+		CodingUtils.assertParameterNotNull(subStore, "subStore");
+		return updateSubStore(new UpdateSubStoreRequest(project, logStoreName, subStore));
+	}
+
+	@Override
+	public UpdateSubStoreResponse updateSubStore(UpdateSubStoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		String project = request.GetProject();
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		String logStoreName = request.getLogStoreName();
+		CodingUtils.assertParameterNotNull(logStoreName, "logStoreName");
+		SubStore subStore = request.getSubStore();
+		CodingUtils.assertParameterNotNull(subStore, "subStore");
+		if (!subStore.isValid()) {
+			throw new IllegalArgumentException("SubStore is invalid");
+		}
+		String subStoreName = subStore.getName();
+		CodingUtils.assertStringNotNullOrEmpty(subStoreName, "subStoreName");
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		byte[] body = encodeToUtf8(subStore.toRequestString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = "/logstores/" + logStoreName + "/substores/" + subStoreName;
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(project, HttpMethod.PUT,
+				resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new UpdateSubStoreResponse(resHeaders);
+	}
+
+	@Override
+	public DeleteSubStoreResponse deleteSubStore(String project, String logStoreName, String subStoreName) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(logStoreName, "logStoreName");
+		CodingUtils.assertStringNotNullOrEmpty(subStoreName, "subStoreName");
+		return deleteSubStore(new DeleteSubStoreRequest(project, logStoreName, subStoreName));
+	}
+
+	@Override
+	public DeleteSubStoreResponse deleteSubStore(DeleteSubStoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		String project = request.GetProject();
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		String logStoreName = request.getLogStoreName();
+		CodingUtils.assertStringNotNullOrEmpty(logStoreName, "logStoreName");
+		String subStoreName = request.getSubStoreName();
+		CodingUtils.assertStringNotNullOrEmpty(subStoreName, "subStoreName");
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		String resourceUri = "/logstores/" + logStoreName + "/substores/" + subStoreName;
+		Map<String, String> urlParameter = request.GetAllParams();
+		ResponseMessage response = SendData(project, HttpMethod.DELETE,
+				resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new DeleteSubStoreResponse(resHeaders);
+	}
+
+	@Override
+	public GetSubStoreTTLResponse getSubStoreTTL(String project, String logstoreName) throws LogException {
+		return getSubStoreTTL(new GetSubStoreTTLResquest(project, logstoreName));
+	}
+
+	@Override
+	public GetSubStoreTTLResponse getSubStoreTTL(GetSubStoreTTLResquest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		String project = request.GetProject();
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		Map<String, String> urlParameter = request.GetAllParams();
+		String logstoreName = request.getLogstoreName();
+		CodingUtils.assertStringNotNullOrEmpty(logstoreName, "logstoreName");
+		String resourceUri = "/logstores/" + logstoreName + "/substores/storage/ttl";
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		ResponseMessage response = SendData(project, HttpMethod.GET,
+				resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		JSONObject object = parseResponseBody(response, requestId);
+		GetSubStoreTTLResponse getSubStoreTTLResponse = new GetSubStoreTTLResponse(resHeaders);
+		int ttl = object.getIntValue(Consts.CONST_TTL);
+		getSubStoreTTLResponse.setTtl(ttl);
+		return getSubStoreTTLResponse;
+	}
+
+	@Override
+	public UpdateSubStoreTTLResponse updateSubStoreTTL(String project, String logstore, int ttl) throws LogException {
+		return updateSubStoreTTL(new UpdateSubStoreTTLRequest(project, logstore, ttl));
+	}
+
+	@Override
+	public UpdateSubStoreTTLResponse updateSubStoreTTL(UpdateSubStoreTTLRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		String project = request.GetProject();
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		Map<String, String> urlParameter = request.GetAllParams();
+		String logstoreName = request.getLogstoreName();
+		CodingUtils.assertStringNotNullOrEmpty(logstoreName, "logstoreName");
+		String resourceUri = "/logstores/" + logstoreName + "/substores/storage/ttl";
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		ResponseMessage response = SendData(project, HttpMethod.PUT,
+				resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		JSONObject object = parseResponseBody(response, requestId);
+		UpdateSubStoreTTLResponse updateSubStoreTTLResponse = new UpdateSubStoreTTLResponse(resHeaders);
+		return updateSubStoreTTLResponse;
+	}
+
+	@Override
+	public ListLogStoresResponse listLogStores(String project, int offset, int size,String logstoreName, String telemetryType) throws LogException {
+		return ListLogStores(new ListLogStoresRequest(project, offset, size, logstoreName, telemetryType));
 	}
 
 	public CreateExternalStoreResponse createExternalStore(CreateExternalStoreRequest request) throws LogException {
