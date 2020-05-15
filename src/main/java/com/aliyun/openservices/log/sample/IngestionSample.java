@@ -1,19 +1,62 @@
 package com.aliyun.openservices.log.sample;
 
 import com.aliyun.openservices.log.Client;
+import com.aliyun.openservices.log.common.AliyunCloudMonitorSource;
 import com.aliyun.openservices.log.common.AliyunOSSSource;
 import com.aliyun.openservices.log.common.DelimitedTextFormat;
 import com.aliyun.openservices.log.common.Ingestion;
+import com.aliyun.openservices.log.common.IngestionConfiguration;
 import com.aliyun.openservices.log.common.JobSchedule;
 import com.aliyun.openservices.log.common.JobScheduleType;
-import com.aliyun.openservices.log.common.IngestionConfiguration;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.CreateIngestionRequest;
+
+import java.util.Arrays;
 
 public class IngestionSample {
     public static void main(String[] args) {
         OSSIngestionSample oss = new OSSIngestionSample();
         oss.testOSSIngestion();
+
+        CloudMonitorSample cms = new CloudMonitorSample();
+        cms.createIngestTask();
+    }
+}
+
+class CloudMonitorSample {
+
+    private final String endPoint = "your_endpoint";
+    private final String accessId = "your_access_id";
+    private final String accessKey = "your_access_key";
+    private final Client client = new Client(endPoint, accessId, accessKey);
+    private final String project = "your_project_name";
+    private final String logStore = "your_log_store";
+    private final String displayName = "your_display_name";
+    private final String interval = "1h";           //Your ingestion interval, default 1h
+
+    public void createIngestTask() {
+        Ingestion ingestion = new Ingestion();
+        ingestion.setName("cloud-monitor-data");
+        ingestion.setDisplayName(displayName);
+        IngestionConfiguration configuration = new IngestionConfiguration();
+        configuration.setLogstore(logStore);
+        AliyunCloudMonitorSource source = new AliyunCloudMonitorSource();
+        source.setAccessKeyID(accessId);
+        source.setAccessKeySecret(accessKey);
+        // see http://metricmeta.oss-cn-hangzhou.aliyuncs.com/listMetricMeta_zh.html
+        source.setNamespaces(Arrays.asList("ecs", "xxx"));
+        source.setOutputType("SLSMetric");
+        configuration.setSource(source);
+        ingestion.setConfiguration(configuration);
+        JobSchedule schedule = new JobSchedule();
+        schedule.setInterval(interval);
+        schedule.setType(JobScheduleType.FIXED_RATE);
+        ingestion.setSchedule(schedule);
+        try {
+            client.createIngestion(new CreateIngestionRequest(project, ingestion));
+        } catch (LogException e) {
+            System.err.println("Create cloud monitor ingestion Error ! " + e.GetErrorMessage());
+        }
     }
 }
 
