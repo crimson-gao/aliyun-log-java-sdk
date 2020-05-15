@@ -10,7 +10,8 @@ public enum DataSourceType implements JSONSerializable {
     ALIYUN_BSS("AliyunBSS"),
     ALIYUN_MAX_COMPUTE("AliyunMaxCompute"),
     JDBC("JDBC"),
-    KAFKA("Kafka");
+    KAFKA("Kafka"),
+    ALIYUN_CLOUD_MONITOR("AliyunCloudMonitor");
 
     private final String name;
 

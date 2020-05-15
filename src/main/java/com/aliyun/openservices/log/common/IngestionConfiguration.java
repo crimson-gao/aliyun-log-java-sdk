@@ -46,6 +46,8 @@ public class IngestionConfiguration extends JobConfiguration {
                 return new AliyunMaxComputeSource();
             case KAFKA:
                 return new KafKaSource();
+            case ALIYUN_CLOUD_MONITOR:
+                return new AliyunCloudMonitorSource();
             default:
                 return null;
         }
