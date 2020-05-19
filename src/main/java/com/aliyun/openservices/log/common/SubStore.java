@@ -34,7 +34,7 @@ public class SubStore {
         if (this.sortedKeyCount <= 0 || this.sortedKeyCount >= this.keys.size()) {
             return false;
         }
-        if (this.timeIndex >= this.keys.size() || this.timeIndex <= this.sortedKeyCount) {
+        if (this.timeIndex >= this.keys.size() || this.timeIndex < this.sortedKeyCount) {
             return false;
         }
         if (this.ttl <= 0 || this.ttl > 3650) {
