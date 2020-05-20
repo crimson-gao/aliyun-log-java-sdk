@@ -49,7 +49,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.67</version>
+            <version>1.2.68.noneautotype</version>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
