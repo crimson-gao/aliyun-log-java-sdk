@@ -112,6 +112,7 @@ class OSSIngestionSample {
         format.setFieldDelimiter(fieldDelimiter);
         source.setFormat(format);
         source.setRestoreObjectEnabled(enable);
+        source.setCompressionCodec("Gzip");
         configuration.setSource(source);
         ingestion.setConfiguration(configuration);
         JobSchedule schedule = new JobSchedule();
