@@ -3,6 +3,7 @@ package com.aliyun.openservices.log.common;
 import com.aliyun.openservices.log.util.VarintUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FastLogGroup {
 
@@ -258,6 +259,14 @@ public class FastLogGroup {
         } else {
             return null;
         }
+    }
+
+    public List<FastLog> getLogs() {
+        return logs;
+    }
+
+    public List<FastLogTag> getTags() {
+        return tags;
     }
 
     public int getLogsCount() {
