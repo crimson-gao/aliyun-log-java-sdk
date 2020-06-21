@@ -2201,6 +2201,10 @@ public interface LogService {
                                                   String logStore, String consumerGroup, int shard)
 			throws LogException;
 
+	GetCheckPointResponse getCheckpoint(String project,
+										String logstore,
+										String consumerGroup,
+										int shard) throws LogException;
 	/**
 	 * get all of the shard checkpoints in the consumer group
 	 *

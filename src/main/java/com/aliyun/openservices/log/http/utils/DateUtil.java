@@ -33,16 +33,6 @@ public class DateUtil {
         return getRfc822DateFormat().format(date);
     }
 
-    /**
-     * Parses a GMT-format string.
-     * @param dateString
-     * @return date
-     * @throws ParseException
-     */
-    public static Date parseRfc822Date(String dateString) throws ParseException{
-        return getRfc822DateFormat().parse(dateString);
-    }
-
     private static DateFormat getRfc822DateFormat(){
         SimpleDateFormat rfc822DateFormat =
                 new SimpleDateFormat(RFC822_DATE_FORMAT, Locale.US);

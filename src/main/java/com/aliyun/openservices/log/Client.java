@@ -3175,11 +3175,34 @@ public class Client implements LogService {
 		}
 	}
 
+	public GetCheckPointResponse getCheckpoint(String project,
+											   String logstore,
+											   String consumerGroup,
+											   int shard)
+			throws LogException {
+		Args.notNullOrEmpty(project, "project");
+		Args.notNullOrEmpty(logstore, "logstore");
+		Args.notNullOrEmpty(consumerGroup, "consumerGroup");
+		Args.check(shard >= 0, "Shard must be >= 0");
+		ConsumerGroupGetCheckPointRequest request = new ConsumerGroupGetCheckPointRequest(
+				project, logstore, consumerGroup, shard);
+		Map<String, String> urlParameter = request.GetAllParams();
+		String resourceUri = "/logstores/" + logstore + "/consumergroups/" + consumerGroup;
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		ResponseMessage response = SendData(project, HttpMethod.GET,
+				resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		JSONArray array = ParseResponseMessageToArray(response, requestId);
+		return new GetCheckPointResponse(resHeaders, array);
+	}
+
 	public ConsumerGroupCheckPointResponse GetCheckPoint(String project,
 			String logStore, String consumerGroup) throws LogException {
 		return GetCheckPoint(project, logStore, consumerGroup, -1);
 	}
 
+	@Deprecated
 	public ConsumerGroupCheckPointResponse GetCheckPoint(String project,
 			String logStore, String consumerGroup, int shard)
 			throws LogException {
