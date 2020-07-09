@@ -34,9 +34,9 @@ import java.util.zip.Deflater;
 import static org.junit.Assert.*;
 
 public class DataConsistencyTest extends FunctionTest {
-    private String project;
-    private LogStore logStore = new LogStore();
-    private int timestamp = getNowTimestamp();
+    protected String project;
+    protected LogStore logStore = new LogStore();
+    protected int timestamp = getNowTimestamp();
     private final String PACK_ID_PREFIX = "ABCDEF" + timestamp + "-";
 
     @Before
@@ -184,7 +184,7 @@ public class DataConsistencyTest extends FunctionTest {
 
     private int mockGetRequest() {
         int count = randomBetween(50, 100);
-        HttpClient httpClient = HttpClientBuilder.create().build();
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         StringBuilder params = new StringBuilder("APIVersion=0.6.0");
         for (int i = 1; i <= 10; i++) {
             params.append("&key-").append(i).append("=").append("value-").append(i);
@@ -199,6 +199,14 @@ public class DataConsistencyTest extends FunctionTest {
             }
         } catch (Exception e) {
             fail(e.getMessage());
+        } finally {
+            if (httpClient != null) {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    // do not care
+                }
+            }
         }
         waitForSeconds(10);
         return count;
@@ -223,14 +231,20 @@ public class DataConsistencyTest extends FunctionTest {
 
     private void enableIndex() throws LogException {
         Index index = new Index();
-        IndexLine indexLine = new IndexLine();
-        indexLine.SetToken(Arrays.asList(",", " ", "'", "\"", ";", "=", "(", ")", "[", "]", "{", "}", "?", "@", "&", "<", ">", "/", ":", "\n", "\t", "\r"));
-        index.SetLine(indexLine);
+        index.SetTtl(7);
+        index.setMaxTextLen(0);
+        index.setLogReduceEnable(false);
+        List<String> list = Arrays.asList(",", " ", "'", "\"", ";", "=", "(", ")", "[", "]", "{", "}", "?", "@", "&", "<", ">", "/", ":", "\n", "\t", "\r");
+        IndexKeys indexKeys = new IndexKeys();
+        for (int i = 1; i <= 10; i++) {
+            indexKeys.AddKey("key-"+i, new IndexKey(list,false, "text", ""));
+        }
+        index.SetKeys(indexKeys);
         client.CreateIndex(new CreateIndexRequest(project, logStore.GetLogStoreName(), index));
         waitOneMinutes();
     }
 
-    private int prepareLogs() throws LogException {
+    int prepareLogs() throws LogException {
         int logGroupCount = randomBetween(50, 100);
         for (int i = 1; i <= logGroupCount; i++) {
             List<LogItem> logItems = new ArrayList<LogItem>(10);
@@ -275,8 +289,9 @@ public class DataConsistencyTest extends FunctionTest {
     }
 
     private Response postTestLogs(JSONObject log, boolean compress) {
+        CloseableHttpClient httpclient = null;
         try {
-            CloseableHttpClient httpclient = HttpClients.createDefault();
+            httpclient = HttpClients.createDefault();
             String URL = "http://" + project + "." + credentials.getEndpoint() + "/logstores/" + logStore.GetLogStoreName() + "/track";
 
             HttpPost httpPost = new HttpPost(URL);
@@ -310,6 +325,14 @@ public class DataConsistencyTest extends FunctionTest {
             return responseBody;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            if (httpclient != null) {
+                try {
+                    httpclient.close();
+                } catch (IOException e) {
+                    // do not care
+                }
+            }
         }
     }
 
