@@ -5,6 +5,8 @@ import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.util.Args;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -145,7 +147,19 @@ public abstract class FunctionTest {
         try {
             TimeUnit.SECONDS.sleep(seconds);
         } catch (InterruptedException e) {
+            e.printStackTrace();
             Thread.currentThread().interrupt();
         }
+    }
+
+    static String exceptionToString(Exception ex) {
+        StringWriter writer = new StringWriter();
+        ex.printStackTrace(new PrintWriter(writer));
+        return writer.toString();
+    }
+
+    static void failOnError(Exception ex) {
+        ex.printStackTrace();
+        fail(exceptionToString(ex));
     }
 }

@@ -1,7 +1,5 @@
-package com.aliyun.openservices.log.unittest;
+package com.aliyun.openservices.log.common;
 
-import com.aliyun.openservices.log.common.Logging;
-import com.aliyun.openservices.log.common.LoggingDetail;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;

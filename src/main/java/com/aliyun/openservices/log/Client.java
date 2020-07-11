@@ -415,7 +415,7 @@ public class Client implements LogService {
 		String requestId = GetRequestId(resHeaders);
 		JSONArray object = ParseResponseMessageToArray(response, requestId);
 		GetHistogramsResponse histogramResponse = new GetHistogramsResponse(resHeaders);
-		ExtractHistograms(histogramResponse, object);
+		extractHistograms(histogramResponse, object);
 		return histogramResponse;
 	}
 
@@ -1879,8 +1879,7 @@ public class Client implements LogService {
 		}
 	}
 
-	private void ExtractHistograms(GetHistogramsResponse response,
-			JSONArray items) {
+	void extractHistograms(GetHistogramsResponse response, JSONArray items) {
 		if (items == null) {
 			return;
 		}
@@ -1902,7 +1901,7 @@ public class Client implements LogService {
 		}
 	}
 
-	protected void ErrorCheck(JSONObject object, String requestId, int httpCode)
+	void ErrorCheck(JSONObject object, String requestId, int httpCode)
 			throws LogException {
 		if (object.containsKey(Consts.CONST_ERROR_CODE)) {
 			try {
@@ -1953,8 +1952,8 @@ public class Client implements LogService {
         }
     }
 
-	private JSONObject ParserResponseMessageWithFastJson(ResponseMessage response,
-                                                                              String requestId) throws LogException {
+    JSONObject ParserResponseMessageWithFastJson(ResponseMessage response,
+												 String requestId) throws LogException {
 		String res = encodeResponseBodyToUtf8String(response, requestId);
 		try {
             return JSONObject.parseObject(res);
@@ -1965,8 +1964,8 @@ public class Client implements LogService {
 		}
 	}
 
-	private JSONArray ParseResponseMessageToArray(ResponseMessage response,
-			String requestId) throws LogException {
+	JSONArray ParseResponseMessageToArray(ResponseMessage response,
+										  String requestId) throws LogException {
 		String returnStr = encodeResponseBodyToUtf8String(response, requestId);
 		try {
             return JSONArray.parseArray(returnStr);
@@ -2094,8 +2093,7 @@ public class Client implements LogService {
 		return request;
 	}
 
-	protected ArrayList<Shard> ExtractShards(JSONArray array, String requestId)
-			throws LogException {
+	ArrayList<Shard> ExtractShards(JSONArray array, String requestId) throws LogException {
 		ArrayList<Shard> shards = new ArrayList<Shard>();
 		if (array == null) {
 			return shards;

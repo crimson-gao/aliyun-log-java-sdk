@@ -1,29 +1,34 @@
-package com.aliyun.openservices.log.unittest;
+package com.aliyun.openservices.log.functiontest;
 
-import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.common.ExternalStore;
 import com.aliyun.openservices.log.common.Parameter;
 import com.aliyun.openservices.log.exception.LogException;
-import com.aliyun.openservices.log.functiontest.Credentials;
-import com.aliyun.openservices.log.request.*;
+import com.aliyun.openservices.log.request.CreateExternalStoreRequest;
+import com.aliyun.openservices.log.request.DeleteExternalStoreRequest;
+import com.aliyun.openservices.log.request.GetExternalStoreRequest;
+import com.aliyun.openservices.log.request.ListExternalStoresRequest;
+import com.aliyun.openservices.log.request.UpdateExternalStoreRequest;
 import com.aliyun.openservices.log.response.GetExternalStoreResponse;
 import com.aliyun.openservices.log.response.ListExternalStroesResponse;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ExternalStoreTest {
-    private Client client = null;
-    private String accessid;
-    private String accesskey;
-    private String project = "test-create-new-project1";
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class ExternalStoreTest extends FunctionTest {
+    private final String project = "java-sdk-external-store-test-" + randomInt();
 
     @Before
-    public void getClient() {
-        Credentials credentials = Credentials.load();
-        accessid = credentials.getAccessKeyId();
-        accesskey = credentials.getAccessKey();
-        client = new Client("cn-hangzhou-staging-intranet.sls.aliyuncs.com", accessid, accesskey);
+    public void setUp() throws Exception {
+        safeCreateProject(project, "");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        safeDeleteProject(project);
     }
 
     @Test
@@ -42,7 +47,7 @@ public class ExternalStoreTest {
         //get
         GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(project, "name-rds-vpc");
         GetExternalStoreResponse getResponse1 = client.getExternalStore(getRequest1);
-        Assert.assertEquals(getResponse1.getExternalStore().getParameter().getHost(), "test-host");
+        assertEquals(getResponse1.getExternalStore().getParameter().getHost(), "test-host");
 
         //update
         Parameter parameter2 = new Parameter();
@@ -58,13 +63,13 @@ public class ExternalStoreTest {
         //get
         GetExternalStoreRequest getRequest2 = new GetExternalStoreRequest(project, "name-rds-vpc");
         GetExternalStoreResponse getResponse2 = client.getExternalStore(getRequest2);
-        Assert.assertEquals(getResponse2.getExternalStore().getParameter().getHost(), "test-host-2");
+        assertEquals(getResponse2.getExternalStore().getParameter().getHost(), "test-host-2");
 
         //list
         //ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, null, 0, 10);//pattern 支持模糊查询，为null/""代表查询所有
         ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, "vpc", 0, 10);
         ListExternalStroesResponse listResponse = client.listExternalStores(listRequest);
-        Assert.assertTrue(listResponse.getExternalStores().contains("name-rds-vpc"));
+        assertTrue(listResponse.getExternalStores().contains("name-rds-vpc"));
 
         //delete
         DeleteExternalStoreRequest deleteRequest = new DeleteExternalStoreRequest(project, "name-rds-vpc");
@@ -80,7 +85,7 @@ public class ExternalStoreTest {
         parameter.setAccessid("456");
         parameter.setAccesskey("789");
         parameter.setBucket("0");
-        ExternalStore externalStore = new ExternalStore("name-oss","oss", parameter);
+        ExternalStore externalStore = new ExternalStore("name-oss", "oss", parameter);
         CreateExternalStoreRequest createRequest = new CreateExternalStoreRequest(project, externalStore);
         client.createExternalStore(createRequest);
 
@@ -88,7 +93,7 @@ public class ExternalStoreTest {
         //注意，此处会返回创建者的accessid和accesskey
         GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(project, "name-oss");
         GetExternalStoreResponse getResponse1 = client.getExternalStore(getRequest1);
-        Assert.assertEquals(getResponse1.getExternalStore().getParameter().getEndpoint(),"123");
+        assertEquals(getResponse1.getExternalStore().getParameter().getEndpoint(), "123");
 
         //update
         Parameter parameter2 = new Parameter();
@@ -103,12 +108,12 @@ public class ExternalStoreTest {
         //get
         GetExternalStoreRequest getRequest2 = new GetExternalStoreRequest(project, "name-oss");
         GetExternalStoreResponse getResponse2 = client.getExternalStore(getRequest2);
-        Assert.assertEquals(getResponse2.getExternalStore().getParameter().getEndpoint(),"321");
+        assertEquals(getResponse2.getExternalStore().getParameter().getEndpoint(), "321");
 
         //list
         ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, "", 0, 10);
         ListExternalStroesResponse response = client.listExternalStores(listRequest);
-        Assert.assertTrue(response.getExternalStores().contains("name-oss"));
+        assertTrue(response.getExternalStores().contains("name-oss"));
 
         //delete
         DeleteExternalStoreRequest deleteRequest = new DeleteExternalStoreRequest(project, "name-oss");

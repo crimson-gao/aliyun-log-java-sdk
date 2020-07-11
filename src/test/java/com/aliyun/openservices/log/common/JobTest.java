@@ -1,16 +1,6 @@
-package com.aliyun.openservices.log.unittest;
+package com.aliyun.openservices.log.common;
 
 
-import com.aliyun.openservices.log.common.AlertConfiguration;
-import com.aliyun.openservices.log.common.Job;
-import com.aliyun.openservices.log.common.JobSchedule;
-import com.aliyun.openservices.log.common.JobScheduleType;
-import com.aliyun.openservices.log.common.JobState;
-import com.aliyun.openservices.log.common.JobType;
-import com.aliyun.openservices.log.common.Notification;
-import com.aliyun.openservices.log.common.Query;
-import com.aliyun.openservices.log.common.SmsNotification;
-import com.aliyun.openservices.log.common.TimeSpanType;
 import com.aliyun.openservices.log.util.JsonUtils;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;

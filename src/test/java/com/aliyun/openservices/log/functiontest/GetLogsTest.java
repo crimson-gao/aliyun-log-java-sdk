@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class GetLogsTest extends BaseDataTest {
+
     @Test
     public void testGetLogs() throws LogException {
         GetLogsResponse logs = client.GetLogs(project, logStore.GetLogStoreName(), getNowTimestamp() - 1800, getNowTimestamp() + 1800, "", "");

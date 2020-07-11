@@ -14,26 +14,27 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class MethodTest extends FunctionTest {
+
     @Test
     public void testGetByte() {
         byte[][] testDate = getTestDate();
         assertEquals(getProtoLength(testDate), getLength(testDate));
-        assertEquals(getProtoLogsLength(testDate),getLogsLength(testDate));
+        assertEquals(getProtoLogsLength(testDate), getLogsLength(testDate));
     }
 
     private int getLength(byte[][] testDataSet) {
         int count = 0;
-        for (int i = 0; i < testDataSet.length; i++) {
+        for (byte[] bytes : testDataSet) {
             try {
                 BatchGetLogResponse logResponse = new BatchGetLogResponse(new HashMap<String, String>());
-                logResponse.ParseFastLogGroupList(testDataSet[i]);
+                logResponse.ParseFastLogGroupList(bytes);
                 List<LogGroupData> logGroups = logResponse.GetLogGroups();
-                for (int j = 0; j < logGroups.size(); j++) {
-                    FastLogGroup fastLogGroup = logGroups.get(j).GetFastLogGroup();
+                for (LogGroupData logGroup : logGroups) {
+                    FastLogGroup fastLogGroup = logGroup.GetFastLogGroup();
                     count += fastLogGroup.getByteSize();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                failOnError(e);
             }
         }
         return count;
@@ -41,18 +42,18 @@ public class MethodTest extends FunctionTest {
 
     private int getProtoLength(byte[][] testDataSet) {
         int count = 0;
-        for (int i = 0; i < testDataSet.length; i++) {
+        for (byte[] bytes : testDataSet) {
             try {
-                Logs.LogGroupList logGroupList = Logs.LogGroupList.parseFrom(testDataSet[i]);
+                Logs.LogGroupList logGroupList = Logs.LogGroupList.parseFrom(bytes);
                 for (int j = 0; j < logGroupList.getLogGroupListCount(); j++) {
                     LogGroupData logGroupData = new LogGroupData(logGroupList.getLogGroupList(j));
                     Logs.LogGroup logGroup = logGroupData.GetLogGroup();
                     count += logGroup.getSerializedSize();
                 }
             } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
-            } catch (LogException e) {
-                System.err.println((e.getStackTrace()));
+                failOnError(e);
+            } catch (LogException ex) {
+                failOnError(ex);
             }
         }
         return count;
@@ -60,19 +61,19 @@ public class MethodTest extends FunctionTest {
 
     private int getLogsLength(byte[][] testDataSet) {
         int count = 0;
-        for (int i = 0; i < testDataSet.length; i++) {
+        for (byte[] bytes : testDataSet) {
             try {
                 BatchGetLogResponse logResponse = new BatchGetLogResponse(new HashMap<String, String>());
-                logResponse.ParseFastLogGroupList(testDataSet[i]);
+                logResponse.ParseFastLogGroupList(bytes);
                 List<LogGroupData> logGroups = logResponse.GetLogGroups();
-                for (int j = 0; j < logGroups.size(); j++) {
-                    FastLogGroup fastLogGroup = logGroups.get(j).GetFastLogGroup();
+                for (LogGroupData logGroup : logGroups) {
+                    FastLogGroup fastLogGroup = logGroup.GetFastLogGroup();
                     for (int k = 0; k < fastLogGroup.getLogsCount(); k++) {
                         count += fastLogGroup.getLogs(k).getByteSize();
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                failOnError(e);
             }
         }
         return count;
@@ -80,9 +81,9 @@ public class MethodTest extends FunctionTest {
 
     private int getProtoLogsLength(byte[][] testDataSet) {
         int count = 0;
-        for (int i = 0; i < testDataSet.length; i++) {
+        for (byte[] bytes : testDataSet) {
             try {
-                Logs.LogGroupList logGroupList = Logs.LogGroupList.parseFrom(testDataSet[i]);
+                Logs.LogGroupList logGroupList = Logs.LogGroupList.parseFrom(bytes);
                 for (int j = 0; j < logGroupList.getLogGroupListCount(); j++) {
                     LogGroupData logGroupData = new LogGroupData(logGroupList.getLogGroupList(j));
                     Logs.LogGroup logGroup = logGroupData.GetLogGroup();
@@ -90,10 +91,8 @@ public class MethodTest extends FunctionTest {
                         count += logGroup.getLogs(k).getSerializedSize();
                     }
                 }
-            } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
-            } catch (LogException e) {
-                System.err.println((e.getStackTrace()));
+            } catch (Exception e) {
+                failOnError(e);
             }
         }
         return count;

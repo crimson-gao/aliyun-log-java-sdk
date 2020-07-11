@@ -5,10 +5,13 @@ import com.aliyun.openservices.log.response.ListTopicsResponse;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 public class ListTopicsTest extends BaseDataTest {
+
     @Test
     public void testListTopics() throws LogException {
         ListTopicsResponse listTopics = client.ListTopics(project, logStore.GetLogStoreName(), "", 10);
-        Assert.assertTrue(listTopics.GetTopics().isEmpty());
+        assertTrue(listTopics.GetTopics().isEmpty());
     }
 }

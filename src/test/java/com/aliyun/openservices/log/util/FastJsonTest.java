@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import static org.junit.Assert.assertTrue;
+
 public class FastJsonTest {
     @Test
     public void testConfig() throws LogException {
@@ -36,10 +38,10 @@ public class FastJsonTest {
                 "\"Code\" : \"Success\"\n" +
                 "}";
         JSONObject object = JSONObject.parseObject(response);
-        Assert.assertTrue("Success".equalsIgnoreCase(object.getString("Code")));
-        Assert.assertTrue("STS.J8XXXXXXXXXX4".equalsIgnoreCase(object.getString("AccessKeyId")));
-        Assert.assertTrue("9PjfXXXXXXXXXBf2XAW".equalsIgnoreCase(object.getString("AccessKeySecret")));
-        Assert.assertTrue("2017-06-09T09:17:19Z".equalsIgnoreCase(object.getString("Expiration")));
-        Assert.assertTrue("CAIXXXXXXXXXXXwmBkleCTkyI+".equalsIgnoreCase(object.getString("SecurityToken")));
+        assertTrue("Success".equalsIgnoreCase(object.getString("Code")));
+        assertTrue("STS.J8XXXXXXXXXX4".equalsIgnoreCase(object.getString("AccessKeyId")));
+        assertTrue("9PjfXXXXXXXXXBf2XAW".equalsIgnoreCase(object.getString("AccessKeySecret")));
+        assertTrue("2017-06-09T09:17:19Z".equalsIgnoreCase(object.getString("Expiration")));
+        assertTrue("CAIXXXXXXXXXXXwmBkleCTkyI+".equalsIgnoreCase(object.getString("SecurityToken")));
     }
 }

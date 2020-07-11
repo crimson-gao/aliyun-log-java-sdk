@@ -55,7 +55,7 @@ public final class DigestUtils {
         headers.put(Consts.CONST_AUTHORIZATION, Consts.CONST_HEADSIGNATURE_PREFIX + credentials.getAccessKeyId() + ":" + signature);
     }
 
-    private static String urlParametersToString(Map<String, String> paras) {
+    static String urlParametersToString(Map<String, String> paras) {
         Map<String, String> treeMap = new TreeMap<String, String>(paras);
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry : treeMap.entrySet()) {
