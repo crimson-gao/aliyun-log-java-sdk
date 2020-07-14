@@ -121,11 +121,13 @@ public class AlertFunctionTest extends JobIntgTest {
         response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
         Alert alert1 = response.getAlert();
         assertEquals(alert1.getState(), JobState.DISABLED);
+        assertEquals(alert1.getStatus(), "DISABLED");
 
         client.enableAlert(new EnableAlertRequest(TEST_PROJECT, jobName));
         response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
         Alert alert2 = response.getAlert();
         assertEquals(alert2.getState(), JobState.ENABLED);
+        assertEquals(alert2.getStatus(), "ENABLED");
 
         DisableAlertRequest disableAlertRequest = new DisableAlertRequest(TEST_PROJECT, jobName);
         client.disableJob(disableAlertRequest);
@@ -133,6 +135,14 @@ public class AlertFunctionTest extends JobIntgTest {
         response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
         Alert alert3 = response.getAlert();
         assertEquals(alert3.getState(), JobState.DISABLED);
+        assertEquals(alert3.getStatus(), "DISABLED");
+
+        alert3.setState(JobState.ENABLED);
+        client.updateAlert(new UpdateAlertRequest(TEST_PROJECT, alert3));
+        response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
+        Alert alert4 = response.getAlert();
+        assertEquals(alert4.getState(), JobState.ENABLED);
+        assertEquals(alert4.getStatus(), "ENABLED");
 
         JobSchedule schedule1 = alert3.getSchedule();
         JobSchedule schedule = alert.getSchedule();
@@ -143,8 +153,8 @@ public class AlertFunctionTest extends JobIntgTest {
         alert3.getConfiguration().setMuteUntil(muteTo);
         client.updateAlert(new UpdateAlertRequest(TEST_PROJECT, alert3));
         response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
-        Alert alert4 = response.getAlert();
-        assertEquals(muteTo.getTime() / 1000, alert4.getConfiguration().getMuteUntil().getTime() / 1000);
+        Alert alert5 = response.getAlert();
+        assertEquals(muteTo.getTime() / 1000, alert5.getConfiguration().getMuteUntil().getTime() / 1000);
 
         for (int i = 0; i < 10; i++) {
             alert.setName("alert-" + i);
