@@ -158,7 +158,13 @@ public class AlertFunctionTest extends JobIntgTest {
 
         for (int i = 0; i < 10; i++) {
             alert.setName("alert-" + i);
+            JobState state = randomBoolean() ? JobState.ENABLED : JobState.DISABLED;
+            alert.setState(state);
             client.createAlert(new CreateAlertRequest(TEST_PROJECT, alert));
+            response = client.getAlert(new GetAlertRequest(TEST_PROJECT, alert.getName()));
+            Alert alert6 = response.getAlert();
+            assertEquals(state, alert6.getState());
+            assertEquals(state == JobState.ENABLED ? "ENABLED" : "DISABLED", alert6.getStatus());
         }
 
         // test list jobs
