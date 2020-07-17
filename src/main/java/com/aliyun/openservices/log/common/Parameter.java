@@ -1,10 +1,14 @@
 package com.aliyun.openservices.log.common;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.io.Serializable;
 
 public class Parameter implements Serializable {
     //rds-vpc
+    @JSONField(name = "vpc-id")
     private String vpcId;
+    @JSONField(name = "instance-id")
     private String instanceId;
     private String host;
     private String port;
