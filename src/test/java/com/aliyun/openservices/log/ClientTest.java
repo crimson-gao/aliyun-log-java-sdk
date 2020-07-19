@@ -11,10 +11,14 @@ import com.aliyun.openservices.log.functiontest.SlsClientTestData;
 import com.aliyun.openservices.log.response.GetHistogramsResponse;
 import org.junit.Test;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -125,4 +129,61 @@ public class ClientTest {
         }
     }
 
+    @Test
+    public void testGetHostURI() throws Exception {
+        Client client = new Client("fake-endpoint",
+                TEST_ACCESS_KEY_ID,
+                TEST_ACCESS_KEY);
+        // Empty is ok?
+        client.GetHostURI("");
+        client.GetHostURI("123");
+        client.GetHostURI("abc");
+        client.GetHostURI("a-c");
+        try {
+            client.GetHostURI("==");
+        } catch (IllegalArgumentException ex) {
+            assertEquals(ex.getMessage(), "Invalid project: ==");
+        }
+        try {
+            client.GetHostURI("+1");
+            fail();
+        } catch (IllegalArgumentException ex) {
+            assertEquals(ex.getMessage(), "Invalid project: +1");
+        }
+        StringBuilder builder = new StringBuilder(130);
+        Random r = new Random();
+        for (int i = 0; i < 130; i++) {
+            int j = 97 + r.nextInt(122 - 97);
+            char c = (char) j;
+            builder.append(c);
+        }
+        try {
+            client.GetHostURI(builder.toString());
+            fail();
+        } catch (IllegalArgumentException ex) {
+            assertEquals(ex.getMessage(), "Invalid project: " + builder.toString());
+        }
+        Client client1 = new Client("http://mock-sls.aliyun-inc.com",
+                TEST_ACCESS_KEY_ID,
+                TEST_ACCESS_KEY);
+        client.GetHostURI("abc");
+        client.setEndpoint("https://abc////////////");
+        URI uri = client.GetHostURI("");
+        assertEquals("https://abc", uri.toString());
+        List<String> invalidEndpoints = Arrays.asList(
+                "http://mock-sls.aliyun-inc.com?abc=def",
+                "abc://xxx",
+                "http://mock-sls.aliyun-inc.com/?abc=def",
+                "http://mock-sls.aliyun-inc.com@hello",
+                "////////"
+        );
+        for (String endpoint : invalidEndpoints) {
+            try {
+                client1.setEndpoint(endpoint);
+                fail("invalid endpoint : " + endpoint);
+            } catch (IllegalArgumentException ex) {
+                assertEquals(ex.getMessage(), "Invalid endpoint: " + endpoint);
+            }
+        }
+    }
 }

@@ -3,6 +3,8 @@
  */
 package com.aliyun.openservices.log.http.client;
 
+import com.aliyun.openservices.log.http.comm.Protocol;
+
 /**
  * The client configuration for accessing Aliyun Log Service.
  */
@@ -18,6 +20,8 @@ public class ClientConfiguration {
     private int socketTimeout = 50 * 1000;
     private int connectionTimeout = 50 * 1000;
     protected int connectionRequestTimeout = DEFAULT_CONNECTION_REQUEST_TIMEOUT;
+    protected Protocol protocol = Protocol.HTTP;
+
     protected String proxyHost = null;
     protected int proxyPort = -1;
     protected String proxyUsername = null;
@@ -82,6 +86,21 @@ public class ClientConfiguration {
     public int getConnectionRequestTimeout() {
         return connectionRequestTimeout;
     }
+
+    /**
+     * Gets the SLS's protocol (HTTP or HTTPS).
+     */
+    public Protocol getProtocol() {
+        return protocol;
+    }
+
+    /**
+     * Sets the SLS's protocol (HTTP or HTTPS).
+     */
+    public void setProtocol(Protocol protocol) {
+        this.protocol = protocol;
+    }
+
 
     public String getProxyHost() {
         return proxyHost;

@@ -100,7 +100,7 @@ public class Client implements LogService {
 	private Boolean useSSLForConsole;
 	private String userAgent = DEFAULT_USER_AGENT;
 	private boolean mUUIDTag = false;
-	private Boolean mUseDirectMode = false;
+	private boolean useDirectMode = false;
 	/**
 	 * Real backend server's IP address. If not null, skip resolving DNS
 	 */
@@ -140,12 +140,22 @@ public class Client implements LogService {
 
 	public void DisableUUIDTag() { mUUIDTag = false; }
 
+	@Deprecated
 	public void EnableDirectMode() {
-		mUseDirectMode = true;
+		setUseDirectMode(true);
 	}
 
+	@Deprecated
 	public void DisableDirectMode() {
-		mUseDirectMode = false;
+		setUseDirectMode(false);
+	}
+
+	public void setUseDirectMode(boolean useDirectMode) {
+		this.useDirectMode = useDirectMode;
+	}
+
+	public boolean isUseDirectMode() {
+		return useDirectMode;
 	}
 
 	public String getResourceOwnerAccount() {
@@ -208,12 +218,12 @@ public class Client implements LogService {
 	}
 
 	public Client(String endpoint, Credentials credentials, String sourceIp) {
-		configure(endpoint, credentials, sourceIp);
 		ClientConfiguration clientConfig = new ClientConfiguration();
 		clientConfig.setMaxConnections(Consts.HTTP_CONNECT_MAX_COUNT);
 		clientConfig.setConnectionTimeout(Consts.HTTP_CONNECT_TIME_OUT);
 		clientConfig.setSocketTimeout(Consts.HTTP_SEND_TIME_OUT);
 		this.serviceClient = new DefaultServiceClient(clientConfig);
+		configure(endpoint, credentials, sourceIp);
 	}
 
 	/**
@@ -223,39 +233,42 @@ public class Client implements LogService {
 	@Deprecated
     public Client(String endpoint, String accessId, String accessKey, String sourceIp,
                   int connectMaxCount, int connectTimeout, int sendTimeout) {
-        configure(endpoint, new DefaultCredentails(accessId, accessKey), sourceIp);
         ClientConfiguration clientConfig = new ClientConfiguration();
         clientConfig.setMaxConnections(connectMaxCount);
         clientConfig.setConnectionTimeout(connectTimeout);
         clientConfig.setSocketTimeout(sendTimeout);
         this.serviceClient = new DefaultServiceClient(clientConfig);
+		configure(endpoint, new DefaultCredentails(accessId, accessKey), sourceIp);
     }
 
     public Client(String endpoint, String accessId, String accessKey, ServiceClient serviceClient) {
-        configure(endpoint, new DefaultCredentails(accessId, accessKey), null);
         this.serviceClient = serviceClient;
+		configure(endpoint, new DefaultCredentails(accessId, accessKey), null);
     }
 
+    public synchronized void setEndpoint(String endpoint) {
+		Args.notNullOrEmpty(endpoint, "endpoint");
+		if (endpoint.startsWith("http://")) {
+			this.hostName = endpoint.substring(7);
+			this.httpType = "http://";
+		} else if (endpoint.startsWith("https://")) {
+			this.hostName = endpoint.substring(8);
+			this.httpType = "https://";
+		} else {
+			this.hostName = endpoint;
+			this.httpType = "http://";
+		}
+		hostName = Utils.normalizeHostName(hostName);
+		if (hostName == null) {
+			throw new IllegalArgumentException("Invalid endpoint: " + endpoint);
+		}
+		if (NetworkUtils.isIPAddr(this.hostName)) {
+			throw new IllegalArgumentException("The ip address is not supported");
+		}
+	}
+
     private void configure(String endpoint, Credentials credentials, String sourceIp) {
-	    Args.notNullOrEmpty(endpoint, "endpoint");
-	    if (endpoint.startsWith("http://")) {
-		    this.hostName = endpoint.substring(7);
-		    this.httpType = "http://";
-	    } else if (endpoint.startsWith("https://")) {
-		    this.hostName = endpoint.substring(8);
-		    this.httpType = "https://";
-	    } else {
-		    this.hostName = endpoint;
-		    this.httpType = "http://";
-	    }
-	    while (this.hostName.endsWith("/")) {
-		    this.hostName = this.hostName.substring(0,
-				    this.hostName.length() - 1);
-	    }
-	    if (NetworkUtils.isIPAddr(this.hostName)) {
-		    throw new IllegalArgumentException("EndpointInvalid", new Exception(
-				    "The ip address is not supported"));
-	    }
+		setEndpoint(endpoint);
 	    this.credentials = credentials;
 	    this.sourceIp = sourceIp;
 	    if (sourceIp == null || sourceIp.isEmpty()) {
@@ -266,12 +279,12 @@ public class Client implements LogService {
 	public Client(String endpoint, String accessId, String accessKey, String sourceIp,
 	              ClientConfiguration config) {
 		Args.notNull(config, "Config");
-		configure(endpoint, new DefaultCredentails(accessId, accessKey), sourceIp);
 		if (config.isRequestTimeoutEnabled()) {
 			this.serviceClient = new TimeoutServiceClient(config);
 		} else {
 			this.serviceClient = new DefaultServiceClient(config);
 		}
+		configure(endpoint, new DefaultCredentails(accessId, accessKey), sourceIp);
 	}
 
 	public String getAccessId() {
@@ -302,9 +315,12 @@ public class Client implements LogService {
 		serviceClient.shutdown();
 	}
 
-	private URI GetHostURI(String project) {
+	URI GetHostURI(String project) {
 		String endPointUrl = this.httpType + this.hostName;
 		if (project != null && !project.isEmpty()) {
+			if (!Utils.validateProject(project)) {
+				throw new IllegalArgumentException("Invalid project: " + project);
+			}
 			endPointUrl = this.httpType + project + "." + this.hostName;
 		}
 		try {
@@ -594,7 +610,7 @@ public class Client implements LogService {
 		for (int i = 0; i < 2; i++) {
 			String server_ip = this.realServerIP;
 			ClientConnectionStatus connection_status = null;
-			if (this.mUseDirectMode) {
+			if (this.useDirectMode) {
 				connection_status = GetGlobalConnectionStatus();
 				server_ip = connection_status.GetIpAddress();
 			}
@@ -1126,7 +1142,7 @@ public class Client implements LogService {
 		for (int i = 0; i < 2; i++) {
 			String server_ip = this.realServerIP;
 			ClientConnectionStatus connection_status = null;
-			if (this.mUseDirectMode) {
+			if (this.useDirectMode) {
 				connection_status = GetShardConnectionStatus(project, logStore, request.GetShardId());
 				server_ip = connection_status.GetIpAddress();
 			}
@@ -1169,7 +1185,7 @@ public class Client implements LogService {
         for (int i = 0; i < 2; i++) {
             String serverIp = this.realServerIP;
             ClientConnectionStatus connectionStatus = null;
-            if (mUseDirectMode) {
+            if (useDirectMode) {
                 connectionStatus = GetShardConnectionStatus(project, logStore, request.getShardId());
                 serverIp = connectionStatus.GetIpAddress();
             }

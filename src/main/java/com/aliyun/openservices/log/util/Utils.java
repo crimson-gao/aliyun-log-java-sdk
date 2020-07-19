@@ -2,8 +2,10 @@ package com.aliyun.openservices.log.util;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public final class Utils {
+    private static final Pattern PROJECT_PATTERN = Pattern.compile("^[0-9a-zA-Z][0-9a-zA-Z_-]{1,126}[0-9a-zA-Z]$");
 
     private Utils() {
     }
@@ -47,5 +49,31 @@ public final class Utils {
                 throw new NumberFormatException("'" + s + "' is not a valid duration. Should be numeric value followed by a unit, i.e. 20s. Valid units are s, m, h and d.");
             }
         }
+    }
+
+    public static boolean validateProject(final String projectName) {
+        return PROJECT_PATTERN.matcher(projectName).matches();
+    }
+
+    public static String normalizeHostName(String hostName) {
+        int n = hostName.length();
+        while (n > 0 && hostName.charAt(n - 1) == '/') {
+            n--;
+        }
+        if (n <= 0) {
+            return null;
+        }
+        if (n < hostName.length()) {
+            hostName = hostName.substring(0, n);
+        }
+        for (int i = 0; i < n; i++) {
+            final char ch = hostName.charAt(i);
+            if (ch == '-' || ch == '_' || ch == '.' || (ch >= '0' && ch <= '9')
+                    || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
+                continue;
+            }
+            return null;
+        }
+        return hostName;
     }
 }
