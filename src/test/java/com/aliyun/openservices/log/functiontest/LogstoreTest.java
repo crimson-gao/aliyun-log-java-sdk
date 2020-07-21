@@ -1,5 +1,6 @@
 package com.aliyun.openservices.log.functiontest;
 
+import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.common.Index;
 import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.common.Project;
@@ -29,19 +30,6 @@ public class LogstoreTest extends FunctionTest {
             "\"keys\":{\"key1\":{\"doc_value\":true,\"caseSensitive\":false,\"chn\":false,\"alias\":\"\",\"type\":\"text\"," +
             "\"token\":[\",\",\" \",\"'\",\"\\\"\",\";\",\"=\",\"(\",\")\",\"[\",\"]\",\"{\",\"}\",\"?\",\"@\",\"&\",\"<\",\">\",\"/\",\":\",\"\\n\",\"\\t\",\"\\r\"]}," +
             "\"key2\":{\"doc_value\":true,\"alias\":\"\",\"type\":\"long\"}},\"ttl\":1}";
-
-//    @Test
-//    public void getIndex() {
-//        Client client = new Client("cn-hangzhou-share.log.aliyuncs.com", credentials.getAccessKeyId(), credentials.getAccessKey());
-//        try {
-//            GetIndexResponse response = client.GetIndex("like-test-ak", "test-ak");
-//            Index index  = response.GetIndex();
-//            System.out.println(index.ToJsonString());
-//        } catch (LogException ex) {
-//            System.out.println(ex.GetRequestId());
-//            throw new RuntimeException(ex);
-//        }
-//    }
 
     @Before
     public void setUp() throws Exception {

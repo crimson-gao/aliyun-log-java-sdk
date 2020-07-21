@@ -11,12 +11,12 @@ import com.aliyun.openservices.log.request.UpdateExternalStoreRequest;
 import com.aliyun.openservices.log.response.GetExternalStoreResponse;
 import com.aliyun.openservices.log.response.ListExternalStroesResponse;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ExternalStoreTest extends FunctionTest {
     private final String project = "java-sdk-external-store-test-" + randomInt();
@@ -43,6 +43,15 @@ public class ExternalStoreTest extends FunctionTest {
         ExternalStore externalStore = new ExternalStore("name-rds-vpc", "rds-vpc", parameter);
         CreateExternalStoreRequest createRequest = new CreateExternalStoreRequest(project, externalStore);
         client.createExternalStore(createRequest);
+
+        try {
+            client.createExternalStore(createRequest);
+            fail("Already exists");
+        } catch (LogException ex) {
+            assertEquals("ParameterInvalid", ex.GetErrorCode());
+            assertEquals(400, ex.GetHttpCode());
+            System.out.println(ex.GetErrorMessage());
+        }
 
         //get
         GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(project, "name-rds-vpc");
