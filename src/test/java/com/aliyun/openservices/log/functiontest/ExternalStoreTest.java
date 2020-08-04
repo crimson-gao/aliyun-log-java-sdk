@@ -1,5 +1,6 @@
 package com.aliyun.openservices.log.functiontest;
 
+import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.common.ExternalStore;
 import com.aliyun.openservices.log.common.Parameter;
 import com.aliyun.openservices.log.exception.LogException;
@@ -98,6 +99,15 @@ public class ExternalStoreTest extends FunctionTest {
         CreateExternalStoreRequest createRequest = new CreateExternalStoreRequest(project, externalStore);
         client.createExternalStore(createRequest);
 
+        try {
+            client.createExternalStore(createRequest);
+            fail("Already exists");
+        } catch (LogException ex) {
+            assertEquals("ParameterInvalid", ex.GetErrorCode());
+            assertEquals(400, ex.GetHttpCode());
+            System.out.println(ex.GetErrorMessage());
+        }
+
         //get
         //注意，此处会返回创建者的accessid和accesskey
         GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(project, "name-oss");
@@ -126,6 +136,9 @@ public class ExternalStoreTest extends FunctionTest {
 
         //delete
         DeleteExternalStoreRequest deleteRequest = new DeleteExternalStoreRequest(project, "name-oss");
+        client.deleteExternalStore(deleteRequest);
+        waitForSeconds(5);
+        client.createExternalStore(createRequest);
         client.deleteExternalStore(deleteRequest);
     }
 }
