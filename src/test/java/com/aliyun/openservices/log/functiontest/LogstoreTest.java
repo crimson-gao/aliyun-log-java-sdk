@@ -1,6 +1,5 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.common.Index;
 import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.common.Project;

@@ -46,6 +46,16 @@ public abstract class FunctionTest {
         return RANDOM.nextInt(upperBound);
     }
 
+    static String randomString() {
+        int len = randomBetween(10, 20);
+        StringBuilder builder = new StringBuilder(len);
+        String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        for (int i = 0; i < len; i++) {
+            builder.append(CHARS.charAt(randomInt(CHARS.length())));
+        }
+        return builder.toString();
+    }
+
     static int randomInt() {
         return RANDOM.nextInt();
     }
