@@ -4,42 +4,9 @@
 package com.aliyun.openservices.log;
 
 import com.alibaba.fastjson.parser.Feature;
-import com.aliyun.openservices.log.common.ACL;
-import com.aliyun.openservices.log.common.Chart;
-import com.aliyun.openservices.log.common.Config;
-import com.aliyun.openservices.log.common.Consts;
+import com.aliyun.openservices.log.common.*;
 import com.aliyun.openservices.log.common.Consts.CompressType;
 import com.aliyun.openservices.log.common.Consts.CursorMode;
-import com.aliyun.openservices.log.common.ConsumerGroup;
-import com.aliyun.openservices.log.common.Dashboard;
-import com.aliyun.openservices.log.common.Domain;
-import com.aliyun.openservices.log.common.EtlJob;
-import com.aliyun.openservices.log.common.EtlMeta;
-import com.aliyun.openservices.log.common.Histogram;
-import com.aliyun.openservices.log.common.Index;
-import com.aliyun.openservices.log.common.InternalLogStore;
-import com.aliyun.openservices.log.common.LZ4Encoder;
-import com.aliyun.openservices.log.common.LogContent;
-import com.aliyun.openservices.log.common.LogItem;
-import com.aliyun.openservices.log.common.LogStore;
-import com.aliyun.openservices.log.common.Logging;
-import com.aliyun.openservices.log.common.Logs;
-import com.aliyun.openservices.log.common.LogtailProfile;
-import com.aliyun.openservices.log.common.Machine;
-import com.aliyun.openservices.log.common.MachineGroup;
-import com.aliyun.openservices.log.common.MachineList;
-import com.aliyun.openservices.log.common.OdpsShipperConfig;
-import com.aliyun.openservices.log.common.OssShipperConfig;
-import com.aliyun.openservices.log.common.Project;
-import com.aliyun.openservices.log.common.QueriedLog;
-import com.aliyun.openservices.log.common.SavedSearch;
-import com.aliyun.openservices.log.common.Shard;
-import com.aliyun.openservices.log.common.ShipperConfig;
-import com.aliyun.openservices.log.common.ShipperTask;
-import com.aliyun.openservices.log.common.ShipperTasksStatistic;
-import com.aliyun.openservices.log.common.SubStore;
-import com.aliyun.openservices.log.common.TagContent;
-import com.aliyun.openservices.log.common.ExternalStore;
 import com.aliyun.openservices.log.common.auth.Credentials;
 import com.aliyun.openservices.log.common.auth.DefaultCredentails;
 import com.aliyun.openservices.log.common.auth.ECSRoleCredentials;
@@ -3907,6 +3874,236 @@ public class Client implements LogService {
 	public StopAuditJobResponse stopAuditJob(StopAuditJobRequest request) throws LogException {
 		ResponseMessage responseMessage = send(request);
 		return new StopAuditJobResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public CreateResourceResponse createResource(CreateResourceRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getResource(), "resource");
+		Resource resource = request.getResource();
+		resource.CheckForCreate();
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(resource.ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = Consts.CONST_RESOURCE_URI;
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
+				resourceUri, urlParameter, headParameter, body);
+		return new CreateResourceResponse(response.getHeaders());
+	}
+
+	@Override
+	public UpdateResourceResponse updateResource(UpdateResourceRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getResource(), "resource");
+		request.getResource().CheckForUpdate();
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getResource().getName());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT, resourceUri, urlParameter, headParameter, request.getResource().ToJsonString());
+		return new UpdateResourceResponse(response.getHeaders());
+	}
+
+	@Override
+	public GetResourceResponse getResource(GetResourceRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getResourceName());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		Resource resource = ExtractResourceFromResponse(object, requestId);
+		return new GetResourceResponse(response.getHeaders(), resource);
+	}
+
+	protected Resource ExtractResourceFromResponse(JSONObject dict, String requestId) throws LogException {
+		Resource resource = new Resource();
+		try {
+			resource.FromJsonObject(dict);
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid json string : " + dict.toString(), e, requestId);
+		}
+		return resource;
+	}
+
+	@Override
+	public DeleteResourceResponse deleteResource(DeleteResourceRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getResourceName());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE, resourceUri, urlParameter, headParameter);
+		return new DeleteResourceResponse(response.getHeaders());
+	}
+
+	@Override
+	public ListResourceResponse listResource(ListResourceRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		String resourceUri = Consts.CONST_RESOURCE_URI;
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		Map<String, String> urlParameter = request.GetAllParams();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		int total = object.getIntValue(Consts.CONST_TOTAL);
+		int count = object.getIntValue(Consts.CONST_COUNT);
+		List<Resource> resources = ExtractResources(object, requestId);
+		return new ListResourceResponse(response.getHeaders(), count, total, resources);
+	}
+
+	protected List<Resource> ExtractResources(JSONObject object, String requestId) throws LogException {
+		List<Resource> resources = new ArrayList<Resource>();
+		if (object == null) {
+			return resources;
+		}
+		JSONArray array = new JSONArray();
+		try {
+			array = object.getJSONArray("items");
+			if (array == null) {
+				return resources;
+			}
+			for (int index = 0; index < array.size(); index++) {
+				JSONObject jsonObject = array.getJSONObject(index);
+				if (jsonObject == null) {
+					continue;
+				}
+				Resource resource = new Resource();
+				resource.FromJsonObject(jsonObject);
+				resources.add(resource);
+			}
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid config json array string : " + array.toString(), e, requestId);
+		}
+		return resources;
+	}
+
+	@Override
+	public CreateResourceRecordResponse createResourceRecord(CreateResourceRecordRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.assertParameterNotNull(request.getRecord(), "record");
+		request.getRecord().CheckForCreate();
+
+		ResourceRecord record = request.getRecord();
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(record.ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_URI, request.getResourceName());
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
+				resourceUri, urlParameter, headParameter, body);
+		return new CreateResourceRecordResponse(response.getHeaders());
+	}
+
+	@Override
+	public UpdateResourceRecordResponse updateResourceRecord(UpdateResourceRecordRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.assertStringNotNullOrEmpty(request.getRecordId(), "recordId");
+		CodingUtils.assertParameterNotNull(request.getRecord(), "record");
+		request.getRecord().CheckForUpdate();
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI, request.getResourceName(), request.getRecordId());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT, resourceUri, urlParameter, headParameter, request.getRecord().ToJsonString());
+		return new UpdateResourceRecordResponse(response.getHeaders());
+	}
+
+	@Override
+	public GetResourceRecordResponse getResourceRecord(GetResourceRecordRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.assertStringNotNullOrEmpty(request.getRecordId(), "recordId");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI, request.getResourceName(), request.getRecordId());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		ResourceRecord record = ExtractResourceRecordFromResponse(object, requestId);
+		return new GetResourceRecordResponse(response.getHeaders(), record);
+	}
+
+	protected ResourceRecord ExtractResourceRecordFromResponse(JSONObject dict, String requestId) throws LogException {
+		ResourceRecord record = new ResourceRecord();
+		try {
+			record.FromJsonObject(dict);
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid json string : " + dict.toString(), e, requestId);
+		}
+		return record;
+	}
+
+	@Override
+	public DeleteResourceRecordResponse deleteResourceRecord(DeleteResourceRecordRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.assertStringNotNullOrEmpty(request.getRecordId(), "recordId");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI, request.getResourceName(), request.getRecordId());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE, resourceUri, urlParameter, headParameter);
+		return new DeleteResourceRecordResponse(response.getHeaders());
+	}
+
+	@Override
+	public ListResourceRecordResponse listResourceRecord(ListResourceRecordRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_URI, request.getResourceName());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		Map<String, String> urlParameter = request.GetAllParams();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		int total = object.getIntValue(Consts.CONST_TOTAL);
+		int count = object.getIntValue(Consts.CONST_COUNT);
+		List<ResourceRecord> records = ExtractResourceRecords(object, requestId);
+		return new ListResourceRecordResponse(response.getHeaders(), count, total, records);
+	}
+
+	protected List<ResourceRecord> ExtractResourceRecords(JSONObject object, String requestId) throws LogException {
+		List<ResourceRecord> records = new ArrayList<ResourceRecord>();
+		if (object == null) {
+			return records;
+		}
+		JSONArray array = new JSONArray();
+		try {
+			array = object.getJSONArray("items");
+			if (array == null) {
+				return records;
+			}
+			for (int index = 0; index < array.size(); index++) {
+				JSONObject jsonObject = array.getJSONObject(index);
+				if (jsonObject == null) {
+					continue;
+				}
+				ResourceRecord record = new ResourceRecord();
+				record.FromJsonObject(jsonObject);
+				records.add(record);
+			}
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid config json array string : " + array.toString(), e, requestId);
+		}
+		return records;
 	}
 
 	@Override
