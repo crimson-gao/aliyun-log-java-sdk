@@ -59,6 +59,10 @@ public class Resource implements Serializable {
         this.type = type;
     }
 
+    public Resource(String name) {
+        this.name = name;
+    }
+
     public Resource() {}
 
     public String getName() {

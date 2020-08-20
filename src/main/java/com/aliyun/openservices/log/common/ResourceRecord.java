@@ -17,6 +17,12 @@ public class ResourceRecord implements Serializable {
 
     public ResourceRecord() {}
 
+    public ResourceRecord(String value) {
+        this.id = "";
+        this.key = "";
+        this.value = value;
+    }
+    
     public ResourceRecord(String key, String value) {
         this.id = "";
         this.key = key;

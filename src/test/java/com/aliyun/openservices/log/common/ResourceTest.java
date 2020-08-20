@@ -7,14 +7,15 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ResourceTest {
-//    @Test
-//    public void TestJson() {
-//        String content = "{\"name\":\"value\nt\",\"look\":\"think\\nt\", \"schema\":\"{\\\"a\\\":\\\"e\n\\\", \\\"d\\\":\\\"e\\\\\\n\\\"}\"}";
-//        JSONObject dict = JSONObject.parseObject(content);
-//        System.out.println(dict.getString("schema"));
-//        assertEquals(dict.getString("name"), "name\nt");
-//        assertEquals(dict.getString("look"), "think\\nt");
-//    }
+    @Test
+    public void TestJson() {
+        String content = "{\"name\":\"value\nt\",\"look\":\"think\\nt\", \"schema\":\"{\\\"a\\\":\\\"e\n\\\", \\\"d\\\":\\\"e\\\\\\n\\\"}\"}";
+        JSONObject dict = JSONObject.parseObject(content);
+        System.out.println(dict.getString("schema"));
+        assertEquals(dict.getString("name"), "value\nt");
+        assertEquals(dict.getString("look"), "think\nt");
+        System.out.println(JSONObject.parseObject(content).toString());
+    }
 
     @Test
     public void testResource() throws LogException {
