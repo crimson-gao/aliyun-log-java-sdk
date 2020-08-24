@@ -11,6 +11,7 @@ public class AliyunCloudMonitorSource extends DataSource {
     private long startTime;
     private List<String> namespaces;
     private String outputType;
+    private Integer delayTime;
 
     public AliyunCloudMonitorSource() {
         super(DataSourceType.ALIYUN_CLOUD_MONITOR);
@@ -56,6 +57,14 @@ public class AliyunCloudMonitorSource extends DataSource {
         this.outputType = outputType;
     }
 
+    public Integer getDelayTime() {
+        return delayTime;
+    }
+
+    public void setDelayTime(Integer delayTime) {
+        this.delayTime = delayTime;
+    }
+
     @Override
     public void deserialize(JSONObject jsonObject) {
         super.deserialize(jsonObject);
@@ -64,5 +73,6 @@ public class AliyunCloudMonitorSource extends DataSource {
         startTime = jsonObject.getLongValue("startTime");
         namespaces = JsonUtils.readOptionalStrings(jsonObject, "namespaces");
         outputType = jsonObject.getString("outputType");
+        delayTime = jsonObject.getInteger("delayTime");
     }
 }
