@@ -21,6 +21,7 @@ public class InternalLogStore extends LogStore implements Serializable {
     private Long indexSize = 0l;
     private Long shardSize = 0l;
     private Long freeTtl = 0l;
+    private String productType = "";
 
     public Long getFreeTtl() {
 		return freeTtl;
@@ -114,7 +115,15 @@ public class InternalLogStore extends LogStore implements Serializable {
         this.paidAccount = paidAccount;
     }
 
-    @Override
+    public String getProductType() {
+		return productType;
+	}
+
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+	
+	@Override
     public JSONObject ToJsonObject() {
         JSONObject jsonObj = ToRequestJson();
         jsonObj.put("productType", productType);
@@ -186,6 +195,10 @@ public class InternalLogStore extends LogStore implements Serializable {
                 for (int index = 0; index < operatingAccountArray.size(); index++) {
                     operatingAccount.add(operatingAccountArray.getString(index));
                 }
+            }
+            
+            if (dict.containsKey("productType")) {
+            	setProductType(dict.getString("productType"));
             }
 
         } catch (LogException e) {
