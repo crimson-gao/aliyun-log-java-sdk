@@ -117,6 +117,7 @@ public class InternalLogStore extends LogStore implements Serializable {
     @Override
     public JSONObject ToJsonObject() {
         JSONObject jsonObj = ToRequestJson();
+        jsonObj.put("productType", productType);
         JSONArray operatingAccountJson = new JSONArray();
         operatingAccountJson.addAll(operatingAccount);
         jsonObj.put("operatingAccount", operatingAccountJson);

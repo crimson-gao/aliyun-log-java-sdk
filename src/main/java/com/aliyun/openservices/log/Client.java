@@ -385,8 +385,50 @@ public class Client implements LogService {
 		}
 	}
 
+	public void SendRawRequest(HttpMethod method, String uri, Map<String, String> urlParameter, String rawRequest)
+			throws LogException {
+		Map<String, String> headParameter = GetCommonHeadPara("");
+		byte[] body = encodeToUtf8(rawRequest);
+		ResponseMessage response = SendData("", method, uri, urlParameter, headParameter, body);
+		System.out.println(response.GetStringBody());
+		System.out.println(response.getStatusCode());
+		System.out.println(response.getRequestId());
+	}
+
+	public TagResourcesResponse tagResources(String tagResourcesStr) throws LogException {
+		CodingUtils.assertParameterNotNull(tagResourcesStr, "tagResourcesStr");
+		Map<String, String> headParameter = GetCommonHeadPara("");
+		byte[] body = encodeToUtf8(tagResourcesStr);
+		String resourceUri = "/tag";
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData("", HttpMethod.POST, resourceUri, urlParameter, headParameter, body);
+        Map<String, String> resHeaders = response.getHeaders();
+        return new TagResourcesResponse(resHeaders);
+	}
+	
+	public UntagResourcesResponse untagResources(String untagResourcesStr) throws LogException {
+		CodingUtils.assertParameterNotNull(untagResourcesStr, "tagResourcesStr");
+		Map<String, String> headParameter = GetCommonHeadPara("");
+		byte[] body = encodeToUtf8(untagResourcesStr);
+		String resourceUri = "/untag";
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData("", HttpMethod.POST, resourceUri, urlParameter, headParameter, body);
+        Map<String, String> resHeaders = response.getHeaders();
+        return new UntagResourcesResponse(resHeaders);
+	}
+	
+	public ListTagResourcesResponse listTagResources(ListTagResourcesRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		Map<String, String> urlParameter = request.GetAllParams();
+		Map<String, String> headParameter = GetCommonHeadPara("");
+		String resourceUri = "/tags";
+		ResponseMessage response = SendData("", HttpMethod.GET, resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new ListTagResourcesResponse(resHeaders, response.GetStringBody());
+	}
+	
 	public GetLogtailProfileResponse GetLogtailProfile(String project, String logstore, String source,
-			int line, int offset) throws LogException {
+			int line, int offset) throws LogException { 
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(logstore, "logstore");
 		GetLogtailProfileRequest request = new GetLogtailProfileRequest(project, logstore, source, line, offset);
