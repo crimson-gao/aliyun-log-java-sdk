@@ -12,6 +12,7 @@ public class Resource implements Serializable {
     private String name = "";
     private String type = "";
     private String schema = "{}";
+    private String acl = null;
     private String description = "";
     private String extInfo = "";
     private long createTime = 0;
@@ -21,46 +22,22 @@ public class Resource implements Serializable {
         return createTime;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
     public long getLastModifyTime() {
         return lastModifyTime;
     }
 
-    public void setLastModifyTime(long lastModifyTime) {
-        this.lastModifyTime = lastModifyTime;
-    }
-
-    public Resource(String name, String type, String schema, String description, String extInfo) {
+    public Resource(String name, String type, String schema, String acl, String description, String extInfo) {
         this.name = name;
         this.type = type;
         this.schema = schema;
+        this.acl = acl;
         this.description = description;
         this.extInfo = extInfo;
-    }
-
-    public Resource(String name, String type, String schema, String description) {
-        this.name = name;
-        this.type = type;
-        this.schema = schema;
-        this.description = description;
-    }
-
-    public Resource(String name, String type, String schema) {
-        this.name = name;
-        this.type = type;
-        this.schema = schema;
     }
 
     public Resource(String name, String type) {
         this.name = name;
         this.type = type;
-    }
-
-    public Resource(String name) {
-        this.name = name;
     }
 
     public Resource() {}
@@ -88,6 +65,10 @@ public class Resource implements Serializable {
     public void setSchema(String schema) {
         this.schema = schema;
     }
+
+    public String getAcl() { return acl; }
+
+    public void setAcl(String acl) { this.acl = acl; }
 
     public String getDescription() {
         return description;
@@ -120,6 +101,10 @@ public class Resource implements Serializable {
         if (extInfo != null) {
             result.put(Consts.RESOURCE_EXT_INFO, getExtInfo());
         }
+
+        if (acl != null) {
+            result.put(Consts.RESOURCE_ACL, getAcl());
+        }
         return result;
     }
 
@@ -141,23 +126,34 @@ public class Resource implements Serializable {
             setSchema(dict.getString(Consts.RESOURCE_SCHEMA));
         }
 
+        // acl
+        if (dict.containsKey(Consts.RESOURCE_ACL)) {
+            setAcl(dict.getString(Consts.RESOURCE_ACL));
+        }
+
         // extInfo
         if (dict.containsKey(Consts.RESOURCE_EXT_INFO)) {
             setExtInfo(dict.getString(Consts.RESOURCE_EXT_INFO));
         }
 
         if (dict.containsKey(Consts.RESOURCE_CREATE_TIME)) {
-            setCreateTime(dict.getIntValue(Consts.RESOURCE_CREATE_TIME));
+            createTime = dict.getIntValue(Consts.RESOURCE_CREATE_TIME);
         }
 
         if (dict.containsKey(Consts.RESOURCE_LAST_MODIFY_TIME)) {
-            setLastModifyTime(dict.getIntValue(Consts.RESOURCE_LAST_MODIFY_TIME));
+            lastModifyTime = dict.getIntValue(Consts.RESOURCE_LAST_MODIFY_TIME);
         }
 
         try {
             JSONObject.parseObject(dict.getString(Consts.RESOURCE_SCHEMA));
         } catch (JSONException e) {
             throw new LogException(ErrorCodes.BAD_RESPONSE, "response resource schema is not valid json", e, e.getMessage());
+        }
+
+        try {
+            JSONObject.parseObject(dict.getString(Consts.RESOURCE_ACL));
+        } catch (JSONException e) {
+            throw new LogException(ErrorCodes.BAD_RESPONSE, "response resource acl is not valid json", e, e.getMessage());
         }
     }
 
@@ -178,6 +174,14 @@ public class Resource implements Serializable {
                 throw new IllegalArgumentException("resource schema not valid json");
             }
         }
+
+        if (acl != null) {
+            try {
+                JSONObject.parseObject(acl);
+            } catch (JSONException e) {
+                throw new IllegalArgumentException("resource acl not valid json");
+            }
+        }
     }
 
     public void CheckForUpdate() throws IllegalArgumentException {
@@ -190,6 +194,14 @@ public class Resource implements Serializable {
                 JSONObject.parseObject(schema);
             } catch (JSONException e) {
                 throw new IllegalArgumentException("resource schema not valid json");
+            }
+        }
+
+        if (acl != null) {
+            try {
+                JSONObject.parseObject(acl);
+            } catch (JSONException e) {
+                throw new IllegalArgumentException("resource acl not valid json");
             }
         }
     }

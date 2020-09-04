@@ -388,6 +388,7 @@ public class Consts {
     public static final String RESOURCE_SCHEMA = "schema";
     public static final String RESOURCE_DESCRIPTION = "description";
     public static final String RESOURCE_EXT_INFO = "extInfo";
+    public static final String RESOURCE_ACL = "acl";
     public static final String RESOURCE_CREATE_TIME = "createTime";
     public static final String RESOURCE_LAST_MODIFY_TIME = "lastModifyTime";
 

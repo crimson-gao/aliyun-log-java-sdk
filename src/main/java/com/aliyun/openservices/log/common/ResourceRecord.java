@@ -41,16 +41,8 @@ public class ResourceRecord implements Serializable {
         return createTime;
     }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
     public long getLastModifyTime() {
         return lastModifyTime;
-    }
-
-    public void setLastModifyTime(long lastModifyTime) {
-        this.lastModifyTime = lastModifyTime;
     }
 
     public void setKey(String key) {
@@ -87,11 +79,11 @@ public class ResourceRecord implements Serializable {
         }
 
         if (dict.containsKey(Consts.RESOURCE_CREATE_TIME)) {
-            setCreateTime(dict.getIntValue(Consts.RESOURCE_CREATE_TIME));
+            createTime = dict.getIntValue(Consts.RESOURCE_CREATE_TIME);
         }
 
         if (dict.containsKey(Consts.RESOURCE_LAST_MODIFY_TIME)) {
-            setLastModifyTime(dict.getIntValue(Consts.RESOURCE_LAST_MODIFY_TIME));
+            lastModifyTime = dict.getIntValue(Consts.RESOURCE_LAST_MODIFY_TIME);
         }
 
         try {

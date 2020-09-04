@@ -26,6 +26,7 @@ public class ResourceTest {
         assertTrue(dict.containsKey("name"));
         assertTrue(dict.containsKey("type"));
         assertTrue(dict.containsKey("schema"));
+        assertFalse(dict.containsKey("acl"));
         assertTrue(dict.containsKey("description"));
         assertTrue(dict.containsKey("extInfo"));
 
@@ -43,27 +44,56 @@ public class ResourceTest {
             assertTrue(true);
         }
 
-        resource = new Resource("name", "type", null, null, null);
+        resource = new Resource("name", "type", "a", "b", "c", "d");
+        assertEquals(resource.getName(), "name");
+        assertEquals(resource.getType(), "type");
+        assertEquals(resource.getSchema(), "a");
+        assertEquals(resource.getAcl(), "b");
+        assertEquals(resource.getDescription(), "c");
+        assertEquals(resource.getExtInfo(), "d");
+
+        resource = new Resource("name", "type", null, null, null, null);
         dict = resource.ToJsonObject();
         assertTrue(dict.containsKey("name"));
         assertTrue(dict.containsKey("type"));
         assertFalse(dict.containsKey("schema"));
+        assertFalse(dict.containsKey("acl"));
         assertFalse(dict.containsKey("description"));
         assertFalse(dict.containsKey("extInfo"));
 
-        resource = new Resource("name", "type", null);
+        resource = new Resource("name", "type");
+        resource.setSchema(null);
+        assertEquals(resource.getName(), "name");
+        assertEquals(resource.getType(), "type");
         resource.CheckForCreate();
         resource.CheckForUpdate();
 
-        resource = new Resource("name", "type", "{\"a\":\"b\", \"d\":12}");
+        resource = new Resource("name", "type");
+        resource.setSchema("{\"a\":\"b\", \"d\":12}");
         resource.CheckForCreate();
         resource.CheckForUpdate();
 
-        resource = new Resource("name", "type", "{\"a\":\"b\", \"d\":12}", "ddd");
+        resource = new Resource("name", "type");
+        resource.setSchema("{\"a\":\"b\", \"d\":12}");
+        resource.setDescription("ddd");
         resource.CheckForCreate();
         resource.CheckForUpdate();
 
-        resource = new Resource("name", "type", "think", "ddd", "ex");
+        resource = new Resource("name", "type");
+        resource.setSchema("think");
+        resource.setDescription("ddd");
+        resource.setExtInfo("ex");
+        try {
+            resource.CheckForUpdate();
+            assertTrue(false);
+        } catch (Exception exp) {
+            assertTrue(true);
+        }
+
+        resource = new Resource("name", "type");
+        resource.setAcl("think");
+        resource.setDescription("ddd");
+        resource.setExtInfo("ex");
         try {
             resource.CheckForUpdate();
             assertTrue(false);
@@ -77,12 +107,14 @@ public class ResourceTest {
         } catch (Exception exp) {
             assertTrue(true);
         }
-        resource = new Resource("name", "type", "{\"a\":\"b\n\", \"d\":12}", "ddd", "ex");
+        resource = new Resource("name", "type");
+        resource.setSchema("{\"a\":\"b\", \"d\":12}");
+        resource.setDescription("ddd");
+        resource.setExtInfo("ex");
+        resource.setAcl("{\"a\":\"f\", \"d\":12}");
         resource.CheckForCreate();
         resource.CheckForUpdate();
 
-        resource.setLastModifyTime(12);
-        resource.setCreateTime(10);
         String content = null;
         try {
             content = resource.ToJsonString();
@@ -99,17 +131,19 @@ public class ResourceTest {
             assertEquals(decoded.getType(), resource.getType());
             assertEquals(decoded.getSchema(), resource.getSchema());
             assertEquals(decoded.getExtInfo(), resource.getExtInfo());
+            assertEquals(decoded.getAcl(), resource.getAcl());
             assertEquals(decoded.getDescription(), resource.getDescription());
         } catch (Exception exp) {
             assertTrue(false);
         }
 
-        String encodedStr = "{\"schema\":\"{\\\"a\\\":\\\"e\\\", \\\"d\\\":12}\",\"name\":\"name\",\"type\":\"type\",\"createTime\":10,\"lastModifyTime\":12}";
+        String encodedStr = "{\"schema\":\"{\\\"a\\\":\\\"e\\\", \\\"d\\\":12}\",\"acl\":\"{\\\"a\\\":\\\"f\\\", \\\"d\\\":12}\",\"name\":\"name\",\"type\":\"type\",\"createTime\":10,\"lastModifyTime\":12}";
         decoded = new Resource();
         decoded.FromJsonString(encodedStr);
         assertEquals(decoded.getName(), resource.getName());
         assertEquals(decoded.getType(), resource.getType());
         assertEquals(decoded.getSchema(), "{\"a\":\"e\", \"d\":12}");
+        assertEquals(decoded.getAcl(), "{\"a\":\"f\", \"d\":12}");
 
         assertTrue(decoded.getDescription().isEmpty());
         assertTrue(decoded.getExtInfo().isEmpty());
@@ -117,6 +151,15 @@ public class ResourceTest {
         assertEquals(decoded.getLastModifyTime(), 12);
 
         encodedStr = "{\"schema\":\"xxx\",\"name\":\"name\",\"type\":\"type\"}";
+        try {
+            decoded = new Resource();
+            decoded.FromJsonString(encodedStr);
+            assertTrue(false);
+        } catch (Exception exp) {
+            assertTrue(true);
+        }
+
+        encodedStr = "{\"acl\":\"xxx\",\"name\":\"name\",\"type\":\"type\"}";
         try {
             decoded = new Resource();
             decoded.FromJsonString(encodedStr);
@@ -138,6 +181,8 @@ public class ResourceTest {
         record.CheckForUpdate();
 
         record = new ResourceRecord("key1", "{\"a\":\"b\", \"d\":12}");
+        assertEquals(record.getKey(), "key1");
+        assertEquals(record.getValue(), "{\"a\":\"b\", \"d\":12}");
         record.CheckForCreate();
         record.CheckForUpdate();
         String content = record.ToJsonString();
