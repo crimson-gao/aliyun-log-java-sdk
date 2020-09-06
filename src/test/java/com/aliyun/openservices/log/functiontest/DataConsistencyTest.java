@@ -10,7 +10,6 @@ import com.aliyun.openservices.log.request.PutLogsRequest;
 import com.aliyun.openservices.log.response.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -121,7 +120,18 @@ public class DataConsistencyTest extends FunctionTest {
 
     @Test
     public void testPostWebTracking() throws LogException {
-        int count = mockPostRequest();
+        int count = mockPostRequest(Consts.CompressType.GZIP);
+
+        int pull = verifyPull();
+        assertEquals(count, pull);
+
+        int get = verifyGet();
+        assertEquals(count, get);
+    }
+
+    @Test
+    public void testPostWebTrackingForLZ4() throws LogException {
+        int count = mockPostRequest(Consts.CompressType.LZ4);
 
         int pull = verifyPull();
         assertEquals(count, pull);
@@ -212,7 +222,7 @@ public class DataConsistencyTest extends FunctionTest {
         return count;
     }
 
-    private int mockPostRequest() {
+    private int mockPostRequest(Consts.CompressType type) {
         int count = randomBetween(50, 100);
         JSONObject object = new JSONObject();
         JSONArray array = new JSONArray();
@@ -222,8 +232,14 @@ public class DataConsistencyTest extends FunctionTest {
         }
         array.add(log);
         object.put("__logs__", array);
-        for (int i = 0; i < count; i++) {
-            postTestLogs(object, true);
+        if (Consts.CompressType.GZIP.equals(type)) {
+            for (int i = 0; i < count; i++) {
+                postTestLogs(object, true, Consts.CompressType.GZIP);
+            }
+        } else {
+            for (int i = 0; i < count; i++) {
+                postTestLogs(object, true, Consts.CompressType.LZ4);
+            }
         }
         waitForSeconds(10);
         return count;
@@ -237,7 +253,7 @@ public class DataConsistencyTest extends FunctionTest {
         List<String> list = Arrays.asList(",", " ", "'", "\"", ";", "=", "(", ")", "[", "]", "{", "}", "?", "@", "&", "<", ">", "/", ":", "\n", "\t", "\r");
         IndexKeys indexKeys = new IndexKeys();
         for (int i = 1; i <= 10; i++) {
-            indexKeys.AddKey("key-"+i, new IndexKey(list,false, "text", ""));
+            indexKeys.AddKey("key-" + i, new IndexKey(list, false, "text", ""));
         }
         index.SetKeys(indexKeys);
         client.CreateIndex(new CreateIndexRequest(project, logStore.GetLogStoreName(), index));
@@ -288,7 +304,7 @@ public class DataConsistencyTest extends FunctionTest {
         }
     }
 
-    private Response postTestLogs(JSONObject log, boolean compress) {
+    private Response postTestLogs(JSONObject log, boolean compress, Consts.CompressType type) {
         CloseableHttpClient httpclient = null;
         try {
             httpclient = HttpClients.createDefault();
@@ -300,11 +316,17 @@ public class DataConsistencyTest extends FunctionTest {
             httpPost.addHeader(Consts.CONST_X_SLS_APIVERSION, Consts.DEFAULT_API_VESION);
             if (compress) {
                 byte[] toBytes = body.getBytes("UTF-8");
-                byte[] bytes = compressData(toBytes);
+                byte[] bytes;
+                if (type.equals(Consts.CompressType.GZIP)) {
+                    bytes = compressData(toBytes, type);
+                    httpPost.addHeader(Consts.CONST_X_SLS_COMPRESSTYPE, Consts.CompressType.GZIP.toString());
+                } else {
+                    bytes = compressData(toBytes, type);
+                    httpPost.addHeader(Consts.CONST_X_SLS_COMPRESSTYPE, Consts.CompressType.LZ4.toString());
+                }
                 ByteArrayEntity entity = new ByteArrayEntity(bytes);
                 httpPost.setEntity(entity);
                 entity.setContentEncoding("UTF-8");
-                httpPost.addHeader(Consts.CONST_X_SLS_COMPRESSTYPE, Consts.CompressType.GZIP.toString());
                 httpPost.addHeader(Consts.CONST_X_SLS_BODYRAWSIZE, String.valueOf(toBytes.length));
             } else {
                 StringEntity stringEntity = new StringEntity(log.toString(), "UTF-8");
@@ -336,18 +358,22 @@ public class DataConsistencyTest extends FunctionTest {
         }
     }
 
-    private byte[] compressData(byte[] data) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream(data.length);
-        Deflater compressor = new Deflater();
-        compressor.setInput(data);
-        compressor.finish();
+    private byte[] compressData(byte[] data, Consts.CompressType type) throws LogException {
+        if (type.equals(Consts.CompressType.GZIP)) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream(data.length);
+            Deflater compressor = new Deflater();
+            compressor.setInput(data);
+            compressor.finish();
 
-        byte[] buf = new byte[10240];
-        while (!compressor.finished()) {
-            int count = compressor.deflate(buf);
-            out.write(buf, 0, count);
+            byte[] buf = new byte[10240];
+            while (!compressor.finished()) {
+                int count = compressor.deflate(buf);
+                out.write(buf, 0, count);
+            }
+            return out.toByteArray();
+        } else {
+            return LZ4Encoder.compressToLhLz4Chunk(data);
         }
-        return out.toByteArray();
     }
 
     private static class Response {
