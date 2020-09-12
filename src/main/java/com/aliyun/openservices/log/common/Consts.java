@@ -384,6 +384,7 @@ public class Consts {
     public static final String CONST_RESOURCE_URI = "/resources/%s";
     public static final String CONST_RESOURCE_NAME_URI = CONST_RESOURCE_URI + "/%s";
     public static final String RESOURCE_NAME = "name";
+    public static final String RESOURCE_NAMES = "names";
     public static final String RESOURCE_TYPE = "type";
     public static final String RESOURCE_SCHEMA = "schema";
     public static final String RESOURCE_DESCRIPTION = "description";
@@ -396,6 +397,7 @@ public class Consts {
     public static final String CONST_RESOURCE_RECORD_ID_URI = CONST_RESOURCE_RECORD_URI + "/%s";
     public static final String CONST_RESOURCE_RECORD_BATCH_URI = CONST_RESOURCE_NAME_URI + "/records_batch";
     public static final String RESOURCE_RECORD_ID = "id";
+    public static final String RESOURCE_RECORD_IDS = "ids";
     public static final String RESOURCE_RECORD_TAG = "key";
     public static final String RESOURCE_RECORD_VALUE = "value";
 

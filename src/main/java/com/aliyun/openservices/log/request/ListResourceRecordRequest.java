@@ -1,13 +1,16 @@
 package com.aliyun.openservices.log.request;
 
 import com.aliyun.openservices.log.common.Consts;
+import com.aliyun.openservices.log.util.Utils;
 
+import java.util.List;
 import java.util.Map;
 
 public class ListResourceRecordRequest extends RecordRequest {
     private Integer offset;
     private Integer size;
     private String tag;
+    private List<String> recordIds;
 
     public Integer getOffset() {
         return offset;
@@ -57,6 +60,18 @@ public class ListResourceRecordRequest extends RecordRequest {
         if (tag != null && !tag.isEmpty()) {
             SetParam(Consts.RESOURCE_RECORD_TAG, tag);
         }
+
+        if (recordIds != null && !recordIds.isEmpty()) {
+            SetParam(Consts.RESOURCE_RECORD_IDS, Utils.join(",", recordIds));
+        }
         return super.GetAllParams();
+    }
+
+    public List<String> getRecordIds() {
+        return recordIds;
+    }
+
+    public void setRecordIds(List<String> recordIds) {
+        this.recordIds = recordIds;
     }
 }

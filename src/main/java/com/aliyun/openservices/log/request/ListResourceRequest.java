@@ -1,13 +1,16 @@
 package com.aliyun.openservices.log.request;
 
 import com.aliyun.openservices.log.common.Consts;
+import com.aliyun.openservices.log.util.Utils;
 
+import java.util.List;
 import java.util.Map;
 
 public class ListResourceRequest extends ResourceRequest {
     private Integer offset;
     private Integer size;
     private String type;
+    private List<String> resourceNames;
 
     public Integer getSize() {
         return size;
@@ -33,6 +36,14 @@ public class ListResourceRequest extends ResourceRequest {
         this.offset = offset;
     }
 
+    public List<String> getResourceNames() {
+        return resourceNames;
+    }
+
+    public void setResourceNames(List<String> resourceNames) {
+        this.resourceNames = resourceNames;
+    }
+
     public ListResourceRequest (String owner) {
         this(owner, "", 0, 100);
     }
@@ -56,6 +67,10 @@ public class ListResourceRequest extends ResourceRequest {
 
         if (type != null && !type.isEmpty()) {
             SetParam(Consts.RESOURCE_TYPE, type);
+        }
+
+        if (resourceNames != null && !resourceNames.isEmpty()) {
+            SetParam(Consts.RESOURCE_NAMES, Utils.join(",", resourceNames));
         }
         return super.GetAllParams();
     }

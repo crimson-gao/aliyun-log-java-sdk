@@ -1,6 +1,7 @@
 package com.aliyun.openservices.log.util;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -75,5 +76,21 @@ public final class Utils {
             return null;
         }
         return hostName;
+    }
+
+    public static String join(String delimiter, List<String> values) {
+        if (values == null || values.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int idx = 0; idx < values.size(); idx ++) {
+            if (idx == (values.size() - 1)) {
+                sb.append(values.get(idx));
+            } else {
+                sb.append(values.get(idx)).append(delimiter);
+            }
+        }
+        return sb.toString();
     }
 }
