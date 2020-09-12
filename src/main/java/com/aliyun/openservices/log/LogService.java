@@ -3336,6 +3336,4 @@ public interface LogService {
 	GetResourceRecordResponse    getResourceRecord(GetResourceRecordRequest request) throws LogException;
 	DeleteResourceRecordResponse deleteResourceRecord(DeleteResourceRecordRequest request) throws LogException;
 	ListResourceRecordResponse   listResourceRecord(ListResourceRecordRequest request) throws LogException;
-
-	DeleteResourceRecordBatchResponse deleteResourceRecordBatch(DeleteResourceRecordBatchRequest request) throws LogException;
 }

@@ -4112,22 +4112,6 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
 		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
-		CodingUtils.assertStringNotNullOrEmpty(request.getRecordId(), "recordId");
-
-		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI,
-				request.getOwner(), request.getResourceName(), request.getRecordId());
-		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-		Map<String, String> urlParameter = new HashMap<String, String>();
-		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE, resourceUri, urlParameter, headParameter);
-		return new DeleteResourceRecordResponse(response.getHeaders());
-	}
-
-	@Override
-	public DeleteResourceRecordBatchResponse deleteResourceRecordBatch(DeleteResourceRecordBatchRequest request) throws LogException {
-		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
 		CodingUtils.assertParameterNotNull(request.getRecordIds(), "recordIds");
 		for (String id: request.getRecordIds()) {
 			CodingUtils.assertStringNotNullOrEmpty(id, "recordId");
@@ -4136,12 +4120,12 @@ public class Client implements LogService {
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		byte[] body = encodeToUtf8(request.getPostBody());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_BATCH_URI,
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_URI,
 				request.getOwner(), request.getResourceName());
 		Map<String, String> urlParameter = new HashMap<String, String>();
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE,
 				resourceUri, urlParameter, headParameter, body);
-		return new DeleteResourceRecordBatchResponse(response.getHeaders());
+		return new DeleteResourceRecordResponse(response.getHeaders());
 	}
 
 	@Override
