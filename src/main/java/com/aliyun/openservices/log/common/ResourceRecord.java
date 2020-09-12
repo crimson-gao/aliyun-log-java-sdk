@@ -1,52 +1,54 @@
 package com.aliyun.openservices.log.common;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.internal.ErrorCodes;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ResourceRecord implements Serializable {
     private static final long serialVersionUID = -1184418783117426648L;
-    private String key = "";
     private String value = "{}";
-    private String id = "";
+    private String tag = null;
+    private String id = null;
     private long createTime = 0;
     private long lastModifyTime = 0;
 
     public ResourceRecord() {}
 
     public ResourceRecord(String value) {
-        this.id = "";
-        this.key = "";
         this.value = value;
     }
     
-    public ResourceRecord(String key, String value) {
-        this.id = "";
-        this.key = key;
+    public ResourceRecord(String id, String value) {
+        this.id = id;
         this.value= value;
+    }
+
+    public ResourceRecord(String id, String tag, String value) {
+        this.id = id;
+        this.tag = tag;
+        this.value = value;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getKey() {
-        return key;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public long getCreateTime() {
-        return createTime;
+    public String getTag() {
+        return tag;
     }
 
-    public long getLastModifyTime() {
-        return lastModifyTime;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public String getValue() {
@@ -57,13 +59,34 @@ public class ResourceRecord implements Serializable {
         this.value = value;
     }
 
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public long getLastModifyTime() {
+        return lastModifyTime;
+    }
+
     public JSONObject ToJsonObject() throws LogException {
         JSONObject result = new JSONObject();
-        if (key != null) {
-            result.put(Consts.RESOURCE_RECORD_KEY, key);
+        if (tag != null) {
+            result.put(Consts.RESOURCE_RECORD_TAG, tag);
+        }
+        if (id != null) {
+            result.put(Consts.RESOURCE_RECORD_ID, id);
         }
         result.put(Consts.RESOURCE_RECORD_VALUE, getValue());
         return result;
+    }
+
+    public static String ToJsonString(List<ResourceRecord> records) throws LogException {
+        JSONObject result = new JSONObject();
+        JSONArray recordArray = new JSONArray();
+        for (ResourceRecord r: records) {
+            recordArray.add(r.ToJsonObject());
+        }
+        result.put("records", recordArray);
+        return result.toString();
     }
 
     public String ToJsonString() throws LogException {
@@ -71,8 +94,11 @@ public class ResourceRecord implements Serializable {
     }
 
     public void FromJsonObject(JSONObject dict) throws LogException {
-        setKey(dict.getString(Consts.RESOURCE_RECORD_KEY));
         setValue(dict.getString(Consts.RESOURCE_RECORD_VALUE));
+
+        if (dict.containsKey(Consts.RESOURCE_RECORD_TAG)) {
+            tag = dict.getString(Consts.RESOURCE_RECORD_TAG);
+        }
 
         if (dict.containsKey(Consts.RESOURCE_RECORD_ID)) {
             id = dict.getString(Consts.RESOURCE_RECORD_ID);
@@ -99,20 +125,21 @@ public class ResourceRecord implements Serializable {
     }
 
     public void CheckForCreate() throws IllegalArgumentException {
-        if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException("value is null/empty");
-        }
-        try {
-            JSONObject.parseObject(value);
-        } catch (JSONException e) {
-            throw new IllegalArgumentException("record value not valid json");
-        }
-        if (key == null) {
-            throw new IllegalArgumentException("key is null");
-        }
+        CheckForValue();
     }
 
     public void CheckForUpdate() throws IllegalArgumentException {
+        CheckForValue();
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("id is null/empty");
+        }
+    }
+
+    public void CheckForUpsert() throws IllegalArgumentException {
+        CheckForUpdate();
+    }
+
+    private void CheckForValue() throws IllegalArgumentException {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("value is null/empty");
         }

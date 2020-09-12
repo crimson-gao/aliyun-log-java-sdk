@@ -4,11 +4,10 @@ import com.aliyun.openservices.log.common.Consts;
 
 import java.util.Map;
 
-public class ListResourceRecordRequest extends Request {
-    private String resourceName;
+public class ListResourceRecordRequest extends RecordRequest {
     private Integer offset;
     private Integer size;
-    private String key;
+    private String tag;
 
     public Integer getOffset() {
         return offset;
@@ -26,34 +25,21 @@ public class ListResourceRecordRequest extends Request {
         this.size = size;
     }
 
-    public String getKey() {
-        return key;
+    public String getTag() {
+        return tag;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
-    public String getResourceName() {
-        return resourceName;
+    public ListResourceRecordRequest(String owner, String resourceName) {
+        this(owner, resourceName, "", 0, 100);
     }
 
-    public void setResourceName(String resourceName) {
-        this.resourceName = resourceName;
-    }
-
-    public ListResourceRecordRequest(String resourceName) {
-        super("");
-        this.resourceName = resourceName;
-        key = "";
-        size = 100;
-        offset = 0;
-    }
-
-    public ListResourceRecordRequest(String resourceName, String recordKey, int offset, int size) {
-        super("");
-        this.resourceName = resourceName;
-        this.key = recordKey;
+    public ListResourceRecordRequest(String owner, String resourceName, String tag, int offset, int size) {
+        super(owner, resourceName);
+        this.tag = tag;
         this.size = size;
         this.offset = offset;
     }
@@ -68,8 +54,8 @@ public class ListResourceRecordRequest extends Request {
             SetParam(Consts.CONST_SIZE, size.toString());
         }
 
-        if (key != null && !key.isEmpty()) {
-            SetParam(Consts.RESOURCE_RECORD_KEY, key);
+        if (tag != null && !tag.isEmpty()) {
+            SetParam(Consts.RESOURCE_RECORD_TAG, tag);
         }
         return super.GetAllParams();
     }

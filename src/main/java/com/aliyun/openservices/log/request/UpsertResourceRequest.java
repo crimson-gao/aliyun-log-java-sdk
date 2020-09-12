@@ -2,8 +2,7 @@ package com.aliyun.openservices.log.request;
 
 import com.aliyun.openservices.log.common.Resource;
 
-public class CreateResourceRequest extends ResourceRequest {
-    private static final long serialVersionUID = -5270789734063835296L;
+public class UpsertResourceRequest extends ResourceRequest {
 
     private Resource resource;
 
@@ -15,7 +14,7 @@ public class CreateResourceRequest extends ResourceRequest {
         this.resource = resource;
     }
 
-    public CreateResourceRequest(String owner, Resource resource) {
+    public UpsertResourceRequest(String owner, Resource resource) {
         super(owner);
         this.resource = resource;
     }

@@ -181,14 +181,14 @@ public class ResourceTest {
         record.CheckForUpdate();
 
         record = new ResourceRecord("key1", "{\"a\":\"b\", \"d\":12}");
-        assertEquals(record.getKey(), "key1");
+        assertEquals(record.getTag(), "key1");
         assertEquals(record.getValue(), "{\"a\":\"b\", \"d\":12}");
         record.CheckForCreate();
         record.CheckForUpdate();
         String content = record.ToJsonString();
         ResourceRecord decoded = new ResourceRecord();
         decoded.FromJsonString(content);
-        assertEquals(decoded.getKey(), record.getKey());
+        assertEquals(decoded.getTag(), record.getTag());
         assertEquals(decoded.getValue(), record.getValue());
         assertEquals(decoded.getCreateTime(), 0);
         assertEquals(decoded.getLastModifyTime(), 0);

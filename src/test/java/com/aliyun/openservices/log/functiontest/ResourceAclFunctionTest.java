@@ -21,6 +21,8 @@ public class ResourceAclFunctionTest extends FunctionTest {
 
     private final static String[] types = {"base64", "json", "string", "double", "long"};
 
+    private final String owner = "123456";
+
     public static void Cleanup() {
         for (int idx = 0; idx < 10; idx++) {
             DeleteResourceRequest request = new DeleteResourceRequest(CreateResource11(idx).getName());
@@ -80,7 +82,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
     private ResourceRecord CreateRecord1(int idx) {
         idx += 8000;
         ResourceRecord record = new ResourceRecord();
-        record.setKey(idx % 10 == 0 ? "common" : "record_key_" + idx);
+        record.setTag(idx % 10 == 0 ? "common" : "record_key_" + idx);
         record.setValue(CreateJsonContent(idx));
         return record;
     }
@@ -103,14 +105,14 @@ public class ResourceAclFunctionTest extends FunctionTest {
     public void TestResourceAcl() throws Exception {
         {
             for (int idx = 0; idx < 10; idx++) {
-                CreateResourceRequest request = new CreateResourceRequest(CreateResource11(idx));
+                CreateResourceRequest request = new CreateResourceRequest(owner, CreateResource11(idx));
                 client.createResource(request);
             }
         }
         // test get resource
         {
             for (int idx = 0; idx < 10; idx++) {
-                GetResourceRequest request = new GetResourceRequest(CreateResource11(idx).getName());
+                GetResourceRequest request = new GetResourceRequest(owner, CreateResource11(idx).getName());
                 try {
                     client.getResource(request);
                     if (idx % 3 == 0) {
@@ -137,7 +139,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
         }
         // test list resource
         {
-            ListResourceRequest request = new ListResourceRequest();
+            ListResourceRequest request = new ListResourceRequest(owner);
             try {
                 ListResourceResponse resp = client.listResource(request);
             } catch (Exception exp) {
@@ -150,7 +152,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
             for (int idx = 0; idx < 10; idx++) {
                 Resource r = CreateResource11(idx);
                 r.setExtInfo("change");
-                UpdateResourceRequest request = new UpdateResourceRequest(r);
+                UpdateResourceRequest request = new UpdateResourceRequest(owner, r);
                 try {
                     client.updateResource(request);
                     if (idx % 3 == 0) {
@@ -217,7 +219,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
                 Resource resource = CreateResource11(idx);
                 for (int j = 0; j < 10; j++) {
                     ResourceRecord record = CreateRecord1(j);
-                    CreateResourceRecordRequest request = new CreateResourceRecordRequest(resource.getName(), record);
+                    CreateResourceRecordRequest request = new CreateResourceRecordRequest(owner, resource.getName(), record);
                     try {
                         client.createResourceRecord(request);
                     } catch (LogException exp) {
@@ -229,7 +231,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
         {
             for (int idx = 0; idx < 10; idx++) {
                 Resource resource = CreateResource11(idx);
-                ListResourceRecordRequest request = new ListResourceRecordRequest(resource.getName());
+                ListResourceRecordRequest request = new ListResourceRecordRequest(owner, resource.getName());
                 try {
                     ListResourceRecordResponse resp = client.listResourceRecord(request);
                     changed.add(resp.getRecords().get(0));
@@ -242,7 +244,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
             for (int idx = 0; idx < 10; idx++) {
                 Resource resource = CreateResource11(idx);
                 ResourceRecord record = changed.get(idx);
-                record.setKey("changed-key");
+                record.setTag("changed-key");
                 UpdateResourceRecordRequest request = new UpdateResourceRecordRequest(resource.getName(), record.getId(), record);
                 try {
                     client.updateResourceRecord(request);
@@ -255,8 +257,8 @@ public class ResourceAclFunctionTest extends FunctionTest {
             for (int idx = 0; idx < 10; idx++) {
                 Resource resource = CreateResource11(idx);
                 ResourceRecord record = changed.get(idx);
-                record.setKey("changed-key");
-                DeleteResourceRecordRequest request = new DeleteResourceRecordRequest(resource.getName(), record.getId());
+                record.setTag("changed-key");
+                DeleteResourceRecordRequest request = new DeleteResourceRecordRequest(owner, resource.getName(), record.getId());
                 try {
                     client.deleteResourceRecord(request);
                 } catch (LogException exp) {

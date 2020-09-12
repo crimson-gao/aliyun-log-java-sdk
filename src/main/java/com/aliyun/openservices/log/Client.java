@@ -3915,13 +3915,14 @@ public class Client implements LogService {
 	public CreateResourceResponse createResource(CreateResourceRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertParameterNotNull(request.getResource(), "resource");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
 		Resource resource = request.getResource();
 		resource.CheckForCreate();
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		byte[] body = encodeToUtf8(resource.ToJsonString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-		String resourceUri = Consts.CONST_RESOURCE_URI;
+		String resourceUri = String.format(Consts.CONST_RESOURCE_URI, request.getOwner());
 		Map<String, String> urlParameter = new HashMap<String, String>();
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
 				resourceUri, urlParameter, headParameter, body);
@@ -3929,25 +3930,61 @@ public class Client implements LogService {
 	}
 
 	@Override
+	public UpsertResourceResponse upsertResource(UpsertResourceRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
+		CodingUtils.assertParameterNotNull(request.getResource(), "resource");
+		request.getResource().CheckForUpsert();
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(request.getResource().ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI,
+				request.getOwner(), request.getResource().getName());
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
+				resourceUri, urlParameter, headParameter, body);
+		return new UpsertResourceResponse(response.getHeaders());
+	}
+
+	@Override
 	public UpdateResourceResponse updateResource(UpdateResourceRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
 		CodingUtils.assertParameterNotNull(request.getResource(), "resource");
 		request.getResource().CheckForUpdate();
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getResource().getName());
+		byte[] body = encodeToUtf8(request.getResource().ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI,
+				request.getOwner(), request.getResource().getName());
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT,
+				resourceUri, urlParameter, headParameter, body);
+		return new UpdateResourceResponse(response.getHeaders());
+	}
+
+	@Override
+	public DeleteResourceResponse deleteResource(DeleteResourceRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getOwner(), request.getResourceName());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
-		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT, resourceUri, urlParameter, headParameter, request.getResource().ToJsonString());
-		return new UpdateResourceResponse(response.getHeaders());
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE, resourceUri, urlParameter, headParameter);
+		return new DeleteResourceResponse(response.getHeaders());
 	}
 
 	@Override
 	public GetResourceResponse getResource(GetResourceRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
 		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getResourceName());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getOwner(), request.getResourceName());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
@@ -3968,23 +4005,12 @@ public class Client implements LogService {
 	}
 
 	@Override
-	public DeleteResourceResponse deleteResource(DeleteResourceRequest request) throws LogException {
-		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
-		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getResourceName());
-		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-		Map<String, String> urlParameter = new HashMap<String, String>();
-		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE, resourceUri, urlParameter, headParameter);
-		return new DeleteResourceResponse(response.getHeaders());
-	}
-
-	@Override
 	public ListResourceResponse listResource(ListResourceRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		String resourceUri = Consts.CONST_RESOURCE_URI;
+		String resourceUri = String.format(Consts.CONST_RESOURCE_URI, request.getOwner());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = request.GetAllParams();
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
@@ -4025,15 +4051,16 @@ public class Client implements LogService {
 	@Override
 	public CreateResourceRecordResponse createResourceRecord(CreateResourceRecordRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
 		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
 		CodingUtils.assertParameterNotNull(request.getRecord(), "record");
 		request.getRecord().CheckForCreate();
 
-		ResourceRecord record = request.getRecord();
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		byte[] body = encodeToUtf8(record.ToJsonString());
+		byte[] body = encodeToUtf8(request.getRecord().ToJsonString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_URI, request.getResourceName());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_URI,
+				request.getOwner(), request.getResourceName());
 		Map<String, String> urlParameter = new HashMap<String, String>();
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
 				resourceUri, urlParameter, headParameter, body);
@@ -4041,29 +4068,92 @@ public class Client implements LogService {
 	}
 
 	@Override
+	public UpsertResourceRecordResponse upsertResourceRecord(UpsertResourceRecordRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.assertParameterNotNull(request.getRecord(), "record");
+		CodingUtils.assertStringNotNullOrEmpty(request.getRecord().getId(), "recordId");
+		request.getRecord().CheckForUpsert();
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(request.getRecord().ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI,
+				request.getOwner(), request.getResourceName(), request.getRecord().getId());
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
+				resourceUri, urlParameter, headParameter, body);
+		return new UpsertResourceRecordResponse(response.getHeaders());
+	}
+
+	@Override
 	public UpdateResourceRecordResponse updateResourceRecord(UpdateResourceRecordRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
 		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
-		CodingUtils.assertStringNotNullOrEmpty(request.getRecordId(), "recordId");
 		CodingUtils.assertParameterNotNull(request.getRecord(), "record");
+		CodingUtils.assertStringNotNullOrEmpty(request.getRecord().getId(), "recordId");
 		request.getRecord().CheckForUpdate();
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI, request.getResourceName(), request.getRecordId());
+		byte[] body = encodeToUtf8(request.getRecord().ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI,
+				request.getOwner(), request.getResourceName(), request.getRecord().getId());
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT,
+				resourceUri, urlParameter, headParameter, body);
+		return new UpdateResourceRecordResponse(response.getHeaders());
+	}
+
+	@Override
+	public DeleteResourceRecordResponse deleteResourceRecord(DeleteResourceRecordRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.assertStringNotNullOrEmpty(request.getRecordId(), "recordId");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI,
+				request.getOwner(), request.getResourceName(), request.getRecordId());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
-		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT, resourceUri, urlParameter, headParameter, request.getRecord().ToJsonString());
-		return new UpdateResourceRecordResponse(response.getHeaders());
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE, resourceUri, urlParameter, headParameter);
+		return new DeleteResourceRecordResponse(response.getHeaders());
+	}
+
+	@Override
+	public DeleteResourceRecordBatchResponse deleteResourceRecordBatch(DeleteResourceRecordBatchRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
+		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.assertParameterNotNull(request.getRecordIds(), "recordIds");
+		for (String id: request.getRecordIds()) {
+			CodingUtils.assertStringNotNullOrEmpty(id, "recordId");
+		}
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(request.getPostBody());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_BATCH_URI,
+				request.getOwner(), request.getResourceName());
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE,
+				resourceUri, urlParameter, headParameter, body);
+		return new DeleteResourceRecordBatchResponse(response.getHeaders());
 	}
 
 	@Override
 	public GetResourceRecordResponse getResourceRecord(GetResourceRecordRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
 		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
 		CodingUtils.assertStringNotNullOrEmpty(request.getRecordId(), "recordId");
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI, request.getResourceName(), request.getRecordId());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI,
+				request.getOwner(), request.getResourceName(), request.getRecordId());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);
@@ -4084,26 +4174,13 @@ public class Client implements LogService {
 	}
 
 	@Override
-	public DeleteResourceRecordResponse deleteResourceRecord(DeleteResourceRecordRequest request) throws LogException {
-		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
-		CodingUtils.assertStringNotNullOrEmpty(request.getRecordId(), "recordId");
-
-		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI, request.getResourceName(), request.getRecordId());
-		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-		Map<String, String> urlParameter = new HashMap<String, String>();
-		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE, resourceUri, urlParameter, headParameter);
-		return new DeleteResourceRecordResponse(response.getHeaders());
-	}
-
-	@Override
 	public ListResourceRecordResponse listResourceRecord(ListResourceRecordRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
 		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_URI, request.getResourceName());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_URI, request.getOwner(), request.getResourceName());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = request.GetAllParams();
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, urlParameter, headParameter);

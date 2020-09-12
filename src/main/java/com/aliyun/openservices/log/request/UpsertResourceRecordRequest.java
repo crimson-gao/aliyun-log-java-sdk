@@ -2,7 +2,8 @@ package com.aliyun.openservices.log.request;
 
 import com.aliyun.openservices.log.common.ResourceRecord;
 
-public class UpdateResourceRecordRequest extends RecordRequest {
+
+public class UpsertResourceRecordRequest extends RecordRequest {
     public ResourceRecord getRecord() {
         return record;
     }
@@ -13,7 +14,7 @@ public class UpdateResourceRecordRequest extends RecordRequest {
 
     private ResourceRecord record;
 
-    public UpdateResourceRecordRequest(String owner, String resourceName, ResourceRecord record) {
+    public UpsertResourceRecordRequest(String owner, String resourceName, ResourceRecord record) {
         super(owner, resourceName);
         this.record = record;
     }

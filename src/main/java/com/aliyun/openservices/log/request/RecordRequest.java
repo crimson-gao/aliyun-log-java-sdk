@@ -1,11 +1,10 @@
 package com.aliyun.openservices.log.request;
 
-public class DeleteResourceRequest extends ResourceRequest {
-    private static final long serialVersionUID = -5907996134545891529L;
+public class RecordRequest extends ResourceRequest {
 
     private String resourceName;
 
-    public DeleteResourceRequest(String owner, String resourceName) {
+    public RecordRequest(String owner, String resourceName) {
         super(owner);
         this.resourceName = resourceName;
     }

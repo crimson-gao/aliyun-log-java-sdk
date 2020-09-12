@@ -1,6 +1,6 @@
 package com.aliyun.openservices.log.request;
 
-public class GetResourceRequest extends Request {
+public class GetResourceRequest extends ResourceRequest {
     private static final long serialVersionUID = -664486146467612450L;
 
     private String resourceName;
@@ -13,8 +13,8 @@ public class GetResourceRequest extends Request {
         this.resourceName = resourceName;
     }
 
-    public GetResourceRequest(String resourceName) {
-        super("");
+    public GetResourceRequest(String owner, String resourceName) {
+        super(owner);
         this.resourceName = resourceName;
     }
 }

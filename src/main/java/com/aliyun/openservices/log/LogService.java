@@ -3324,14 +3324,18 @@ public interface LogService {
 	StopAuditJobResponse stopAuditJob(StopAuditJobRequest request) throws LogException;
 
 	CreateResourceResponse createResource(CreateResourceRequest request) throws LogException;
+	UpsertResourceResponse upsertResource(UpsertResourceRequest request) throws LogException;
 	UpdateResourceResponse updateResource(UpdateResourceRequest request) throws LogException;
 	GetResourceResponse    getResource(GetResourceRequest request) throws LogException;
 	DeleteResourceResponse deleteResource(DeleteResourceRequest request) throws LogException;
 	ListResourceResponse    listResource(ListResourceRequest request) throws LogException;
 
 	CreateResourceRecordResponse createResourceRecord(CreateResourceRecordRequest request) throws LogException;
+	UpsertResourceRecordResponse upsertResourceRecord(UpsertResourceRecordRequest request) throws LogException;
 	UpdateResourceRecordResponse updateResourceRecord(UpdateResourceRecordRequest request) throws LogException;
 	GetResourceRecordResponse    getResourceRecord(GetResourceRecordRequest request) throws LogException;
 	DeleteResourceRecordResponse deleteResourceRecord(DeleteResourceRecordRequest request) throws LogException;
 	ListResourceRecordResponse   listResourceRecord(ListResourceRecordRequest request) throws LogException;
+
+	DeleteResourceRecordBatchResponse deleteResourceRecordBatch(DeleteResourceRecordBatchRequest request) throws LogException;
 }

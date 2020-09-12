@@ -11,7 +11,7 @@ public class Resource implements Serializable {
     private static final long serialVersionUID = 8648928694568240078L;
     private String name = "";
     private String type = "";
-    private String schema = "{}";
+    private String schema = null;
     private String acl = null;
     private String description = "";
     private String extInfo = "";
@@ -164,7 +164,7 @@ public class Resource implements Serializable {
 
     public void CheckForCreate() throws IllegalArgumentException {
         if (name == null || type == null || name.isEmpty() || type.isEmpty()) {
-            throw new IllegalArgumentException("name/type is null/empty");
+            throw new IllegalArgumentException("name/type/owner is null/empty");
         }
 
         if (schema != null) {
@@ -182,6 +182,10 @@ public class Resource implements Serializable {
                 throw new IllegalArgumentException("resource acl not valid json");
             }
         }
+    }
+
+    public void CheckForUpsert() throws IllegalArgumentException {
+        CheckForCreate();
     }
 
     public void CheckForUpdate() throws IllegalArgumentException {

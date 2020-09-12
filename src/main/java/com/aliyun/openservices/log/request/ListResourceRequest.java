@@ -4,7 +4,7 @@ import com.aliyun.openservices.log.common.Consts;
 
 import java.util.Map;
 
-public class ListResourceRequest extends Request {
+public class ListResourceRequest extends ResourceRequest {
     private Integer offset;
     private Integer size;
     private String type;
@@ -33,15 +33,12 @@ public class ListResourceRequest extends Request {
         this.offset = offset;
     }
 
-    public ListResourceRequest () {
-        super("");
-        size = 100;
-        offset = 0;
-        type = "";
+    public ListResourceRequest (String owner) {
+        this(owner, "", 0, 100);
     }
 
-    public ListResourceRequest(String resourceType, int offset, int size) {
-        super("");
+    public ListResourceRequest(String owner, String type, int offset, int size) {
+        super(owner);
         this.type = type;
         this.size = size;
         this.offset = offset;

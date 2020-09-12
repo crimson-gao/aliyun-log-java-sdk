@@ -381,7 +381,7 @@ public class Consts {
     public static final String JOB_URI = "/jobs";
     public static final String DISPLAY_NAME = "displayName";
 
-    public static final String CONST_RESOURCE_URI = "/resources";
+    public static final String CONST_RESOURCE_URI = "/resources/%s";
     public static final String CONST_RESOURCE_NAME_URI = CONST_RESOURCE_URI + "/%s";
     public static final String RESOURCE_NAME = "name";
     public static final String RESOURCE_TYPE = "type";
@@ -394,11 +394,10 @@ public class Consts {
 
     public static final String CONST_RESOURCE_RECORD_URI = CONST_RESOURCE_NAME_URI + "/records";
     public static final String CONST_RESOURCE_RECORD_ID_URI = CONST_RESOURCE_RECORD_URI + "/%s";
+    public static final String CONST_RESOURCE_RECORD_BATCH_URI = CONST_RESOURCE_NAME_URI + "/records_batch";
     public static final String RESOURCE_RECORD_ID = "id";
-    public static final String RESOURCE_RECORD_KEY = "key";
+    public static final String RESOURCE_RECORD_TAG = "key";
     public static final String RESOURCE_RECORD_VALUE = "value";
-    public static final String RESOURCE_RECORD_CREATE_TIME = "createTime";
-    public static final String RESOURCE_RECORD_LAST_MODIFY_TIME = "lastModifyTime";
 
     public static final String LOGGING_URI = "/logging";
     public static final String METHOD = "method";
