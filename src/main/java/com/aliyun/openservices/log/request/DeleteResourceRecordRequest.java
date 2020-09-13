@@ -1,11 +1,11 @@
 package com.aliyun.openservices.log.request;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.Consts;
+import com.aliyun.openservices.log.util.Utils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class DeleteResourceRecordRequest extends RecordRequest {
     private List<String> recordIds;
@@ -19,12 +19,10 @@ public class DeleteResourceRecordRequest extends RecordRequest {
         this(owner, resourceName, Collections.singletonList(recordId));
     }
 
-    public String getPostBody() {
-        JSONObject result = new JSONObject();
-        JSONArray encodedIds = new JSONArray();
-        encodedIds.addAll(recordIds);
-        result.put(Consts.RESOURCE_RECORD_IDS, encodedIds);
-        return result.toString();
+    @Override
+    public Map<String, String> GetAllParams() {
+        SetParam(Consts.RESOURCE_RECORD_IDS, Utils.join(",", recordIds));
+        return super.GetAllParams();
     }
 
     public List<String> getRecordIds() {

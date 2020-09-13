@@ -397,8 +397,9 @@ public class Consts {
     public static final String CONST_RESOURCE_RECORD_ID_URI = CONST_RESOURCE_RECORD_URI + "/%s";
     public static final String RESOURCE_RECORD_ID = "id";
     public static final String RESOURCE_RECORD_IDS = "ids";
-    public static final String RESOURCE_RECORD_TAG = "key";
+    public static final String RESOURCE_RECORD_TAG = "tag";
     public static final String RESOURCE_RECORD_VALUE = "value";
+    public static final String RESOURCE_RECORDS = "records";
 
     public static final String LOGGING_URI = "/logging";
     public static final String METHOD = "method";

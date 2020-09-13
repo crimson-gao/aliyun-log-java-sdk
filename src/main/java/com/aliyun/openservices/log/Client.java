@@ -3930,24 +3930,6 @@ public class Client implements LogService {
 	}
 
 	@Override
-	public UpsertResourceResponse upsertResource(UpsertResourceRequest request) throws LogException {
-		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
-		CodingUtils.assertParameterNotNull(request.getResource(), "resource");
-		request.getResource().CheckForUpsert();
-
-		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		byte[] body = encodeToUtf8(request.getResource().ToJsonString());
-		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI,
-				request.getOwner(), request.getResource().getName());
-		Map<String, String> urlParameter = new HashMap<String, String>();
-		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
-				resourceUri, urlParameter, headParameter, body);
-		return new UpsertResourceResponse(response.getHeaders());
-	}
-
-	@Override
 	public UpdateResourceResponse updateResource(UpdateResourceRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
@@ -4072,17 +4054,19 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.getOwner(), "owner");
 		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
-		CodingUtils.assertParameterNotNull(request.getRecord(), "record");
-		CodingUtils.assertStringNotNullOrEmpty(request.getRecord().getId(), "recordId");
-		request.getRecord().CheckForUpsert();
+		CodingUtils.assertParameterNotNull(request.getRecords(), "records");
+		for (ResourceRecord r: request.getRecords()) {
+			CodingUtils.assertParameterNotNull(r, "record");
+			r.CheckForUpsert();
+		}
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		byte[] body = encodeToUtf8(request.getRecord().ToJsonString());
+		byte[] body = encodeToUtf8(request.getPostBody());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI,
-				request.getOwner(), request.getResourceName(), request.getRecord().getId());
+		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_URI,
+				request.getOwner(), request.getResourceName());
 		Map<String, String> urlParameter = new HashMap<String, String>();
-		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT,
 				resourceUri, urlParameter, headParameter, body);
 		return new UpsertResourceRecordResponse(response.getHeaders());
 	}
@@ -4118,13 +4102,12 @@ public class Client implements LogService {
 		}
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
-		byte[] body = encodeToUtf8(request.getPostBody());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_URI,
 				request.getOwner(), request.getResourceName());
-		Map<String, String> urlParameter = new HashMap<String, String>();
+		Map<String, String> urlParameter = request.GetAllParams();
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE,
-				resourceUri, urlParameter, headParameter, body);
+				resourceUri, urlParameter, headParameter);
 		return new DeleteResourceRecordResponse(response.getHeaders());
 	}
 

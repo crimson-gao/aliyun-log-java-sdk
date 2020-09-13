@@ -21,11 +21,11 @@ public class ResourceAclFunctionTest extends FunctionTest {
 
     private final static String[] types = {"base64", "json", "string", "double", "long"};
 
-    private final String owner = "123456";
+    private final static String owner = "123456";
 
     public static void Cleanup() {
         for (int idx = 0; idx < 10; idx++) {
-            DeleteResourceRequest request = new DeleteResourceRequest(CreateResource11(idx).getName());
+            DeleteResourceRequest request = new DeleteResourceRequest(owner, CreateResource11(idx).getName());
             try {
                 client.deleteResource(request);
             } catch (LogException e) {
@@ -183,7 +183,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
             for (int idx = 0; idx < 10; idx++) {
                 Resource r = CreateResource11(idx);
                 r.setExtInfo("change");
-                DeleteResourceRequest request = new DeleteResourceRequest(r.getName());
+                DeleteResourceRequest request = new DeleteResourceRequest(owner, r.getName());
                 try {
                     client.deleteResource(request);
                     if (idx % 3 == 0) {

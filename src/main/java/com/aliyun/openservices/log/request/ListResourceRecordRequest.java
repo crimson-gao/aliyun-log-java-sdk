@@ -3,6 +3,7 @@ package com.aliyun.openservices.log.request;
 import com.aliyun.openservices.log.common.Consts;
 import com.aliyun.openservices.log.util.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ public class ListResourceRecordRequest extends RecordRequest {
     private Integer offset;
     private Integer size;
     private String tag;
-    private List<String> recordIds;
+    private List<String> recordIds = new ArrayList<String>();
 
     public Integer getOffset() {
         return offset;

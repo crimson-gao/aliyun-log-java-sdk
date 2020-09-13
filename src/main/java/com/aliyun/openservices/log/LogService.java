@@ -3324,7 +3324,6 @@ public interface LogService {
 	StopAuditJobResponse stopAuditJob(StopAuditJobRequest request) throws LogException;
 
 	CreateResourceResponse createResource(CreateResourceRequest request) throws LogException;
-	UpsertResourceResponse upsertResource(UpsertResourceRequest request) throws LogException;
 	UpdateResourceResponse updateResource(UpdateResourceRequest request) throws LogException;
 	GetResourceResponse    getResource(GetResourceRequest request) throws LogException;
 	DeleteResourceResponse deleteResource(DeleteResourceRequest request) throws LogException;

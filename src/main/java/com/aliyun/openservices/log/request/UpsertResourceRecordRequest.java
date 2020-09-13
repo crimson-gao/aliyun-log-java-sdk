@@ -1,21 +1,40 @@
 package com.aliyun.openservices.log.request;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.aliyun.openservices.log.common.Consts;
 import com.aliyun.openservices.log.common.ResourceRecord;
+
+import java.util.Collections;
+import java.util.List;
 
 
 public class UpsertResourceRecordRequest extends RecordRequest {
-    public ResourceRecord getRecord() {
-        return record;
-    }
-
-    public void setRecord(ResourceRecord record) {
-        this.record = record;
-    }
-
-    private ResourceRecord record;
+    private List<ResourceRecord> records;
 
     public UpsertResourceRecordRequest(String owner, String resourceName, ResourceRecord record) {
         super(owner, resourceName);
-        this.record = record;
+        this.records = Collections.singletonList(record);
+    }
+
+    public UpsertResourceRecordRequest(String owner, String resourceName, List<ResourceRecord> records) {
+        super(owner, resourceName);
+        this.records = records;
+    }
+
+    public String getPostBody() {
+        JSONObject result = new JSONObject();
+        JSONArray encodedRecords = new JSONArray();
+        encodedRecords.addAll(records);
+        result.put(Consts.RESOURCE_RECORDS, encodedRecords);
+        return result.toString();
+    }
+
+    public List<ResourceRecord> getRecords() {
+        return records;
+    }
+
+    public void setRecords(List<ResourceRecord> records) {
+        this.records = records;
     }
 }

@@ -9,18 +9,20 @@ import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.*;
 import org.junit.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class ResourceFunctionTest extends FunctionTest {
 
     private final String largeString = CreateLargeString(1024 * 256);
 
     private final String largeName = CreateLargeString(128);
-    private final static String owner = "123456";
+    private final static String owner = "1654218965343050";
     private final static String[] types = {"base64", "json", "string", "double", "long"};
 
     static class ResourceComparator implements Comparator<Resource> {
@@ -234,6 +236,7 @@ public class ResourceFunctionTest extends FunctionTest {
     private ResourceRecord CreateRecord1(int idx) {
         idx += 8000;
         ResourceRecord record = new ResourceRecord();
+        record.setId("asdfasdf-x" + idx);
         record.setTag(idx % 10 == 0 ? "common" : "record_key_" + idx);
         record.setValue(CreateJsonContent(idx));
         return record;
@@ -242,6 +245,7 @@ public class ResourceFunctionTest extends FunctionTest {
     // invalid key
     private ResourceRecord CreateRecord2() {
         ResourceRecord record = new ResourceRecord();
+        record.setId("asdfasdf-x");
         record.setTag("{hereyoura" + CreateLargeString(128));
         record.setValue(CreateJsonContent(0));
         return record;
@@ -250,6 +254,7 @@ public class ResourceFunctionTest extends FunctionTest {
     // invalid value
     private ResourceRecord CreateRecord3() {
         ResourceRecord record = new ResourceRecord();
+        record.setId("asdfasdf-x");
         record.setTag("record");
         record.setValue(CreateResourceSchema(1024 * 10).toJSONString());
         return record;
@@ -269,23 +274,57 @@ public class ResourceFunctionTest extends FunctionTest {
         for (int idx = 0; idx < 200; idx++) {
             DeleteResourceRequest request = new DeleteResourceRequest(owner, CreateResource1(idx).getName());
             try {
+                CleanupRecords(CreateResource1(idx));
                 client.deleteResource(request);
             } catch (LogException e) {
-//                e.printStackTrace();
+                e.printStackTrace();
             }
         }
         DeleteResourceRequest request = new DeleteResourceRequest(owner, CreateResource1(8888).getName());
         try {
+            CleanupRecords(CreateResource1(8888));
             client.deleteResource(request);
         } catch (LogException e) {
-//                e.printStackTrace();
+                e.printStackTrace();
+        }
+    }
+
+    public static void CleanupRecords(Resource resource) {
+        while (true) {
+            ListResourceRecordRequest request = new ListResourceRecordRequest(owner, resource.getName());
+            List<ResourceRecord> records = new ArrayList<ResourceRecord>();
+            try {
+                ListResourceRecordResponse resp = client.listResourceRecord(request);
+                records = new ArrayList<ResourceRecord>(resp.getRecords());
+                if (records.size() == 0) {
+                    return;
+
+                }
+            } catch (LogException e) {
+                return;
+            }
+
+            try {
+                List<String> recordIds = new ArrayList<String>();
+                for (ResourceRecord r: records) {
+                    recordIds.add(r.getId());
+                }
+                if (recordIds.size() == 0) {
+                    continue;
+                }
+                DeleteResourceRecordRequest request2 = new DeleteResourceRecordRequest(owner, resource.getName(), recordIds);
+                client.deleteResourceRecord(request2);
+            } catch (LogException e) {
+                return;
+            }
         }
     }
 
     @Test
     public void TestCreateResource() {
         {
-            CreateResourceRequest request = new CreateResourceRequest(owner, CreateResource1(0));
+            Resource resource =  CreateResource1(0);
+            CreateResourceRequest request = new CreateResourceRequest(owner, resource);
             try {
                 client.createResource(request);
                 assertTrue("create resource success", true);
@@ -297,7 +336,7 @@ public class ResourceFunctionTest extends FunctionTest {
             GetResourceRequest request = new GetResourceRequest(owner, CreateResource11(0).getName());
             try {
                 GetResourceResponse resp = client.getResource(request);
-                assertTrue("get resource success", true);
+                assertTrue("get resou   rce success", true);
                 assertNotNull(resp.getResource());
                 assertEquals(FormatSchema(resp.getResource().getAcl()), FormatSchema("{\"policy\": {\"type\": \"all_rw\"}}"));
             } catch (LogException e) {
@@ -342,7 +381,7 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("create resource success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("resource_name too little"));
+                assertTrue(e.getMessage().contains("resource name invalid"));
                 assertTrue("create resource failed", true);
             }
         }
@@ -467,7 +506,7 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("update resource success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("resource_name too little"));
+                assertTrue(e.getMessage().contains("resource name invalid"));
                 assertTrue("update resource failed", true);
             }
         }
@@ -603,7 +642,7 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("delete resource success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("resource_name too large"));
+                assertTrue(e.getMessage().contains("resource name invalid"));
                 assertTrue("delete resource failed", true);
             }
         }
@@ -642,7 +681,7 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("get resource success");
             } catch (LogException e) {
                 assertEquals(400, e.GetHttpCode());
-                assertTrue(e.getMessage().contains("resource_name too large"));
+                assertTrue(e.getMessage().contains("resource name invalid"));
                 assertTrue("failed to get resource", true);
             }
         }
@@ -668,6 +707,24 @@ public class ResourceFunctionTest extends FunctionTest {
                         CompareResource(resources.get(idx), CreateResource1(idx));
                     }
                 }
+            } catch (LogException e) {
+                fail(e.getMessage());
+            }
+        }
+        {
+            ListResourceRequest request = new ListResourceRequest(owner);
+            try {
+                for (int idx = 2; idx < 34; idx++) {
+                    request.getResourceNames().add(CreateResource1(idx).getName());
+                }
+                ListResourceResponse resp = client.listResource(request);
+                assertTrue("list resources success", true);
+                assertNotNull(resp.getResources());
+                assertEquals(resp.getTotal(), 32);
+                assertEquals(resp.getCount(), 32);
+                assertEquals(resp.getResources().size(), 32);
+                List<Resource> resources = resp.getResources();
+                Collections.sort(resources, new ResourceComparator());
             } catch (LogException e) {
                 fail(e.getMessage());
             }
@@ -810,7 +867,7 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("create resource success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("resource_name too large"));
+                assertTrue(e.getMessage().contains("resource name invalid"));
                 assertTrue("create resource failed", true);
             }
         }
@@ -834,7 +891,7 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("create resource success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("record key size too large"));
+                assertTrue(e.getMessage().contains("record tag size too large"));
                 assertTrue("create resource failed", true);
             }
         }
@@ -848,6 +905,26 @@ public class ResourceFunctionTest extends FunctionTest {
                 assertEquals(e.GetHttpCode(), 400);
                 assertTrue(e.getMessage().contains("record value too large"));
                 assertTrue("create resource failed", true);
+            }
+        }
+    }
+
+    @Test
+    public void TestUpsertRecord() {
+        Resource resource = CreateResource1(79);
+        {
+            List<ResourceRecord> records = new ArrayList<ResourceRecord>();
+            for (int idx = 180; idx < 210; idx++) {
+                ResourceRecord record = CreateRecord1(idx);
+                record.setTag("upsert");
+                records.add(record);
+            }
+            UpsertResourceRecordRequest request = new UpsertResourceRecordRequest(owner, resource.getName(), records);
+            try {
+                client.upsertResourceRecord(request);
+                assertTrue("upsert success", true);
+            }catch (LogException e) {
+                fail(e.getMessage());
             }
         }
     }
@@ -896,6 +973,7 @@ public class ResourceFunctionTest extends FunctionTest {
         {
             ResourceRecord changed = CreateRecord1(12);
             changed.setValue("{}");
+            changed.setId(record.getId());
             UpdateResourceRecordRequest request = new UpdateResourceRecordRequest(owner, resource.getName(), changed);
             try {
                 client.updateResourceRecord(request);
@@ -941,13 +1019,13 @@ public class ResourceFunctionTest extends FunctionTest {
         {
             try {
                 ResourceRecord r = CreateRecord1(12);
-                r.setId(CreateLargeString(30));
+                r.setId(CreateLargeString(99));
                 UpdateResourceRecordRequest request = new UpdateResourceRecordRequest(owner, resource.getName(), r);
                 client.updateResourceRecord(request);
                 fail("update record success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("record id size not match"));
+                assertTrue(e.getMessage().contains("record id invalid"));
                 assertTrue("update record failed", true);
             }
         }
@@ -974,7 +1052,7 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("update record success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("record key size too large"));
+                assertTrue(e.getMessage().contains("record tag size too large"));
                 assertTrue("update record failed", true);
             }
         }
@@ -1039,6 +1117,7 @@ public class ResourceFunctionTest extends FunctionTest {
         {
             DeleteResourceRequest request = new DeleteResourceRequest(owner, resource.getName());
             try {
+                CleanupRecords(resource);
                 client.deleteResource(request);
                 assertTrue("delete resource success", true);
             } catch (LogException e) {
@@ -1085,7 +1164,7 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("delete resource success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("resource_name too large"));
+                assertTrue(e.getMessage().contains("resource name invalid"));
                 assertTrue(e.getMessage(), true);
             }
         }
@@ -1101,13 +1180,13 @@ public class ResourceFunctionTest extends FunctionTest {
             }
         }
         {
-            DeleteResourceRecordRequest request = new DeleteResourceRecordRequest(owner, resource.getName(), "invalid");
+            DeleteResourceRecordRequest request = new DeleteResourceRecordRequest(owner, resource.getName(), "in");
             try {
                 client.deleteResourceRecord(request);
                 fail("delete resource success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("record id size not match"));
+                assertTrue(e.getMessage().contains("record id invalid"));
                 assertTrue(e.getMessage(), true);
             }
         }
@@ -1169,18 +1248,18 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("get record success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("resource_name too large"));
+                assertTrue(e.getMessage().contains("resource name invalid"));
                 assertTrue(e.getMessage(), true);
             }
         }
         {
             try {
-                GetResourceRecordRequest request = new GetResourceRecordRequest(owner, resource.getName(), "invalid");
+                GetResourceRecordRequest request = new GetResourceRecordRequest(owner, resource.getName(), "d");
                 client.getResourceRecord(request);
                 fail("get record success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("record id size"));
+                assertTrue(e.getMessage().contains("record id invalid"));
                 assertTrue(e.getMessage(), true);
             }
         }
@@ -1202,6 +1281,21 @@ public class ResourceFunctionTest extends FunctionTest {
                 for (int idx = 0; idx < records.size(); idx++) {
                     CompareRecord(CreateRecord1(idx), records.get(idx));
                 }
+            } catch (LogException e) {
+                fail(e.getMessage());
+            }
+        }
+        {
+            try {
+                ListResourceRecordRequest request = new ListResourceRecordRequest(owner, resource.getName());
+                for (int idx = 2; idx < 34; idx++) {
+                    request.getRecordIds().add(CreateRecord1(idx).getId());
+                }
+                ListResourceRecordResponse resp = client.listResourceRecord(request);
+                assertTrue("list records success", true);
+                List<ResourceRecord> records = resp.getRecords();
+                assertEquals(resp.getTotal(), 32);
+                assertEquals(resp.getCount(), 32);
             } catch (LogException e) {
                 fail(e.getMessage());
             }
@@ -1235,8 +1329,8 @@ public class ResourceFunctionTest extends FunctionTest {
                 List<ResourceRecord> records = resp.getRecords();
                 assertEquals(resp.getTotal(), 20);
                 assertEquals(resp.getCount(), 15);
-                for (int idx = 2; idx < records.size(); idx++) {
-                    CompareRecord(CreateRecord1(idx * 10), records.get(idx));
+                for (int idx = 0; idx < records.size(); idx++) {
+                    CompareRecord(CreateRecord1((idx + 2) * 10), records.get(idx));
                 }
             } catch (LogException e) {
                 fail(e.getMessage());
@@ -1252,7 +1346,7 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("list records success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("record key size"));
+                assertTrue(e.getMessage().contains("record tag size"));
                 assertTrue(e.getMessage(), true);
             }
         }
@@ -1263,11 +1357,9 @@ public class ResourceFunctionTest extends FunctionTest {
                 request.setOffset(2);
                 request.setSize(1000);
                 ListResourceRecordResponse resp = client.listResourceRecord(request);
-                fail("list records success");
+                assertTrue(resp.getRecords().size() < 200);
             } catch (LogException e) {
-                assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("bad"));
-                assertTrue(e.getMessage(), true);
+                fail(e.getMessage());
             }
         }
         {
@@ -1280,7 +1372,7 @@ public class ResourceFunctionTest extends FunctionTest {
                 fail("list records success");
             } catch (LogException e) {
                 assertEquals(e.GetHttpCode(), 400);
-                assertTrue(e.getMessage().contains("resource name size"));
+                assertTrue(e.getMessage().contains("resource name invalid"));
                 assertTrue(e.getMessage(), true);
             }
         }

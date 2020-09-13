@@ -136,7 +136,7 @@ public class ResourceRecord implements Serializable {
     }
 
     public void CheckForUpsert() throws IllegalArgumentException {
-        CheckForUpdate();
+        CheckForCreate();
     }
 
     private void CheckForValue() throws IllegalArgumentException {
