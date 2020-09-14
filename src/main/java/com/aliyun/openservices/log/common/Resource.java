@@ -13,8 +13,8 @@ public class Resource implements Serializable {
     private String type = "";
     private String schema = null;
     private String acl = null;
-    private String description = "";
-    private String extInfo = "";
+    private String description = null;
+    private String extInfo = null;
     private long createTime = 0;
     private long lastModifyTime = 0;
 

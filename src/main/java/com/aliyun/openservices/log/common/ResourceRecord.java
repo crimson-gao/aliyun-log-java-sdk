@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ResourceRecord implements Serializable {
     private static final long serialVersionUID = -1184418783117426648L;
-    private String value = "{}";
+    private String value = null;
     private String tag = null;
     private String id = null;
     private long createTime = 0;
