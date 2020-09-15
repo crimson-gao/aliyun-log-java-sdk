@@ -690,7 +690,7 @@ public class ResourceFunctionTest extends FunctionTest {
     @Test
     public void TestListResource() {
         {
-            ListResourceRequest request = new ListResourceRequest(owner);
+            ListResourceRequest request = new ListResourceRequest();
             try {
                 ListResourceResponse resp = client.listResource(request);
                 assertTrue("list resources success", true);
@@ -712,7 +712,7 @@ public class ResourceFunctionTest extends FunctionTest {
             }
         }
         {
-            ListResourceRequest request = new ListResourceRequest(owner);
+            ListResourceRequest request = new ListResourceRequest();
             try {
                 for (int idx = 2; idx < 34; idx++) {
                     request.getResourceNames().add(CreateResource1(idx).getName());
@@ -730,7 +730,7 @@ public class ResourceFunctionTest extends FunctionTest {
             }
         }
         {
-            ListResourceRequest request = new ListResourceRequest(owner);
+            ListResourceRequest request = new ListResourceRequest();
             request.setType("app");
             try {
                 ListResourceResponse resp = client.listResource(request);
@@ -756,7 +756,7 @@ public class ResourceFunctionTest extends FunctionTest {
             }
         }
         {
-            ListResourceRequest request = new ListResourceRequest(owner);
+            ListResourceRequest request = new ListResourceRequest();
             request.setType("app");
             request.setOffset(2);
             request.setSize(10);
@@ -785,7 +785,7 @@ public class ResourceFunctionTest extends FunctionTest {
             }
         }
         {
-            ListResourceRequest request = new ListResourceRequest(owner);
+            ListResourceRequest request = new ListResourceRequest();
             request.setType("userdefine");
             request.setOffset(2);
             request.setSize(10);
@@ -801,7 +801,7 @@ public class ResourceFunctionTest extends FunctionTest {
             }
         }
         {
-            ListResourceRequest request = new ListResourceRequest(owner);
+            ListResourceRequest request = new ListResourceRequest();
             request.setType("notexist");
             request.setOffset(2);
             request.setSize(10);
@@ -816,7 +816,7 @@ public class ResourceFunctionTest extends FunctionTest {
         }
         {
             try{
-                ListResourceRequest request = new ListResourceRequest(owner);
+                ListResourceRequest request = new ListResourceRequest();
                 request.setType("app");
                 request.setOffset(2);
                 request.setSize(10000);
@@ -827,7 +827,7 @@ public class ResourceFunctionTest extends FunctionTest {
             }
         }
         {
-            ListResourceRequest request = new ListResourceRequest(owner);
+            ListResourceRequest request = new ListResourceRequest();
             request.setType("%bad$");
             request.setOffset(2);
             request.setSize(100);

@@ -400,6 +400,7 @@ public class Consts {
     public static final String RESOURCE_RECORD_TAG = "tag";
     public static final String RESOURCE_RECORD_VALUE = "value";
     public static final String RESOURCE_RECORDS = "records";
+    public static final String RESOURCE_OWNER = "owner";
 
     public static final String LOGGING_URI = "/logging";
     public static final String METHOD = "method";

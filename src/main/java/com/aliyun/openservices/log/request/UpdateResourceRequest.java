@@ -19,4 +19,8 @@ public class UpdateResourceRequest extends ResourceRequest {
         super(owner);
         this.resource = resource;
     }
+
+    public UpdateResourceRequest(Resource resource) {
+        this(null, resource);
+    }
 }

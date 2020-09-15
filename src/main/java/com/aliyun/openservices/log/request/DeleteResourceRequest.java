@@ -10,6 +10,10 @@ public class DeleteResourceRequest extends ResourceRequest {
         this.resourceName = resourceName;
     }
 
+    public DeleteResourceRequest(String resourceName) {
+        this(null, resourceName);
+    }
+
     public String getResourceName() {
         return resourceName;
     }

@@ -19,4 +19,8 @@ public class CreateResourceRequest extends ResourceRequest {
         super(owner);
         this.resource = resource;
     }
+
+    public CreateResourceRequest(Resource resource) {
+        this(null, resource);
+    }
 }

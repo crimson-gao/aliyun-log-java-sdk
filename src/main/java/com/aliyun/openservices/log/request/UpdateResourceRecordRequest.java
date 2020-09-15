@@ -17,4 +17,8 @@ public class UpdateResourceRecordRequest extends RecordRequest {
         super(owner, resourceName);
         this.record = record;
     }
+
+    public UpdateResourceRecordRequest(String resourceName, ResourceRecord record) {
+        this(null, resourceName, record);
+    }
 }

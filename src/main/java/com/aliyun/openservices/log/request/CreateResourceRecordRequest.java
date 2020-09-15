@@ -19,4 +19,8 @@ public class CreateResourceRecordRequest extends RecordRequest {
         super(owner, resourceName);
         this.record = record;
     }
+
+    public CreateResourceRecordRequest(String resourceName, ResourceRecord record) {
+        this(null, resourceName, record);
+    }
 }

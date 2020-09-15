@@ -17,4 +17,8 @@ public class GetResourceRecordRequest extends RecordRequest {
         this.recordId= recordId;
     }
 
+    public GetResourceRecordRequest(String resourceName, String recordId) {
+        super(null, resourceName);
+        this.recordId = recordId;
+    }
 }

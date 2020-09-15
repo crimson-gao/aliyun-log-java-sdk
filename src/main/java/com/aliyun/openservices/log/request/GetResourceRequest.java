@@ -17,4 +17,8 @@ public class GetResourceRequest extends ResourceRequest {
         super(owner);
         this.resourceName = resourceName;
     }
+
+    public GetResourceRequest(String resourceName) {
+        this(null, resourceName);
+    }
 }
