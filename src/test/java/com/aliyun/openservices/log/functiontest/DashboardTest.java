@@ -8,9 +8,7 @@ import com.aliyun.openservices.log.request.CreateDashboardRequest;
 import com.aliyun.openservices.log.request.DeleteChartRequest;
 import com.aliyun.openservices.log.request.DeleteDashboardRequest;
 import com.aliyun.openservices.log.request.UpdateDashboardRequest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 
@@ -19,7 +17,7 @@ import static org.junit.Assert.fail;
 
 public class DashboardTest extends FunctionTest {
 
-    private static final String TEST_PROJECT = "project-to-test-dashboard";
+    private static final String TEST_PROJECT = "test-project-to-dashboard";
 
     @Before
     public void setUp() {
@@ -52,15 +50,14 @@ public class DashboardTest extends FunctionTest {
         return chart;
     }
 
+    @Ignore
     @Test
     public void testCreateDuplicateChart() throws LogException {
         String dashboardName = "dashboardtest";
         try {
             client.deleteDashboard(new DeleteDashboardRequest(TEST_PROJECT, dashboardName));
-            System.out.println("Delete dashboard ok");
         } catch (LogException ex) {
-            ex.printStackTrace();
-            System.out.println(ex.GetRequestId());
+            Assert.assertEquals("specified dashboard does not exist", ex.getMessage());
         }
         Dashboard dashboard = new Dashboard();
         dashboard.setDashboardName(dashboardName);
@@ -125,8 +122,7 @@ public class DashboardTest extends FunctionTest {
     }
 
     @After
-    public void tearDown() throws Exception {
-        client.DeleteProject(TEST_PROJECT);
-        System.out.println("Delete project ok");
+    public void tearDown() {
+        safeDeleteProject(TEST_PROJECT);
     }
 }

@@ -1,36 +1,40 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.aliyun.openservices.log.common.Index;
-import com.aliyun.openservices.log.common.LogStore;
-import com.aliyun.openservices.log.common.Project;
-import com.aliyun.openservices.log.common.RebuildIndex;
-import com.aliyun.openservices.log.common.RebuildIndexConfiguration;
+import com.aliyun.openservices.log.common.*;
 import com.aliyun.openservices.log.exception.LogException;
-import com.aliyun.openservices.log.request.CreateRebuildIndexRequest;
-import com.aliyun.openservices.log.request.DeleteRebuildIndexRequest;
-import com.aliyun.openservices.log.request.DisableJobRequest;
-import com.aliyun.openservices.log.request.EnableJobRequest;
-import com.aliyun.openservices.log.request.GetRebuildIndexRequest;
-import com.aliyun.openservices.log.request.ListRebuildIndexRequest;
-import com.aliyun.openservices.log.request.StopRebuildIndexRequest;
-import com.aliyun.openservices.log.response.DeleteRebuildIndexResponse;
+import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.GetRebuildIndexResponse;
 import com.aliyun.openservices.log.response.ListProjectResponse;
 import com.aliyun.openservices.log.response.ListRebuildIndexResponse;
-import com.aliyun.openservices.log.response.StopRebuildIndexResponse;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+public class RebuildIndexFunctionTest extends FunctionTest {
 
-public class RebuildIndexFunctionTest extends JobIntgTest {
+    static String project = "test-project-to-alert-" + getNowTimestamp();
+    static String logstore = "test_rebuild_index_" + getNowTimestamp();
+    static String jobName = "rebuild-index-6";
 
-    String project = "project-to-test-alert-" + getNowTimestamp();
-    String logstore = "test_rebuild_index";
-    String jobName = "rebuild-index-6";
+    @Before
+    public void setUp() {
+        LogStore logStore = new LogStore();
+        logStore.SetLogStoreName(logstore);
+        logStore.SetTtl(1);
+        logStore.SetShardCount(1);
+        createOrUpdateLogStore(project, logStore);
+        enableIndex();
+    }
+
+    @After
+    public void clearData() {
+        safeDeleteLogStore(project, logstore);
+        safeDeleteProject(project);
+    }
 
     private final static String INDEX_STRING = "{\"log_reduce\":false,\"line\":{\"caseSensitive\":false,\"chn\":false,\"token\":" +
             "[\",\",\" \",\"'\",\"\\\"\",\";\",\"=\",\"(\",\")\",\"[\",\"]\",\"{\",\"}\",\"?\",\"@\",\"&\",\"<\",\">\",\"/\",\":\",\"\\n\",\"\\t\",\"\\r\"]}," +
@@ -42,14 +46,6 @@ public class RebuildIndexFunctionTest extends JobIntgTest {
     @After
     public void tearDown() throws Exception {
         deleteAll();
-    }
-
-    @Override
-    @Before
-    public void setUp() {
-        safeCreateProject(project, "");
-        LogStore logStore = new LogStore("test_rebuild_index", 1, 1);
-        createOrUpdateLogStore(project, logStore);
     }
 
     private void deleteAll() throws Exception {
@@ -76,45 +72,70 @@ public class RebuildIndexFunctionTest extends JobIntgTest {
     @Test
     public void testCreate() throws Exception {
         RebuildIndex job = createRebuildIndex();
-        try {
-            client.createRebuildIndex(new CreateRebuildIndexRequest(project, job));
-            fail();
-        } catch (LogException ex) {
-            assertEquals("IndexConfigNotExist", ex.GetErrorCode());
-        }
-        Index index = new Index();
-        index.FromJsonString(INDEX_STRING);
-        client.CreateIndex(project, logstore, index);
-        client.createRebuildIndex(new CreateRebuildIndexRequest(project, job));
+        client.createRebuildIndex(new CreateRebuildIndexRequest(project, job));//index config doesn't exist
+        Thread.sleep(3000);
         testGet();
-        StopRebuildIndexResponse response = client.stopRebuildIndex(new StopRebuildIndexRequest(project, jobName));
-        System.out.println(response.GetAllHeaders());
-        testGet();
-        DeleteRebuildIndexResponse response2 = client.deleteRebuildIndex(new DeleteRebuildIndexRequest(project, jobName));
-        System.out.println(response2.GetAllHeaders());
-        ListRebuildIndexResponse response3 = client.listRebuildIndex(new ListRebuildIndexRequest(project));
-        System.out.println(response3.getCount());
-        System.out.println(response3.getTotal());
-        for (RebuildIndex rebuildIndex : response3.getResults()) {
-            System.out.println(rebuildIndex.getName());
-        }
-        try {
-            client.enableJob(new EnableJobRequest(project, jobName));
-            fail();
-        } catch (LogException ex) {
-            System.out.println(ex.GetErrorCode());
-        }
-        try {
-            client.disableJob(new DisableJobRequest(project, jobName));
-            fail();
-        } catch (LogException ex) {
-            System.out.println(ex.GetErrorCode());
-        }
     }
 
+    @Ignore
+    @Test
     public void testGet() throws Exception {
         GetRebuildIndexResponse response = client.getRebuildIndex(new GetRebuildIndexRequest(project, jobName));
         RebuildIndex ri = response.getRebuildIndex();
-        System.out.println("job: " + ri.getName() + "\nstatus: " + ri.getStatus() + "\nexecutionDetails: " + ri.getExecutionDetails());
+        Assert.assertEquals(jobName, ri.getName());
+        Assert.assertEquals("test rebuild index", ri.getDisplayName());
+    }
+
+    @Ignore
+    @Test
+    public void testStop() {
+        try {
+            client.stopRebuildIndex(new StopRebuildIndexRequest(project, jobName));
+        } catch (LogException e) {
+            assertEquals("ParameterInvalid", e.GetErrorCode());
+//            assertEquals("The job to stop has already stopped", e.GetErrorMessage()); //there are two kinds of error messages
+            //  {The job to stop has already stopped/Previous operation has not finished}
+        }
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        testCreate();
+        client.deleteRebuildIndex(new DeleteRebuildIndexRequest(project, jobName));
+    }
+
+    @Test
+    public void testList() throws Exception {
+        testCreate();
+        ListRebuildIndexResponse response = client.listRebuildIndex(new ListRebuildIndexRequest(project));
+        assertEquals(1, response.getCount().intValue());
+        assertEquals(1, response.getTotal().intValue());
+        assertEquals("rebuild-index-6", response.getResults().get(0).getName());
+    }
+
+    @Ignore
+    @Test
+    public void testInvalidOperation() throws Exception {
+        client.enableJob(new EnableJobRequest(project, jobName));
+        client.disableJob(new DisableJobRequest(project, jobName));
+    }
+
+    private static void enableIndex() {
+        Index index = new Index();
+        index.SetTtl(7);
+        index.setMaxTextLen(0);
+        index.setLogReduceEnable(false);
+        List<String> list = Arrays.asList(",", " ", "'", "\"", ";", "=", "(", ")", "[", "]", "{", "}", "?", "@", "&", "<", ">", "/", ":", "\n", "\t", "\r");
+        IndexKeys indexKeys = new IndexKeys();
+        for (int i = 1; i <= 10; i++) {
+            indexKeys.AddKey("key-"+i, new IndexKey(list,false, "text", ""));
+        }
+        index.SetKeys(indexKeys);
+        try {
+            client.CreateIndex(new CreateIndexRequest(project, logstore, index));
+        } catch (LogException e) {
+            fail("Enable Index Failed!");
+        }
+        waitOneMinutes();
     }
 }

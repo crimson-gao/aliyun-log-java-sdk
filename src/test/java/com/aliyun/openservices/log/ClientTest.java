@@ -55,7 +55,7 @@ public class ClientTest {
                     TEST_ACCESS_KEY);
             fail("Should throw error");
         } catch (IllegalArgumentException e) {
-            assertEquals("EndpointInvalid", e.getMessage());
+            assertEquals("The ip address is not supported", e.getMessage());
         }
     }
 

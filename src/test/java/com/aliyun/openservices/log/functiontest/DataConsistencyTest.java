@@ -19,8 +19,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -32,27 +30,11 @@ import java.util.zip.Deflater;
 
 import static org.junit.Assert.*;
 
-public class DataConsistencyTest extends FunctionTest {
-    protected String project;
-    protected LogStore logStore = new LogStore();
-    protected int timestamp = getNowTimestamp();
-    private final String PACK_ID_PREFIX = "ABCDEF" + timestamp + "-";
-
-    @Before
-    public void prepareData() throws LogException {
-        project = "test-project-" + timestamp;
-        logStore.SetTtl(1);
-        logStore.SetShardCount(3);
-        logStore.SetLogStoreName("test-logstore-" + timestamp);
-        logStore.setEnableWebTracking(true);
-        logStore.setAppendMeta(randomBoolean());
-        createOrUpdateLogStore(project, logStore);
-        enableIndex();
-    }
-
+public class DataConsistencyTest extends BaseDataTest {
     //putLogs->pullLogs
     @Test
     public void testPutLogs() throws LogException {
+        enableIndex();
         int count = prepareLogs();
         int logGroupSize = verifyPull();
         assertEquals(count, logGroupSize);
@@ -61,6 +43,7 @@ public class DataConsistencyTest extends FunctionTest {
     //putLogs->getLogstoreLogs/getHistogram
     @Test
     public void testGetLogs() throws LogException {
+        enableIndex();
         int count = prepareLogs();
         int totalSize = verifyGet();
         assertEquals(count * 10, totalSize);
@@ -74,6 +57,7 @@ public class DataConsistencyTest extends FunctionTest {
     //putLogs->getContextLogs
     @Test
     public void testGetContextLogs() throws LogException {
+        enableIndex();
         int count = prepareLogs();
         String startPackID = PACK_ID_PREFIX + (count / 2);
         String startPackMeta;
@@ -108,7 +92,8 @@ public class DataConsistencyTest extends FunctionTest {
     }
 
     @Test
-    public void testWebTracking() throws LogException {
+    public void testGetWebTracking() throws LogException {
+        enableIndex();
         int count = mockGetRequest();
 
         int pull = verifyPull();
@@ -120,6 +105,7 @@ public class DataConsistencyTest extends FunctionTest {
 
     @Test
     public void testPostWebTracking() throws LogException {
+        enableIndex();
         int count = mockPostRequest(Consts.CompressType.GZIP);
 
         int pull = verifyPull();
@@ -131,6 +117,7 @@ public class DataConsistencyTest extends FunctionTest {
 
     @Test
     public void testPostWebTrackingForLZ4() throws LogException {
+        enableIndex();
         int count = mockPostRequest(Consts.CompressType.LZ4);
 
         int pull = verifyPull();
@@ -140,7 +127,7 @@ public class DataConsistencyTest extends FunctionTest {
         assertEquals(count, get);
     }
 
-    private int verifyPull() throws LogException {
+    protected int verifyPull() throws LogException {
         int logGroupSize = 0;
         int logGroupSizeByPull;
         for (int i = 0; i < 3; i++) {
@@ -169,7 +156,7 @@ public class DataConsistencyTest extends FunctionTest {
         return logGroupSize;
     }
 
-    private int verifyGet() throws LogException {
+    protected int verifyGet() throws LogException {
         int totalSize = 0;
         int size;
         do {
@@ -192,7 +179,7 @@ public class DataConsistencyTest extends FunctionTest {
         return totalSize;
     }
 
-    private int mockGetRequest() {
+    protected int mockGetRequest() {
         int count = randomBetween(50, 100);
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         StringBuilder params = new StringBuilder("APIVersion=0.6.0");
@@ -245,7 +232,7 @@ public class DataConsistencyTest extends FunctionTest {
         return count;
     }
 
-    private void enableIndex() throws LogException {
+    protected void enableIndex() throws LogException {
         Index index = new Index();
         index.SetTtl(7);
         index.setMaxTextLen(0);
@@ -260,7 +247,7 @@ public class DataConsistencyTest extends FunctionTest {
         waitOneMinutes();
     }
 
-    int prepareLogs() throws LogException {
+    protected int prepareLogs() throws LogException {
         int logGroupCount = randomBetween(50, 100);
         for (int i = 1; i <= logGroupCount; i++) {
             List<LogItem> logItems = new ArrayList<LogItem>(10);
@@ -384,11 +371,5 @@ public class DataConsistencyTest extends FunctionTest {
             this.status = status;
             this.body = body;
         }
-    }
-
-    @After
-    public void clearData() {
-        safeDeleteLogStore(project, logStore.GetLogStoreName());
-        safeDeleteProject(project);
     }
 }
