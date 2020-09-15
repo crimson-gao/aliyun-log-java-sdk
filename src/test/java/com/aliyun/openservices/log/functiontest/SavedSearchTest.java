@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 public class SavedSearchTest extends FunctionTest {
 
-    private static final String TEST_PROJECT = "project-to-test-savedsearch";
+    private static final String TEST_PROJECT = "test-project-to-savedsearch";
 
     @Before
     public void setUp() {

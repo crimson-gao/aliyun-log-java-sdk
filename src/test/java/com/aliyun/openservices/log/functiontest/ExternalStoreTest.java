@@ -11,24 +11,22 @@ import com.aliyun.openservices.log.request.ListExternalStoresRequest;
 import com.aliyun.openservices.log.request.UpdateExternalStoreRequest;
 import com.aliyun.openservices.log.response.GetExternalStoreResponse;
 import com.aliyun.openservices.log.response.ListExternalStroesResponse;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class ExternalStoreTest extends FunctionTest {
-    private final String project = "java-sdk-external-store-test-" + randomInt();
+    private static final String project = "test-java-sdk-external-store-" + randomInt();
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() {
         safeCreateProject(project, "");
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() {
         safeDeleteProject(project);
     }
 
@@ -76,7 +74,8 @@ public class ExternalStoreTest extends FunctionTest {
         assertEquals(getResponse2.getExternalStore().getParameter().getHost(), "test-host-2");
 
         //list
-        //ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, null, 0, 10);//pattern 支持模糊查询，为null/""代表查询所有
+        waitForSeconds(10);
+//        ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, null, 0, 10);//pattern 支持模糊查询，为null/""代表查询所有
         ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, "vpc", 0, 10);
         ListExternalStroesResponse listResponse = client.listExternalStores(listRequest);
         assertTrue(listResponse.getExternalStores().contains("name-rds-vpc"));
@@ -109,9 +108,9 @@ public class ExternalStoreTest extends FunctionTest {
         }
 
         //get
-        //注意，此处会返回创建者的accessid和accesskey
+//        注意，此处会返回创建者的accessid和accesskey
         GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(project, "name-oss");
-        GetExternalStoreResponse getResponse1 = client.getExternalStore(getRequest1);
+        GetExternalStoreResponse getResponse1 = client.getExternalStore(getRequest1);   //LogException: Internal Server Error
         assertEquals(getResponse1.getExternalStore().getParameter().getEndpoint(), "123");
 
         //update
@@ -129,6 +128,7 @@ public class ExternalStoreTest extends FunctionTest {
         GetExternalStoreResponse getResponse2 = client.getExternalStore(getRequest2);
         assertEquals(getResponse2.getExternalStore().getParameter().getEndpoint(), "321");
 
+        waitForSeconds(10); //need to wait to get value
         //list
         ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, "", 0, 10);
         ListExternalStroesResponse response = client.listExternalStores(listRequest);

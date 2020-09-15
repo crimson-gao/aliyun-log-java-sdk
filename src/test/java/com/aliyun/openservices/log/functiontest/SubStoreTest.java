@@ -1,37 +1,51 @@
 package com.aliyun.openservices.log.functiontest;
 
 
-import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.common.SubStore;
 import com.aliyun.openservices.log.common.SubStoreKey;
 import com.aliyun.openservices.log.exception.LogException;
-import com.aliyun.openservices.log.response.CreateLogStoreResponse;
-import com.aliyun.openservices.log.response.CreateSubStoreResponse;
-import com.aliyun.openservices.log.response.DeleteSubStoreResponse;
-import com.aliyun.openservices.log.response.GetLogStoreResponse;
-import com.aliyun.openservices.log.response.GetSubStoreResponse;
-import com.aliyun.openservices.log.response.GetSubStoreTTLResponse;
-import com.aliyun.openservices.log.response.ListLogStoresResponse;
-import com.aliyun.openservices.log.response.ListSubStoreResponse;
-import com.aliyun.openservices.log.response.UpdateLogStoreResponse;
-import com.aliyun.openservices.log.response.UpdateSubStoreResponse;
-import com.aliyun.openservices.log.response.UpdateSubStoreTTLResponse;
-import org.junit.Assert;
-import org.junit.Test;
+import com.aliyun.openservices.log.response.*;
+import org.junit.*;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class SubStoreTest extends FunctionTest {
+    static int timestamp = getNowTimestamp();
+    static String PROJECT = "test-substore-project-" + timestamp;
+    static String LOGSTORE1 = "test-substore-logstore-" + timestamp;
 
-    static String PROJECT = "";
-    static String LOGSTORE1 = "";
-    Client client = new Client("", "", "=");
+    @Before
+    public void setUp() {
+        LogStore logStore = new LogStore();
+        logStore.SetShardCount(1);
+        logStore.SetTtl(1);
+        logStore.SetLogStoreName(LOGSTORE1);
+        logStore.setTelemetryType("Metrics");
+        createOrUpdateLogStore(PROJECT, logStore);
+    }
 
+    @After
+    public void clearData() {
+        safeDeleteLogStore(PROJECT, LOGSTORE1);
+        safeDeleteProject(PROJECT);
+    }
 
+    //this method is not implemented for metric store not Implemented yet!
+    @Ignore
     @Test
-    public void createSubStore() throws LogException {
+    public void CRUDSubStore() throws LogException {
+        createSubStore();
+        listSubStore();
+        updateSubStore();
+        getSubStore();
+        updateSubStoreTTL();
+        getSubStoreTTL();
+        deleteSubStore();
+    }
+
+    private void createSubStore() throws LogException {
         SubStore subStore = new SubStore();
         subStore.setName("test_substore_name1");
         subStore.setTtl(15);
@@ -46,18 +60,16 @@ public class SubStoreTest extends FunctionTest {
         Assert.assertNotNull(createSubStoreResponse);
     }
 
-    @Test
-    public void listSubStore() throws LogException {
+    private void listSubStore() throws LogException {
         ListSubStoreResponse listSubStoreResponse = client.listSubStore(PROJECT, LOGSTORE1);
         Assert.assertEquals(1, listSubStoreResponse.getSubStoreNames().size());
         Assert.assertEquals("test_substore_name1", listSubStoreResponse.getSubStoreNames().get(0));
     }
 
-    @Test
-    public void updateSubStore() throws LogException {
+    private void updateSubStore() throws LogException {
         SubStore subStore = new SubStore();
         subStore.setName("test_substore_name1");
-        subStore.setTtl(16);
+        subStore.setTtl(15);
         subStore.setTimeIndex(3);
         subStore.setSortedKeyCount(2);
         SubStoreKey subStoreKey1 = new SubStoreKey("__name__", "text");
@@ -69,8 +81,7 @@ public class SubStoreTest extends FunctionTest {
         Assert.assertNotNull(updateSubStoreResponse);
     }
 
-    @Test
-    public void getSubStore() throws LogException {
+    private void getSubStore() throws LogException {
         GetSubStoreResponse getSubStoreResponse = client.getSubStore(PROJECT, LOGSTORE1, "test_substore_name1");
         SubStore subStore = getSubStoreResponse.getSubStore();
         Assert.assertNotNull(subStore);
@@ -82,48 +93,43 @@ public class SubStoreTest extends FunctionTest {
         Assert.assertEquals(4, keyList.size());
     }
 
-    @Test
-    public void deleteSubStore() throws LogException {
+    private void deleteSubStore() throws LogException {
         DeleteSubStoreResponse deleteSubStoreResponse = client.deleteSubStore(PROJECT, LOGSTORE1, "test_substore_name1");
         Assert.assertNotNull(deleteSubStoreResponse);
     }
 
-    @Test
-    public void updateSubStoreTTL() throws LogException {
+    private void updateSubStoreTTL() throws LogException {
         UpdateSubStoreTTLResponse updateSubStoreTTLResponse = client.updateSubStoreTTL(PROJECT, LOGSTORE1, 16);
         Assert.assertNotNull(updateSubStoreTTLResponse);
     }
 
-    @Test
-    public void getSubStoreTTL() throws LogException {
+    private void getSubStoreTTL() throws LogException {
         GetSubStoreTTLResponse getSubStoreTTLResponse = client.getSubStoreTTL(PROJECT, LOGSTORE1);
         Assert.assertEquals(16, getSubStoreTTLResponse.getTtl());
     }
 
+    //this method is not implemented for metric store not Implemented yet!
+    @Ignore
     @Test
-    public void createLogStoreV2() throws LogException {
-        LogStore logStore = new LogStore(LOGSTORE1, 1, 1);
-        logStore.setTelemetryType("Metrics");
-        CreateLogStoreResponse createLogStoreV2Response = client.CreateLogStore(PROJECT, logStore);
-        Assert.assertNotNull(createLogStoreV2Response);
+    public void testCURDLogStoreV2() throws LogException {
+        listLogStoreV2();
+        updateLogStoreV2();
+        getLogStoreV2();
     }
 
-    @Test
-    public void listLogStoreV2() throws LogException {
-        ListLogStoresResponse listLogStoreV2Response = client.listLogStores(PROJECT, 0, 100, "","Metrics");
+    private void listLogStoreV2() throws LogException {
+        ListLogStoresResponse listLogStoreV2Response = client.listLogStores(PROJECT, 0, 100, "", "Metrics");
         Assert.assertEquals(1, listLogStoreV2Response.GetLogStores().size());
     }
 
-    @Test
-    public void updateLogStoreV2() throws LogException {
+    private void updateLogStoreV2() throws LogException {
         LogStore logStore = new LogStore(LOGSTORE1, 1, 1);
         logStore.setTelemetryType("Metrics1");
         UpdateLogStoreResponse updateLogStoreV2Response = client.UpdateLogStore(PROJECT, logStore);
         Assert.assertNotNull(updateLogStoreV2Response);
     }
 
-    @Test
-    public void getLogStoreV2() throws LogException {
+    private void getLogStoreV2() throws LogException {
         GetLogStoreResponse getLogStoreResponse = client.GetLogStore(PROJECT, LOGSTORE1);
         Assert.assertNotNull(getLogStoreResponse);
         Assert.assertEquals("Metrics1", getLogStoreResponse.GetLogStore().getTelemetryType());
