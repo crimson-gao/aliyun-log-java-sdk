@@ -139,7 +139,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
         }
         // test list resource
         {
-            ListResourceRequest request = new ListResourceRequest(owner);
+            ListResourceRequest request = new ListResourceRequest();
             try {
                 ListResourceResponse resp = client.listResource(request);
             } catch (Exception exp) {
@@ -152,7 +152,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
             for (int idx = 0; idx < 10; idx++) {
                 Resource r = CreateResource11(idx);
                 r.setExtInfo("change");
-                UpdateResourceRequest request = new UpdateResourceRequest(owner, r);
+                UpdateResourceRequest request = new UpdateResourceRequest(r);
                 try {
                     client.updateResource(request);
                     if (idx % 3 == 0) {
@@ -231,7 +231,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
         {
             for (int idx = 0; idx < 10; idx++) {
                 Resource resource = CreateResource11(idx);
-                ListResourceRecordRequest request = new ListResourceRecordRequest(owner, resource.getName());
+                ListResourceRecordRequest request = new ListResourceRecordRequest(resource.getName());
                 try {
                     ListResourceRecordResponse resp = client.listResourceRecord(request);
                     changed.add(resp.getRecords().get(0));

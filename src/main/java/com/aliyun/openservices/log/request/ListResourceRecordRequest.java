@@ -37,8 +37,16 @@ public class ListResourceRecordRequest extends RecordRequest {
         this.tag = tag;
     }
 
-    public ListResourceRecordRequest(String owner, String resourceName) {
-        this(owner, resourceName, "", 0, 100);
+    public ListResourceRecordRequest(String resourceName) {
+        this(null, resourceName, null, 0, 100);
+    }
+
+    public ListResourceRecordRequest(String resourceName, String tag, int offset, int size) {
+        this(null, resourceName, tag, offset, size);
+    }
+
+    public ListResourceRecordRequest(String resourceName, int offset, int size) {
+        this(null, resourceName, null, offset, size);
     }
 
     public ListResourceRecordRequest(String owner, String resourceName, String tag, int offset, int size) {

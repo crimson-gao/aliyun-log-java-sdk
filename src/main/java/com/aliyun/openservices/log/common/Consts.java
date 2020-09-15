@@ -381,7 +381,7 @@ public class Consts {
     public static final String JOB_URI = "/jobs";
     public static final String DISPLAY_NAME = "displayName";
 
-    public static final String CONST_RESOURCE_URI = "/resources/%s";
+    public static final String CONST_RESOURCE_URI = "/resources";
     public static final String CONST_RESOURCE_NAME_URI = CONST_RESOURCE_URI + "/%s";
     public static final String RESOURCE_NAME = "name";
     public static final String RESOURCE_NAMES = "names";

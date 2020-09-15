@@ -5,8 +5,7 @@ public class RecordRequest extends ResourceRequest {
     private String resourceName;
 
     public RecordRequest(String resourceName) {
-        super();
-        this.resourceName = resourceName;
+        this(null, resourceName);
     }
 
     public RecordRequest(String owner, String resourceName) {

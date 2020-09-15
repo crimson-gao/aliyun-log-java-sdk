@@ -13,8 +13,15 @@ public class UpsertResourceRecordRequest extends RecordRequest {
     private List<ResourceRecord> records;
 
     public UpsertResourceRecordRequest(String owner, String resourceName, ResourceRecord record) {
-        super(owner, resourceName);
-        this.records = Collections.singletonList(record);
+        this(owner, resourceName, Collections.singletonList(record));
+    }
+
+    public UpsertResourceRecordRequest(String resourceName, ResourceRecord record) {
+        this(null, resourceName, record);
+    }
+
+    public UpsertResourceRecordRequest(String resourceName, List<ResourceRecord> records) {
+        this(null, resourceName, records);
     }
 
     public UpsertResourceRecordRequest(String owner, String resourceName, List<ResourceRecord> records) {
