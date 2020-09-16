@@ -10,7 +10,6 @@ import java.util.Date;
 
 import static com.aliyun.openservices.log.util.Args.checkDuration;
 
-
 public class JobSchedule implements Serializable {
 
     private static final long serialVersionUID = 8400426178465652937L;

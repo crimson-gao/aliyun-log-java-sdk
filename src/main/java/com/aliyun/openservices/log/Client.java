@@ -3976,9 +3976,10 @@ public class Client implements LogService {
 	}
 
 	@Override
-	public DeleteETLResponse deleteETL(DeleteETLRequest request) throws LogException {
+	@Deprecated
+	public DeleteETLV1Response deleteETLV1(DeleteETLV1Request request) throws LogException {
         ResponseMessage responseMessage = send(request);
-        return new DeleteETLResponse(responseMessage.getHeaders());
+        return new DeleteETLV1Response(responseMessage.getHeaders());
     }
 
     @Override
@@ -3991,6 +3992,7 @@ public class Client implements LogService {
     }
 
     @Override
+	@Deprecated
     public GetJobScheduleResponse getJobSchedule(GetJobScheduleRequest request) throws LogException {
         ResponseMessage message = send(request);
         JSONObject responseBody = parseResponseBody(message, message.getRequestId());
@@ -4000,10 +4002,11 @@ public class Client implements LogService {
     }
 
     @Override
-    public GetETLResponse getETL(GetETLRequest request) throws LogException {
+	@Deprecated
+    public GetETLV1Response getETLV1(GetETLV1Request request) throws LogException {
         ResponseMessage response = send(request);
         JSONObject responseBody = parseResponseBody(response, response.getRequestId());
-        GetETLResponse etlResponse = new GetETLResponse(response.getHeaders());
+        GetETLV1Response etlResponse = new GetETLV1Response(response.getHeaders());
         etlResponse.deserialize(responseBody, response.getRequestId());
         return etlResponse;
     }
@@ -4018,12 +4021,13 @@ public class Client implements LogService {
     }
 
     @Override
-    public ListETLResponse listETL(ListETLRequest request) throws LogException {
+	@Deprecated
+    public ListETLV1Response listETLV1(ListETLV1Request request) throws LogException {
         ResponseMessage response = send(request);
         JSONObject responseBody = parseResponseBody(response, response.getRequestId());
-        ListETLResponse listETLResponse = new ListETLResponse(response.getHeaders());
-        listETLResponse.deserialize(responseBody, response.getRequestId());
-        return listETLResponse;
+        ListETLV1Response listETLV1Response = new ListETLV1Response(response.getHeaders());
+        listETLV1Response.deserialize(responseBody, response.getRequestId());
+        return listETLV1Response;
     }
 
 	@Override
@@ -4048,9 +4052,10 @@ public class Client implements LogService {
 	}
 
     @Override
-    public UpdateETLResponse updateETL(UpdateETLRequest request) throws LogException {
+	@Deprecated
+    public UpdateETLV1Response updateETLV1(UpdateETLV1Request request) throws LogException {
         ResponseMessage message = send(request);
-        return new UpdateETLResponse(message.getHeaders());
+        return new UpdateETLV1Response(message.getHeaders());
     }
 
 	@Override
@@ -4486,12 +4491,14 @@ public class Client implements LogService {
     }
 
     @Override
-    public CreateETLResponse createETL(CreateETLRequest request) throws LogException {
+	@Deprecated
+    public CreateETLV1Response createETLV1(CreateETLV1Request request) throws LogException {
         ResponseMessage responseMessage = send(request);
-        return new CreateETLResponse(responseMessage.getHeaders());
+        return new CreateETLV1Response(responseMessage.getHeaders());
     }
 
     @Override
+	@Deprecated
     public CreateJobScheduleResponse createJobSchedule(CreateJobScheduleRequest request) throws LogException {
         ResponseMessage message = send(request);
         CreateJobScheduleResponse response = new CreateJobScheduleResponse(message.getHeaders());
@@ -4501,18 +4508,21 @@ public class Client implements LogService {
     }
 
     @Override
+	@Deprecated
     public UpdateJobScheduleResponse updateJobSchedule(UpdateJobScheduleRequest request) throws LogException {
         ResponseMessage message = send(request);
         return new UpdateJobScheduleResponse(message.getHeaders());
     }
 
     @Override
+	@Deprecated
     public StartJobScheduleResponse startJobSchedule(StartJobScheduleRequest request) throws LogException {
         ResponseMessage message = send(request);
         return new StartJobScheduleResponse(message.getHeaders());
     }
 
     @Override
+	@Deprecated
     public StopJobScheduleResponse stopJobSchedule(StopJobScheduleRequest request) throws LogException {
         ResponseMessage message = send(request);
         return new StopJobScheduleResponse(message.getHeaders());
@@ -4573,6 +4583,7 @@ public class Client implements LogService {
     }
 
     @Override
+	@Deprecated
     public ListJobSchedulesResponse listJobSchedules(ListJobSchedulesRequest request) throws LogException {
         ResponseMessage message = send(request);
         JSONObject response = parseResponseBody(message, message.getRequestId());
@@ -4581,6 +4592,54 @@ public class Client implements LogService {
         return jobRunsResponse;
     }
 
+	@Override
+	public CreateETLResponse createETL(CreateETLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		return new CreateETLResponse(resp.getHeaders());
+	}
+
+	@Override
+	public UpdateETLResponse updateETL(UpdateETLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		return new UpdateETLResponse(resp.getHeaders());
+	}
+
+	@Override
+	public DeleteETLResponse deleteETL(DeleteETLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		return new DeleteETLResponse(resp.getHeaders());
+	}
+
+	@Override
+	public GetETLResponse getETL(GetETLRequest request) throws LogException {
+		ResponseMessage response = send(request);
+		JSONObject responseBody = parseResponseBody(response, response.getRequestId());
+		GetETLResponse etlResponse = new GetETLResponse(response.getHeaders());
+		etlResponse.deserialize(responseBody, response.getRequestId());
+		return etlResponse;
+	}
+
+	@Override
+	public ListETLResponse listETL(ListETLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		ListETLResponse listResp = new ListETLResponse(resp.getHeaders());
+		listResp.deserialize(respBody, resp.getRequestId());
+		return listResp;
+	}
+
+	@Override
+	public StopETLResponse stopETL(StopETLRequest request)throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StopETLResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public StartETLResponse startETL(StartETLRequest request)throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StartETLResponse(responseMessage.getHeaders());
+	}
+	
 	@Override
 	public CreateExportResponse createExport(CreateExportRequest request) throws LogException {
 		ResponseMessage resp = send(request);

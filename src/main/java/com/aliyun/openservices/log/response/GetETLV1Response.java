@@ -1,33 +1,33 @@
 package com.aliyun.openservices.log.response;
 
 
-import com.alibaba.fastjson.JSONObject;
-import com.aliyun.openservices.log.common.ETL;
+import com.aliyun.openservices.log.common.ETLV1;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.internal.ErrorCodes;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.Map;
 
-public class GetETLResponse extends Response {
+public class GetETLV1Response extends Response {
 
     private static final long serialVersionUID = 889623903109968396L;
 
-    private ETL etl;
+    private ETLV1 etl;
 
-    public GetETLResponse(Map<String, String> headers) {
+    public GetETLV1Response(Map<String, String> headers) {
         super(headers);
     }
 
-    public ETL getEtl() {
+    public ETLV1 getEtl() {
         return etl;
     }
 
-    public void setEtl(ETL etl) {
+    public void setEtl(ETLV1 etl) {
         this.etl = etl;
     }
 
     public void deserialize(JSONObject value, String requestId) throws LogException {
-        etl = new ETL();
+        etl = new ETLV1();
         try {
             etl.deserialize(value);
         } catch (final Exception ex) {
