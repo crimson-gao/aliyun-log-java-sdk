@@ -25,7 +25,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
 
     public static void Cleanup() {
         for (int idx = 0; idx < 10; idx++) {
-            DeleteResourceRequest request = new DeleteResourceRequest(owner, CreateResource11(idx).getName());
+            DeleteResourceRequest request = new DeleteResourceRequest(CreateResource11(idx).getName());
             try {
                 client.deleteResource(request);
             } catch (LogException e) {
@@ -105,14 +105,14 @@ public class ResourceAclFunctionTest extends FunctionTest {
     public void TestResourceAcl() throws Exception {
         {
             for (int idx = 0; idx < 10; idx++) {
-                CreateResourceRequest request = new CreateResourceRequest(owner, CreateResource11(idx));
+                CreateResourceRequest request = new CreateResourceRequest(CreateResource11(idx));
                 client.createResource(request);
             }
         }
         // test get resource
         {
             for (int idx = 0; idx < 10; idx++) {
-                GetResourceRequest request = new GetResourceRequest(owner, CreateResource11(idx).getName());
+                GetResourceRequest request = new GetResourceRequest(CreateResource11(idx).getName());
                 try {
                     client.getResource(request);
                     if (idx % 3 == 0) {
@@ -183,7 +183,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
             for (int idx = 0; idx < 10; idx++) {
                 Resource r = CreateResource11(idx);
                 r.setExtInfo("change");
-                DeleteResourceRequest request = new DeleteResourceRequest(owner, r.getName());
+                DeleteResourceRequest request = new DeleteResourceRequest(r.getName());
                 try {
                     client.deleteResource(request);
                     if (idx % 3 == 0) {
@@ -219,7 +219,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
                 Resource resource = CreateResource11(idx);
                 for (int j = 0; j < 10; j++) {
                     ResourceRecord record = CreateRecord1(j);
-                    CreateResourceRecordRequest request = new CreateResourceRecordRequest(owner, resource.getName(), record);
+                    CreateResourceRecordRequest request = new CreateResourceRecordRequest(resource.getName(), record);
                     try {
                         client.createResourceRecord(request);
                     } catch (LogException exp) {
@@ -245,7 +245,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
                 Resource resource = CreateResource11(idx);
                 ResourceRecord record = changed.get(idx);
                 record.setTag("changed-key");
-                UpdateResourceRecordRequest request = new UpdateResourceRecordRequest(resource.getName(), record.getId(), record);
+                UpdateResourceRecordRequest request = new UpdateResourceRecordRequest(resource.getName(), record);
                 try {
                     client.updateResourceRecord(request);
                 } catch (LogException exp) {
@@ -258,7 +258,7 @@ public class ResourceAclFunctionTest extends FunctionTest {
                 Resource resource = CreateResource11(idx);
                 ResourceRecord record = changed.get(idx);
                 record.setTag("changed-key");
-                DeleteResourceRecordRequest request = new DeleteResourceRecordRequest(owner, resource.getName(), record.getId());
+                DeleteResourceRecordRequest request = new DeleteResourceRecordRequest(resource.getName(), record.getId());
                 try {
                     client.deleteResourceRecord(request);
                 } catch (LogException exp) {

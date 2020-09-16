@@ -12,20 +12,12 @@ import java.util.List;
 public class UpsertResourceRecordRequest extends RecordRequest {
     private List<ResourceRecord> records;
 
-    public UpsertResourceRecordRequest(String owner, String resourceName, ResourceRecord record) {
-        this(owner, resourceName, Collections.singletonList(record));
-    }
-
     public UpsertResourceRecordRequest(String resourceName, ResourceRecord record) {
-        this(null, resourceName, record);
+        this(resourceName, Collections.singletonList(record));
     }
 
     public UpsertResourceRecordRequest(String resourceName, List<ResourceRecord> records) {
-        this(null, resourceName, records);
-    }
-
-    public UpsertResourceRecordRequest(String owner, String resourceName, List<ResourceRecord> records) {
-        super(owner, resourceName);
+        super(resourceName);
         this.records = records;
     }
 

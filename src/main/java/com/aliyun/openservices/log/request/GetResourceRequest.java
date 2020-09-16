@@ -13,12 +13,7 @@ public class GetResourceRequest extends ResourceRequest {
         this.resourceName = resourceName;
     }
 
-    public GetResourceRequest(String owner, String resourceName) {
-        super(owner);
-        this.resourceName = resourceName;
-    }
-
     public GetResourceRequest(String resourceName) {
-        this(null, resourceName);
+        this.resourceName = resourceName;
     }
 }

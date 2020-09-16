@@ -144,7 +144,7 @@ public class ResourceFunctionTest extends FunctionTest {
         resource.setType(idx % 2 == 0 ? "app" : "machine");
         resource.setName("resource_name_" + idx);
         resource.setSchema(CreateResourceSchema(2).toJSONString());
-        resource.setExtInfo("ext_info_" + idx);
+//        resource.setExtInfo("ext_info_" + idx);
         resource.setDescription("description" + idx);
 //        resource.setAcl("");
         return resource;
@@ -157,7 +157,7 @@ public class ResourceFunctionTest extends FunctionTest {
         resource.setType(idx % 2 == 0 ? "app" : "machine");
         resource.setName("resource_name_" + idx);
         resource.setSchema(CreateResourceSchema(2).toJSONString());
-        resource.setExtInfo("ext_info_" + idx);
+//        resource.setExtInfo("ext_info_" + idx);
         resource.setDescription("description" + idx);
         resource.setAcl("{\"policy\": {\"type\": \"all_read\"}}");
         return resource;
@@ -236,7 +236,6 @@ public class ResourceFunctionTest extends FunctionTest {
     private ResourceRecord CreateRecord1(int idx) {
         idx += 8000;
         ResourceRecord record = new ResourceRecord();
-        record.setId("asdfasdf-x" + idx);
         record.setTag(idx % 10 == 0 ? "common" : "record_key_" + idx);
         record.setValue(CreateJsonContent(idx));
         return record;
@@ -245,7 +244,6 @@ public class ResourceFunctionTest extends FunctionTest {
     // invalid key
     private ResourceRecord CreateRecord2() {
         ResourceRecord record = new ResourceRecord();
-        record.setId("asdfasdf-x");
         record.setTag("{hereyoura" + CreateLargeString(128));
         record.setValue(CreateJsonContent(0));
         return record;
@@ -254,7 +252,6 @@ public class ResourceFunctionTest extends FunctionTest {
     // invalid value
     private ResourceRecord CreateRecord3() {
         ResourceRecord record = new ResourceRecord();
-        record.setId("asdfasdf-x");
         record.setTag("record");
         record.setValue(CreateResourceSchema(1024 * 10).toJSONString());
         return record;
@@ -325,6 +322,8 @@ public class ResourceFunctionTest extends FunctionTest {
         {
             Resource resource =  CreateResource1(0);
             CreateResourceRequest request = new CreateResourceRequest(resource);
+            request.SetParam("acessorAliuid", "aliuid");
+            request.SetParam("accessorParent", "parent");
             try {
                 client.createResource(request);
                 assertTrue("create resource success", true);

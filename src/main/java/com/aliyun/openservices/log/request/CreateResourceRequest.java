@@ -15,12 +15,7 @@ public class CreateResourceRequest extends ResourceRequest {
         this.resource = resource;
     }
 
-    public CreateResourceRequest(String owner, Resource resource) {
-        super(owner);
-        this.resource = resource;
-    }
-
     public CreateResourceRequest(Resource resource) {
-        this(null, resource);
+        this.resource = resource;
     }
 }

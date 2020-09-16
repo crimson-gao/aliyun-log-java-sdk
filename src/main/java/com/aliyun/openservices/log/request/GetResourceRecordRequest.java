@@ -12,12 +12,8 @@ public class GetResourceRecordRequest extends RecordRequest {
         this.recordId = recordId;
     }
 
-    public GetResourceRecordRequest(String owner, String resourceName, String recordId) {
-        super(owner, resourceName);
-        this.recordId= recordId;
-    }
-
     public GetResourceRecordRequest(String resourceName, String recordId) {
-        this(null, resourceName, recordId);
+        super(resourceName);
+        this.recordId= recordId;
     }
 }

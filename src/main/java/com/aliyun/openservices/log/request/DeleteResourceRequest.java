@@ -5,13 +5,8 @@ public class DeleteResourceRequest extends ResourceRequest {
 
     private String resourceName;
 
-    public DeleteResourceRequest(String owner, String resourceName) {
-        super(owner);
-        this.resourceName = resourceName;
-    }
-
     public DeleteResourceRequest(String resourceName) {
-        this(null, resourceName);
+        this.resourceName = resourceName;
     }
 
     public String getResourceName() {

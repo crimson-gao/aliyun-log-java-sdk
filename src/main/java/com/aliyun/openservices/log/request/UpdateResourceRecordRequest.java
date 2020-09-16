@@ -13,12 +13,8 @@ public class UpdateResourceRecordRequest extends RecordRequest {
 
     private ResourceRecord record;
 
-    public UpdateResourceRecordRequest(String owner, String resourceName, ResourceRecord record) {
-        super(owner, resourceName);
-        this.record = record;
-    }
-
     public UpdateResourceRecordRequest(String resourceName, ResourceRecord record) {
-        this(null, resourceName, record);
+        super(resourceName);
+        this.record = record;
     }
 }

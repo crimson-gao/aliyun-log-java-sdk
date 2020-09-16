@@ -11,20 +11,12 @@ public class DeleteResourceRecordRequest extends RecordRequest {
     private List<String> recordIds;
 
     public DeleteResourceRecordRequest(String resourceName, List<String> recordIds) {
-        this(null, resourceName, recordIds);
-    }
-
-    public DeleteResourceRecordRequest(String owner, String resourceName, List<String> recordIds) {
-        super(owner, resourceName);
+        super(resourceName);
         this.recordIds = recordIds;
     }
 
     public DeleteResourceRecordRequest(String resourceName, String recordId) {
-        this(null, resourceName, recordId);
-    }
-
-    public DeleteResourceRecordRequest(String owner, String resourceName, String recordId) {
-        this(owner, resourceName, Collections.singletonList(recordId));
+        this(resourceName, Collections.singletonList(recordId));
     }
 
     @Override

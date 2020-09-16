@@ -46,15 +46,10 @@ public class ListResourceRequest extends ResourceRequest {
     }
 
     public ListResourceRequest () {
-        this(null, "", 0, 100);
+        this(null, 0, 100);
     }
 
     public ListResourceRequest(String type, int offset, int size) {
-        this(null, type, offset, size);
-    }
-
-    public ListResourceRequest(String owner, String type, int offset, int size) {
-        super(owner);
         this.type = type;
         this.size = size;
         this.offset = offset;
