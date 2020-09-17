@@ -149,7 +149,10 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
             setNoDataFire(value.getBoolean("noDataFire"));
         }
         if (value.containsKey("noDataFireSeverity")) {
-            setNoDataSeverity(Severity.valueOf(value.getInteger("noDataFireSeverity")));
+            Severity severityVal = Severity.valueOf(value.getInteger("noDataFireSeverity"));
+            if (severityVal != null) {
+                setNoDataSeverity(severityVal);
+            }
         }
         if (value.containsKey("sendResolved")) {
             setSendResolved(value.getBoolean("sendResolved"));
@@ -551,7 +554,7 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
     private boolean noDataFire;
 
     @JSONField
-    private Severity noDataSeverity = Severity.Medium;
+    private int noDataSeverity = Severity.Medium.value();
 
     @JSONField
     private boolean sendResolved;
@@ -612,12 +615,12 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         this.noDataFire = noDataFire;
     }
 
-    public Severity getNoDataSeverity() {
+    public int getNoDataSeverity() {
         return noDataSeverity;
     }
 
     public void setNoDataSeverity(Severity noDataSeverity) {
-        this.noDataSeverity = noDataSeverity;
+        this.noDataSeverity = noDataSeverity.value();
     }
 
     public boolean isSendResolved() {
