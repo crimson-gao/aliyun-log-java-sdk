@@ -1,35 +1,35 @@
 package com.aliyun.openservices.log.response;
 
 
-import com.aliyun.openservices.log.common.ETLV1;
+import com.alibaba.fastjson.JSONObject;
+import com.aliyun.openservices.log.common.ETLV2;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.internal.ErrorCodes;
-import com.alibaba.fastjson.JSONObject;
 
 import java.util.Map;
 
-public class GetETLV1Response extends Response {
+public class GetETLV2Response extends Response {
 
     private static final long serialVersionUID = 889623903109968396L;
 
-    private ETLV1 etl;
+    private ETLV2 etlv2;
 
-    public GetETLV1Response(Map<String, String> headers) {
+    public GetETLV2Response(Map<String, String> headers) {
         super(headers);
     }
 
-    public ETLV1 getEtl() {
-        return etl;
+    public ETLV2 getETLV2() {
+        return etlv2;
     }
 
-    public void setEtl(ETLV1 etl) {
-        this.etl = etl;
+    public void setETLV2(ETLV2 etlv2) {
+        this.etlv2 = etlv2;
     }
 
     public void deserialize(JSONObject value, String requestId) throws LogException {
-        etl = new ETLV1();
+        etlv2 = new ETLV2();
         try {
-            etl.deserialize(value);
+            etlv2.deserialize(value);
         } catch (final Exception ex) {
             throw new LogException(ErrorCodes.BAD_RESPONSE, "Unable to deserialize JSON to model: " + ex.getMessage(), ex, requestId);
         }

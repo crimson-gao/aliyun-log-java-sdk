@@ -1,8 +1,8 @@
 package com.aliyun.openservices.log.response;
 
-import com.alibaba.fastjson.JSONArray;
 import com.aliyun.openservices.log.common.ETL;
 import com.aliyun.openservices.log.internal.Unmarshaller;
+import com.alibaba.fastjson.JSONArray;
 
 import java.io.Serializable;
 import java.util.Map;

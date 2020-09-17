@@ -6,11 +6,11 @@ import com.aliyun.openservices.log.common.JobType;
 import java.io.Serializable;
 
 
-public class ListETLV1Request extends ListJobsRequest implements Serializable {
+public class ListETLV2Request extends ListJobsRequest implements Serializable {
 
     private static final long serialVersionUID = 1109698724031406237L;
 
-    public ListETLV1Request(String project) {
+    public ListETLV2Request(String project) {
         super(project, JobType.ETL);
     }
 }

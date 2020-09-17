@@ -3977,9 +3977,9 @@ public class Client implements LogService {
 
 	@Override
 	@Deprecated
-	public DeleteETLV1Response deleteETLV1(DeleteETLV1Request request) throws LogException {
+	public DeleteETLResponse deleteETL(DeleteETLRequest request) throws LogException {
         ResponseMessage responseMessage = send(request);
-        return new DeleteETLV1Response(responseMessage.getHeaders());
+        return new DeleteETLResponse(responseMessage.getHeaders());
     }
 
     @Override
@@ -4003,10 +4003,10 @@ public class Client implements LogService {
 
     @Override
 	@Deprecated
-    public GetETLV1Response getETLV1(GetETLV1Request request) throws LogException {
+    public GetETLResponse getETL(GetETLRequest request) throws LogException {
         ResponseMessage response = send(request);
         JSONObject responseBody = parseResponseBody(response, response.getRequestId());
-        GetETLV1Response etlResponse = new GetETLV1Response(response.getHeaders());
+        GetETLResponse etlResponse = new GetETLResponse(response.getHeaders());
         etlResponse.deserialize(responseBody, response.getRequestId());
         return etlResponse;
     }
@@ -4022,12 +4022,12 @@ public class Client implements LogService {
 
     @Override
 	@Deprecated
-    public ListETLV1Response listETLV1(ListETLV1Request request) throws LogException {
+    public ListETLResponse listETL(ListETLRequest request) throws LogException {
         ResponseMessage response = send(request);
         JSONObject responseBody = parseResponseBody(response, response.getRequestId());
-        ListETLV1Response listETLV1Response = new ListETLV1Response(response.getHeaders());
-        listETLV1Response.deserialize(responseBody, response.getRequestId());
-        return listETLV1Response;
+        ListETLResponse listETLResponse = new ListETLResponse(response.getHeaders());
+        listETLResponse.deserialize(responseBody, response.getRequestId());
+        return listETLResponse;
     }
 
 	@Override
@@ -4053,9 +4053,9 @@ public class Client implements LogService {
 
     @Override
 	@Deprecated
-    public UpdateETLV1Response updateETLV1(UpdateETLV1Request request) throws LogException {
+    public UpdateETLResponse updateETL(UpdateETLRequest request) throws LogException {
         ResponseMessage message = send(request);
-        return new UpdateETLV1Response(message.getHeaders());
+        return new UpdateETLResponse(message.getHeaders());
     }
 
 	@Override
@@ -4492,9 +4492,9 @@ public class Client implements LogService {
 
     @Override
 	@Deprecated
-    public CreateETLV1Response createETLV1(CreateETLV1Request request) throws LogException {
+    public CreateETLResponse createETL(CreateETLRequest request) throws LogException {
         ResponseMessage responseMessage = send(request);
-        return new CreateETLV1Response(responseMessage.getHeaders());
+        return new CreateETLResponse(responseMessage.getHeaders());
     }
 
     @Override
@@ -4593,51 +4593,51 @@ public class Client implements LogService {
     }
 
 	@Override
-	public CreateETLResponse createETL(CreateETLRequest request) throws LogException {
+	public CreateETLV2Response createETLV2(CreateETLV2Request request) throws LogException {
 		ResponseMessage resp = send(request);
-		return new CreateETLResponse(resp.getHeaders());
+		return new CreateETLV2Response(resp.getHeaders());
 	}
 
 	@Override
-	public UpdateETLResponse updateETL(UpdateETLRequest request) throws LogException {
+	public UpdateETLV2Response updateETLV2(UpdateETLV2Request request) throws LogException {
 		ResponseMessage resp = send(request);
-		return new UpdateETLResponse(resp.getHeaders());
+		return new UpdateETLV2Response(resp.getHeaders());
 	}
 
 	@Override
-	public DeleteETLResponse deleteETL(DeleteETLRequest request) throws LogException {
+	public DeleteETLV2Response deleteETLV2(DeleteETLV2Request request) throws LogException {
 		ResponseMessage resp = send(request);
-		return new DeleteETLResponse(resp.getHeaders());
+		return new DeleteETLV2Response(resp.getHeaders());
 	}
 
 	@Override
-	public GetETLResponse getETL(GetETLRequest request) throws LogException {
+	public GetETLV2Response getETLV2(GetETLV2Request request) throws LogException {
 		ResponseMessage response = send(request);
 		JSONObject responseBody = parseResponseBody(response, response.getRequestId());
-		GetETLResponse etlResponse = new GetETLResponse(response.getHeaders());
+		GetETLV2Response etlResponse = new GetETLV2Response(response.getHeaders());
 		etlResponse.deserialize(responseBody, response.getRequestId());
 		return etlResponse;
 	}
 
 	@Override
-	public ListETLResponse listETL(ListETLRequest request) throws LogException {
+	public ListETLV2Response listETLV2(ListETLV2Request request) throws LogException {
 		ResponseMessage resp = send(request);
 		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
-		ListETLResponse listResp = new ListETLResponse(resp.getHeaders());
+		ListETLV2Response listResp = new ListETLV2Response(resp.getHeaders());
 		listResp.deserialize(respBody, resp.getRequestId());
 		return listResp;
 	}
 
 	@Override
-	public StopETLResponse stopETL(StopETLRequest request)throws LogException {
+	public StopETLV2Response stopETLV2(StopETLV2Request request)throws LogException {
 		ResponseMessage responseMessage = send(request);
-		return new StopETLResponse(responseMessage.getHeaders());
+		return new StopETLV2Response(responseMessage.getHeaders());
 	}
 
 	@Override
-	public StartETLResponse startETL(StartETLRequest request)throws LogException {
+	public StartETLV2Response startETLV2(StartETLV2Request request)throws LogException {
 		ResponseMessage responseMessage = send(request);
-		return new StartETLResponse(responseMessage.getHeaders());
+		return new StartETLV2Response(responseMessage.getHeaders());
 	}
 	
 	@Override

@@ -12,7 +12,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ETLTest {
+public class ETLV2Test {
 
     private static final String endpoint = "";
     private static final String accessKeyId = "";
@@ -23,14 +23,25 @@ public class ETLTest {
     private static final String sinkLogstore = "";
     private static final String etlName = "";
     private static final Client client = new Client(endpoint,accessKeyId,accessKeySecret);
-    private static ETL etl = createETL();
+    private static ETLV2 etlV2 = createETL();
 
+
+    @Test
+    public void testETLCrud() throws LogException, InterruptedException {
+        testCreateETL();
+        testGetETL();
+        testUpdateETL();
+        testStopETL();
+        testStartETL();
+        testListETL();
+        testDeleteETL();
+    }
 
     @Test
     public void testCreateETL() throws LogException {
         System.out.println("Create ETL ready to start.......");
         // Create
-        CreateETLResponse createETLResponse = client.createETL(new CreateETLRequest(project,etl));
+        CreateETLV2Response createETLV2Response = client.createETLV2(new CreateETLV2Request(project, etlV2));
     }
 
     @Test
@@ -38,67 +49,67 @@ public class ETLTest {
         System.out.println("Get ETL ready to start.......");
         Thread.sleep(2000);
         // Get
-        GetETLResponse getETLResponse = client.getETL(new GetETLRequest(project,etlName));
-        assertEquals(etlName,getETLResponse.getEtl().getName());
-        assertEquals("Enabled",getETLResponse.getEtl().getState());
-        assertEquals("RUNNING",getETLResponse.getEtl().getStatus());
+        GetETLV2Response getETLV2Response = client.getETLV2(new GetETLV2Request(project,etlName));
+        assertEquals(etlName, getETLV2Response.getETLV2().getName());
+        assertEquals("Enabled", getETLV2Response.getETLV2().getState());
+        assertEquals("RUNNING", getETLV2Response.getETLV2().getStatus());
     }
 
     @Test
     public void testUpdateETL() throws LogException {
         System.out.println("Update ETL ready to start.......");
-        etl.setDisplayName("UpdateTest");
+        etlV2.setDisplayName("UpdateTest");
         // Update
-        UpdateETLResponse updateETLResponse = client.updateETL(new UpdateETLRequest(project,etl));
+        UpdateETLV2Response updateETLV2Response = client.updateETLV2(new UpdateETLV2Request(project, etlV2));
         // Proof Update
-        GetETLResponse getETLResponse = client.getETL(new GetETLRequest(project,etlName));
-        assertEquals(etlName,getETLResponse.getEtl().getName());
-        assertEquals("UpdateTest",getETLResponse.getEtl().getDisplayName());
+        GetETLV2Response getETLV2Response = client.getETLV2(new GetETLV2Request(project,etlName));
+        assertEquals(etlName, getETLV2Response.getETLV2().getName());
+        assertEquals("UpdateTest", getETLV2Response.getETLV2().getDisplayName());
     }
 
     @Test
     public void testStopETL() throws LogException, InterruptedException {
         System.out.println("Stop ETL ready to start.......");
-        StopETLResponse stopETLResponse = client.stopETL(new StopETLRequest(project,etlName));
-        boolean res = etlStatus(client,project,etlName,"STOPPED");
+        StopETLV2Response stopETLV2Response = client.stopETLV2(new StopETLV2Request(project,etlName));
+        boolean res = etlStatus("STOPPED");
         assertTrue(res);
     }
 
     @Test
     public void testStartETL() throws LogException, InterruptedException {
         System.out.println("Start ETL ready to start.......");
-        StartETLResponse stopETLResponse = client.startETL(new StartETLRequest(project,etlName));
-        boolean res = etlStatus(client,project,etlName,"RUNNING");
+        StartETLV2Response stopETLResponse = client.startETLV2(new StartETLV2Request(project,etlName));
+        boolean res = etlStatus("RUNNING");
         assertTrue(res);
     }
 
     @Test
     public void testListETL() throws LogException {
         System.out.println("List ETL ready to start.......");
-        ListETLResponse listETLResponse = client.listETL(new ListETLRequest(project));
+        ListETLV2Response listETLV2Response = client.listETLV2(new ListETLV2Request(project));
         Integer expectCount = 1;
         Integer expectTotal = 1;
-        assertEquals(listETLResponse.getCount(),expectCount);
-        assertEquals(listETLResponse.getTotal(),expectTotal);
+        assertEquals(listETLV2Response.getCount(),expectCount);
+        assertEquals(listETLV2Response.getTotal(),expectTotal);
     }
 
     @Test
     public void testDeleteETL() throws LogException {
         System.out.println("Delete ETL ready to start.......");
-        DeleteETLResponse deleteETLResponse = client.deleteETL(new DeleteETLRequest(project,etlName));
+        DeleteETLV2Response deleteETLV2Response = client.deleteETLV2(new DeleteETLV2Request(project,etlName));
         // proof delete
         try {
-            GetETLResponse getETLResponse = client.getETL(new GetETLRequest(project,etlName));
+            GetETLV2Response getETLV2Response = client.getETLV2(new GetETLV2Request(project,etlName));
         }catch (LogException e){
             assertEquals("JobNotExist",e.GetErrorCode());
         }
     }
 
-    private static ETL createETL() {
-        ETL etl = new ETL();
-        etl.setName(etlName);
-        etl.setDisplayName("ETL-test");
-        etl.setDescription("Initial description");
+    private static ETLV2 createETL() {
+        ETLV2 etlv2 = new ETLV2();
+        etlv2.setName(etlName);
+        etlv2.setDisplayName("ETL-test");
+        etlv2.setDescription("Initial description");
         ETLConfiguration configuration = new ETLConfiguration();
         configuration.setLogstore(logstore);
         configuration.setScript("e_set('__time__', op_add(v('__time__'), 691200))");
@@ -114,22 +125,22 @@ public class ETLTest {
         sink.setRoleArn(roleArn);
         sinks.add(sink);
         configuration.setSinks(sinks);
-        etl.setConfiguration(configuration);
+        etlv2.setConfiguration(configuration);
         JobSchedule schedule = new JobSchedule();
         schedule.setType(JobScheduleType.RESIDENT);
-        schedule.setJobName(etl.getName());
-        etl.setSchedule(schedule);
-        return etl;
+        schedule.setJobName(etlv2.getName());
+        etlv2.setSchedule(schedule);
+        return etlv2;
     }
 
-    private Boolean etlStatus(Client client,String project,String name,String expectStatus) throws LogException, InterruptedException {
+    private Boolean etlStatus(String expectStatus) throws LogException, InterruptedException {
         long startTime = System.currentTimeMillis()/1000;
         long lastFinishTime = System.currentTimeMillis()/1000;
         while (true){
             if ((lastFinishTime-startTime)<300){
-                GetETLResponse getETLResponseUpdate = client.getETL(new GetETLRequest(project,name));
-                System.out.println("expectStatus: "+expectStatus+" currentStatus: "+ getETLResponseUpdate.getEtl().getStatus());
-                if (expectStatus.equals(getETLResponseUpdate.getEtl().getStatus())){
+                GetETLV2Response getETLV2ResponseUpdate = client.getETLV2(new GetETLV2Request(ETLV2Test.project,etlName));
+                System.out.println("expectStatus: "+expectStatus+" currentStatus: "+ getETLV2ResponseUpdate.getETLV2().getStatus());
+                if (expectStatus.equals(getETLV2ResponseUpdate.getETLV2().getStatus())){
                     return true;
                 }
                 Thread.sleep(8000);

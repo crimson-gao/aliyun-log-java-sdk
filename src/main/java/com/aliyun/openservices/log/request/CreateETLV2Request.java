@@ -2,28 +2,28 @@ package com.aliyun.openservices.log.request;
 
 
 import com.aliyun.openservices.log.common.Consts;
-import com.aliyun.openservices.log.common.ETLV1;
+import com.aliyun.openservices.log.common.ETLV2;
 import com.aliyun.openservices.log.http.client.HttpMethod;
 import com.aliyun.openservices.log.util.Args;
 
-public class CreateETLV1Request extends JobRequest {
+public class CreateETLV2Request extends JobRequest {
 
     private static final long serialVersionUID = 3346010323520068092L;
 
-    private ETLV1 etl;
+    private ETLV2 etlv2;
 
-    public CreateETLV1Request(String project, ETLV1 etl) {
+    public CreateETLV2Request(String project, ETLV2 etlv2) {
         super(project);
-        Args.notNull(etl, "ETL");
-        this.etl = etl;
+        Args.notNull(etlv2, "ETL");
+        this.etlv2 = etlv2;
     }
 
-    public ETLV1 getEtl() {
-        return etl;
+    public ETLV2 getETLV2() {
+        return etlv2;
     }
 
-    public void setEtl(ETLV1 etl) {
-        this.etl = etl;
+    public void setETLV2(ETLV2 etlv2) {
+        this.etlv2 = etlv2;
     }
 
     @Override
@@ -38,6 +38,6 @@ public class CreateETLV1Request extends JobRequest {
 
     @Override
     public Object getBody() {
-        return etl;
+        return etlv2;
     }
 }

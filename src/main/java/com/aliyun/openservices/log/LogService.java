@@ -2576,7 +2576,7 @@ public interface LogService {
      */
     CreateAlertResponse createAlert(CreateAlertRequest request) throws LogException;
 
-    CreateETLV1Response createETLV1(CreateETLV1Request request) throws LogException;
+    CreateETLResponse createETL(CreateETLRequest request) throws LogException;
 
     CreateJobScheduleResponse createJobSchedule(CreateJobScheduleRequest request) throws LogException;
 
@@ -2586,19 +2586,19 @@ public interface LogService {
 
     StopJobScheduleResponse stopJobSchedule(StopJobScheduleRequest request) throws LogException;
 
-	CreateETLResponse createETL(CreateETLRequest request) throws LogException;
+	CreateETLV2Response createETLV2(CreateETLV2Request request) throws LogException;
 
-	UpdateETLResponse updateETL(UpdateETLRequest request) throws LogException;
+	UpdateETLV2Response updateETLV2(UpdateETLV2Request request) throws LogException;
 
-	DeleteETLResponse deleteETL(DeleteETLRequest request) throws LogException;
+	DeleteETLV2Response deleteETLV2(DeleteETLV2Request request) throws LogException;
 
-	GetETLResponse getETL(GetETLRequest request) throws LogException;
+	GetETLV2Response getETLV2(GetETLV2Request request) throws LogException;
 
-	ListETLResponse listETL(ListETLRequest request) throws LogException;
+	ListETLV2Response listETLV2(ListETLV2Request request) throws LogException;
 
-	StopETLResponse stopETL(StopETLRequest request) throws LogException;
+	StopETLV2Response stopETLV2(StopETLV2Request request) throws LogException;
 
-	StartETLResponse startETL(StartETLRequest request) throws LogException;
+	StartETLV2Response startETLV2(StartETLV2Request request) throws LogException;
 
 	CreateExportResponse createExport(CreateExportRequest request) throws LogException;
 
@@ -2697,19 +2697,19 @@ public interface LogService {
 
     GetReportResponse getReport(GetReportRequest request) throws LogException;
 
-    GetETLV1Response getETLV1(GetETLV1Request request) throws LogException;
+    GetETLResponse getETL(GetETLRequest request) throws LogException;
 
     UpdateReportResponse updateReport(UpdateReportRequest request) throws LogException;
 
-    UpdateETLV1Response updateETLV1(UpdateETLV1Request request) throws LogException;
+    UpdateETLResponse updateETL(UpdateETLRequest request) throws LogException;
 
     DeleteReportResponse deleteReport(DeleteReportRequest request) throws LogException;
 
-    DeleteETLV1Response deleteETLV1(DeleteETLV1Request request) throws LogException;
+    DeleteETLResponse deleteETL(DeleteETLRequest request) throws LogException;
 
     ListReportResponse listReport(ListReportRequest request) throws LogException;
 
-    ListETLV1Response listETLV1(ListETLV1Request request) throws LogException;
+    ListETLResponse listETL(ListETLRequest request) throws LogException;
 
     EnableReportResponse enableReport(EnableReportRequest request) throws LogException;
 
