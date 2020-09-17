@@ -210,8 +210,8 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         }
 
         policyConfiguration = new PolicyConfiguration();
-        if (value.containsKey("severityConfigurations")) {
-            policyConfiguration.deserialize(value.getJSONObject("severityConfigurations"));
+        if (value.containsKey("policyConfiguration")) {
+            policyConfiguration.deserialize(value.getJSONObject("policyConfiguration"));
         }
     }
 
@@ -346,8 +346,10 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         }
 
         public void deserialize(JSONObject value) {
-            setCondition(JsonUtils.readOptionalString(value,"condition"));
-            setCountCondition(JsonUtils.readOptionalString(value,"countCondition"));
+            if (value != null) {
+                setCondition(JsonUtils.readOptionalString(value,"condition"));
+                setCountCondition(JsonUtils.readOptionalString(value,"countCondition"));
+            }
         }
     }
 
@@ -414,8 +416,10 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
 
 
         public void deserialize(JSONObject value) {
-            setKey(value.getString("key"));
-            setValue(value.getString("value"));
+            if (value != null) {
+                setKey(value.getString("key"));
+                setValue(value.getString("value"));
+            }
         }
     }
 
@@ -447,7 +451,7 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
                 setSeverity(Severity.valueOf(value.getInteger("severity")));
             }
             evalCondition = new ConditionConfiguration();
-            if (value.containsKey("evalCondition")) {
+            if (value.containsKey("evalCondition") && value.getJSONObject("evalCondition") != null) {
                 evalCondition.deserialize(value.getJSONObject("evalCondition"));
             }
         }

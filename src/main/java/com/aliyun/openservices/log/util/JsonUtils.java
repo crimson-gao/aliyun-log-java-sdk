@@ -104,7 +104,7 @@ public final class JsonUtils {
             return Collections.emptyMap();
         }
         JSONObject value = object.getJSONObject(key);
-        if (value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             return Collections.emptyMap();
         }
         Set<String> keySet = value.keySet();
