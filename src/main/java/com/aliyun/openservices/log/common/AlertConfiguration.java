@@ -496,7 +496,7 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         @JSONField
         private boolean useDefault;
         @JSONField
-        private int repeatInterval;
+        private String repeatInterval;
 
         public String getType() {
             return type;
@@ -522,19 +522,19 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
             this.useDefault = useDefault;
         }
 
-        public int getRepeatInterval() {
+        public String getRepeatInterval() {
             return repeatInterval;
         }
 
-        public void setRepeatInterval(int repeatInterval) {
+        public void setRepeatInterval(String repeatInterval) {
             this.repeatInterval = repeatInterval;
         }
 
         public void deserialize(JSONObject value) {
             setType(value.getString("type"));
-            setId(value.getString("id"));
             setUseDefault(value.getBoolean("useDefault"));
-            setRepeatInterval(value.getInteger("repeatInterval"));
+            setRepeatInterval(JsonUtils.readOptionalString(value,"repeatInterval"));
+            setId(JsonUtils.readOptionalString(value, "id"));
         }
     }
 
