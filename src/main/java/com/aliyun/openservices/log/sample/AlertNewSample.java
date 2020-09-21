@@ -18,6 +18,10 @@ public class AlertNewSample {
         String dashboardName = "dashboardtest";
         String logstore = "logstore-test";
 
+        host = "pub-cn-hangzhou-staging-share.log.aliyuncs.com";
+        project = "test-hq123";
+        alertName = "alert-1600604931412";
+
         Client client = new Client(host, accessId, accessKey);
         try {
             // test list jobs
@@ -37,6 +41,8 @@ public class AlertNewSample {
 
             Alert created = response.getAlert();
             System.out.println(created.getName());
+            System.out.println("created.getConfiguration().getMuteUntil()");
+            System.out.println(created.getConfiguration().getMuteUntil());
             System.out.println(created.getDisplayName());
             System.out.println(created.getCreateTime());
 

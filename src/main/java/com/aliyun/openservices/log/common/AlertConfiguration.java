@@ -69,12 +69,10 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         this.queryList = queryList;
     }
 
-    @Deprecated
     public Date getMuteUntil() {
         return muteUntil;
     }
 
-    @Deprecated
     public void setMuteUntil(Date muteUntil) {
         this.muteUntil = muteUntil;
     }
@@ -106,7 +104,7 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
 
     @Deprecated
     public void setThrottling(String throttling) {
-        Args.checkDuration(throttling);
+//        Args.checkDuration(throttling);
         this.throttling = throttling;
     }
 
@@ -140,6 +138,9 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
     }
 
     private void deserializeAlert2(JSONObject value) {
+        if (value.containsKey("muteUntil")) {
+            muteUntil = Utils.timestampToDate(value.getLong("muteUntil"));
+        }
         setVersion(JsonUtils.readOptionalString(value,"version"));
         setType(JsonUtils.readOptionalString(value,"type"));
         if (value.containsKey("threshold")){
