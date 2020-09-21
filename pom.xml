@@ -10,7 +10,7 @@
 
     <groupId>com.aliyun.openservices</groupId>
     <artifactId>aliyun-sls-v0.6-inner-test</artifactId>
-    <version>0.1.19</version>
+    <version>0.1.20</version>
     <packaging>jar</packaging>
 
     <name>Aliyun LOG Java SDK</name>
