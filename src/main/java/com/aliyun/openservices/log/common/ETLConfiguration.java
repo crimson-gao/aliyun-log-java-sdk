@@ -45,6 +45,12 @@ public class ETLConfiguration extends JobConfiguration {
     @JSONField
     private String roleArn;
 
+    @JSONField
+    private Integer fromTime;
+
+    @JSONField
+    private Integer toTime;
+
     public void setRoleArn(String roleArn) {
         this.roleArn = roleArn;
     }
@@ -125,6 +131,22 @@ public class ETLConfiguration extends JobConfiguration {
         this.accessKeySecret = accessKeySecret;
     }
 
+    public Integer getFromTime() {
+        return fromTime;
+    }
+
+    public void setFromTime(Integer fromTime) {
+        this.fromTime = fromTime;
+    }
+
+    public Integer getToTime() {
+        return toTime;
+    }
+
+    public void setToTime(Integer toTime) {
+        this.toTime = toTime;
+    }
+
     @Override
     public void deserialize(JSONObject value) {
         script = value.getString("script");
@@ -143,6 +165,8 @@ public class ETLConfiguration extends JobConfiguration {
         accessKeyId = value.getString("accessKeyId");
         accessKeySecret = value.getString("accessKeySecret");
         roleArn = JsonUtils.readOptionalString(value,"roleArn");
+        fromTime = JsonUtils.readOptionalInt(value, "fromTime");
+        toTime = JsonUtils.readOptionalInt(value, "toTime");
     }
 
     @Override

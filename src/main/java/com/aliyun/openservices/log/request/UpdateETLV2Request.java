@@ -17,11 +17,11 @@ public class UpdateETLV2Request extends JobRequest {
         setName(etlv2.getName());
     }
 
-    public ETLV2 getETLV2() {
+    public ETLV2 getEtl() {
         return etlv2;
     }
 
-    public void setETLV2(ETLV2 etlv2) {
+    public void setEtl(ETLV2 etlv2) {
         this.etlv2 = etlv2;
     }
 

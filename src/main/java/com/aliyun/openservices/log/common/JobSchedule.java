@@ -190,19 +190,19 @@ public class JobSchedule implements Serializable {
     public void setCompleteTime(Date completeTime) {
         this.completeTime = completeTime;
     }
-
+    @Deprecated
     public Integer getFromTime() {
         return fromTime;
     }
-
+    @Deprecated
     public void setFromTime(Integer fromTime) {
         this.fromTime = fromTime;
     }
-
+    @Deprecated
     public Integer getToTime() {
         return toTime;
     }
-
+    @Deprecated
     public void setToTime(Integer toTime) {
         this.toTime = toTime;
     }

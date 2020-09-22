@@ -1,5 +1,6 @@
 package com.aliyun.openservices.log.functiontest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.common.*;
 import com.aliyun.openservices.log.exception.LogException;
@@ -50,9 +51,9 @@ public class ETLV2Test {
         Thread.sleep(2000);
         // Get
         GetETLV2Response getETLV2Response = client.getETLV2(new GetETLV2Request(project,etlName));
-        assertEquals(etlName, getETLV2Response.getETLV2().getName());
-        assertEquals("Enabled", getETLV2Response.getETLV2().getState());
-        assertEquals("RUNNING", getETLV2Response.getETLV2().getStatus());
+        assertEquals(etlName, getETLV2Response.getEtl().getName());
+        assertEquals("RUNNING", getETLV2Response.getEtl().getStatus());
+        assertEquals("Resident",getETLV2Response.getEtl().getSchedule().getType().toString());
     }
 
     @Test
@@ -63,16 +64,23 @@ public class ETLV2Test {
         UpdateETLV2Response updateETLV2Response = client.updateETLV2(new UpdateETLV2Request(project, etlV2));
         // Proof Update
         GetETLV2Response getETLV2Response = client.getETLV2(new GetETLV2Request(project,etlName));
-        assertEquals(etlName, getETLV2Response.getETLV2().getName());
-        assertEquals("UpdateTest", getETLV2Response.getETLV2().getDisplayName());
+        assertEquals(etlName, getETLV2Response.getEtl().getName());
+        assertEquals("UpdateTest", getETLV2Response.getEtl().getDisplayName());
     }
 
     @Test
     public void testStopETL() throws LogException, InterruptedException {
         System.out.println("Stop ETL ready to start.......");
-        StopETLV2Response stopETLV2Response = client.stopETLV2(new StopETLV2Request(project,etlName));
-        boolean res = etlStatus("STOPPED");
-        assertTrue(res);
+        try {
+            StopETLV2Response stopETLV2Response = client.stopETLV2(new StopETLV2Request(project,etlName));
+            boolean res = etlStatus("STOPPED");
+            assertTrue(res);
+        }catch (LogException e){
+            System.out.println(e.GetErrorCode());
+            System.out.println(e.GetErrorMessage());
+            System.out.println(e.GetHttpCode());
+        }
+
     }
 
     @Test
@@ -117,6 +125,8 @@ public class ETLV2Test {
         configuration.setAccessKeyId(accessKeyId);
         configuration.setAccessKeySecret(accessKeySecret);
         configuration.setRoleArn(roleArn);
+        configuration.setFromTime(1600744266);
+        configuration.setToTime(1600844266);
         configuration.setParameters(Collections.<String, String>emptyMap());
         List<AliyunLOGSink> sinks = new ArrayList<AliyunLOGSink>();
         AliyunLOGSink sink = new AliyunLOGSink("test", project, sinkLogstore);
@@ -128,7 +138,6 @@ public class ETLV2Test {
         etlv2.setConfiguration(configuration);
         JobSchedule schedule = new JobSchedule();
         schedule.setType(JobScheduleType.RESIDENT);
-        schedule.setJobName(etlv2.getName());
         etlv2.setSchedule(schedule);
         return etlv2;
     }
@@ -139,8 +148,8 @@ public class ETLV2Test {
         while (true){
             if ((lastFinishTime-startTime)<300){
                 GetETLV2Response getETLV2ResponseUpdate = client.getETLV2(new GetETLV2Request(ETLV2Test.project,etlName));
-                System.out.println("expectStatus: "+expectStatus+" currentStatus: "+ getETLV2ResponseUpdate.getETLV2().getStatus());
-                if (expectStatus.equals(getETLV2ResponseUpdate.getETLV2().getStatus())){
+                System.out.println("expectStatus: "+expectStatus+" currentStatus: "+ getETLV2ResponseUpdate.getEtl().getStatus());
+                if (expectStatus.equals(getETLV2ResponseUpdate.getEtl().getStatus())){
                     return true;
                 }
                 Thread.sleep(8000);

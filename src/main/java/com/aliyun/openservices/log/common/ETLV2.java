@@ -47,6 +47,8 @@ public class ETLV2 extends AbstractJob implements Serializable {
     public void deserialize(JSONObject value) {
         super.deserialize(value);
         status = value.getString("status");
+        schedule = new JobSchedule();
+        schedule.deserialize(value.getJSONObject("schedule"));
         configuration = new ETLConfiguration();
         configuration.deserialize(value.getJSONObject("configuration"));
     }

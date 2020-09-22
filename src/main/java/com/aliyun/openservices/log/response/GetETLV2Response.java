@@ -18,11 +18,11 @@ public class GetETLV2Response extends Response {
         super(headers);
     }
 
-    public ETLV2 getETLV2() {
+    public ETLV2 getEtl() {
         return etlv2;
     }
 
-    public void setETLV2(ETLV2 etlv2) {
+    public void setEtl(ETLV2 etlv2) {
         this.etlv2 = etlv2;
     }
 
