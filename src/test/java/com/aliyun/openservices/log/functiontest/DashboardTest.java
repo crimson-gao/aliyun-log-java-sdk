@@ -4,20 +4,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.Chart;
 import com.aliyun.openservices.log.common.Dashboard;
 import com.aliyun.openservices.log.exception.LogException;
-import com.aliyun.openservices.log.request.CreateDashboardRequest;
-import com.aliyun.openservices.log.request.DeleteChartRequest;
-import com.aliyun.openservices.log.request.DeleteDashboardRequest;
-import com.aliyun.openservices.log.request.UpdateDashboardRequest;
+import com.aliyun.openservices.log.request.*;
+import com.aliyun.openservices.log.response.GetDashboardResponse;
+import com.aliyun.openservices.log.response.ListDashboardResponse;
 import org.junit.*;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class DashboardTest extends FunctionTest {
 
-    private static final String TEST_PROJECT = "test-project-to-dashboard";
+    private static final String TEST_PROJECT = "test-project-to-dashboard" + getNowTimestamp();
 
     @Before
     public void setUp() {
@@ -25,60 +23,58 @@ public class DashboardTest extends FunctionTest {
         waitForSeconds(5);
     }
 
-    private Chart createChart(String chartTitle) {
-        Chart chart = new Chart();
-        chart.setDisplayName(chartTitle);
-        chart.setQuery("*");
-        chart.setLogstore("logstore-1");
-        chart.setTitle(chartTitle);
-        chart.setType("table");
-        chart.setTopic("");
-        chart.setHeight(5);
-        chart.setWidth(5);
-        chart.setStart("-60s");
-        chart.setEnd("now");
-        chart.setxPosition(0);
-        chart.setyPosition(-1);
-        JSONObject searchAttr = new JSONObject();
-        searchAttr.put("logstore", "logstore-1");
-        searchAttr.put("start", "-60s");
-        searchAttr.put("end", "now");
-        searchAttr.put("topic", "");
-        searchAttr.put("query", chart.getQuery());
-        searchAttr.put("timeSpanType", "custom");
-        chart.setRawSearchAttr(searchAttr.toString());
-        return chart;
+    @After
+    public void tearDown() {
+        safeDeleteProject(TEST_PROJECT);
     }
 
-    @Ignore
     @Test
-    public void testCreateDuplicateChart() throws LogException {
+    public void testCRUD() throws LogException {
+        /*delete dashboard*/
         String dashboardName = "dashboardtest";
         try {
             client.deleteDashboard(new DeleteDashboardRequest(TEST_PROJECT, dashboardName));
         } catch (LogException ex) {
             Assert.assertEquals("specified dashboard does not exist", ex.getMessage());
         }
+
+        /*create dashboard*/
         Dashboard dashboard = new Dashboard();
         dashboard.setDashboardName(dashboardName);
         dashboard.setDescription("Dashboard");
         dashboard.setChartList(new ArrayList<Chart>());
         CreateDashboardRequest createDashboardRequest = new CreateDashboardRequest(TEST_PROJECT, dashboard);
         client.createDashboard(createDashboardRequest);
-        System.out.println("Create dashboard ok");
         try {
             client.createDashboard(createDashboardRequest);
         } catch (LogException ex) {
             assertEquals(ex.GetErrorMessage(), "specified dashboard already exists");
             assertEquals(ex.GetErrorCode(), "ParameterInvalid");
-            System.out.println("Create dashboard failed");
         }
+
+        /*get dashboard*/
+        GetDashboardResponse getDashboardResponse = client.getDashboard(new GetDashboardRequest(TEST_PROJECT, dashboardName));
+        Dashboard getDashboard = getDashboardResponse.getDashboard();
+        assertEquals(0, getDashboard.getChartList().size());
+//        assertEquals("Dashboard", getDashboard.getDescription());//can not get description
+        assertEquals("dashboardtest", getDashboard.getDashboardName());
+
+        /*list dashboard*/
+        ListDashboardResponse listDashboard = client.listDashboard(new ListDashboardRequest(TEST_PROJECT));
+        assertEquals(1, listDashboard.getTotal());
+        assertEquals(1, listDashboard.getCount());
+        Dashboard listOne = listDashboard.getDashboards().get(0);
+        assertEquals(0, listOne.getChartList().size());
+        //assertEquals("Dashboard", listOne.getDescription());
+        assertEquals("dashboardtest", listOne.getDashboardName());
+
+        /*update dashboard*/
         ArrayList<Chart> charts = new ArrayList<Chart>();
         Chart chart1 = createChart("chart-111");
         charts.add(chart1);
         dashboard.setChartList(charts);
         client.updateDashboard(new UpdateDashboardRequest(TEST_PROJECT, dashboard));
-        System.out.println("Update dashboard ok");
+
         Chart chart2 = createChart("chart-111");
         charts.add(chart2);
         dashboard.setChartList(charts);
@@ -87,14 +83,7 @@ public class DashboardTest extends FunctionTest {
         } catch (LogException ex) {
             assertEquals(ex.GetErrorMessage(), "Duplicate chart title: " + chart1.getTitle());
             assertEquals(ex.GetErrorCode(), "PostBodyInvalid");
-            System.out.println("Update dashboard failed");
         }
-        charts.clear();
-        charts.add(createChart("chart-111"));
-        charts.add(createChart("chart-222"));
-        dashboard.setChartList(charts);
-        client.updateDashboard(new UpdateDashboardRequest(TEST_PROJECT, dashboard));
-
         charts.clear();
         for (int i = 0; i < 100; i++) {
             charts.add(createChart("chart-" + i));
@@ -121,8 +110,28 @@ public class DashboardTest extends FunctionTest {
         }
     }
 
-    @After
-    public void tearDown() {
-        safeDeleteProject(TEST_PROJECT);
+    private Chart createChart(String chartTitle) {
+        Chart chart = new Chart();
+        chart.setDisplayName(chartTitle);
+        chart.setQuery("*");
+        chart.setLogstore("logstore-1");
+        chart.setTitle(chartTitle);
+        chart.setType("table");
+        chart.setTopic("");
+        chart.setHeight(5);
+        chart.setWidth(5);
+        chart.setStart("-60s");
+        chart.setEnd("now");
+        chart.setxPosition(0);
+        chart.setyPosition(-1);
+        JSONObject searchAttr = new JSONObject();
+        searchAttr.put("logstore", "logstore-1");
+        searchAttr.put("start", "-60s");
+        searchAttr.put("end", "now");
+        searchAttr.put("topic", "");
+        searchAttr.put("query", chart.getQuery());
+        searchAttr.put("timeSpanType", "custom");
+        chart.setRawSearchAttr(searchAttr.toString());
+        return chart;
     }
 }

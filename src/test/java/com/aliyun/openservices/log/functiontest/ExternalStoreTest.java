@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class ExternalStoreTest extends FunctionTest {
-    private static final String project = "test-java-sdk-external-store-" + randomInt();
+    private static final String project = "test-java-sdk-external-store-" + getNowTimestamp();
 
     @BeforeClass
     public static void setUp() {
@@ -49,7 +49,6 @@ public class ExternalStoreTest extends FunctionTest {
         } catch (LogException ex) {
             assertEquals("ParameterInvalid", ex.GetErrorCode());
             assertEquals(400, ex.GetHttpCode());
-            System.out.println(ex.GetErrorMessage());
         }
 
         //get
@@ -104,7 +103,6 @@ public class ExternalStoreTest extends FunctionTest {
         } catch (LogException ex) {
             assertEquals("ParameterInvalid", ex.GetErrorCode());
             assertEquals(400, ex.GetHttpCode());
-            System.out.println(ex.GetErrorMessage());
         }
 
         //get

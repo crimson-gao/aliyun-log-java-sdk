@@ -30,7 +30,7 @@ public abstract class BaseDataTest extends FunctionTest {
         project = "test-project-" + timestamp;
         logStore = new LogStore();
         logStore.SetTtl(1);
-        logStore.SetShardCount(3);
+        logStore.SetShardCount(4);
         logStore.SetLogStoreName("test-logstore-" + timestamp);
         logStore.setEnableWebTracking(true);
         logStore.setAppendMeta(randomBoolean());

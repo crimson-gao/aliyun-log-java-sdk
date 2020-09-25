@@ -18,12 +18,8 @@ public class SubStoreTest extends FunctionTest {
 
     @Before
     public void setUp() {
-        LogStore logStore = new LogStore();
-        logStore.SetShardCount(1);
-        logStore.SetTtl(1);
-        logStore.SetLogStoreName(LOGSTORE1);
-        logStore.setTelemetryType("Metrics");
-        createOrUpdateLogStore(PROJECT, logStore);
+        safeCreateProject(PROJECT, "SubStoreTest");
+        createOrUpdateLogStore(PROJECT, new LogStore(LOGSTORE1, 1, 1));
     }
 
     @After
@@ -33,7 +29,6 @@ public class SubStoreTest extends FunctionTest {
     }
 
     //this method is not implemented for metric store not Implemented yet!
-    @Ignore
     @Test
     public void CRUDSubStore() throws LogException {
         createSubStore();
