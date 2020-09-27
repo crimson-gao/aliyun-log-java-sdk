@@ -2586,6 +2586,20 @@ public interface LogService {
 
     StopJobScheduleResponse stopJobSchedule(StopJobScheduleRequest request) throws LogException;
 
+	CreateETLV2Response createETLV2(CreateETLV2Request request) throws LogException;
+
+	UpdateETLV2Response updateETLV2(UpdateETLV2Request request) throws LogException;
+
+	DeleteETLV2Response deleteETLV2(DeleteETLV2Request request) throws LogException;
+
+	GetETLV2Response getETLV2(GetETLV2Request request) throws LogException;
+
+	ListETLV2Response listETLV2(ListETLV2Request request) throws LogException;
+
+	StopETLV2Response stopETLV2(StopETLV2Request request) throws LogException;
+
+	StartETLV2Response startETLV2(StartETLV2Request request) throws LogException;
+
 	CreateExportResponse createExport(CreateExportRequest request) throws LogException;
 
 	UpdateExportResponse updateExport(UpdateExportRequest request) throws LogException;

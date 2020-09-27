@@ -10,7 +10,6 @@ import com.aliyun.openservices.log.request.PutLogsRequest;
 import com.aliyun.openservices.log.response.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -20,8 +19,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -33,27 +30,11 @@ import java.util.zip.Deflater;
 
 import static org.junit.Assert.*;
 
-public class DataConsistencyTest extends FunctionTest {
-    protected String project;
-    protected LogStore logStore = new LogStore();
-    protected int timestamp = getNowTimestamp();
-    private final String PACK_ID_PREFIX = "ABCDEF" + timestamp + "-";
-
-    @Before
-    public void prepareData() throws LogException {
-        project = "test-project-" + timestamp;
-        logStore.SetTtl(1);
-        logStore.SetShardCount(3);
-        logStore.SetLogStoreName("test-logstore-" + timestamp);
-        logStore.setEnableWebTracking(true);
-        logStore.setAppendMeta(randomBoolean());
-        createOrUpdateLogStore(project, logStore);
-        enableIndex();
-    }
-
+public class DataConsistencyTest extends BaseDataTest {
     //putLogs->pullLogs
     @Test
     public void testPutLogs() throws LogException {
+        enableIndex();
         int count = prepareLogs();
         int logGroupSize = verifyPull();
         assertEquals(count, logGroupSize);
@@ -62,6 +43,7 @@ public class DataConsistencyTest extends FunctionTest {
     //putLogs->getLogstoreLogs/getHistogram
     @Test
     public void testGetLogs() throws LogException {
+        enableIndex();
         int count = prepareLogs();
         int totalSize = verifyGet();
         assertEquals(count * 10, totalSize);
@@ -75,6 +57,7 @@ public class DataConsistencyTest extends FunctionTest {
     //putLogs->getContextLogs
     @Test
     public void testGetContextLogs() throws LogException {
+        enableIndex();
         int count = prepareLogs();
         String startPackID = PACK_ID_PREFIX + (count / 2);
         String startPackMeta;
@@ -109,7 +92,8 @@ public class DataConsistencyTest extends FunctionTest {
     }
 
     @Test
-    public void testWebTracking() throws LogException {
+    public void testGetWebTracking() throws LogException {
+        enableIndex();
         int count = mockGetRequest();
 
         int pull = verifyPull();
@@ -121,7 +105,8 @@ public class DataConsistencyTest extends FunctionTest {
 
     @Test
     public void testPostWebTracking() throws LogException {
-        int count = mockPostRequest();
+        enableIndex();
+        int count = mockPostRequest(Consts.CompressType.GZIP);
 
         int pull = verifyPull();
         assertEquals(count, pull);
@@ -130,7 +115,19 @@ public class DataConsistencyTest extends FunctionTest {
         assertEquals(count, get);
     }
 
-    private int verifyPull() throws LogException {
+    @Test
+    public void testPostWebTrackingForLZ4() throws LogException {
+        enableIndex();
+        int count = mockPostRequest(Consts.CompressType.LZ4);
+
+        int pull = verifyPull();
+        assertEquals(count, pull);
+
+        int get = verifyGet();
+        assertEquals(count, get);
+    }
+
+    protected int verifyPull() throws LogException {
         int logGroupSize = 0;
         int logGroupSizeByPull;
         for (int i = 0; i < 3; i++) {
@@ -159,7 +156,7 @@ public class DataConsistencyTest extends FunctionTest {
         return logGroupSize;
     }
 
-    private int verifyGet() throws LogException {
+    protected int verifyGet() throws LogException {
         int totalSize = 0;
         int size;
         do {
@@ -182,7 +179,7 @@ public class DataConsistencyTest extends FunctionTest {
         return totalSize;
     }
 
-    private int mockGetRequest() {
+    protected int mockGetRequest() {
         int count = randomBetween(50, 100);
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         StringBuilder params = new StringBuilder("APIVersion=0.6.0");
@@ -212,7 +209,7 @@ public class DataConsistencyTest extends FunctionTest {
         return count;
     }
 
-    private int mockPostRequest() {
+    private int mockPostRequest(Consts.CompressType type) {
         int count = randomBetween(50, 100);
         JSONObject object = new JSONObject();
         JSONArray array = new JSONArray();
@@ -222,14 +219,20 @@ public class DataConsistencyTest extends FunctionTest {
         }
         array.add(log);
         object.put("__logs__", array);
-        for (int i = 0; i < count; i++) {
-            postTestLogs(object, true);
+        if (Consts.CompressType.GZIP.equals(type)) {
+            for (int i = 0; i < count; i++) {
+                postTestLogs(object, true, Consts.CompressType.GZIP);
+            }
+        } else {
+            for (int i = 0; i < count; i++) {
+                postTestLogs(object, true, Consts.CompressType.LZ4);
+            }
         }
         waitForSeconds(10);
         return count;
     }
 
-    private void enableIndex() throws LogException {
+    protected void enableIndex() throws LogException {
         Index index = new Index();
         index.SetTtl(7);
         index.setMaxTextLen(0);
@@ -237,14 +240,14 @@ public class DataConsistencyTest extends FunctionTest {
         List<String> list = Arrays.asList(",", " ", "'", "\"", ";", "=", "(", ")", "[", "]", "{", "}", "?", "@", "&", "<", ">", "/", ":", "\n", "\t", "\r");
         IndexKeys indexKeys = new IndexKeys();
         for (int i = 1; i <= 10; i++) {
-            indexKeys.AddKey("key-"+i, new IndexKey(list,false, "text", ""));
+            indexKeys.AddKey("key-" + i, new IndexKey(list, false, "text", ""));
         }
         index.SetKeys(indexKeys);
         client.CreateIndex(new CreateIndexRequest(project, logStore.GetLogStoreName(), index));
         waitOneMinutes();
     }
 
-    int prepareLogs() throws LogException {
+    protected int prepareLogs() throws LogException {
         int logGroupCount = randomBetween(50, 100);
         for (int i = 1; i <= logGroupCount; i++) {
             List<LogItem> logItems = new ArrayList<LogItem>(10);
@@ -288,7 +291,7 @@ public class DataConsistencyTest extends FunctionTest {
         }
     }
 
-    private Response postTestLogs(JSONObject log, boolean compress) {
+    private Response postTestLogs(JSONObject log, boolean compress, Consts.CompressType type) {
         CloseableHttpClient httpclient = null;
         try {
             httpclient = HttpClients.createDefault();
@@ -300,11 +303,17 @@ public class DataConsistencyTest extends FunctionTest {
             httpPost.addHeader(Consts.CONST_X_SLS_APIVERSION, Consts.DEFAULT_API_VESION);
             if (compress) {
                 byte[] toBytes = body.getBytes("UTF-8");
-                byte[] bytes = compressData(toBytes);
+                byte[] bytes;
+                if (type.equals(Consts.CompressType.GZIP)) {
+                    bytes = compressData(toBytes, type);
+                    httpPost.addHeader(Consts.CONST_X_SLS_COMPRESSTYPE, Consts.CompressType.GZIP.toString());
+                } else {
+                    bytes = compressData(toBytes, type);
+                    httpPost.addHeader(Consts.CONST_X_SLS_COMPRESSTYPE, Consts.CompressType.LZ4.toString());
+                }
                 ByteArrayEntity entity = new ByteArrayEntity(bytes);
                 httpPost.setEntity(entity);
                 entity.setContentEncoding("UTF-8");
-                httpPost.addHeader(Consts.CONST_X_SLS_COMPRESSTYPE, Consts.CompressType.GZIP.toString());
                 httpPost.addHeader(Consts.CONST_X_SLS_BODYRAWSIZE, String.valueOf(toBytes.length));
             } else {
                 StringEntity stringEntity = new StringEntity(log.toString(), "UTF-8");
@@ -336,18 +345,22 @@ public class DataConsistencyTest extends FunctionTest {
         }
     }
 
-    private byte[] compressData(byte[] data) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream(data.length);
-        Deflater compressor = new Deflater();
-        compressor.setInput(data);
-        compressor.finish();
+    private byte[] compressData(byte[] data, Consts.CompressType type) throws LogException {
+        if (type.equals(Consts.CompressType.GZIP)) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream(data.length);
+            Deflater compressor = new Deflater();
+            compressor.setInput(data);
+            compressor.finish();
 
-        byte[] buf = new byte[10240];
-        while (!compressor.finished()) {
-            int count = compressor.deflate(buf);
-            out.write(buf, 0, count);
+            byte[] buf = new byte[10240];
+            while (!compressor.finished()) {
+                int count = compressor.deflate(buf);
+                out.write(buf, 0, count);
+            }
+            return out.toByteArray();
+        } else {
+            return LZ4Encoder.compressToLhLz4Chunk(data);
         }
-        return out.toByteArray();
     }
 
     private static class Response {
@@ -358,11 +371,5 @@ public class DataConsistencyTest extends FunctionTest {
             this.status = status;
             this.body = body;
         }
-    }
-
-    @After
-    public void clearData() {
-        safeDeleteLogStore(project, logStore.GetLogStoreName());
-        safeDeleteProject(project);
     }
 }

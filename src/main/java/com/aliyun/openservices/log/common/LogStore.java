@@ -25,6 +25,7 @@ public class LogStore implements Serializable {
     private String productType = "";
     private int archiveSeconds = 0;
     private String telemetryType = "";
+    private EncryptConf encryptConf = null;
 
     public int getArchiveSeconds() {
         return archiveSeconds;
@@ -82,6 +83,7 @@ public class LogStore implements Serializable {
         this.productType = logStore.getProductType();
         this.archiveSeconds = logStore.getArchiveSeconds();
         this.telemetryType = logStore.getTelemetryType();
+        this.encryptConf = logStore.encryptConf;
     }
 
     public long getPreserveStorage() {
@@ -187,6 +189,16 @@ public class LogStore implements Serializable {
     public void SetShardCount(int shardCount) {
         this.shardCount = shardCount;
     }
+    
+    public void SetEncryptConf(EncryptConf encrypt_conf)
+    {
+    	this.encryptConf = encrypt_conf;
+    }
+    
+    public EncryptConf getEncryptConf()
+    {
+    	return this.encryptConf;
+    }
 
 	public JSONObject ToRequestJson() {
         JSONObject logStoreDict = new JSONObject();
@@ -204,6 +216,10 @@ public class LogStore implements Serializable {
         logStoreDict.put("resourceQuota", resourceQuota);
         logStoreDict.put("archiveSeconds", archiveSeconds);
         logStoreDict.put("telemetryType", telemetryType);
+        if (this.encryptConf != null)
+        {
+        	logStoreDict.put("encrypt_conf", this.encryptConf.ToJsonObject());
+        }
         return logStoreDict;
     }
 
@@ -267,6 +283,12 @@ public class LogStore implements Serializable {
             		}
             	}
             }
+            if (dict.containsKey("encrypt_conf"))
+            {
+            	EncryptConf encypt_config = new EncryptConf();
+            	encypt_config.FromJsonObject(dict.getJSONObject("encrypt_conf"));
+            	this.encryptConf = encypt_config;
+            }
         } catch (JSONException e) {
             throw new LogException("FailToGenerateLogStore", e.getMessage(), e, "");
         }
@@ -274,6 +296,8 @@ public class LogStore implements Serializable {
 
     public void FromJsonString(String logStoreString) throws LogException {
         try {
+        	System.out.println(logStoreString);
+
             JSONObject dict = JSONObject.parseObject(logStoreString);
             FromJsonObject(dict);
         } catch (JSONException e) {

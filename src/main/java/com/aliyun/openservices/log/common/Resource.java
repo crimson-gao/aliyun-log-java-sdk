@@ -124,11 +124,21 @@ public class Resource implements Serializable {
         // schema
         if (dict.containsKey(Consts.RESOURCE_SCHEMA)) {
             setSchema(dict.getString(Consts.RESOURCE_SCHEMA));
+            try {
+                JSONObject.parseObject(dict.getString(Consts.RESOURCE_SCHEMA));
+            } catch (JSONException e) {
+                throw new LogException(ErrorCodes.BAD_RESPONSE, "response resource schema is not valid json", e, e.getMessage());
+            }
         }
 
         // acl
         if (dict.containsKey(Consts.RESOURCE_ACL)) {
             setAcl(dict.getString(Consts.RESOURCE_ACL));
+            try {
+                JSONObject.parseObject(dict.getString(Consts.RESOURCE_ACL));
+            } catch (JSONException e) {
+                throw new LogException(ErrorCodes.BAD_RESPONSE, "response resource acl is not valid json", e, e.getMessage());
+            }
         }
 
         // extInfo
@@ -143,18 +153,6 @@ public class Resource implements Serializable {
         if (dict.containsKey(Consts.RESOURCE_LAST_MODIFY_TIME)) {
             lastModifyTime = dict.getIntValue(Consts.RESOURCE_LAST_MODIFY_TIME);
         }
-
-        try {
-            JSONObject.parseObject(dict.getString(Consts.RESOURCE_SCHEMA));
-        } catch (JSONException e) {
-            throw new LogException(ErrorCodes.BAD_RESPONSE, "response resource schema is not valid json", e, e.getMessage());
-        }
-
-        try {
-            JSONObject.parseObject(dict.getString(Consts.RESOURCE_ACL));
-        } catch (JSONException e) {
-            throw new LogException(ErrorCodes.BAD_RESPONSE, "response resource acl is not valid json", e, e.getMessage());
-        }
     }
 
     public void FromJsonString(String content) throws LogException {
@@ -162,7 +160,7 @@ public class Resource implements Serializable {
         FromJsonObject(dict);
     }
 
-    public void CheckForCreate() throws IllegalArgumentException {
+    public void checkForCreate() throws IllegalArgumentException {
         if (name == null || type == null || name.isEmpty() || type.isEmpty()) {
             throw new IllegalArgumentException("name/type/owner is null/empty");
         }
@@ -184,11 +182,11 @@ public class Resource implements Serializable {
         }
     }
 
-    public void CheckForUpsert() throws IllegalArgumentException {
-        CheckForCreate();
+    public void checkForUpsert() throws IllegalArgumentException {
+        checkForCreate();
     }
 
-    public void CheckForUpdate() throws IllegalArgumentException {
+    public void checkForUpdate() throws IllegalArgumentException {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name is null/empty");
         }

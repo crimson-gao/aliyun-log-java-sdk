@@ -387,8 +387,50 @@ public class Client implements LogService {
 		}
 	}
 
+	public void SendRawRequest(HttpMethod method, String uri, Map<String, String> urlParameter, String rawRequest)
+			throws LogException {
+		Map<String, String> headParameter = GetCommonHeadPara("");
+		byte[] body = encodeToUtf8(rawRequest);
+		ResponseMessage response = SendData("", method, uri, urlParameter, headParameter, body);
+		System.out.println(response.GetStringBody());
+		System.out.println(response.getStatusCode());
+		System.out.println(response.getRequestId());
+	}
+
+	public TagResourcesResponse tagResources(String tagResourcesStr) throws LogException {
+		CodingUtils.assertParameterNotNull(tagResourcesStr, "tagResourcesStr");
+		Map<String, String> headParameter = GetCommonHeadPara("");
+		byte[] body = encodeToUtf8(tagResourcesStr);
+		String resourceUri = "/tag";
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData("", HttpMethod.POST, resourceUri, urlParameter, headParameter, body);
+        Map<String, String> resHeaders = response.getHeaders();
+        return new TagResourcesResponse(resHeaders);
+	}
+	
+	public UntagResourcesResponse untagResources(String untagResourcesStr) throws LogException {
+		CodingUtils.assertParameterNotNull(untagResourcesStr, "tagResourcesStr");
+		Map<String, String> headParameter = GetCommonHeadPara("");
+		byte[] body = encodeToUtf8(untagResourcesStr);
+		String resourceUri = "/untag";
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData("", HttpMethod.POST, resourceUri, urlParameter, headParameter, body);
+        Map<String, String> resHeaders = response.getHeaders();
+        return new UntagResourcesResponse(resHeaders);
+	}
+	
+	public ListTagResourcesResponse listTagResources(ListTagResourcesRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		Map<String, String> urlParameter = request.GetAllParams();
+		Map<String, String> headParameter = GetCommonHeadPara("");
+		String resourceUri = "/tags";
+		ResponseMessage response = SendData("", HttpMethod.GET, resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new ListTagResourcesResponse(resHeaders, response.GetStringBody());
+	}
+	
 	public GetLogtailProfileResponse GetLogtailProfile(String project, String logstore, String source,
-			int line, int offset) throws LogException {
+			int line, int offset) throws LogException { 
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(logstore, "logstore");
 		GetLogtailProfileRequest request = new GetLogtailProfileRequest(project, logstore, source, line, offset);
@@ -3916,7 +3958,7 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertParameterNotNull(request.getResource(), "resource");
 		Resource resource = request.getResource();
-		resource.CheckForCreate();
+		resource.checkForCreate();
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		byte[] body = encodeToUtf8(resource.ToJsonString());
@@ -3931,7 +3973,7 @@ public class Client implements LogService {
 	public UpdateResourceResponse updateResource(UpdateResourceRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertParameterNotNull(request.getResource(), "resource");
-		request.getResource().CheckForUpdate();
+		request.getResource().checkForUpdate();
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		byte[] body = encodeToUtf8(request.getResource().ToJsonString());
@@ -3964,11 +4006,11 @@ public class Client implements LogService {
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, request.GetAllParams(), headParameter);
 		String requestId = GetRequestId(response.getHeaders());
 		JSONObject object = parseResponseBody(response, requestId);
-		Resource resource = ExtractResourceFromResponse(object, requestId);
+		Resource resource = extractResourceFromResponse(object, requestId);
 		return new GetResourceResponse(response.getHeaders(), resource);
 	}
 
-	protected Resource ExtractResourceFromResponse(JSONObject dict, String requestId) throws LogException {
+	protected Resource extractResourceFromResponse(JSONObject dict, String requestId) throws LogException {
 		Resource resource = new Resource();
 		try {
 			resource.FromJsonObject(dict);
@@ -3991,11 +4033,11 @@ public class Client implements LogService {
 		JSONObject object = parseResponseBody(response, requestId);
 		int total = object.getIntValue(Consts.CONST_TOTAL);
 		int count = object.getIntValue(Consts.CONST_COUNT);
-		List<Resource> resources = ExtractResources(object, requestId);
+		List<Resource> resources = extractResources(object, requestId);
 		return new ListResourceResponse(response.getHeaders(), count, total, resources);
 	}
 
-	protected List<Resource> ExtractResources(JSONObject object, String requestId) throws LogException {
+	protected List<Resource> extractResources(JSONObject object, String requestId) throws LogException {
 		List<Resource> resources = new ArrayList<Resource>();
 		if (object == null) {
 			return resources;
@@ -4026,7 +4068,7 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
 		CodingUtils.assertParameterNotNull(request.getRecord(), "record");
-		request.getRecord().CheckForCreate();
+		request.getRecord().checkForCreate();
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		byte[] body = encodeToUtf8(request.getRecord().ToJsonString());
@@ -4044,7 +4086,7 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(request.getRecords(), "records");
 		for (ResourceRecord r: request.getRecords()) {
 			CodingUtils.assertParameterNotNull(r, "record");
-			r.CheckForUpsert();
+			r.checkForUpsert();
 		}
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
@@ -4062,7 +4104,7 @@ public class Client implements LogService {
 		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
 		CodingUtils.assertParameterNotNull(request.getRecord(), "record");
 		CodingUtils.assertStringNotNullOrEmpty(request.getRecord().getId(), "recordId");
-		request.getRecord().CheckForUpdate();
+		request.getRecord().checkForUpdate();
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		byte[] body = encodeToUtf8(request.getRecord().ToJsonString());
@@ -4105,11 +4147,11 @@ public class Client implements LogService {
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, request.GetAllParams(), headParameter);
 		String requestId = GetRequestId(response.getHeaders());
 		JSONObject object = parseResponseBody(response, requestId);
-		ResourceRecord record = ExtractResourceRecordFromResponse(object, requestId);
+		ResourceRecord record = extractResourceRecordFromResponse(object, requestId);
 		return new GetResourceRecordResponse(response.getHeaders(), record);
 	}
 
-	protected ResourceRecord ExtractResourceRecordFromResponse(JSONObject dict, String requestId) throws LogException {
+	protected ResourceRecord extractResourceRecordFromResponse(JSONObject dict, String requestId) throws LogException {
 		ResourceRecord record = new ResourceRecord();
 		try {
 			record.FromJsonObject(dict);
@@ -4133,11 +4175,11 @@ public class Client implements LogService {
 		JSONObject object = parseResponseBody(response, requestId);
 		int total = object.getIntValue(Consts.CONST_TOTAL);
 		int count = object.getIntValue(Consts.CONST_COUNT);
-		List<ResourceRecord> records = ExtractResourceRecords(object, requestId);
+		List<ResourceRecord> records = extractResourceRecords(object, requestId);
 		return new ListResourceRecordResponse(response.getHeaders(), count, total, records);
 	}
 
-	protected List<ResourceRecord> ExtractResourceRecords(JSONObject object, String requestId) throws LogException {
+	protected List<ResourceRecord> extractResourceRecords(JSONObject object, String requestId) throws LogException {
 		List<ResourceRecord> records = new ArrayList<ResourceRecord>();
 		if (object == null) {
 			return records;
@@ -4188,6 +4230,7 @@ public class Client implements LogService {
 	}
 
 	@Override
+	@Deprecated
 	public DeleteETLResponse deleteETL(DeleteETLRequest request) throws LogException {
         ResponseMessage responseMessage = send(request);
         return new DeleteETLResponse(responseMessage.getHeaders());
@@ -4203,6 +4246,7 @@ public class Client implements LogService {
     }
 
     @Override
+	@Deprecated
     public GetJobScheduleResponse getJobSchedule(GetJobScheduleRequest request) throws LogException {
         ResponseMessage message = send(request);
         JSONObject responseBody = parseResponseBody(message, message.getRequestId());
@@ -4212,6 +4256,7 @@ public class Client implements LogService {
     }
 
     @Override
+	@Deprecated
     public GetETLResponse getETL(GetETLRequest request) throws LogException {
         ResponseMessage response = send(request);
         JSONObject responseBody = parseResponseBody(response, response.getRequestId());
@@ -4230,6 +4275,7 @@ public class Client implements LogService {
     }
 
     @Override
+	@Deprecated
     public ListETLResponse listETL(ListETLRequest request) throws LogException {
         ResponseMessage response = send(request);
         JSONObject responseBody = parseResponseBody(response, response.getRequestId());
@@ -4260,6 +4306,7 @@ public class Client implements LogService {
 	}
 
     @Override
+	@Deprecated
     public UpdateETLResponse updateETL(UpdateETLRequest request) throws LogException {
         ResponseMessage message = send(request);
         return new UpdateETLResponse(message.getHeaders());
@@ -4698,12 +4745,14 @@ public class Client implements LogService {
     }
 
     @Override
+	@Deprecated
     public CreateETLResponse createETL(CreateETLRequest request) throws LogException {
         ResponseMessage responseMessage = send(request);
         return new CreateETLResponse(responseMessage.getHeaders());
     }
 
     @Override
+	@Deprecated
     public CreateJobScheduleResponse createJobSchedule(CreateJobScheduleRequest request) throws LogException {
         ResponseMessage message = send(request);
         CreateJobScheduleResponse response = new CreateJobScheduleResponse(message.getHeaders());
@@ -4713,18 +4762,21 @@ public class Client implements LogService {
     }
 
     @Override
+	@Deprecated
     public UpdateJobScheduleResponse updateJobSchedule(UpdateJobScheduleRequest request) throws LogException {
         ResponseMessage message = send(request);
         return new UpdateJobScheduleResponse(message.getHeaders());
     }
 
     @Override
+	@Deprecated
     public StartJobScheduleResponse startJobSchedule(StartJobScheduleRequest request) throws LogException {
         ResponseMessage message = send(request);
         return new StartJobScheduleResponse(message.getHeaders());
     }
 
     @Override
+	@Deprecated
     public StopJobScheduleResponse stopJobSchedule(StopJobScheduleRequest request) throws LogException {
         ResponseMessage message = send(request);
         return new StopJobScheduleResponse(message.getHeaders());
@@ -4785,6 +4837,7 @@ public class Client implements LogService {
     }
 
     @Override
+	@Deprecated
     public ListJobSchedulesResponse listJobSchedules(ListJobSchedulesRequest request) throws LogException {
         ResponseMessage message = send(request);
         JSONObject response = parseResponseBody(message, message.getRequestId());
@@ -4793,6 +4846,54 @@ public class Client implements LogService {
         return jobRunsResponse;
     }
 
+	@Override
+	public CreateETLV2Response createETLV2(CreateETLV2Request request) throws LogException {
+		ResponseMessage resp = send(request);
+		return new CreateETLV2Response(resp.getHeaders());
+	}
+
+	@Override
+	public UpdateETLV2Response updateETLV2(UpdateETLV2Request request) throws LogException {
+		ResponseMessage resp = send(request);
+		return new UpdateETLV2Response(resp.getHeaders());
+	}
+
+	@Override
+	public DeleteETLV2Response deleteETLV2(DeleteETLV2Request request) throws LogException {
+		ResponseMessage resp = send(request);
+		return new DeleteETLV2Response(resp.getHeaders());
+	}
+
+	@Override
+	public GetETLV2Response getETLV2(GetETLV2Request request) throws LogException {
+		ResponseMessage response = send(request);
+		JSONObject responseBody = parseResponseBody(response, response.getRequestId());
+		GetETLV2Response etlResponse = new GetETLV2Response(response.getHeaders());
+		etlResponse.deserialize(responseBody, response.getRequestId());
+		return etlResponse;
+	}
+
+	@Override
+	public ListETLV2Response listETLV2(ListETLV2Request request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		ListETLV2Response listResp = new ListETLV2Response(resp.getHeaders());
+		listResp.deserialize(respBody, resp.getRequestId());
+		return listResp;
+	}
+
+	@Override
+	public StopETLV2Response stopETLV2(StopETLV2Request request)throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StopETLV2Response(responseMessage.getHeaders());
+	}
+
+	@Override
+	public StartETLV2Response startETLV2(StartETLV2Request request)throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StartETLV2Response(responseMessage.getHeaders());
+	}
+	
 	@Override
 	public CreateExportResponse createExport(CreateExportRequest request) throws LogException {
 		ResponseMessage resp = send(request);

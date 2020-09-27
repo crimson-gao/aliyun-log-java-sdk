@@ -1,6 +1,5 @@
 package com.aliyun.openservices.log.common;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
@@ -124,22 +123,22 @@ public class ResourceRecord implements Serializable {
         FromJsonObject(dict);
     }
 
-    public void CheckForCreate() throws IllegalArgumentException {
-        CheckForValue();
+    public void checkForCreate() throws IllegalArgumentException {
+        checkForValue();
     }
 
-    public void CheckForUpdate() throws IllegalArgumentException {
-        CheckForValue();
+    public void checkForUpdate() throws IllegalArgumentException {
+        checkForValue();
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("id is null/empty");
         }
     }
 
-    public void CheckForUpsert() throws IllegalArgumentException {
-        CheckForCreate();
+    public void checkForUpsert() throws IllegalArgumentException {
+        checkForCreate();
     }
 
-    private void CheckForValue() throws IllegalArgumentException {
+    private void checkForValue() throws IllegalArgumentException {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("value is null/empty");
         }

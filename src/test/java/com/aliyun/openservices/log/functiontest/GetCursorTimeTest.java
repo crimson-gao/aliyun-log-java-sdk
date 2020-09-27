@@ -8,9 +8,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class GetCursorTimeTest extends DataConsistencyTest {
+public class GetCursorTimeTest extends BaseDataTest {
     @Test
     public void testGetCursorTime() throws LogException {
+        enableIndex();
+        prepareLogs();
         for (int i = 0; i < 3; i++) {
             GetCursorResponse begin = client.GetCursor(project, logStore.GetLogStoreName(), i, Consts.CursorMode.BEGIN);
             GetCursorTimeResponse startCursorTime = client.GetCursorTime(project, logStore.GetLogStoreName(), i, begin.GetCursor());

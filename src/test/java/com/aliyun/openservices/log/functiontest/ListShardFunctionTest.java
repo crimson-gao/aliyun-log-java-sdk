@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 
 public class ListShardFunctionTest extends FunctionTest {
 
-    private final String project = "project-list-shard-"+getNowTimestamp();
+    private final String project = "test-project-list-shard-"+getNowTimestamp();
 
     @Before
     public void setUp() throws Exception {

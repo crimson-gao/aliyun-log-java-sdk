@@ -25,7 +25,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@Ignore
 public class LoggingFunctionTest extends FunctionTest {
 
     private static final String[] TYPES_ALLOWED = new String[]{
@@ -42,7 +41,7 @@ public class LoggingFunctionTest extends FunctionTest {
 
     @BeforeClass
     public static void setUp() {
-        TEST_PROJECT = "project-to-test-logging-" + getNowTimestamp();
+        TEST_PROJECT = "test-project-to-logging-" + getNowTimestamp();
         safeCreateProject(TEST_PROJECT, "");
         TEST_LOGSTORES = new ArrayList<String>();
         for (String type : TYPES_ALLOWED) {
@@ -60,7 +59,7 @@ public class LoggingFunctionTest extends FunctionTest {
         details.add(new LoggingDetail(randomFrom(TYPES_ALLOWED), "logstore-not-exist"));
         Logging logging = new Logging(TEST_PROJECT, details);
         CreateLoggingRequest createLoggingRequest = new CreateLoggingRequest(TEST_PROJECT, logging);
-        createShouldFail(createLoggingRequest, "logstore logstore-not-exist dose not exist", "LogStoreNotExist");
+        createShouldFail(createLoggingRequest, "logstore logstore-not-exist does not exist", "LogStoreNotExist");
 
         // testing a invalid type
         details.clear();
@@ -69,6 +68,10 @@ public class LoggingFunctionTest extends FunctionTest {
         createLoggingRequest = new CreateLoggingRequest(TEST_PROJECT, logging);
         createShouldFail(createLoggingRequest, "Invalid type 'invalid-type'", "ParameterInvalid");
 
+        //test a invalid project
+        details.clear();
+        details.add(new LoggingDetail(randomFrom(TYPES_ALLOWED), randomFrom(TEST_LOGSTORES)));
+        logging = new Logging(TEST_PROJECT, details);
         logging.setLoggingProject("invalid-project-name");
         createLoggingRequest = new CreateLoggingRequest(TEST_PROJECT, logging);
         createShouldFail(createLoggingRequest, "The Project does not exist : invalid-project-name", "ProjectNotExist");
@@ -187,7 +190,7 @@ public class LoggingFunctionTest extends FunctionTest {
         details.add(new LoggingDetail(randomFrom(TYPES_ALLOWED), "logstore-not-exist"));
         logging = new Logging(TEST_PROJECT, details);
         updateLoggingRequest = new UpdateLoggingRequest(TEST_PROJECT, logging);
-        updateShouldFail(updateLoggingRequest, "logstore logstore-not-exist dose not exist", "LogStoreNotExist");
+        updateShouldFail(updateLoggingRequest, "logstore logstore-not-exist does not exist", "LogStoreNotExist");
 
         // testing a invalid type
         details.clear();
@@ -197,6 +200,8 @@ public class LoggingFunctionTest extends FunctionTest {
         updateShouldFail(updateLoggingRequest, "Invalid type 'invalid-type'", "ParameterInvalid");
 
         // testing a invalid project
+        details.clear();
+        details.add(new LoggingDetail(randomFrom(TYPES_ALLOWED), randomFrom(TEST_LOGSTORES)));
         logging = new Logging("invalid-project-name", details);
         updateLoggingRequest = new UpdateLoggingRequest(TEST_PROJECT, logging);
         updateShouldFail(updateLoggingRequest, "The Project does not exist : invalid-project-name", "ProjectNotExist");
@@ -264,7 +269,10 @@ public class LoggingFunctionTest extends FunctionTest {
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
-        client.DeleteProject(TEST_PROJECT);
+    public static void tearDown() {
+        try {
+            client.DeleteProject(TEST_PROJECT);
+        } catch (LogException e) {
+        }
     }
 }

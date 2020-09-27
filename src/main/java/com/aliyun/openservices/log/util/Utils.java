@@ -3,10 +3,8 @@ package com.aliyun.openservices.log.util;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public final class Utils {
-    private static final Pattern PROJECT_PATTERN = Pattern.compile("^[0-9a-zA-Z][0-9a-zA-Z_-]{1,126}[0-9a-zA-Z]$");
 
     private Utils() {
     }
@@ -53,7 +51,27 @@ public final class Utils {
     }
 
     public static boolean validateProject(final String projectName) {
-        return PROJECT_PATTERN.matcher(projectName).matches();
+        // Why not use ^[0-9a-zA-Z][0-9a-zA-Z_-]{1,126}[0-9a-zA-Z]$ here?
+        // Some very old project name is their id like 1, 15.
+        if (projectName == null) {
+            return false;
+        }
+        int n = projectName.length();
+        if (n <= 0 || n > 128) {
+            return false;
+        }
+        for (int i = 0; i < n; i++) {
+            char ch = projectName.charAt(i);
+            if ((ch >= '0' && ch <= '9')
+                    || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
+                continue;
+            }
+            if ((ch == '-' || ch == '_') && (i > 0 && i < n - 1)) {
+                continue;
+            }
+            return false;
+        }
+        return true;
     }
 
     public static String normalizeHostName(String hostName) {

@@ -20,9 +20,11 @@ public class ETLConfiguration extends JobConfiguration {
     private String logstore;
 
     @JSONField
+    @Deprecated
     private String instanceType;
 
     @JSONField
+    @Deprecated
     private String containerImage;
 
     @JSONField
@@ -40,6 +42,23 @@ public class ETLConfiguration extends JobConfiguration {
     @JSONField
     private String accessKeySecret;
 
+    @JSONField
+    private String roleArn;
+
+    @JSONField
+    private Integer fromTime;
+
+    @JSONField
+    private Integer toTime;
+
+    public void setRoleArn(String roleArn) {
+        this.roleArn = roleArn;
+    }
+
+    public String getRoleArn() {
+        return roleArn;
+    }
+
     public String getScript() {
         return script;
     }
@@ -55,19 +74,19 @@ public class ETLConfiguration extends JobConfiguration {
     public void setLogstore(String logstore) {
         this.logstore = logstore;
     }
-
+    @Deprecated
     public String getInstanceType() {
         return instanceType;
     }
-
+    @Deprecated
     public void setInstanceType(String instanceType) {
         this.instanceType = instanceType;
     }
-
+    @Deprecated
     public String getContainerImage() {
         return containerImage;
     }
-
+    @Deprecated
     public void setContainerImage(String containerImage) {
         this.containerImage = containerImage;
     }
@@ -112,6 +131,22 @@ public class ETLConfiguration extends JobConfiguration {
         this.accessKeySecret = accessKeySecret;
     }
 
+    public Integer getFromTime() {
+        return fromTime;
+    }
+
+    public void setFromTime(Integer fromTime) {
+        this.fromTime = fromTime;
+    }
+
+    public Integer getToTime() {
+        return toTime;
+    }
+
+    public void setToTime(Integer toTime) {
+        this.toTime = toTime;
+    }
+
     @Override
     public void deserialize(JSONObject value) {
         script = value.getString("script");
@@ -129,6 +164,9 @@ public class ETLConfiguration extends JobConfiguration {
         }
         accessKeyId = value.getString("accessKeyId");
         accessKeySecret = value.getString("accessKeySecret");
+        roleArn = JsonUtils.readOptionalString(value,"roleArn");
+        fromTime = JsonUtils.readOptionalInt(value, "fromTime");
+        toTime = JsonUtils.readOptionalInt(value, "toTime");
     }
 
     @Override
@@ -151,6 +189,8 @@ public class ETLConfiguration extends JobConfiguration {
             return false;
         if (getAccessKeyId() != null ? !getAccessKeyId().equals(that.getAccessKeyId()) : that.getAccessKeyId() != null)
             return false;
+        if (getRoleArn() != null ? !getRoleArn().equals(that.getRoleArn()) : that.getRoleArn() != null)
+            return false;
         return getAccessKeySecret() != null ? getAccessKeySecret().equals(that.getAccessKeySecret()) : that.getAccessKeySecret() == null;
     }
 
@@ -165,6 +205,7 @@ public class ETLConfiguration extends JobConfiguration {
         result = 31 * result + (getParameters() != null ? getParameters().hashCode() : 0);
         result = 31 * result + (getAccessKeyId() != null ? getAccessKeyId().hashCode() : 0);
         result = 31 * result + (getAccessKeySecret() != null ? getAccessKeySecret().hashCode() : 0);
+        result = 31 * result + (getRoleArn() != null ? getRoleArn().hashCode() : 0);
         return result;
     }
 
@@ -180,6 +221,7 @@ public class ETLConfiguration extends JobConfiguration {
                 ", parameters=" + parameters +
                 ", accessKeyId='" + accessKeyId + '\'' +
                 ", accessKeySecret='" + accessKeySecret + '\'' +
+                ", roleArn='" + roleArn + '\'' +
                 '}';
     }
 }

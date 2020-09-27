@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 public class ResourceTest {
     @Test
-    public void TestJson() {
+    public void testJson() {
         String content = "{\"name\":\"value\nt\",\"look\":\"think\\nt\", \"schema\":\"{\\\"a\\\":\\\"e\n\\\", \\\"d\\\":\\\"e\\\\\\n\\\"}\"}";
         JSONObject dict = JSONObject.parseObject(content);
         System.out.println(dict.getString("schema"));
@@ -20,8 +20,8 @@ public class ResourceTest {
     @Test
     public void testResource() throws LogException {
         Resource resource = new Resource("name", "type");
-        resource.CheckForCreate();
-        resource.CheckForUpdate();
+        resource.checkForCreate();
+        resource.checkForUpdate();
         JSONObject dict = resource.ToJsonObject();
         assertTrue(dict.containsKey("name"));
         assertTrue(dict.containsKey("type"));
@@ -32,13 +32,13 @@ public class ResourceTest {
 
         resource = new Resource(null, "");
         try {
-            resource.CheckForCreate();
+            resource.checkForCreate();
             assertTrue(false);
         } catch (Exception exp) {
             assertTrue(true);
         }
         try {
-            resource.CheckForUpdate();
+            resource.checkForUpdate();
             assertTrue(false);
         } catch (Exception exp) {
             assertTrue(true);
@@ -65,26 +65,26 @@ public class ResourceTest {
         resource.setSchema(null);
         assertEquals(resource.getName(), "name");
         assertEquals(resource.getType(), "type");
-        resource.CheckForCreate();
-        resource.CheckForUpdate();
+        resource.checkForCreate();
+        resource.checkForUpdate();
 
         resource = new Resource("name", "type");
         resource.setSchema("{\"a\":\"b\", \"d\":12}");
-        resource.CheckForCreate();
-        resource.CheckForUpdate();
+        resource.checkForCreate();
+        resource.checkForUpdate();
 
         resource = new Resource("name", "type");
         resource.setSchema("{\"a\":\"b\", \"d\":12}");
         resource.setDescription("ddd");
-        resource.CheckForCreate();
-        resource.CheckForUpdate();
+        resource.checkForCreate();
+        resource.checkForUpdate();
 
         resource = new Resource("name", "type");
         resource.setSchema("think");
         resource.setDescription("ddd");
         resource.setExtInfo("ex");
         try {
-            resource.CheckForUpdate();
+            resource.checkForUpdate();
             assertTrue(false);
         } catch (Exception exp) {
             assertTrue(true);
@@ -95,14 +95,14 @@ public class ResourceTest {
         resource.setDescription("ddd");
         resource.setExtInfo("ex");
         try {
-            resource.CheckForUpdate();
+            resource.checkForUpdate();
             assertTrue(false);
         } catch (Exception exp) {
             assertTrue(true);
         }
 
         try {
-            resource.CheckForCreate();
+            resource.checkForCreate();
             assertTrue(false);
         } catch (Exception exp) {
             assertTrue(true);
@@ -112,8 +112,8 @@ public class ResourceTest {
         resource.setDescription("ddd");
         resource.setExtInfo("ex");
         resource.setAcl("{\"a\":\"f\", \"d\":12}");
-        resource.CheckForCreate();
-        resource.CheckForUpdate();
+        resource.checkForCreate();
+        resource.checkForUpdate();
 
         String content = null;
         try {
@@ -173,18 +173,18 @@ public class ResourceTest {
     public void testRecord() throws LogException {
         ResourceRecord record = new ResourceRecord(null, "{}");
         try {
-            record.CheckForCreate();
+            record.checkForCreate();
             assertTrue(false);
         } catch (Exception exp) {
             assertTrue(true);
         }
-        record.CheckForUpdate();
+        record.checkForUpdate();
 
         record = new ResourceRecord("key1", "{\"a\":\"b\", \"d\":12}");
         assertEquals(record.getTag(), "key1");
         assertEquals(record.getValue(), "{\"a\":\"b\", \"d\":12}");
-        record.CheckForCreate();
-        record.CheckForUpdate();
+        record.checkForCreate();
+        record.checkForUpdate();
         String content = record.ToJsonString();
         ResourceRecord decoded = new ResourceRecord();
         decoded.FromJsonString(content);
@@ -220,13 +220,13 @@ public class ResourceTest {
 
         record = new ResourceRecord("key1", "{\"a\":b\n\", \"d\":12}");
         try {
-            record.CheckForUpdate();
+            record.checkForUpdate();
             assertTrue(false);
         } catch (Exception exp) {
             assertTrue(true);
         }
         try {
-            record.CheckForCreate();
+            record.checkForCreate();
             assertTrue(false);
         } catch (Exception exp) {
             assertTrue(true);
@@ -234,13 +234,13 @@ public class ResourceTest {
 
         record = new ResourceRecord("key1", null);
         try {
-            record.CheckForUpdate();
+            record.checkForUpdate();
             assertTrue(false);
         } catch (Exception exp) {
             assertTrue(true);
         }
         try {
-            record.CheckForCreate();
+            record.checkForCreate();
             assertTrue(false);
         } catch (Exception exp) {
             assertTrue(true);

@@ -29,12 +29,11 @@ import static org.junit.Assert.fail;
 
 public class SlsIndexDataFunctionTest extends FunctionTest {
 
-    private static final String PROJECT_PREFIX = "java-sdk-test-index-data-";
+    private static final String PROJECT_PREFIX = "test-java-sdk-index-data-";
 
-    private static String project = "ali-cn-yunlei-sls-admin";
-    private static final String logStore = "byls-one-3";
-
-    private final int startTime = (int) (new Date().getTime() / 1000);
+    private static String project;
+    private final int startTime = getNowTimestamp();
+    private static final String logStore = "test-logstore-"+ getNowTimestamp();
     private final String topic_prefix = "sls_java_topic_" + startTime + "_";
 
     @BeforeClass
@@ -133,7 +132,7 @@ public class SlsIndexDataFunctionTest extends FunctionTest {
             client.UpdateIndex(project, logStore, index);
 
             Index res = client.GetIndex(project, logStore).GetIndex();
-            assertEquals(index.GetTtl(), res.GetTtl());
+            assertEquals(index.GetTtl(), res.GetTtl());//error
             IndexKeys resKeys = res.GetKeys();
             assertEquals(1, resKeys.GetKeys().size());
             org.junit.Assert.assertTrue(resKeys.GetKeys().containsKey(keyName));
@@ -209,9 +208,8 @@ public class SlsIndexDataFunctionTest extends FunctionTest {
             int index = 0;
             for (QueriedLog log : queriedLogs) {
                 LogItem item = log.GetLogItem();
-                assertEquals(item.GetLogContents().get(0)
-                                .GetValue(),
-                        "id_" + (topic_index * 600 + 50 + index));
+                assertEquals(topic ,item.GetLogContents().get(0)
+                                .GetValue());
                 index++;
             }
         } catch (LogException e) {

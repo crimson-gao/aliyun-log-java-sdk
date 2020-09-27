@@ -8,14 +8,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class GetProjectLogsTest extends DataConsistencyTest {
+public class GetProjectLogsTest extends BaseDataTest {
 
     @Test
     public void testGetProjectLogs() throws LogException {
+        enableIndex();
         int count = prepareLogs();
-        String sql = "SELECT * FROM " + logStore.GetLogStoreName() + " where __time__ > " + (timestamp - 1800)
+        //Correct
+        String sql1 = "SELECT * FROM " + logStore.GetLogStoreName() + " where __time__ > " + (timestamp - 1800)
                 + " and __time__ < " + (timestamp + 1800) + " LIMIT 1000;";
-        GetLogsResponse logs = client.GetProjectLogs(project, sql);
+        GetLogsResponse logs = client.GetProjectLogs(project, sql1);
 
         assertEquals(count * 10, logs.GetCount());
         assertTrue(logs.IsCompleted());
@@ -31,6 +33,35 @@ public class GetProjectLogsTest extends DataConsistencyTest {
                     }
                 }
             }
+        }
+        //ErrorProject
+        try {
+            String sql2 = "SELECT * FROM " + logStore.GetLogStoreName() + " where __time__ > " + (timestamp - 1800)
+                    + " and __time__ < " + (timestamp + 1800) + " LIMIT 1000;";
+            client.GetProjectLogs(project + "-fake", sql2);
+            fail();
+        } catch (LogException e) {
+            assertEquals("ProjectNotExist", e.GetErrorCode());
+        }
+
+        //ErrorLimit
+        try {
+            String sql3 = "SELECT * FROM " + logStore.GetLogStoreName() + " where __time__ > " + (timestamp - 1800)
+                    + " and __time__ < " + (timestamp + 1800) + " LIMIT 10000;";
+            client.GetProjectLogs(project, sql3);
+            fail();
+        } catch (LogException e) {
+            assertEquals("ParameterInvalid", e.GetErrorCode());
+        }
+
+        //ErrorSql
+        try {
+            String sql4 = "*|SELECT * FROM " + logStore.GetLogStoreName() + " where __time__ > " + (timestamp - 1800)
+                    + " and __time__ < " + (timestamp + 1800) + " LIMIT 1000;";
+            client.GetProjectLogs(project, sql4);
+            fail();
+        } catch (LogException e) {
+            assertEquals("ParameterInvalid", e.GetErrorCode());
         }
     }
 }

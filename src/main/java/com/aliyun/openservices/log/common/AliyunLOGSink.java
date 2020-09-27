@@ -26,6 +26,9 @@ public class AliyunLOGSink extends DataSink {
     @JSONField
     private String accessKeySecret;
 
+    @JSONField
+    private String roleArn;
+
     public AliyunLOGSink() {
         super(DataSinkType.ALIYUN_LOG);
         this.endpoint = "";
@@ -47,6 +50,15 @@ public class AliyunLOGSink extends DataSink {
         this.logstore = logstore;
         this.accessKeyId = accessKeyId;
         this.accessKeySecret = accessKeySecret;
+    }
+
+    public AliyunLOGSink(DataSinkType type, String name, String endpoint, String project, String logstore, String roleArn) {
+        super(type);
+        this.name = name;
+        this.endpoint = endpoint;
+        this.project = project;
+        this.logstore = logstore;
+        this.roleArn = roleArn;
     }
 
     public String getName() {
@@ -97,6 +109,14 @@ public class AliyunLOGSink extends DataSink {
         this.endpoint = endpoint;
     }
 
+    public void setRoleArn(String roleArn) {
+        this.roleArn = roleArn;
+    }
+
+    public String getRoleArn() {
+        return roleArn;
+    }
+
     public void deserialize(JSONObject value) {
         name = value.getString("name");
         if (value.containsKey("endpoint")) {
@@ -108,6 +128,7 @@ public class AliyunLOGSink extends DataSink {
         logstore = value.getString("logstore");
         accessKeyId = value.getString("accessKeyId");
         accessKeySecret = value.getString("accessKeySecret");
+        roleArn = value.getString("roleArn");
     }
 
     @Override

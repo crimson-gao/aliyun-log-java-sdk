@@ -55,7 +55,7 @@ public class ClientTest {
                     TEST_ACCESS_KEY);
             fail("Should throw error");
         } catch (IllegalArgumentException e) {
-            assertEquals("EndpointInvalid", e.getMessage());
+            assertEquals("The ip address is not supported", e.getMessage());
         }
     }
 
@@ -139,8 +139,12 @@ public class ClientTest {
         client.GetHostURI("123");
         client.GetHostURI("abc");
         client.GetHostURI("a-c");
+        client.GetHostURI("1");
+        client.GetHostURI("a");
+        client.GetHostURI("14");
         try {
             client.GetHostURI("==");
+            fail();
         } catch (IllegalArgumentException ex) {
             assertEquals(ex.getMessage(), "Invalid project: ==");
         }
