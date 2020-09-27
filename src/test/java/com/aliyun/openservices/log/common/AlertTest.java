@@ -28,7 +28,7 @@ public class AlertTest {
         alertConfiguration.setTemplateConfiguration(templateConfiguration);
 
         String body = JsonUtils.serialize(alertConfiguration);
-        assertEquals(body, "{\"noDataFire\":false,\"noDataSeverity\":\"Medium\",\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"}");
+        assertEquals(body, "{\"noDataFire\":false,\"noDataSeverity\":6,\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"}");
     }
 
     @Test
@@ -83,12 +83,12 @@ public class AlertTest {
         alert.setSchedule(schedule);
 
         String body = JsonUtils.serialize(alert);
-        assertEquals(body, "{\"configuration\":{\"noDataFire\":false,\"noDataSeverity\":\"Medium\",\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"},\"recyclable\":false,\"schedule\":{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"status\":\"Enabled\",\"type\":\"Alert\"}");
+        assertEquals(body, "{\"configuration\":{\"noDataFire\":false,\"noDataSeverity\":6,\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"},\"recyclable\":false,\"schedule\":{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"status\":\"Enabled\",\"type\":\"Alert\"}");
     }
 
     @Test
     public void testAlertDeserialize() {
-        String body = "{\"configuration\":{\"noDataFire\":false,\"noDataSeverity\":\"Medium\",\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"},\"recyclable\":false,\"schedule\":{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"status\":\"Enabled\",\"type\":\"Alert\"}";
+        String body = "{\"configuration\":{\"noDataFire\":false,\"noDataSeverity\":6,\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"},\"recyclable\":false,\"schedule\":{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"status\":\"Enabled\",\"type\":\"Alert\"}";
         Alert alert = new Alert();
         alert.deserialize(JSONObject.parseObject(body));
 
