@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.EtlMeta;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.response.ListEtlMetaResponse;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -19,20 +18,26 @@ public class EtlMetaTest extends JobIntgTest{
     private String userRegion = "cn-hangzhou";
     private String userProject = "flowlog-test";
 
-    @Before
-    public void cleanUp() throws Exception {
-        ArrayList<EtlMeta> toDeleted = new ArrayList<EtlMeta>();
-        ListEtlMetaResponse listEtlMetaResponse = client.listEtlMeta(TEST_PROJECT, etlMetaName_1, 0, 200);
-        for (EtlMeta meta : listEtlMetaResponse.getEtlMetaList()) {
-            toDeleted.add(meta);
+    private void cleanUp(){
+        try {
+            waitForSeconds(5);
+            ArrayList<EtlMeta> toDeleted = new ArrayList<EtlMeta>();
+            ListEtlMetaResponse listEtlMetaResponse = client.listEtlMeta(TEST_PROJECT, etlMetaName_1, 0, 200);
+            for (EtlMeta meta : listEtlMetaResponse.getEtlMetaList()) {
+                toDeleted.add(meta);
+            }
+            for (EtlMeta meta : toDeleted) {
+                client.deleteEtlMeta(TEST_PROJECT, meta.getMetaName(), meta.getMetaKey());
+            }
+        }catch (LogException e){
+            e.printStackTrace();
         }
-        for (EtlMeta meta : toDeleted) {
-            client.deleteEtlMeta(TEST_PROJECT, meta.getMetaName(), meta.getMetaKey());
-        }
+
     }
 
     @Test
     public void testCrud(){
+        cleanUp();
         String metaKey = etlMetaKeyPrefxi_1+"_1" ;
         EtlMeta meta = new EtlMeta(etlMetaName_1, metaKey, etlMetaKeyPrefxi_1);
         JSONObject metaValueObj = new JSONObject();
