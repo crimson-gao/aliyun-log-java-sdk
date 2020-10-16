@@ -14,7 +14,7 @@ import static org.junit.Assert.fail;
 public class EtlMetaTest extends JobIntgTest{
     private static String etlMetaName_1 = "java_sdk_test_1";
     private static String etlMetaKeyPrefxi_1 = "etlmeta-prefix_1\"'";
-    private String userAliuid = "";
+    private String userAliuid = credentials.getAliuid();
     private String userRegion = "cn-hangzhou";
     private String userProject = "flowlog-test";
 

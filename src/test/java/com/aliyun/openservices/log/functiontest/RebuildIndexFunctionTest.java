@@ -31,9 +31,9 @@ public class RebuildIndexFunctionTest extends FunctionTest {
     }
 
     @After
-    public void clearData() {
+    public void clearData() throws Exception {
         safeDeleteLogStore(project, logstore);
-        safeDeleteProject(project);
+        deleteAll();
     }
 
     private final static String INDEX_STRING = "{\"log_reduce\":false,\"line\":{\"caseSensitive\":false,\"chn\":false,\"token\":" +
@@ -42,11 +42,6 @@ public class RebuildIndexFunctionTest extends FunctionTest {
             "\"token\":[\",\",\" \",\"'\",\"\\\"\",\";\",\"=\",\"(\",\")\",\"[\",\"]\",\"{\",\"}\",\"?\",\"@\",\"&\",\"<\",\">\",\"/\",\":\",\"\\n\",\"\\t\",\"\\r\"]}," +
             "\"key2\":{\"doc_value\":true,\"alias\":\"\",\"type\":\"long\"}},\"ttl\":1}";
 
-
-    @After
-    public void tearDown() throws Exception {
-        deleteAll();
-    }
 
     private void deleteAll() throws Exception {
         ListProjectResponse response = client.ListProject(project, 0, 100);

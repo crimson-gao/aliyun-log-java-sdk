@@ -56,7 +56,7 @@ public class DashboardTest extends FunctionTest {
         GetDashboardResponse getDashboardResponse = client.getDashboard(new GetDashboardRequest(TEST_PROJECT, dashboardName));
         Dashboard getDashboard = getDashboardResponse.getDashboard();
         assertEquals(0, getDashboard.getChartList().size());
-//        assertEquals("Dashboard", getDashboard.getDescription());//can not get description
+        assertEquals("Dashboard", getDashboard.getDescription());
         assertEquals("dashboardtest", getDashboard.getDashboardName());
 
         /*list dashboard*/
@@ -65,7 +65,7 @@ public class DashboardTest extends FunctionTest {
         assertEquals(1, listDashboard.getCount());
         Dashboard listOne = listDashboard.getDashboards().get(0);
         assertEquals(0, listOne.getChartList().size());
-        //assertEquals("Dashboard", listOne.getDescription());
+        //assertEquals("Dashboard", listOne.getDescription());//can not get description
         assertEquals("dashboardtest", listOne.getDashboardName());
 
         /*update dashboard*/

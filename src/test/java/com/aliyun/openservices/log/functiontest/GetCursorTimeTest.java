@@ -13,7 +13,7 @@ public class GetCursorTimeTest extends BaseDataTest {
     public void testGetCursorTime() throws LogException {
         enableIndex();
         prepareLogs();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < SHARD_COUNT; i++) {
             GetCursorResponse begin = client.GetCursor(project, logStore.GetLogStoreName(), i, Consts.CursorMode.BEGIN);
             GetCursorTimeResponse startCursorTime = client.GetCursorTime(project, logStore.GetLogStoreName(), i, begin.GetCursor());
             assertTrue(startCursorTime.GetCursorTime() > timestamp - 1800);

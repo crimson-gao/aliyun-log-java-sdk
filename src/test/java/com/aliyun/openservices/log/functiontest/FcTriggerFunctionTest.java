@@ -1,6 +1,5 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.*;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.CreateEtlJobRequest;
@@ -11,16 +10,14 @@ import com.aliyun.openservices.log.request.UpdateEtlJobRequest;
 import com.aliyun.openservices.log.response.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-@Ignore
 public class FcTriggerFunctionTest extends JobIntgTest {
     private static String fcRegion = "cn-hangzhou";
-    private static String fcAccountId = "";
+    private static String fcAccountId = credentials.getAliuid();
     private static String roleArn = "acs:ram::" + fcAccountId + ":role/aliyunlogetlrole";
     private static String fcService = "log_etl";
     private static String fcFunction = "logstore-replication";

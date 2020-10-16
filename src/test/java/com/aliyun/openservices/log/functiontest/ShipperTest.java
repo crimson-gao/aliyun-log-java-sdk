@@ -17,7 +17,7 @@ public class ShipperTest extends JobIntgTest{
     private static final String TEST_LOGSTORE = "test-logstore";
     private static final String ossBucket = "audit-zyf-hangzhou";
     private static final String ossPrefix = "logtailalarm";
-    private static final String aliUid = "";
+    private static final String aliUid = credentials.getAliuid();
     private static final String roleArn = "acs:ram::"+aliUid+":role/aliyunlogdefaultrole";
     private static final String compressType = "none";
     private static final String pathFormat = "%Y/%m/%d/%H";
