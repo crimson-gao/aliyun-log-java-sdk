@@ -429,16 +429,16 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
 
     public static class SeverityConfiguration {
         @JSONField
-        private Severity severity;
+        private int severity;
         @JSONField
         private ConditionConfiguration evalCondition;
 
-        public Severity getSeverity() {
+        public int getSeverity() {
             return severity;
         }
 
         public void setSeverity(Severity severity) {
-            this.severity = severity;
+            this.severity = severity.value();
         }
 
         public ConditionConfiguration getEvalCondition() {

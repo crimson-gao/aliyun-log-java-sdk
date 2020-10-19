@@ -79,6 +79,201 @@ public class AlertFunctionTest extends JobIntgTest {
         return alert;
     }
 
+    private Alert createAlertV2() {
+        Alert alert = new Alert();
+        String jobName = getAlertName();
+        alert.setName(jobName);
+        alert.setDisplayName("Alert-test-v2");
+        AlertConfiguration configuration = new AlertConfiguration();
+
+        configuration.setVersion("2.0");
+        Query query1 = new Query();
+        query1.setStore("test-alert-access");
+        query1.setStart("-86400s");
+        query1.setEnd("now");
+        query1.setTimeSpanType(TimeSpanType.RELATIVE);
+        query1.setQuery("* | select name, count(uid) as uv group by name");
+
+        Query query2 = new Query();
+        query2.setStart("-86400s");
+        query2.setEnd("now");
+        query2.setTimeSpanType(TimeSpanType.RELATIVE);
+        query2.setQuery("* | select name, min(latency) group by name");
+        query2.setStore("test-alert-latency");
+
+        List<Query> queries = new ArrayList<Query>();
+        queries.add(query1);
+        queries.add(query2);
+        configuration.setQueryList(queries);
+
+        List<AlertConfiguration.JoinConfiguration> joinConfigs  = new ArrayList<AlertConfiguration.JoinConfiguration>();
+        AlertConfiguration.JoinConfiguration joinConfig = new AlertConfiguration.JoinConfiguration();
+        joinConfig.setType("left_join");
+        joinConfig.setCondition("$0.name == $1.name");
+        joinConfigs.add(joinConfig);
+        configuration.setJoinConfigurations(joinConfigs);
+
+        AlertConfiguration.ConditionConfiguration conditionConfig = new AlertConfiguration.ConditionConfiguration();
+        conditionConfig.setCondition("name == 'k8s'");
+        configuration.setConditionConfiguration(conditionConfig);
+
+        AlertConfiguration.GroupConfiguration groupConfig = new AlertConfiguration.GroupConfiguration();
+        groupConfig.setType("no_group");
+        configuration.setGroupConfiguration(groupConfig);
+
+
+        List<AlertConfiguration.Tag> annotations = new ArrayList<AlertConfiguration.Tag>();
+        annotations.add(new AlertConfiguration.Tag(){{
+            setKey("count");
+            setValue("there are ${__count__} results, ${__pass_count__} passed");
+        }});
+        annotations.add(new AlertConfiguration.Tag(){{
+            setKey("name");
+            setValue("this is ${name}");
+        }});
+        configuration.setAnnotations(annotations);
+
+        List<AlertConfiguration.SeverityConfiguration> severityConfigurations = new ArrayList<AlertConfiguration.SeverityConfiguration>();
+        severityConfigurations.add(new AlertConfiguration.SeverityConfiguration(){{
+            setSeverity(AlertConfiguration.Severity.High);
+            setEvalCondition(new AlertConfiguration.ConditionConfiguration(){{
+                setCondition("latency > 90");
+                setCountCondition("__count__ > 3");
+            }});
+        }});
+        severityConfigurations.add(new AlertConfiguration.SeverityConfiguration(){{
+            setSeverity(AlertConfiguration.Severity.Medium);
+        }});
+        configuration.setSeverityConfigurations(severityConfigurations);
+
+        AlertConfiguration.PolicyConfiguration policyConfiguration = new AlertConfiguration.PolicyConfiguration();
+        policyConfiguration.setType("alert_policy");
+        policyConfiguration.setId("default-alert-policy");
+        policyConfiguration.setUseDefault(true);
+        policyConfiguration.setRepeatInterval("20m");
+        configuration.setPolicyConfiguration(policyConfiguration);
+
+        configuration.setNoDataFire(true);
+        configuration.setNoDataSeverity(AlertConfiguration.Severity.Critical);
+        configuration.setThreshold(1);
+        alert.setConfiguration(configuration);
+        alert.setSchedule(createSchedule(true));
+        return alert;
+    }
+
+    @Test
+    public void testCreateAlertV2() throws Exception {
+        // test list jobs
+        Alert alert = createAlertV2();
+        String jobName = alert.getName();
+        // create
+        CreateAlertRequest request = new CreateAlertRequest(TEST_PROJECT, alert);
+        client.createAlert(request);
+        GetAlertResponse response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
+
+        Alert created = response.getAlert();
+        assertEquals(created.getName(), alert.getName());
+        assertEquals(created.getConfiguration(), alert.getConfiguration());
+
+        client.disableAlert(new DisableAlertRequest(TEST_PROJECT, jobName));
+        response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
+        Alert alert1 = response.getAlert();
+        assertEquals(alert1.getStatus(), "DISABLED");
+
+        client.enableAlert(new EnableAlertRequest(TEST_PROJECT, jobName));
+        response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
+        Alert alert2 = response.getAlert();
+        assertEquals(alert2.getStatus(), "ENABLED");
+    }
+
+    @Test
+    public void testCrudV2() throws Exception {
+        // test list jobs
+        ListAlertRequest listReq = new ListAlertRequest(TEST_PROJECT);
+        listReq.setOffset(0);
+        listReq.setSize(100);
+        ListAlertResponse listJobsResponse = client.listAlert(listReq);
+        for (Alert item : listJobsResponse.getResults()) {
+            client.deleteAlert(new DeleteAlertRequest(TEST_PROJECT, item.getName()));
+        }
+        ListDashboardRequest listDashboardRequest = new ListDashboardRequest(TEST_PROJECT);
+        listDashboardRequest.setSize(100);
+        listDashboardRequest.setOffset(0);
+        ListDashboardResponse listDashboardResponse = client.listDashboard(listDashboardRequest);
+        for (Dashboard dashboard : listDashboardResponse.getDashboards()) {
+            client.deleteDashboard(new DeleteDashboardRequest(TEST_PROJECT, dashboard.getDashboardName()));
+        }
+
+        Alert alert = createAlertV2();
+        String jobName = alert.getName();
+        // create
+        CreateAlertRequest request = new CreateAlertRequest(TEST_PROJECT, alert);
+        client.createAlert(request);
+        GetAlertResponse response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
+
+        Alert created = response.getAlert();
+        assertEquals(created.getName(), alert.getName());
+        assertEquals(created.getConfiguration(), alert.getConfiguration());
+//        assertEquals(created.getSchedule(), alert.getSchedule());
+
+        client.disableAlert(new DisableAlertRequest(TEST_PROJECT, jobName));
+        response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
+        Alert alert1 = response.getAlert();
+        assertEquals(alert1.getStatus(), "DISABLED");
+
+        client.enableAlert(new EnableAlertRequest(TEST_PROJECT, jobName));
+        response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
+        Alert alert2 = response.getAlert();
+        assertEquals(alert2.getState(), JobState.ENABLED);
+        assertEquals(alert2.getStatus(), "ENABLED");
+
+        DisableAlertRequest disableAlertRequest = new DisableAlertRequest(TEST_PROJECT, jobName);
+        client.disableJob(disableAlertRequest);
+
+        response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
+        Alert alert3 = response.getAlert();
+        assertEquals(alert3.getState(), JobState.DISABLED);
+        assertEquals(alert3.getStatus(), "DISABLED");
+
+        alert3.setState(JobState.ENABLED);
+        client.updateAlert(new UpdateAlertRequest(TEST_PROJECT, alert3));
+        response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
+        Alert alert4 = response.getAlert();
+        assertEquals(alert4.getState(), JobState.ENABLED);
+        assertEquals(alert4.getStatus(), "ENABLED");
+
+        JobSchedule schedule1 = alert3.getSchedule();
+        JobSchedule schedule = alert.getSchedule();
+        assertEquals(schedule1.getInterval(), schedule.getInterval());
+        assertEquals(schedule1.getType(), schedule.getType());
+
+        Date muteTo = new Date(System.currentTimeMillis() + 60 * 1000);
+        alert3.getConfiguration().setMuteUntil(muteTo);
+        client.updateAlert(new UpdateAlertRequest(TEST_PROJECT, alert3));
+        response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
+        Alert alert5 = response.getAlert();
+        assertEquals(muteTo.getTime() / 1000, alert5.getConfiguration().getMuteUntil().getTime() / 1000);
+
+        for (int i = 0; i < 10; i++) {
+            alert.setName("alert-" + i);
+            JobState state = randomBoolean() ? JobState.ENABLED : JobState.DISABLED;
+            alert.setState(state);
+            client.createAlert(new CreateAlertRequest(TEST_PROJECT, alert));
+            response = client.getAlert(new GetAlertRequest(TEST_PROJECT, alert.getName()));
+            Alert alert6 = response.getAlert();
+            assertEquals(state, alert6.getState());
+            assertEquals(state == JobState.ENABLED ? "ENABLED" : "DISABLED", alert6.getStatus());
+        }
+
+        // test list jobs
+        listReq = new ListAlertRequest(TEST_PROJECT);
+        listReq.setOffset(0);
+        listReq.setSize(10);
+        listJobsResponse = client.listAlert(listReq);
+        assertEquals(11, (int) listJobsResponse.getTotal());
+        assertEquals(10, (int) listJobsResponse.getCount());
+    }
+
     @Test
     public void testCrud() throws Exception {
         // test list jobs
