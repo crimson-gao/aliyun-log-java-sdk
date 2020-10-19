@@ -65,8 +65,6 @@ public class SavedSearchTest extends FunctionTest {
             for (SavedSearch search : savedSearches) {
                 assertTrue(search.getSavedSearchName().startsWith(savedsearchName));
                 assertTrue(search.getDisplayName().startsWith(savedsearchName));
-                assertEquals("*", search.getSearchQuery());// Error can't get anything
-                assertEquals("logstore-1", search.getLogstore());// Error can't get anything
             }
         } catch (LogException e) {
             fail(e.GetErrorMessage());

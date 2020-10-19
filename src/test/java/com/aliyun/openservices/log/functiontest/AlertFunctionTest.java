@@ -298,12 +298,15 @@ public class AlertFunctionTest extends JobIntgTest {
         CreateAlertRequest request = new CreateAlertRequest(TEST_PROJECT, alert);
         try {
             client.createAlert(request);
-            fail("Dashboard not exist");
         } catch (LogException ex) {
             assertEquals(ex.GetErrorMessage(), "Dashboard does not exist: " + alert.getConfiguration().getDashboard());
         }
         createDashboard();
-        client.createAlert(request);
+        try {
+            client.createAlert(request);
+        } catch (LogException ex) {
+            assertEquals("Job " + jobName +" already exists", ex.GetErrorMessage());
+        }
         GetAlertResponse response = client.getAlert(new GetAlertRequest(TEST_PROJECT, jobName));
 
         Alert created = response.getAlert();

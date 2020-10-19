@@ -22,6 +22,7 @@ public abstract class BaseDataTest extends FunctionTest {
     protected LogStore logStore;
     protected int timestamp;
     protected String PACK_ID_PREFIX;
+    protected int SHARD_COUNT = 4;
 
     @Before
     public void ensureDataReady() {
@@ -30,7 +31,7 @@ public abstract class BaseDataTest extends FunctionTest {
         project = "test-project-" + timestamp;
         logStore = new LogStore();
         logStore.SetTtl(1);
-        logStore.SetShardCount(4);
+        logStore.SetShardCount(SHARD_COUNT);
         logStore.SetLogStoreName("test-logstore-" + timestamp);
         logStore.setEnableWebTracking(true);
         logStore.setAppendMeta(randomBoolean());
@@ -66,7 +67,7 @@ public abstract class BaseDataTest extends FunctionTest {
     protected int verifyPull() throws LogException {
         int logGroupSize = 0;
         int logGroupSizeByPull;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < SHARD_COUNT; i++) {
             String cur;
             GetCursorResponse endCur = client.GetCursor(project, logStore.GetLogStoreName(), i, Consts.CursorMode.END);
             GetCursorResponse cursor = client.GetCursor(project, logStore.GetLogStoreName(), i, Consts.CursorMode.BEGIN);

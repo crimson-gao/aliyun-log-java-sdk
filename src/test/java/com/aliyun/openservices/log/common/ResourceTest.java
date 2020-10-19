@@ -25,10 +25,10 @@ public class ResourceTest {
         JSONObject dict = resource.ToJsonObject();
         assertTrue(dict.containsKey("name"));
         assertTrue(dict.containsKey("type"));
-        assertTrue(dict.containsKey("schema"));
+        assertFalse(dict.containsKey("schema"));
         assertFalse(dict.containsKey("acl"));
-        assertTrue(dict.containsKey("description"));
-        assertTrue(dict.containsKey("extInfo"));
+        assertFalse(dict.containsKey("description"));
+        assertFalse(dict.containsKey("extInfo"));
 
         resource = new Resource(null, "");
         try {
@@ -145,8 +145,8 @@ public class ResourceTest {
         assertEquals(decoded.getSchema(), "{\"a\":\"e\", \"d\":12}");
         assertEquals(decoded.getAcl(), "{\"a\":\"f\", \"d\":12}");
 
-        assertTrue(decoded.getDescription().isEmpty());
-        assertTrue(decoded.getExtInfo().isEmpty());
+        assertTrue(decoded.getDescription() == null);
+        assertTrue(decoded.getExtInfo() == null);
         assertEquals(decoded.getCreateTime(), 10);
         assertEquals(decoded.getLastModifyTime(), 12);
 
@@ -174,14 +174,17 @@ public class ResourceTest {
         ResourceRecord record = new ResourceRecord(null, "{}");
         try {
             record.checkForCreate();
-            assertTrue(false);
         } catch (Exception exp) {
-            assertTrue(true);
+            fail(exp.getMessage());
         }
-        record.checkForUpdate();
+        try {
+            record.checkForUpdate();
+        } catch (Exception e) {
+            assertEquals("id is null/empty", e.getMessage());
+        }
 
         record = new ResourceRecord("key1", "{\"a\":\"b\", \"d\":12}");
-        assertEquals(record.getTag(), "key1");
+        assertEquals(record.getId(), "key1");
         assertEquals(record.getValue(), "{\"a\":\"b\", \"d\":12}");
         record.checkForCreate();
         record.checkForUpdate();
@@ -196,10 +199,10 @@ public class ResourceTest {
         record = new ResourceRecord("key1", "{\"a\":\"b\", \"d\":12}");
         record.ToJsonString();
         JSONObject dict = record.ToJsonObject();
-        assertEquals(dict.getString("key"), "key1");
+        assertEquals(dict.getString("id"), "key1");
         assertFalse(dict.containsKey("createTime"));
         assertFalse(dict.containsKey("lastModifyTime"));
-        assertFalse(dict.containsKey("id"));
+        assertTrue(dict.containsKey("id"));
 
         content = "{\"value\":\"{\\\"a\\\":\\\"f\n\\\", \\\"d\\\":12}\",\"key\":\"key1\",\"createTime\":10,\"lastModifyTime\":12, \"id\":\"xxs\"}";
         decoded = new ResourceRecord();

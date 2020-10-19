@@ -20,12 +20,12 @@ public class ListShardFunctionTest extends FunctionTest {
     private final String project = "test-project-list-shard-"+getNowTimestamp();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         safeCreateProject(project, "");
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         safeDeleteProject(project);
     }
 

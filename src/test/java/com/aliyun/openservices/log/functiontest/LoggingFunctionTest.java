@@ -10,10 +10,7 @@ import com.aliyun.openservices.log.request.DeleteLoggingRequest;
 import com.aliyun.openservices.log.request.GetLoggingRequest;
 import com.aliyun.openservices.log.request.UpdateLoggingRequest;
 import com.aliyun.openservices.log.response.GetLoggingResponse;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,8 +36,8 @@ public class LoggingFunctionTest extends FunctionTest {
     private static String TEST_PROJECT;
     private static List<String> TEST_LOGSTORES;
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
         TEST_PROJECT = "test-project-to-logging-" + getNowTimestamp();
         safeCreateProject(TEST_PROJECT, "");
         TEST_LOGSTORES = new ArrayList<String>();
@@ -268,8 +265,8 @@ public class LoggingFunctionTest extends FunctionTest {
         }
     }
 
-    @AfterClass
-    public static void tearDown() {
+    @After
+    public void tearDown() {
         try {
             client.DeleteProject(TEST_PROJECT);
         } catch (LogException e) {
