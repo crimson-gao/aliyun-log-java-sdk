@@ -1280,15 +1280,13 @@ public class Client implements LogService {
         return new CreateConfigResponse(resHeaders);
 	}
 
-	public UpdateConfigResponse UpdateConfig(String project, Config config)
-			throws LogException {
+	public UpdateConfigResponse UpdateConfig(String project, Config config) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertParameterNotNull(config, "config");
 		return UpdateConfig(new UpdateConfigRequest(project, config));
 	}
 
-	public UpdateConfigResponse UpdateConfig(UpdateConfigRequest request)
-			throws LogException {
+	public UpdateConfigResponse UpdateConfig(UpdateConfigRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
@@ -1307,8 +1305,7 @@ public class Client implements LogService {
         return new UpdateConfigResponse(resHeaders);
 	}
 
-	protected Config ExtractConfigFromResponse(JSONObject dict, String requestId)
-			throws LogException {
+	protected Config ExtractConfigFromResponse(JSONObject dict, String requestId) throws LogException {
 		Config config = new Config();
 		try {
 			config.FromJsonString(dict.toString());
@@ -1319,8 +1316,7 @@ public class Client implements LogService {
 		return config;
 	}
 
-	public GetConfigResponse GetConfig(String project, String configName)
-			throws LogException {
+	public GetConfigResponse GetConfig(String project, String configName) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(configName, "configName");
 		return GetConfig(new GetConfigRequest(project, configName));
@@ -1332,12 +1328,10 @@ public class Client implements LogService {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String configName = request.GetConfigName();
 		CodingUtils.assertStringNotNullOrEmpty(configName, "configName");
-
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/configs/" + configName;
 		Map<String, String> urlParameter = request.GetAllParams();
-        ResponseMessage response = SendData(project, HttpMethod.GET, resourceUri, urlParameter,
-				headParameter);
+        ResponseMessage response = SendData(project, HttpMethod.GET, resourceUri, urlParameter, headParameter);
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
 		JSONObject object = parseResponseBody(response, requestId);
@@ -1352,14 +1346,12 @@ public class Client implements LogService {
 		return DeleteConfig(new DeleteConfigRequest(project, configName));
 	}
 
-	public DeleteConfigResponse DeleteConfig(DeleteConfigRequest request)
-			throws LogException {
+	public DeleteConfigResponse DeleteConfig(DeleteConfigRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String configName = request.GetConfigName();
 		CodingUtils.assertStringNotNullOrEmpty(configName, "configName");
-
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/configs/" + configName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -1390,7 +1382,6 @@ public class Client implements LogService {
 					"The response is not valid config json array string : "
 							+ array.toString(), e, requestId);
 		}
-
 		return configs;
 	}
 
@@ -1420,8 +1411,7 @@ public class Client implements LogService {
 		return ListConfig(new ListConfigRequest(project, configName, logstoreName, offset, size));
 	}
 
-	public ListConfigResponse ListConfig(ListConfigRequest request)
-			throws LogException {
+	public ListConfigResponse ListConfig(ListConfigRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
@@ -1451,15 +1441,13 @@ public class Client implements LogService {
 		return listConfigResponse;
 	}
 
-	public CreateMachineGroupResponse CreateMachineGroup(String project,
-			MachineGroup group) throws LogException {
+	public CreateMachineGroupResponse CreateMachineGroup(String project, MachineGroup group) throws LogException {
 		CodingUtils.assertParameterNotNull(project, "project");
 		CodingUtils.assertParameterNotNull(group, "group");
 		return CreateMachineGroup(new CreateMachineGroupRequest(project, group));
 	}
 
-	public CreateMachineGroupResponse CreateMachineGroup(
-			CreateMachineGroupRequest request) throws LogException {
+	public CreateMachineGroupResponse CreateMachineGroup(CreateMachineGroupRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
@@ -1476,15 +1464,13 @@ public class Client implements LogService {
 		return new CreateMachineGroupResponse(resHeaders);
 	}
 
-	public UpdateMachineGroupResponse UpdateMachineGroup(String project,
-			MachineGroup group) throws LogException {
+	public UpdateMachineGroupResponse UpdateMachineGroup(String project, MachineGroup group) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertParameterNotNull(group, "group");
 		return UpdateMachineGroup(new UpdateMachineGroupRequest(project, group));
 	}
 
-	public UpdateMachineGroupResponse UpdateMachineGroup(
-			UpdateMachineGroupRequest request) throws LogException {
+	public UpdateMachineGroupResponse UpdateMachineGroup(UpdateMachineGroupRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
@@ -1503,8 +1489,7 @@ public class Client implements LogService {
 		return new UpdateMachineGroupResponse(resHeaders);
 	}
 
-	protected MachineGroup ExtractMachineGroupFromResponse(JSONObject dict,
-			String requestId) throws LogException {
+	protected MachineGroup ExtractMachineGroupFromResponse(JSONObject dict, String requestId) throws LogException {
 		MachineGroup group = new MachineGroup();
 		try {
 			group.FromJsonString(dict.toString());
@@ -1515,15 +1500,13 @@ public class Client implements LogService {
 		return group;
 	}
 
-	public GetAppliedConfigResponse GetAppliedConfig(String project,
-			String groupName) throws LogException {
+	public GetAppliedConfigResponse GetAppliedConfig(String project, String groupName) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(groupName, "groupName");
 		return GetAppliedConfig(new GetAppliedConfigsRequest(project, groupName));
 	}
 
-	public GetAppliedConfigResponse GetAppliedConfig(
-			GetAppliedConfigsRequest request) throws LogException {
+	public GetAppliedConfigResponse GetAppliedConfig(GetAppliedConfigsRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
@@ -1823,7 +1806,6 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(logStore, "logStore");
 		ACL acl = request.GetACL();
 		CodingUtils.assertParameterNotNull(acl, "acl");
-
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		byte[] body = encodeToUtf8(acl.ToRequestString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
