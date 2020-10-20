@@ -3307,35 +3307,6 @@ public interface LogService {
 			String project, String consumerGroup, boolean inOrder, int timeoutInSec) throws LogException;
 
 	/**
-	 * update project consumer group
-	 *
-	 * @param project       project name
-	 * @param consumerGroup consumer group name
-	 * @param inOrder       consume data in order or not
-	 * @return response
-	 * @throws LogException             if any error happened
-	 * @throws NullPointerException     if required parameter is null
-	 * @throws IllegalArgumentException if any required string parameter is empty
-	 */
-	UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(
-			String project, String consumerGroup, boolean inOrder) throws LogException;
-
-	/**
-	 * update project consumer group
-	 *
-	 * @param project       project name
-	 * @param consumerGroup consumer group name
-	 * @param timeoutInSec  if the time interval of a consumer's heartbeat exceed this
-	 *                      value in second, the consumer will be deleted
-	 * @return response
-	 * @throws LogException             if any error happened
-	 * @throws NullPointerException     if required parameter is null
-	 * @throws IllegalArgumentException if any required string parameter is empty
-	 */
-	UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(
-			String project, String consumerGroup, int timeoutInSec) throws LogException;
-
-	/**
 	 * update consume checkpoint in project consumer group
 	 *
 	 * @param project       project name

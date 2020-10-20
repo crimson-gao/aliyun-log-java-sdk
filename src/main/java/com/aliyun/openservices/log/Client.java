@@ -2384,34 +2384,18 @@ public class Client implements LogService {
 	}
 
 	@Override
-	public UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(String project, String consumerGroup, boolean inOrder, int timeoutInSec) throws LogException {
-		return UpdateProjectConsumerGroup(project, consumerGroup, inOrder, timeoutInSec);
-	}
-
-	@Override
-	public UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(String project, String consumerGroup, boolean inOrder) throws LogException {
-		return UpdateProjectConsumerGroup(project, consumerGroup, inOrder, null);
-	}
-
-	@Override
-	public UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(String project, String consumerGroup, int timeoutInSec) throws LogException {
-		return UpdateProjectConsumerGroup(project, consumerGroup, null, timeoutInSec);
-	}
-
-	private UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(String project, String consumerGroup, Boolean inOrder, Integer timeoutInSec) throws LogException {
+	public UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(String project,
+																		 String consumerGroup,
+																		 boolean inOrder,
+																		 int timeoutInSec) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		final JSONObject asJson = new JSONObject();
-		if (inOrder != null) {
-			asJson.put("order", inOrder);
-		}
-		if (timeoutInSec != null) {
-			asJson.put("timeout", timeoutInSec);
-		}
+		asJson.put("order", inOrder);
+		asJson.put("timeout", timeoutInSec);
 		byte[] body = encodeToUtf8(asJson.toString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
-
 		String resourceUri = "/consumergroups/" + consumerGroup;
 		Map<String, String> urlParameter = new HashMap<String, String>();
 		ResponseMessage response = SendData(project, HttpMethod.PUT,
