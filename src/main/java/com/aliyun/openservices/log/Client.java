@@ -2045,13 +2045,11 @@ public class Client implements LogService {
 		headParameter.put(Consts.CONST_X_SLS_BODYRAWSIZE, "0");
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_PROTO_BUF);
 		headParameter.put(Consts.CONST_DATE, DateUtil.formatRfc822Date(new Date()));
-
 		if (!project.isEmpty()) {
 			headParameter.put(Consts.CONST_HOST, project + "." + this.hostName);
 		} else {
 			headParameter.put(Consts.CONST_HOST, this.hostName);
 		}
-
 		headParameter.put(Consts.CONST_X_SLS_APIVERSION,
 				Consts.DEFAULT_API_VESION);
 		headParameter.put(Consts.CONST_X_SLS_SIGNATUREMETHOD, Consts.HMAC_SHA1);
@@ -2172,8 +2170,7 @@ public class Client implements LogService {
 				String end = shardDict.getString("exclusiveEndKey");
 				int createTime = shardDict.getIntValue("createTime");
 				Shard shard = new Shard(shardId, status, begin, end, createTime);
-				if (shardDict.containsKey("serverIp"))
-				{
+				if (shardDict.containsKey("serverIp")) {
 					shard.setServerIp(shardDict.getString("serverIp"));
 				}
 				shards.add(shard);
@@ -2183,7 +2180,6 @@ public class Client implements LogService {
 					"The response is not valid shard json array string : "
 							+ array.toString() + e.getMessage(), e, requestId);
 		}
-
 		return shards;
 	}
 
@@ -2480,7 +2476,6 @@ public class Client implements LogService {
 				project, consumer, logStoreShards == null ? new HashMap<String, ArrayList<Integer>>() : logStoreShards);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		Map<String, String> urlParameter = request.GetAllParams();
-
 		byte[] body = encodeToUtf8(request.GetRequestBody());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		ResponseMessage response = SendData(project, HttpMethod.POST,
