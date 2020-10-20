@@ -42,6 +42,8 @@ import com.aliyun.openservices.log.common.TagContent;
 import com.aliyun.openservices.log.common.ExternalStore;
 import com.aliyun.openservices.log.common.Resource;
 import com.aliyun.openservices.log.common.ResourceRecord;
+import com.aliyun.openservices.log.common.ProjectConsumerGroup;
+import com.aliyun.openservices.log.common.LinkStore;
 import com.aliyun.openservices.log.common.auth.Credentials;
 import com.aliyun.openservices.log.common.auth.DefaultCredentails;
 import com.aliyun.openservices.log.common.auth.ECSRoleCredentials;
@@ -407,7 +409,7 @@ public class Client implements LogService {
         Map<String, String> resHeaders = response.getHeaders();
         return new TagResourcesResponse(resHeaders);
 	}
-	
+
 	public UntagResourcesResponse untagResources(String untagResourcesStr) throws LogException {
 		CodingUtils.assertParameterNotNull(untagResourcesStr, "tagResourcesStr");
 		Map<String, String> headParameter = GetCommonHeadPara("");
@@ -418,7 +420,7 @@ public class Client implements LogService {
         Map<String, String> resHeaders = response.getHeaders();
         return new UntagResourcesResponse(resHeaders);
 	}
-	
+
 	public ListTagResourcesResponse listTagResources(ListTagResourcesRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -428,9 +430,9 @@ public class Client implements LogService {
 		Map<String, String> resHeaders = response.getHeaders();
 		return new ListTagResourcesResponse(resHeaders, response.GetStringBody());
 	}
-	
+
 	public GetLogtailProfileResponse GetLogtailProfile(String project, String logstore, String source,
-			int line, int offset) throws LogException { 
+			int line, int offset) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(logstore, "logstore");
 		GetLogtailProfileRequest request = new GetLogtailProfileRequest(project, logstore, source, line, offset);
@@ -2243,6 +2245,31 @@ public class Client implements LogService {
 	}
 
 	@Override
+	public CreateLinkStoreResponse CreateLinkStore(String project, LinkStore linkStore) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertParameterNotNull(linkStore, "logStore");
+		return CreateLinkStore(new CreateLinkStoreRequest(project, linkStore));
+	}
+
+	@Override
+	public CreateLinkStoreResponse CreateLinkStore(CreateLinkStoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		String project = request.GetProject();
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		LinkStore linkStore = request.getLinkStore();
+		CodingUtils.assertParameterNotNull(linkStore, "linkStore");
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		byte[] body = encodeToUtf8(linkStore.ToRequestString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = "/logstores";
+		Map<String, String> urlParameter = request.GetAllParams();
+		ResponseMessage response = SendData(project, HttpMethod.POST,
+				resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new CreateLinkStoreResponse(resHeaders);
+	}
+
+	@Override
 	public DeleteLogStoreResponse DeleteLogStore(String project,
 			String logStoreName) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
@@ -2268,11 +2295,216 @@ public class Client implements LogService {
 	}
 
 	@Override
+	public DeleteLinkStoreResponse DeleteLinkStore(String project, String linkStoreName) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(linkStoreName, "linkStoreName");
+		return DeleteLinkStore(new DeleteLinkStoreRequest(project, linkStoreName));
+	}
+
+	@Override
+	public DeleteLinkStoreResponse DeleteLinkStore(DeleteLinkStoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		String project = request.GetProject();
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		String linkStoreName = request.getLinkStoreName();
+		CodingUtils.assertStringNotNullOrEmpty(linkStoreName, "linkStoreName");
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		String resourceUri = "/logstores/" + linkStoreName;
+		Map<String, String> urlParameter = request.GetAllParams();
+		ResponseMessage response = SendData(project, HttpMethod.DELETE,
+				resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new DeleteLinkStoreResponse(resHeaders);
+	}
+
+	@Override
 	public ClearLogStoreStorageResponse ClearLogStoreStorage(String project,
 			String logStoreName) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(logStoreName, "logStoreName");
 		return ClearLogStoreStorage(new ClearLogStoreStorageRequest(project, logStoreName));
+	}
+
+	@Override
+	public CreateProjectConsumerGroupResponse CreateProjectConsumerGroup(CreateProjectConsumerGroupRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		String project = request.GetProject();
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		ProjectConsumerGroup projectConsumerGroup = request.getConsumerGroup();
+		CodingUtils.assertParameterNotNull(projectConsumerGroup, "consumerGroup");
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		byte[] body = encodeToUtf8(projectConsumerGroup.ToRequestString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = "/consumergroups";
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(project, HttpMethod.POST,
+				resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new CreateProjectConsumerGroupResponse(resHeaders);
+	}
+
+	@Override
+	public CreateProjectConsumerGroupResponse CreateProjectConsumerGroup(String project, ProjectConsumerGroup consumerGroup) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		return CreateProjectConsumerGroup(new CreateProjectConsumerGroupRequest(
+				project, consumerGroup));
+	}
+
+	@Override
+	public DeleteProjectConsumerGroupResponse DeleteProjectConsumerGroup(String project, String consumerGroup) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		String resourceUri = "/consumergroups/" + consumerGroup;
+		headParameter.put(Consts.CONST_CONTENT_TYPE, String.valueOf(0));
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(project, HttpMethod.DELETE,
+				resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new DeleteProjectConsumerGroupResponse(resHeaders);
+	}
+
+	@Override
+	public ListProjectConsumerGroupResponse ListProjectConsumerGroup(String project) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		String resourceUri = "/consumergroups";
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(project, HttpMethod.GET,
+				resourceUri, urlParameter, headParameter);
+		ArrayList<ProjectConsumerGroup> consumerGroups = new ArrayList<ProjectConsumerGroup>();
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		JSONArray array = ParseResponseMessageToArray(response, requestId);
+		ExtractProjectConsumerGroup(array, requestId, consumerGroups);
+		ListProjectConsumerGroupResponse listProjectConsumerGroupResponse = new ListProjectConsumerGroupResponse(resHeaders);
+		listProjectConsumerGroupResponse.setConsumerGroups(consumerGroups);
+		return listProjectConsumerGroupResponse;
+	}
+
+	@Override
+	public UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(String project, String consumerGroup, boolean inOrder, int timeoutInSec) throws LogException {
+		return UpdateProjectConsumerGroup(project, consumerGroup, inOrder, timeoutInSec);
+	}
+
+	@Override
+	public UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(String project, String consumerGroup, boolean inOrder) throws LogException {
+		return UpdateProjectConsumerGroup(project, consumerGroup, inOrder, null);
+	}
+
+	@Override
+	public UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(String project, String consumerGroup, int timeoutInSec) throws LogException {
+		return UpdateProjectConsumerGroup(project, consumerGroup, null, timeoutInSec);
+	}
+
+	private UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(String project, String consumerGroup, Boolean inOrder, Integer timeoutInSec) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		final JSONObject asJson = new JSONObject();
+		if (inOrder != null) {
+			asJson.put("order", inOrder);
+		}
+		if (timeoutInSec != null) {
+			asJson.put("timeout", timeoutInSec);
+		}
+		byte[] body = encodeToUtf8(asJson.toString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+
+		String resourceUri = "/consumergroups/" + consumerGroup;
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData(project, HttpMethod.PUT,
+				resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new UpdateProjectConsumerGroupResponse(resHeaders);
+	}
+
+	@Override
+	public ProjectConsumerGroupUpdateCheckPointResponse UpdateProjectConsumerGroupCheckPoint(String project, String consumerGroup, String consumer, String logStore, int shard, String checkpoint) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.assertStringNotNullOrEmpty(consumer, "consumer");
+		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.assertStringNotNullOrEmpty(checkpoint, "checkpoint");
+		return UpdateProjectConsumerGroupCheckPoint(project, consumerGroup, consumer, logStore, shard, checkpoint, false);
+	}
+
+	@Override
+	public ProjectConsumerGroupUpdateCheckPointResponse UpdateProjectConsumerGroupCheckPoint(String project, String consumerGroup, String logStore, int shard, String checkpoint) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.assertStringNotNullOrEmpty(checkpoint, "checkpoint");
+		return UpdateProjectConsumerGroupCheckPoint(project, consumerGroup, "", logStore, shard, checkpoint, true);
+	}
+
+	private ProjectConsumerGroupUpdateCheckPointResponse UpdateProjectConsumerGroupCheckPoint(
+			String project, String consumerGroup, String consumer, String logStore, int shard, String checkpoint,
+			boolean forceSuccess) throws LogException {
+		String resourceUri = "/consumergroups/" + consumerGroup;
+		ProjectConsumerGroupUpdateCheckPointRequest request = new ProjectConsumerGroupUpdateCheckPointRequest(
+				project, consumerGroup, consumer, logStore, shard, checkpoint, forceSuccess);
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		Map<String, String> urlParameter = request.GetAllParams();
+		byte[] body = encodeToUtf8(request.GetRequestBody());
+		ResponseMessage response = SendData(project, HttpMethod.POST,
+				resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new ProjectConsumerGroupUpdateCheckPointResponse(resHeaders);
+	}
+
+	@Override
+	public ProjectConsumerGroupCheckPointResponse GetProjectConsumerGroupCheckPoint(String project, String consumerGroup, String logStore, int shard) throws LogException {
+		ProjectConsumerGroupGetCheckPointRequest request = new ProjectConsumerGroupGetCheckPointRequest(
+				project, consumerGroup, logStore, shard);
+		Map<String, String> urlParameter = request.GetAllParams();
+		String resourceUri = "/consumergroups/" + consumerGroup;
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		ResponseMessage response = SendData(project, HttpMethod.GET,
+				resourceUri, urlParameter, headParameter);
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		JSONObject object = parseResponseBody(response, requestId);
+		return new ProjectConsumerGroupCheckPointResponse(resHeaders, object);
+	}
+
+	@Override
+	public ProjectConsumerGroupCheckPointResponse GetProjectConsumerGroupCheckPoint(String project, String consumerGroup, String logStore) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		return GetProjectConsumerGroupCheckPoint(project, consumerGroup, logStore, -1);
+	}
+
+	@Override
+	public ProjectConsumerGroupCheckPointResponse GetProjectConsumerGroupCheckPoint(String project, String consumerGroup) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		return GetProjectConsumerGroupCheckPoint(project, consumerGroup, "", -1);
+	}
+
+	@Override
+	public ProjectConsumerGroupHeartBeatResponse ProjectConsumerGroupHeartBeat(String project, String consumerGroup, String consumer, Map<String, ArrayList<Integer>> logStoreShards) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.assertStringNotNullOrEmpty(consumer, "consumer");
+		String resourceUri = "/consumergroups/" + consumerGroup;
+		ProjectConsumerGroupHeartBeatRequest request = new ProjectConsumerGroupHeartBeatRequest(
+				project, consumer, logStoreShards == null ? new HashMap<String, ArrayList<Integer>>() : logStoreShards);
+		Map<String, String> headParameter = GetCommonHeadPara(project);
+		Map<String, String> urlParameter = request.GetAllParams();
+
+		byte[] body = encodeToUtf8(request.GetRequestBody());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		ResponseMessage response = SendData(project, HttpMethod.POST,
+				resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		JSONObject object = parseResponseBody(response, requestId);
+		return new ProjectConsumerGroupHeartBeatResponse(resHeaders, object);
 	}
 
 	@Override
@@ -3192,25 +3424,26 @@ public class Client implements LogService {
 
 	@Override
 	public ConsumerGroupHeartBeatResponse HeartBeat(String project,
-			String logStore, String consumerGroup, String consumer,
-			List<Integer> shards) throws LogException {
+													String logStore, String consumerGroup, String consumer,
+													List<Integer> shards) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
 		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
 		CodingUtils.assertStringNotNullOrEmpty(consumer, "consumer");
-		String resourceUri = "/logstores/" + logStore + "/consumergroups/" + consumerGroup;
-		if (shards == null) {
-			shards = Collections.emptyList();
-		}
+		String resourceUri = "/logstores/" + logStore + "/consumergroups/"
+				+ consumerGroup;
 		ConsumerGroupHeartBeatRequest request = new ConsumerGroupHeartBeatRequest(
-				project, logStore, consumer, shards);
+				project, logStore, consumerGroup, consumer,
+				shards == null ? new ArrayList<Integer>() : shards);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		Map<String, String> urlParameter = request.GetAllParams();
+
 		byte[] body = encodeToUtf8(request.GetRequestBody());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		List<Integer> responseShards = new ArrayList<Integer>();
 		ResponseMessage response = SendData(project, HttpMethod.POST,
 				resourceUri, urlParameter, headParameter, body);
+
 		Map<String, String> resHeaders = response.getHeaders();
 		String requestId = GetRequestId(resHeaders);
 		JSONArray array = ParseResponseMessageToArray(response, requestId);
@@ -4893,7 +5126,7 @@ public class Client implements LogService {
 		ResponseMessage responseMessage = send(request);
 		return new StartETLV2Response(responseMessage.getHeaders());
 	}
-	
+
 	@Override
 	public CreateExportResponse createExport(CreateExportRequest request) throws LogException {
 		ResponseMessage resp = send(request);
@@ -4957,6 +5190,25 @@ public class Client implements LogService {
 		final Map<String, String> headers = GetCommonHeadPara(project);
 		final byte[] requestBody = encodeToUtf8(body);
 		return SendData(project, request.getMethod(), request.getUri(), request.GetAllParams(), headers, requestBody);
+	}
+
+	private void ExtractProjectConsumerGroup(JSONArray array, String requestId,
+											 List<ProjectConsumerGroup> consumerGroups) throws LogException {
+		try {
+			for (int i = 0; i < array.size(); i++) {
+				JSONObject consumerGroup = array.getJSONObject(i);
+				consumerGroups.add(new ProjectConsumerGroup(
+						consumerGroup.getString("name"),
+						consumerGroup.getString("logstoreName"),
+						consumerGroup.getIntValue("timeout"),
+						consumerGroup.getBoolean("order")
+				));
+			}
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE,
+					"The response is not valid consumer group json array string : "
+							+ array.toString(), e, requestId);
+		}
 	}
 
 	public String getRealServerIP() {
