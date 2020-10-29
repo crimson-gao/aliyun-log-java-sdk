@@ -3,21 +3,8 @@
  */
 package com.aliyun.openservices.log;
 
-import com.aliyun.openservices.log.common.ACL;
-import com.aliyun.openservices.log.common.Config;
-import com.aliyun.openservices.log.common.Consts;
+import com.aliyun.openservices.log.common.*;
 import com.aliyun.openservices.log.common.Consts.CursorMode;
-import com.aliyun.openservices.log.common.ConsumerGroup;
-import com.aliyun.openservices.log.common.Domain;
-import com.aliyun.openservices.log.common.EtlMeta;
-import com.aliyun.openservices.log.common.Index;
-import com.aliyun.openservices.log.common.InternalLogStore;
-import com.aliyun.openservices.log.common.LogItem;
-import com.aliyun.openservices.log.common.LogStore;
-import com.aliyun.openservices.log.common.MachineGroup;
-import com.aliyun.openservices.log.common.MachineList;
-import com.aliyun.openservices.log.common.ShipperConfig;
-import com.aliyun.openservices.log.common.SubStore;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.*;
@@ -25,6 +12,7 @@ import com.aliyun.openservices.log.response.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 public interface LogService {
@@ -240,8 +228,28 @@ public interface LogService {
     ListLogStoresResponse ListLogStores(ListLogStoresRequest request)
 			throws LogException;
 
-	ListTopicsResponse ListTopics(String project, String logStore,
-								  String token, int line) throws LogException;
+	/**
+	 * Get the topics in the logtstore
+	 *
+	 * @param project
+	 *            the project name
+	 * @param logStore
+	 *            where the topic belongs to
+	 * @param token
+	 *            all the returned topics are equal or larger than the given
+	 *            token according to topics' lexicographical order
+	 * @param line
+	 *            the topic number from log service server
+	 * @return the log store's topics response
+	 * @throws LogException
+	 *             if any error happen when get the data from log service server
+	 * @throws NullPointerException
+	 *             if any parameter is null
+	 * @throws IllegalArgumentException
+	 *             if project or logstore is empty
+	 */
+    ListTopicsResponse ListTopics(String project, String logStore,
+                                  String token, int line) throws LogException;
 
 	/**
 	 * Get the topics in the logtstore
@@ -1623,6 +1631,31 @@ public interface LogService {
     CreateLogStoreResponse CreateLogStore(CreateLogStoreRequest request)
 			throws LogException;
 
+    /**
+     * create link store
+     *
+     * @param project   the project name
+     * @param linkStore the config
+     * @return the create link store response
+     * @throws LogException             if any error happen when creating link store
+     * @throws NullPointerException     if any parameter is null
+     * @throws IllegalArgumentException if project is empty
+     */
+    CreateLinkStoreResponse CreateLinkStore(String project,
+                                            LinkStore linkStore) throws LogException;
+
+    /**
+     * create link store
+     *
+     * @param request link store create request
+     * @return the create link store response
+     * @throws LogException             if any error happen when creating link store
+     * @throws NullPointerException     if required parameter is null
+     * @throws IllegalArgumentException if any required string parameter is empty
+     */
+    CreateLinkStoreResponse CreateLinkStore(CreateLinkStoreRequest request)
+            throws LogException;
+
 	/**
 	 * Update log store config
 	 *
@@ -1712,6 +1745,30 @@ public interface LogService {
 	 */
     DeleteLogStoreResponse DeleteLogStore(DeleteLogStoreRequest request)
 			throws LogException;
+
+    /**
+     * Delete link store
+     *
+     * @param project       the project name
+     * @param linkStoreName the link store to delete
+     * @return delete link store response
+     * @throws LogException             if any error happen when deleting link store
+     * @throws NullPointerException     if required parameter is null
+     * @throws IllegalArgumentException if any required string parameter is empty
+     */
+    DeleteLinkStoreResponse DeleteLinkStore(String project,
+                                            String linkStoreName) throws LogException;
+
+    /**
+     * Delete link store
+     *
+     * @param request delete link store request
+     * @return delete link store response
+     * @throws LogException             if any error happen when deleting link store
+     * @throws NullPointerException     if required parameter is null
+     * @throws IllegalArgumentException if any required string parameter is empty
+     */
+    DeleteLinkStoreResponse DeleteLinkStore(DeleteLinkStoreRequest request) throws LogException;
 
 	/**
 	 * Get the logstore config
@@ -2171,10 +2228,8 @@ public interface LogService {
 	 * @throws IllegalArgumentException
 	 *             if any required string parameter is empty
 	 */
-    ConsumerGroupHeartBeatResponse HeartBeat(String project,
-                                             String logStore,
-											 String consumerGroup,
-											 String consumer,
+	ConsumerGroupHeartBeatResponse HeartBeat(String project,
+											 String logStore, String consumerGroup, String consumer,
 											 List<Integer> shards) throws LogException;
 
 	/**
@@ -3184,6 +3239,163 @@ public interface LogService {
      * @throws LogException if any error occurs
      */
 	ClearLogStoreStorageResponse ClearLogStoreStorage(String project, String logStoreName) throws LogException;
+
+	/**
+	 * create project consumer group
+	 *
+	 * @param request contains all of parameters needed
+	 * @return response
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	CreateProjectConsumerGroupResponse CreateProjectConsumerGroup(
+			CreateProjectConsumerGroupRequest request) throws LogException;
+
+	/**
+	 * create project consumer group
+	 *
+	 * @param project       project name
+	 * @param consumerGroup contains all of parameters needed by consumer group
+	 * @return response
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	CreateProjectConsumerGroupResponse CreateProjectConsumerGroup(
+			String project, ProjectConsumerGroup consumerGroup) throws LogException;
+
+	/**
+	 * delete project consumer group
+	 *
+	 * @param project       project name
+	 * @param consumerGroup consumer group name
+	 * @return response
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	DeleteProjectConsumerGroupResponse DeleteProjectConsumerGroup(
+			String project, String consumerGroup) throws LogException;
+
+	/**
+	 * list project consumer group
+	 *
+	 * @param project project name
+	 * @return response
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	ListProjectConsumerGroupResponse ListProjectConsumerGroup(
+			String project) throws LogException;
+
+	/**
+	 * update project consumer group
+	 *
+	 * @param project       project name
+	 * @param consumerGroup consumer group name
+	 * @param inOrder       consume data in order or not
+	 * @param timeoutInSec  if the time interval of a consumer's heartbeat exceed this
+	 *                      value in second, the consumer will be deleted
+	 * @return response
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	UpdateProjectConsumerGroupResponse UpdateProjectConsumerGroup(
+			String project, String consumerGroup, boolean inOrder, int timeoutInSec) throws LogException;
+
+	/**
+	 * update consume checkpoint in project consumer group
+	 *
+	 * @param project       project name
+	 * @param consumerGroup project consumer group name
+	 * @param consumer      consumer name
+	 * @param logStore      log store name
+	 * @param shard         shard id
+	 * @param checkpoint    shard cursor
+	 * @return response
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	ProjectConsumerGroupUpdateCheckPointResponse UpdateProjectConsumerGroupCheckPoint(
+			String project, String consumerGroup, String consumer, String logStore, int shard, String checkpoint) throws LogException;
+
+	/**
+	 * update checkpoint in project consumer group
+	 *
+	 * @param project       project name
+	 * @param consumerGroup project consumer group name
+	 * @param logStore      log store name
+	 * @param shard         shard id
+	 * @param checkpoint    shard cursor
+	 * @return response
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	ProjectConsumerGroupUpdateCheckPointResponse UpdateProjectConsumerGroupCheckPoint(
+			String project, String consumerGroup, String logStore, int shard, String checkpoint) throws LogException;
+
+	/**
+	 * get shard checkpoint in project consumer group
+	 *
+	 * @param project       project name
+	 * @param consumerGroup consumer group name
+	 * @param logStore      log store or link store name
+	 * @param shard         shard id
+	 * @return response
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	ProjectConsumerGroupCheckPointResponse GetProjectConsumerGroupCheckPoint(
+			String project, String consumerGroup, String logStore, int shard) throws LogException;
+
+	/**
+	 * get all of shard checkpoints in specific log store in project consumer group
+	 *
+	 * @param project       project name
+	 * @param consumerGroup consumer group name
+	 * @param logStore      log store or link store name
+	 * @return response
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	ProjectConsumerGroupCheckPointResponse GetProjectConsumerGroupCheckPoint(
+			String project, String consumerGroup, String logStore) throws LogException;
+
+	/**
+	 * get all of shard checkpoints in project consumer group
+	 *
+	 * @param project       project name
+	 * @param consumerGroup consumer group name
+	 * @return response
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	ProjectConsumerGroupCheckPointResponse GetProjectConsumerGroupCheckPoint(
+			String project, String consumerGroup) throws LogException;
+
+	/**
+	 * notify the server periodically to show that the consumer is still alive
+	 *
+	 * @param project        project name
+	 * @param consumerGroup  consumer group name
+	 * @param consumer       consumer name
+	 * @param logStoreShards log store and shards hold by the consumer
+	 * @return response that indicates which log store and shards the consumer should hold
+	 * @throws LogException             if any error happened
+	 * @throws NullPointerException     if required parameter is null
+	 * @throws IllegalArgumentException if any required string parameter is empty
+	 */
+	ProjectConsumerGroupHeartBeatResponse ProjectConsumerGroupHeartBeat(
+			String project, String consumerGroup, String consumer, Map<String, ArrayList<Integer>> logStoreShards) throws LogException;
+
 
 	/**
 	 * @param project  name
