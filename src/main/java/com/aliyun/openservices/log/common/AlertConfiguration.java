@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.aliyun.openservices.log.internal.Unmarshaller;
-import com.aliyun.openservices.log.util.Args;
 import com.aliyun.openservices.log.util.JsonUtils;
 import com.aliyun.openservices.log.util.Utils;
 
@@ -29,7 +28,6 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
     @JSONField
     private List<Query> queryList;
 
-    @Deprecated
     @JSONField
     private Date muteUntil;
 
@@ -43,7 +41,6 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
     /**
      * Duration with format '1h', '2s'
      */
-    @Deprecated
     @JSONField
     private String throttling;
 
@@ -51,12 +48,10 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
     @JSONField
     private boolean sendRecoveryMessage;
 
-    @Deprecated
     public String getCondition() {
         return condition;
     }
 
-    @Deprecated
     public void setCondition(String condition) {
         this.condition = condition;
     }
@@ -485,7 +480,7 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
 
         public void deserialize(JSONObject value) {
             setType(value.getString("type"));
-            setFields(JsonUtils.readStringList(value.getJSONObject("fields"), "fields"));
+            setFields(JsonUtils.readStringList(value, "fields"));
         }
     }
 
