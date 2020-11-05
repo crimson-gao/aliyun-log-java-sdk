@@ -13,6 +13,7 @@ public class OssShipperCsvStorageDetail extends OssShipperStorageDetail implemen
 	private static final long serialVersionUID = -9072422584563361211L;
 	private String delimiter = ",";
 	private String quote = "";
+	private String lineFeed = "\n";
 	private String nullIdentifier = "";
 	private boolean header = false;
 	private ArrayList<String> mStorageColumns = new ArrayList<String>();
@@ -61,6 +62,14 @@ public class OssShipperCsvStorageDetail extends OssShipperStorageDetail implemen
 		this.header = header;
 	}
 
+	public String getLineFeed() {
+		return lineFeed;
+	}
+
+	public void setLineFeed(String lineFeed) {
+		this.lineFeed = lineFeed;
+	}
+
 	@Override
 	public JSONObject ToJsonObject() {
 		JSONObject obj = new JSONObject();
@@ -70,6 +79,7 @@ public class OssShipperCsvStorageDetail extends OssShipperStorageDetail implemen
 		detail.put("columns", columns);
 		detail.put("delimiter", this.delimiter);
 		detail.put("quote", this.quote);
+		detail.put("lineFeed", this.lineFeed);
 		detail.put("nullIdentifier", this.nullIdentifier);
 		detail.put("header", this.header);
 		JSONObject storage = new JSONObject();
@@ -93,6 +103,7 @@ public class OssShipperCsvStorageDetail extends OssShipperStorageDetail implemen
 			setmStorageColumns(column);
 			setDelimiter(detail.getString("delimiter"));
 			setQuote(detail.getString("quote"));
+			setLineFeed(detail.containsKey("lineFeed") ? detail.getString("lineFeed") : "\n");
 			setNullIdentifier(detail.getString("nullIdentifier"));
 			setHeader(detail.getBoolean("header"));
 		} catch (JSONException ex) {
