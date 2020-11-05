@@ -40,6 +40,16 @@ public class Query implements Serializable {
     private String ui;
     @JSONField
     private String region;
+    @JSONField
+    private String roleArn;
+
+    public String getRoleArn() {
+        return roleArn;
+    }
+
+    public void setRoleArn(String roleArn) {
+        this.roleArn = roleArn;
+    }
 
     public String getStoreType() {
         return storeType;
@@ -154,6 +164,9 @@ public class Query implements Serializable {
         }
         if (value.containsKey("project")) {
             setProject(value.getString("project"));
+        }
+        if (value.containsKey("roleArn")) {
+            setRoleArn(value.getString("roleArn"));
         }
     }
 

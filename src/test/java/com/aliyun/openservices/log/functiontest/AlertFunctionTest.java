@@ -147,8 +147,8 @@ public class AlertFunctionTest extends JobIntgTest {
         configuration.setSeverityConfigurations(severityConfigurations);
 
         AlertConfiguration.PolicyConfiguration policyConfiguration = new AlertConfiguration.PolicyConfiguration();
-        policyConfiguration.setType("alert_policy");
-        policyConfiguration.setId("default-alert-policy");
+        policyConfiguration.setActionPolicyId("alert_policy");
+        policyConfiguration.setAlertPolicyId("default-alert-policy");
         policyConfiguration.setUseDefault(true);
         policyConfiguration.setRepeatInterval("20m");
         configuration.setPolicyConfiguration(policyConfiguration);

@@ -144,8 +144,8 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         if (value.containsKey("noDataFire")) {
             setNoDataFire(value.getBoolean("noDataFire"));
         }
-        if (value.containsKey("noDataFireSeverity")) {
-            Severity severityVal = Severity.valueOf(value.getInteger("noDataFireSeverity"));
+        if (value.containsKey("noDataSeverity")) {
+            Severity severityVal = Severity.valueOf(value.getInteger("noDataSeverity"));
             if (severityVal != null) {
                 setNoDataSeverity(severityVal);
             }
@@ -204,8 +204,8 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
             }
         });
         groupConfiguration  = new GroupConfiguration();
-        if (value.containsKey("groupCondition")) {
-            groupConfiguration.deserialize(value.getJSONObject("groupCondition"));
+        if (value.containsKey("groupConfiguration")) {
+            groupConfiguration.deserialize(value.getJSONObject("groupConfiguration"));
         }
 
         policyConfiguration = new PolicyConfiguration();
@@ -486,28 +486,28 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
 
     public static class PolicyConfiguration {
         @JSONField
-        private String type;
+        private String actionPolicyId;
         @JSONField
-        private String id;
+        private String alertPolicyId;
         @JSONField
         private boolean useDefault;
         @JSONField
         private String repeatInterval;
 
-        public String getType() {
-            return type;
+        public String getActionPolicyId() {
+            return actionPolicyId;
         }
 
-        public void setType(String type) {
-            this.type = type;
+        public void setActionPolicyId(String actionPolicyId) {
+            this.actionPolicyId = actionPolicyId;
         }
 
-        public String getId() {
-            return id;
+        public String getAlertPolicyId() {
+            return alertPolicyId;
         }
 
-        public void setId(String id) {
-            this.id = id;
+        public void setAlertPolicyId(String alertPolicyId) {
+            this.alertPolicyId = alertPolicyId;
         }
 
         public boolean isUseDefault() {
@@ -527,10 +527,10 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         }
 
         public void deserialize(JSONObject value) {
-            setType(value.getString("type"));
             setUseDefault(value.getBoolean("useDefault"));
             setRepeatInterval(JsonUtils.readOptionalString(value,"repeatInterval"));
-            setId(JsonUtils.readOptionalString(value, "id"));
+            setActionPolicyId(JsonUtils.readOptionalString(value, "actionPolicyId"));
+            setAlertPolicyId(JsonUtils.readOptionalString(value, "alertPolicyId"));
         }
     }
 
