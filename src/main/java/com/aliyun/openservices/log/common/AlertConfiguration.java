@@ -493,6 +493,12 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         private boolean useDefault;
         @JSONField
         private String repeatInterval;
+        @Deprecated
+        @JSONField
+        private String type;
+        @Deprecated
+        @JSONField
+        private String id;
 
         public String getActionPolicyId() {
             return actionPolicyId;
@@ -526,11 +532,33 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
             this.repeatInterval = repeatInterval;
         }
 
+        @Deprecated
+        public String getType() {
+            return type;
+        }
+
+        @Deprecated
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        @Deprecated
+        public String getId() {
+            return id;
+        }
+
+        @Deprecated
+        public void setId(String id) {
+            this.id = id;
+        }
+
         public void deserialize(JSONObject value) {
             setUseDefault(value.getBoolean("useDefault"));
             setRepeatInterval(JsonUtils.readOptionalString(value,"repeatInterval"));
             setActionPolicyId(JsonUtils.readOptionalString(value, "actionPolicyId"));
             setAlertPolicyId(JsonUtils.readOptionalString(value, "alertPolicyId"));
+            setType(JsonUtils.readOptionalString(value, "type"));
+            setId(JsonUtils.readOptionalString(value, "id"));
         }
     }
 
