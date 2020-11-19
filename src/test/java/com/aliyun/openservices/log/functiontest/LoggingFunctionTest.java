@@ -47,6 +47,7 @@ public class LoggingFunctionTest extends FunctionTest {
             createOrUpdateLogStore(TEST_PROJECT, logStore);
             TEST_LOGSTORES.add(logstoreName);
         }
+        waitForSeconds(3);
     }
 
     @Test

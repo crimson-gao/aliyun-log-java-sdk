@@ -68,16 +68,20 @@ public abstract class FunctionTest {
         return RANDOM.nextBoolean();
     }
 
-    static void safeDeleteProject(String project) {
+    static void safeDeleteProjectWithoutSleep(String project) {
         try {
             client.DeleteProject(project);
-            // Wait cache refresh completed
-            waitOneMinutes();
         } catch (LogException ex) {
             if (!ex.GetErrorCode().equals("ProjectNotExist")) {
                 fail("Delete project failed: " + ex.GetErrorMessage());
             }
         }
+    }
+
+    static void safeDeleteProject(String project) {
+        safeDeleteProjectWithoutSleep(project);
+        // Wait cache refresh completed
+        waitOneMinutes();
     }
 
     static boolean safeDeleteLogStore(String project, String logStore) {
