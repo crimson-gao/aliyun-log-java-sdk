@@ -1,25 +1,47 @@
 package com.aliyun.openservices.log.functiontest;
 
 
+import com.aliyun.openservices.log.common.Project;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.UpdateProjectRequest;
 import com.aliyun.openservices.log.response.GetProjectResponse;
+import com.aliyun.openservices.log.response.ListProjectResponse;
 import org.junit.After;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@Ignore
 public class ProjectFunctionTest extends FunctionTest {
 
     // For testing environment, please make sure the endpoint
     // project1.<endpoint> is accessible.
     private static final String TEST_PROJECT = "project-to-update";
 
+
+    @Test
+    public void testUpdateProjectList() throws LogException {
+        String project = TEST_PROJECT + getNowTimestamp();
+        client.CreateProject(project, "abc");
+
+        GetProjectResponse response = client.GetProject(project);
+        assertEquals(response.GetProjectDescription(), "abc");
+
+        waitForSeconds(60);
+
+        ListProjectResponse response1 = client.ListProject(project, 0, 100);
+        for (Project project1 : response1.getProjects()) {
+            assertEquals(project1.getProjectDesc(), "abc");
+        }
+        client.updateProject(new UpdateProjectRequest(project, "124"));
+        waitForSeconds(60);
+        response1 = client.ListProject(project, 0, 100);
+        for (Project project1 : response1.getProjects()) {
+            assertEquals(project1.getProjectDesc(), "124");
+        }
+        client.DeleteProject(project);
+    }
 
     private void verifyUpdate(final String description,
                               final String expected) throws LogException {
@@ -104,13 +126,8 @@ public class ProjectFunctionTest extends FunctionTest {
         verifyUpdate(chinese, chinese);
     }
 
-
     @After
     public void tearDown() {
-        try {
-            client.DeleteProject(TEST_PROJECT);
-        } catch (Exception ex) {
-            // swallow it
-        }
+        safeDeleteProjectWithoutSleep(TEST_PROJECT);
     }
 }

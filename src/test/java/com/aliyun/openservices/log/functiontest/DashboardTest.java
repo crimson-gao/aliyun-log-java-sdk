@@ -4,14 +4,22 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.Chart;
 import com.aliyun.openservices.log.common.Dashboard;
 import com.aliyun.openservices.log.exception.LogException;
-import com.aliyun.openservices.log.request.*;
+import com.aliyun.openservices.log.request.CreateDashboardRequest;
+import com.aliyun.openservices.log.request.DeleteChartRequest;
+import com.aliyun.openservices.log.request.DeleteDashboardRequest;
+import com.aliyun.openservices.log.request.GetDashboardRequest;
+import com.aliyun.openservices.log.request.ListDashboardRequest;
+import com.aliyun.openservices.log.request.UpdateDashboardRequest;
 import com.aliyun.openservices.log.response.GetDashboardResponse;
 import com.aliyun.openservices.log.response.ListDashboardResponse;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class DashboardTest extends FunctionTest {
 
@@ -20,12 +28,12 @@ public class DashboardTest extends FunctionTest {
     @Before
     public void setUp() {
         safeCreateProject(TEST_PROJECT, "dashboardtest");
-        waitForSeconds(5);
+        waitForSeconds(65);
     }
 
     @After
     public void tearDown() {
-        safeDeleteProject(TEST_PROJECT);
+        safeDeleteProjectWithoutSleep(TEST_PROJECT);
     }
 
     @Test
@@ -35,7 +43,7 @@ public class DashboardTest extends FunctionTest {
         try {
             client.deleteDashboard(new DeleteDashboardRequest(TEST_PROJECT, dashboardName));
         } catch (LogException ex) {
-            Assert.assertEquals("specified dashboard does not exist", ex.getMessage());
+            assertEquals("specified dashboard does not exist", ex.getMessage());
         }
 
         /*create dashboard*/
@@ -65,7 +73,6 @@ public class DashboardTest extends FunctionTest {
         assertEquals(1, listDashboard.getCount());
         Dashboard listOne = listDashboard.getDashboards().get(0);
         assertEquals(0, listOne.getChartList().size());
-        //assertEquals("Dashboard", listOne.getDescription());//can not get description
         assertEquals("dashboardtest", listOne.getDashboardName());
 
         /*update dashboard*/

@@ -28,6 +28,9 @@ public class ReportConfiguration extends DashboardBasedJobConfiguration {
     @JSONField
     private boolean customizePeriod;
 
+    @JSONField
+    private boolean attachCsv;
+
     /**
      * Must be specified if customizePeriod is true.
      */
@@ -66,6 +69,14 @@ public class ReportConfiguration extends DashboardBasedJobConfiguration {
         this.customizePeriod = customizePeriod;
     }
 
+    public boolean getAttachCsv() {
+        return attachCsv;
+    }
+
+    public void setAttachCsv(boolean attachCsv) {
+        this.attachCsv = attachCsv;
+    }
+
     public TimeSpan getPeriod() {
         return period;
     }
@@ -93,6 +104,7 @@ public class ReportConfiguration extends DashboardBasedJobConfiguration {
         allowAnonymousAccess = JsonUtils.readBool(value, "allowAnonymousAccess", false);
         language = JsonUtils.readOptionalString(value, "language");
         customizePeriod = JsonUtils.readBool(value, "customizePeriod", false);
+        attachCsv = JsonUtils.readBool(value, "attachCsv", false);
         if (customizePeriod) {
             period = new TimeSpan();
             period.deserialize(value.getJSONObject("period"));
@@ -109,6 +121,7 @@ public class ReportConfiguration extends DashboardBasedJobConfiguration {
         if (getEnableWatermark() != that.getEnableWatermark()) return false;
         if (getAllowAnonymousAccess() != that.getAllowAnonymousAccess()) return false;
         if (getCustomizePeriod() != that.getCustomizePeriod()) return false;
+        if (getAttachCsv() != that.getAttachCsv()) return false;
         if (getLanguage() != null ? !getLanguage().equals(that.getLanguage()) : that.getLanguage() != null)
             return false;
         return getPeriod() != null ? getPeriod().equals(that.getPeriod()) : that.getPeriod() == null;
@@ -120,6 +133,7 @@ public class ReportConfiguration extends DashboardBasedJobConfiguration {
         result = 31 * result + (getAllowAnonymousAccess() ? 1 : 0);
         result = 31 * result + (getLanguage() != null ? getLanguage().hashCode() : 0);
         result = 31 * result + (getCustomizePeriod() ? 1 : 0);
+        result = 31 * result + (getAttachCsv() ? 1 : 0);
         result = 31 * result + (getPeriod() != null ? getPeriod().hashCode() : 0);
         return result;
     }
@@ -131,6 +145,7 @@ public class ReportConfiguration extends DashboardBasedJobConfiguration {
                 ", allowAnonymousAccess=" + allowAnonymousAccess +
                 ", language='" + language + '\'' +
                 ", customizePeriod=" + customizePeriod +
+                ", attachCsv=" + attachCsv +
                 ", period=" + period +
                 '}';
     }
