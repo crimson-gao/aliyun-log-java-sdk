@@ -885,6 +885,10 @@ public class Client implements LogService {
 		return logsResponse;
 	}
 
+	public ListLogStoresResponse ListLogStores(String project, int offset, int size) throws LogException {
+		return ListLogStores(project, offset, size, "");
+	}
+
 	public ListLogStoresResponse ListLogStores(String project, int offset,
 			int size, String logstoreName) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");

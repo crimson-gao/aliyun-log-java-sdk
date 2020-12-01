@@ -188,6 +188,28 @@ public interface LogService {
     GetLogsResponse GetProjectLogs(GetProjectLogsRequest request) throws LogException;
 
 	/**
+	 * get all the logstore between offset to (offset + size - 1) under given project
+	 *
+	 * @param project
+	 *            the project name
+	 *
+	 * @param offset
+	 *            the begin offset
+	 *
+	 * @param size
+	 *            the query logstore name count
+	 *
+	 * @return the user's logstore response
+	 * @throws LogException
+	 *             if any error happen when get the data from log service server
+	 * @throws NullPointerException
+	 *             if any parameter is null
+	 * @throws IllegalArgumentException
+	 *             if project is empty
+	 */
+	ListLogStoresResponse ListLogStores(String project, int offset, int size) throws LogException;
+
+	/**
 	 * Get all the logstore for the user
 	 *
 	 * @param project
