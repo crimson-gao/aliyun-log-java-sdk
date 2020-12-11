@@ -1,6 +1,5 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.common.ExternalStore;
 import com.aliyun.openservices.log.common.Parameter;
 import com.aliyun.openservices.log.exception.LogException;
@@ -11,7 +10,9 @@ import com.aliyun.openservices.log.request.ListExternalStoresRequest;
 import com.aliyun.openservices.log.request.UpdateExternalStoreRequest;
 import com.aliyun.openservices.log.response.GetExternalStoreResponse;
 import com.aliyun.openservices.log.response.ListExternalStroesResponse;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
