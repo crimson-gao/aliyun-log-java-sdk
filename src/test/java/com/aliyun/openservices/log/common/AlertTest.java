@@ -229,7 +229,14 @@ public class AlertTest {
 
     @Test
     public void testAlertDeserialize() {
-        String body = "{\"configuration\":{\"noDataFire\":false,\"noDataSeverity\":6,\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"},\"recyclable\":false,\"schedule\":{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"status\":\"Enabled\",\"type\":\"Alert\"}";
+        String body = "{\"state\":\"Enabled\",\"name\":\"alert-1\",\"createTime\":1542763714,\"" +
+                "lastModifiedTime\":1542763714,\"configuration\":{\"noDataFire\":false,\"noDataSeverity\":6," +
+                "\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false," +
+                "\"templateConfiguration\":{\"lang\":\"cn\"," +
+                "\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"}," +
+                "\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"}," +
+                "\"recyclable\":false,\"schedule\":{\"interval\":\"60s\",\"runImmediately\":false," +
+                "\"type\":\"FixedRate\"},\"status\":\"Enabled\",\"type\":\"Alert\"}";
         Alert alert = new Alert();
         alert.deserialize(JSONObject.parseObject(body));
 
