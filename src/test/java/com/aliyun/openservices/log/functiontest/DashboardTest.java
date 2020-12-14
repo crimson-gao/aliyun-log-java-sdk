@@ -37,12 +37,42 @@ public class DashboardTest extends FunctionTest {
     }
 
     @Test
+    public void testListDashboard() throws Exception {
+        ListDashboardResponse response = client.listDashboard(new ListDashboardRequest(TEST_PROJECT));
+        assertEquals(0, response.getCount());
+        assertEquals(0, response.getTotal());
+        assertEquals(0, response.getDashboards().size());
+
+        int x = randomInt(10);
+        for (int i = 0; i < x; i++) {
+            Dashboard dashboard = new Dashboard();
+            dashboard.setDashboardName("dash-" + i);
+            dashboard.setDescription("Dashboard");
+            dashboard.setChartList(new ArrayList<Chart>());
+            CreateDashboardRequest createDashboardRequest = new CreateDashboardRequest(TEST_PROJECT, dashboard);
+            client.createDashboard(createDashboardRequest);
+        }
+        response = client.listDashboard(new ListDashboardRequest(TEST_PROJECT));
+        assertEquals(x, response.getCount());
+        assertEquals(x, response.getTotal());
+        assertEquals(x, response.getDashboards().size());
+        for (int i = 0; i < x; i++) {
+            client.deleteDashboard(new DeleteDashboardRequest(TEST_PROJECT, "dash-" + i));
+        }
+        response = client.listDashboard(new ListDashboardRequest(TEST_PROJECT));
+        assertEquals(0, response.getCount());
+        assertEquals(0, response.getTotal());
+        assertEquals(0, response.getDashboards().size());
+    }
+
+    @Test
     public void testCRUD() throws LogException {
         /*delete dashboard*/
         String dashboardName = "dashboardtest";
         try {
             client.deleteDashboard(new DeleteDashboardRequest(TEST_PROJECT, dashboardName));
         } catch (LogException ex) {
+            System.out.println(ex.toString());
             assertEquals("specified dashboard does not exist", ex.getMessage());
         }
 

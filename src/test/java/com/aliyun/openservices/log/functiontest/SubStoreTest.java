@@ -25,7 +25,7 @@ public class SubStoreTest extends FunctionTest {
     @After
     public void clearData() {
         safeDeleteLogStore(PROJECT, LOGSTORE1);
-        safeDeleteProject(PROJECT);
+        safeDeleteProjectWithoutSleep(PROJECT);
     }
 
     //this method is not implemented for metric store not Implemented yet!

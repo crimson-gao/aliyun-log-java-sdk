@@ -28,7 +28,7 @@ public class ExternalStoreTest extends FunctionTest {
 
     @AfterClass
     public static void tearDown() {
-        safeDeleteProject(project);
+        safeDeleteProjectWithoutSleep(project);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class ExternalStoreTest extends FunctionTest {
         //create
         Parameter parameter = new Parameter();
         //以下四个参数，只要不是null都可以创建
-        parameter.setEndpoint("123");
+        parameter.setEndpoint("oss-cn-hangzhou.aliyuncs.com");
         parameter.setAccessid("456");
         parameter.setAccesskey("789");
         parameter.setBucket("0");
@@ -110,11 +110,11 @@ public class ExternalStoreTest extends FunctionTest {
 //        注意，此处会返回创建者的accessid和accesskey
         GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(project, "name-oss");
         GetExternalStoreResponse getResponse1 = client.getExternalStore(getRequest1);   //LogException: Internal Server Error
-        assertEquals(getResponse1.getExternalStore().getParameter().getEndpoint(), "123");
+        assertEquals(getResponse1.getExternalStore().getParameter().getEndpoint(), "oss-cn-hangzhou.aliyuncs.com");
 
         //update
         Parameter parameter2 = new Parameter();
-        parameter2.setEndpoint("321");
+        parameter2.setEndpoint("oss-cn-hangzhou.aliyuncs.com");
         parameter2.setAccessid("654");
         parameter2.setAccesskey("987");
         parameter2.setBucket("1");
@@ -125,7 +125,7 @@ public class ExternalStoreTest extends FunctionTest {
         //get
         GetExternalStoreRequest getRequest2 = new GetExternalStoreRequest(project, "name-oss");
         GetExternalStoreResponse getResponse2 = client.getExternalStore(getRequest2);
-        assertEquals(getResponse2.getExternalStore().getParameter().getEndpoint(), "321");
+        assertEquals(getResponse2.getExternalStore().getParameter().getEndpoint(), "oss-cn-hangzhou.aliyuncs.com");
 
         waitForSeconds(10); //need to wait to get value
         //list
