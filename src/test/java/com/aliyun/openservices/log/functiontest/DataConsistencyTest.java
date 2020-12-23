@@ -3,7 +3,7 @@ package com.aliyun.openservices.log.functiontest;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.Consts;
-import com.aliyun.openservices.log.common.LZ4Encoder;
+import com.aliyun.openservices.log.util.LZ4Encoder;
 import com.aliyun.openservices.log.common.LogContent;
 import com.aliyun.openservices.log.common.QueriedLog;
 import com.aliyun.openservices.log.exception.LogException;

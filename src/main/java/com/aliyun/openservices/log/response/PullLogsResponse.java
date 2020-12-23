@@ -1,7 +1,7 @@
 package com.aliyun.openservices.log.response;
 
 import com.aliyun.openservices.log.common.Consts;
-import com.aliyun.openservices.log.common.LZ4Encoder;
+import com.aliyun.openservices.log.util.LZ4Encoder;
 import com.aliyun.openservices.log.common.LogGroupData;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.util.Args;

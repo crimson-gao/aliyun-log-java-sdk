@@ -15,7 +15,7 @@ import com.aliyun.openservices.log.common.Consts.CompressType;
 import com.aliyun.openservices.log.common.Consts.CursorMode;
 import com.aliyun.openservices.log.common.GroupAttribute;
 import com.aliyun.openservices.log.common.Histogram;
-import com.aliyun.openservices.log.common.LZ4Encoder;
+import com.aliyun.openservices.log.util.LZ4Encoder;
 import com.aliyun.openservices.log.common.LogContent;
 import com.aliyun.openservices.log.common.LogGroupData;
 import com.aliyun.openservices.log.common.LogItem;
