@@ -2,6 +2,7 @@ package com.aliyun.openservices.log.common;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.util.JsonUtils;
 import org.junit.Test;
 
@@ -215,6 +216,9 @@ public class AlertTest {
         tokens.put("default.logstore","test_logstore");
         tokens.put("default.app", "sls.audit.alert_policy_default");
         templateConfiguration.setTokens(tokens);
+        HashMap<String,String> annotations = new HashMap<String, String>();
+        annotations.put("__k2","dwdd");
+        templateConfiguration.setAnnotations(annotations);
         alertConfiguration.setTemplateConfiguration(templateConfiguration);
         alert.setConfiguration(alertConfiguration);
         alert.setStatus(JobState.ENABLED.toString());
@@ -224,7 +228,7 @@ public class AlertTest {
         alert.setSchedule(schedule);
 
         String body = JsonUtils.serialize(alert);
-        assertEquals(body, "{\"configuration\":{\"noDataFire\":false,\"noDataSeverity\":6,\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"},\"recyclable\":false,\"schedule\":{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"status\":\"Enabled\",\"type\":\"Alert\"}");
+        assertEquals(body, "{\"configuration\":{\"noDataFire\":false,\"noDataSeverity\":6,\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"annotations\":{\"__k2\":\"dwdd\"},\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"},\"recyclable\":false,\"schedule\":{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"status\":\"Enabled\",\"type\":\"Alert\"}");
     }
 
     @Test
