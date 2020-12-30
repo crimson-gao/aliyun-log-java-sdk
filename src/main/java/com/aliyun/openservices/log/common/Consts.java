@@ -401,6 +401,8 @@ public class Consts {
     public static final String RESOURCE_RECORD_VALUE = "value";
     public static final String RESOURCE_RECORDS = "records";
     public static final String RESOURCE_OWNER = "owner";
+    public static final String RESOURCE_SEARCHED_JSON = "sjson";
+    public static final String RESOURCE_SEARCHED_VALUE = "search";
 
     public static final String LOGGING_URI = "/logging";
     public static final String METHOD = "method";

@@ -11,7 +11,25 @@ public class ListResourceRecordRequest extends RecordRequest {
     private Integer offset;
     private Integer size;
     private String tag;
+    private String searchedValue;
+    private String searchedJson;
     private List<String> recordIds = new ArrayList<String>();
+
+    public String getSearchedValue() {
+        return searchedValue;
+    }
+
+    public void setSearchedValue(String searchedValue) {
+        this.searchedValue = searchedValue;
+    }
+
+    public String getSearchedJson() {
+        return searchedJson;
+    }
+
+    public void setSearchedJson(String searchedJson) {
+        this.searchedJson = searchedJson;
+    }
 
     public Integer getOffset() {
         return offset;
@@ -64,6 +82,14 @@ public class ListResourceRecordRequest extends RecordRequest {
 
         if (recordIds != null && !recordIds.isEmpty()) {
             SetParam(Consts.RESOURCE_RECORD_IDS, Utils.join(",", recordIds));
+        }
+
+        if (searchedValue != null && !searchedValue.isEmpty()) {
+            SetParam(Consts.RESOURCE_SEARCHED_VALUE, searchedValue);
+        }
+
+        if (searchedJson != null && !searchedJson.isEmpty()) {
+            SetParam(Consts.RESOURCE_SEARCHED_JSON, searchedJson);
         }
         return super.GetAllParams();
     }
