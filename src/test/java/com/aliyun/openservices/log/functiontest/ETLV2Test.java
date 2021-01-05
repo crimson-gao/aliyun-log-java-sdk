@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
 @Ignore
 public class ETLV2Test {
 
@@ -52,6 +52,7 @@ public class ETLV2Test {
         // Get
         GetETLV2Response getETLV2Response = client.getETLV2(new GetETLV2Request(project,etlName));
         assertEquals(etlName, getETLV2Response.getEtl().getName());
+        assertNotNull(getETLV2Response.getEtl().getScheduleId());
         assertEquals("RUNNING", getETLV2Response.getEtl().getStatus());
         assertEquals("Resident",getETLV2Response.getEtl().getSchedule().getType().toString());
     }
@@ -99,6 +100,7 @@ public class ETLV2Test {
         Integer expectTotal = 1;
         assertEquals(listETLV2Response.getCount(),expectCount);
         assertEquals(listETLV2Response.getTotal(),expectTotal);
+        assertNotNull(listETLV2Response.getResults().get(0).getScheduleId());
     }
 
     @Test
@@ -126,7 +128,7 @@ public class ETLV2Test {
         configuration.setAccessKeySecret(accessKeySecret);
         configuration.setRoleArn(roleArn);
         configuration.setFromTime(1600744266);
-        configuration.setToTime(1600844266);
+        configuration.setToTime(1700844266);
         configuration.setParameters(Collections.<String, String>emptyMap());
         List<AliyunLOGSink> sinks = new ArrayList<AliyunLOGSink>();
         AliyunLOGSink sink = new AliyunLOGSink("test", project, sinkLogstore);
