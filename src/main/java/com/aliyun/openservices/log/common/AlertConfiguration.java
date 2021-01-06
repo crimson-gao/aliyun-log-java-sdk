@@ -154,7 +154,7 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
             setSendResolved(value.getBoolean("sendResolved"));
         }
         templateConfiguration = new TemplateConfiguration();
-        if (value.containsKey("templateConfiguration")) {
+        if (value.containsKey("templateConfiguration") && value.getJSONObject("templateConfiguration") != null) {
             templateConfiguration.deserialize(value.getJSONObject("templateConfiguration"));
         }
         conditionConfiguration = new ConditionConfiguration();
@@ -204,12 +204,12 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
             }
         });
         groupConfiguration  = new GroupConfiguration();
-        if (value.containsKey("groupConfiguration")) {
+        if (value.containsKey("groupConfiguration") && value.getJSONObject("groupConfiguration") != null) {
             groupConfiguration.deserialize(value.getJSONObject("groupConfiguration"));
         }
 
         policyConfiguration = new PolicyConfiguration();
-        if (value.containsKey("policyConfiguration")) {
+        if (value.containsKey("policyConfiguration") && value.getJSONObject("policyConfiguration") != null) {
             policyConfiguration.deserialize(value.getJSONObject("policyConfiguration"));
         }
     }

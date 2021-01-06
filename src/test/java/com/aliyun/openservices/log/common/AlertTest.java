@@ -295,4 +295,25 @@ public class AlertTest {
         assertEquals(configuration, alert.getConfiguration());
     }
 
+    @Test
+    public void testAlertConfigurationDeserializeNull() {
+        String configuration = "{\"condition\":\"\",\"dashboard\":\"\",\"queryList\":[{\"chartTitle\":\"\",\"logStore\":\"\",\"query\":\"* | " +
+                "select name, min(latency) as latency group by name\",\"timeSpanType\":\"Custom\",\"start\":\"-3600s\",\"end\":\"now\"," +
+                "\"storeType\":\"log\",\"project\":\"\",\"store\":\"test-alert-latency\",\"ui\":\"\",\"region\":\"\",\"roleArn\":\"\"}," +
+                "{\"chartTitle\":\"\",\"logStore\":\"\",\"query\":\"* | select name, count(uid) as uv group by name\"," +
+                "\"timeSpanType\":\"Custom\",\"start\":\"-3600s\",\"end\":\"now\",\"storeType\":\"log\",\"project\":\"\"," +
+                "\"store\":\"test-alert-access\",\"ui\":\"\",\"region\":\"\",\"roleArn\":\"\"}],\"muteUntil\":1605622333," +
+                "\"notificationList\":null,\"notifyThreshold\":0,\"throttling\":\"\",\"version\":\"2.0\",\"type\":\"default\"," +
+                "\"threshold\":1,\"noDataFire\":true,\"noDataSeverity\":10,\"sendResolved\":true,\"templateConfiguration\":null," +
+                "\"joinConfigurations\":[{\"type\":\"left_join\",\"condition\":\"$0.name == $1.name\",\"ui\":\"\"}]," +
+                "\"groupConfiguration\":{\"type\":\"custom\",\"fields\":[\"name\"]},\"conditionConfiguration\":{\"condition\":\"uv > 200\",\"countCondition\":\"__count__ > 1\"}," +
+                "\"annotations\":[{\"key\":\"ak1\",\"value\":\"av1\"},{\"key\":\"title\",\"value\":\"test-huolang-alert-2\"}]," +
+                "\"labels\":[{\"key\":\"lk1\",\"value\":\"lv1\"}]," +
+                "\"severityConfigurations\":[{\"severity\":8,\"evalCondition\":{\"condition\":\"uv > 100\",\"countCondition\":\"\"}}," +
+                "{\"severity\":6,\"evalCondition\":{\"condition\":\"\",\"countCondition\":\"\"}}]," +
+                "\"policyConfiguration\":{\"useDefault\":false,\"repeatInterval\":\"3m\",\"alertPolicyId\":\"sls.builtin.dynamic\",\"actionPolicyId\":\"test-action-policy-1\"}}";
+        AlertConfiguration alertConfiguration = new AlertConfiguration();
+        alertConfiguration.deserialize(JSONObject.parseObject(configuration));
+    }
+
 }
