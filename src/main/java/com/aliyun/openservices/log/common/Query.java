@@ -42,6 +42,8 @@ public class Query implements Serializable {
     private String region;
     @JSONField
     private String roleArn;
+    @JSONField
+    private String dashboardId;
 
     public String getRoleArn() {
         return roleArn;
@@ -139,6 +141,14 @@ public class Query implements Serializable {
         this.end = end;
     }
 
+    public String getDashboardId() {
+        return dashboardId;
+    }
+
+    public void setDashboardId(String dashboardId) {
+        this.dashboardId = dashboardId;
+    }
+
     public void deserialize(JSONObject value) {
         setChartTitle(value.getString("chartTitle"));
         setLogStore(value.getString("logStore"));
@@ -167,6 +177,9 @@ public class Query implements Serializable {
         }
         if (value.containsKey("roleArn")) {
             setRoleArn(value.getString("roleArn"));
+        }
+        if (value.containsKey("dashboardId")) {
+            setDashboardId(value.getString("dashboardId"));
         }
     }
 
