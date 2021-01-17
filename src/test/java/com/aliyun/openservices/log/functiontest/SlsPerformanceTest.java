@@ -14,7 +14,6 @@ import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.response.GetHistogramsResponse;
 import com.aliyun.openservices.log.response.GetLogsResponse;
 import com.aliyun.openservices.log.response.ListLogStoresResponse;
-import com.aliyun.openservices.log.response.ListTopicsResponse;
 import com.aliyun.openservices.log.response.PullLogsResponse;
 import com.aliyun.openservices.log.response.PutLogsResponse;
 import com.google.protobuf.ByteString;

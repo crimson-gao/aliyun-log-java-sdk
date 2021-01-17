@@ -13,7 +13,6 @@ import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.PullLogsRequest;
 import com.aliyun.openservices.log.response.GetHistogramsResponse;
 import com.aliyun.openservices.log.response.GetLogsResponse;
-import com.aliyun.openservices.log.response.ListTopicsResponse;
 import com.aliyun.openservices.log.response.PullLogsResponse;
 
 import java.util.ArrayList;

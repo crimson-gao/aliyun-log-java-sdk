@@ -15,7 +15,6 @@ import com.aliyun.openservices.log.common.Consts.CompressType;
 import com.aliyun.openservices.log.common.Consts.CursorMode;
 import com.aliyun.openservices.log.common.GroupAttribute;
 import com.aliyun.openservices.log.common.Histogram;
-import com.aliyun.openservices.log.util.LZ4Encoder;
 import com.aliyun.openservices.log.common.LogContent;
 import com.aliyun.openservices.log.common.LogGroupData;
 import com.aliyun.openservices.log.common.LogItem;
@@ -40,7 +39,6 @@ import com.aliyun.openservices.log.request.ListACLRequest;
 import com.aliyun.openservices.log.request.ListConfigRequest;
 import com.aliyun.openservices.log.request.ListMachineGroupRequest;
 import com.aliyun.openservices.log.request.ListShardRequest;
-import com.aliyun.openservices.log.request.ListTopicsRequest;
 import com.aliyun.openservices.log.request.PutLogsRequest;
 import com.aliyun.openservices.log.request.RemoveConfigFromMachineGroupRequest;
 import com.aliyun.openservices.log.request.Request;
@@ -55,6 +53,7 @@ import com.aliyun.openservices.log.response.ListLogStoresResponse;
 import com.aliyun.openservices.log.response.ListMachineGroupResponse;
 import com.aliyun.openservices.log.response.ListShardResponse;
 import com.aliyun.openservices.log.response.Response;
+import com.aliyun.openservices.log.util.LZ4Encoder;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -2601,18 +2600,6 @@ public class SlsClientUnitTest {
         assertEquals("src1", req3.GetSource());
         assertEquals("tpc1", req3.GetTopic());
         assertEquals(0, req3.GetLogItems().size());
-
-        ListTopicsRequest req4 = new ListTopicsRequest("", "lst2");
-        req4.SetToken("tk1");
-        assertEquals("lst2", req4.GetLogStore());
-        assertEquals("tk1", req4.GetToken());
-        assertEquals(0, req4.GetLine());
-
-        req4.SetLine(9);
-        assertEquals(9, req4.GetLine());
-
-        req4.SetLogStore("lst3");
-        assertEquals("lst3", req4.GetLogStore());
 
         ListShardRequest req5 = new ListShardRequest("", "");
         req5.SetLogStore("lst4");

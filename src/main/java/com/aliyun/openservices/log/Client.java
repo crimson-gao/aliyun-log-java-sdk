@@ -190,7 +190,6 @@ import com.aliyun.openservices.log.request.ListSavedSearchRequest;
 import com.aliyun.openservices.log.request.ListShardRequest;
 import com.aliyun.openservices.log.request.ListSubStoreRequest;
 import com.aliyun.openservices.log.request.ListTagResourcesRequest;
-import com.aliyun.openservices.log.request.ListTopicsRequest;
 import com.aliyun.openservices.log.request.MergeShardsRequest;
 import com.aliyun.openservices.log.request.ProjectConsumerGroupGetCheckPointRequest;
 import com.aliyun.openservices.log.request.ProjectConsumerGroupHeartBeatRequest;
@@ -380,7 +379,6 @@ import com.aliyun.openservices.log.response.ListShardResponse;
 import com.aliyun.openservices.log.response.ListShipperResponse;
 import com.aliyun.openservices.log.response.ListSubStoreResponse;
 import com.aliyun.openservices.log.response.ListTagResourcesResponse;
-import com.aliyun.openservices.log.response.ListTopicsResponse;
 import com.aliyun.openservices.log.response.ProjectConsumerGroupCheckPointResponse;
 import com.aliyun.openservices.log.response.ProjectConsumerGroupHeartBeatResponse;
 import com.aliyun.openservices.log.response.ProjectConsumerGroupUpdateCheckPointResponse;
@@ -1274,39 +1272,6 @@ public class Client implements LogService {
 				Consts.CONST_RESULT_LOG_STORES, object));
 		listLogStoresResponse.SetTotal(object.getIntValue(Consts.CONST_TOTAL));
 		return listLogStoresResponse;
-	}
-
-	public ListTopicsResponse ListTopics(String project, String logStore,
-										 String token, int line) throws LogException {
-		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
-		CodingUtils.assertParameterNotNull(token, "token");
-		ListTopicsRequest request = new ListTopicsRequest(project, logStore, token, line);
-		return ListTopics(request);
-	}
-
-	public ListTopicsResponse ListTopics(ListTopicsRequest request)
-			throws LogException {
-		CodingUtils.assertParameterNotNull(request, "request");
-		Map<String, String> urlParameter = request.GetAllParams();
-		String project = request.GetProject();
-		String logStore = request.GetLogStore();
-		Map<String, String> headParameter = GetCommonHeadPara(project);
-		String resourceUri = "/logstores/" + logStore + "/index";
-		ResponseMessage response = SendData(project, HttpMethod.GET,
-				resourceUri, urlParameter, headParameter);
-		Map<String, String> resHeaders = response.getHeaders();
-		String requestId = GetRequestId(resHeaders);
-		JSONArray json_array = this.ParseResponseMessageToArray(response, requestId);
-		ListTopicsResponse listTopicResponse = new ListTopicsResponse(resHeaders);
-		List<String> string_array = new ArrayList<String>();
-		if (json_array != null) {
-			for (int index = 0; index < json_array.size(); index++) {
-				string_array.add(json_array.getString(index));
-			}
-		}
-		listTopicResponse.SetTopics(string_array);
-		return listTopicResponse;
 	}
 
 	public GetCursorResponse GetCursor(String project, String logStore,
