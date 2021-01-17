@@ -19,7 +19,7 @@ public abstract class FunctionTest {
 
     static final Random RANDOM = new Random();
     static final Credentials credentials = Credentials.load();
-    static final Client client = new Client(credentials.getEndpoint(), credentials.getAccessKeyId(), credentials.getAccessKey());
+    static Client client = new Client(credentials.getEndpoint(), credentials.getAccessKeyId(), credentials.getAccessKey());
 
     static int getNowTimestamp() {
         return (int) (new Date().getTime() / 1000);

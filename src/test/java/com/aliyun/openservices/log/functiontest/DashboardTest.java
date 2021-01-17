@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -67,7 +68,6 @@ public class DashboardTest extends FunctionTest {
 
     @Test
     public void testCRUD() throws LogException {
-        /*delete dashboard*/
         String dashboardName = "dashboardtest";
         try {
             client.deleteDashboard(new DeleteDashboardRequest(TEST_PROJECT, dashboardName));
@@ -76,7 +76,6 @@ public class DashboardTest extends FunctionTest {
             assertEquals("specified dashboard does not exist", ex.getMessage());
         }
 
-        /*create dashboard*/
         Dashboard dashboard = new Dashboard();
         dashboard.setDashboardName(dashboardName);
         dashboard.setDescription("Dashboard");
@@ -90,14 +89,12 @@ public class DashboardTest extends FunctionTest {
             assertEquals(ex.GetErrorCode(), "ParameterInvalid");
         }
 
-        /*get dashboard*/
         GetDashboardResponse getDashboardResponse = client.getDashboard(new GetDashboardRequest(TEST_PROJECT, dashboardName));
         Dashboard getDashboard = getDashboardResponse.getDashboard();
         assertEquals(0, getDashboard.getChartList().size());
         assertEquals("Dashboard", getDashboard.getDescription());
         assertEquals("dashboardtest", getDashboard.getDashboardName());
 
-        /*list dashboard*/
         ListDashboardResponse listDashboard = client.listDashboard(new ListDashboardRequest(TEST_PROJECT));
         assertEquals(1, listDashboard.getTotal());
         assertEquals(1, listDashboard.getCount());
@@ -105,12 +102,23 @@ public class DashboardTest extends FunctionTest {
         assertEquals(0, listOne.getChartList().size());
         assertEquals("dashboardtest", listOne.getDashboardName());
 
-        /*update dashboard*/
         ArrayList<Chart> charts = new ArrayList<Chart>();
         Chart chart1 = createChart("chart-111");
         charts.add(chart1);
         dashboard.setChartList(charts);
         client.updateDashboard(new UpdateDashboardRequest(TEST_PROJECT, dashboard));
+
+        GetDashboardResponse response = client.getDashboard(new GetDashboardRequest(TEST_PROJECT, dashboardName));
+        Dashboard dashboard1 = response.getDashboard();
+        List<Chart> charts1 = dashboard1.getChartList();
+        assertEquals(1, charts1.size());
+        Chart chartRes = charts1.get(0);
+        assertEquals(chart1.getQuery(), chartRes.getQuery());
+        assertEquals(chart1.getTitle(), chartRes.getTitle());
+        assertEquals(chart1.getStart(), chartRes.getStart());
+        assertEquals(chart1.getEnd(), chartRes.getEnd());
+        assertEquals(chart1.getLogstore(), chartRes.getLogstore());
+        assertEquals(chart1.getTopic(), chartRes.getTopic());
 
         Chart chart2 = createChart("chart-111");
         charts.add(chart2);
