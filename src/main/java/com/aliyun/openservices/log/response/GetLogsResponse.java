@@ -32,6 +32,11 @@ public class GetLogsResponse extends Response {
 	private long mProcessedRow = 0;
 	private long mElapsedMilliSecond = 0;
 	private long mLimited = 0;
+	private double mCpuSec =0;
+
+
+
+	private long mCpuCores = 0;
 
 	private ArrayList<String> mKeys;
 	private ArrayList<ArrayList<String>> mTerms;
@@ -63,6 +68,13 @@ public class GetLogsResponse extends Response {
 		// checck x-log-elapsed-millisecond
 		if (headers.containsKey(Consts.CONST_X_LOG_ELAPSEDMILLISECOND))
 			this.setElapsedMilliSecond(Long.parseLong(headers.get(Consts.CONST_X_LOG_ELAPSEDMILLISECOND)));
+
+		//check x-log-cpu-sec
+		if (headers.containsKey(Consts.CONST_X_LOG_CPU_SEC))
+			this.setCpuSec(Double.parseDouble(headers.get(Consts.CONST_X_LOG_CPU_SEC)));
+		if (headers.containsKey(Consts.CONST_X_LOG_CPU_CORES))
+			this.setCpuCores(Long.parseLong(headers.get(Consts.CONST_X_LOG_CPU_CORES)));
+
 		if(headers.containsKey(Consts.CONST_X_LOG_QUERY_INFO))
 		{
 			com.alibaba.fastjson.JSONObject object = com.alibaba.fastjson.JSONObject.parseObject(headers.get(Consts.CONST_X_LOG_QUERY_INFO));
@@ -130,6 +142,23 @@ public class GetLogsResponse extends Response {
 	public void setElapsedMilliSecond(long mElapsedMilliSecond) {
 		this.mElapsedMilliSecond = mElapsedMilliSecond;
 	}
+
+	public void setCpuSec(double mCpuSec) {
+		this.mCpuSec = mCpuSec;
+	}
+
+	public double getCpuSec()
+	{
+		return this.mCpuSec;
+	}
+	public long getCpuCores()
+	{
+		return this.mCpuCores;
+	}
+	public void setCpuCores(long mCpuCores) {
+		this.mCpuCores = mCpuCores;
+	}
+
 
 	public long getProcessedRow() {
 

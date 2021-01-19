@@ -139,6 +139,8 @@ public class Consts {
     public static final String CONST_X_LOG_PROCESSEDROWS = "x-log-processed-rows";
     public static final String CONST_X_LOG_ELAPSEDMILLISECOND = "x-log-elapsed-millisecond";
     public static final String CONST_X_LOG_QUERY_INFO = "x-log-query-info";
+    public static final String CONST_X_LOG_CPU_SEC = "x-log-cpu-sec";
+    public static final String CONST_X_LOG_CPU_CORES = "x-log-cpu-cores";
 
     public static final String CONST_HOST = "Host";
     public static final String CONST_DATE = "Date";
@@ -150,6 +152,7 @@ public class Consts {
     public static final String CONST_LINE = "line";
     public static final String CONST_OFFSET = "offset";
     public static final String CONST_REVERSE = "reverse";
+    public static final String CONST_POWER_SQL="powerSql";
     public static final String CONST_QUERY = "query";
     public static final String CONST_TOKEN = "token";
     public static final String CONST_CURSOR = "cursor";
