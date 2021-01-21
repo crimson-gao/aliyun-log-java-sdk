@@ -3554,4 +3554,9 @@ public interface LogService {
 	CreateOrUpdateSqlInstanceResponse updateSqlInstance(CreateOrUpdateSqlInstanceRequest request) throws LogException;
 	ListSqlInstanceResponse listSqlInstance(ListSqlInstanceRequest request) throws LogException;
 
+	CreateMetricAggRulesResponse createMetricAggRules(CreateMetricAggRulesRequest request) throws LogException;
+	ListMetricAggRulesResponse listMetricAggRules(ListMetricAggRulesRequest request) throws LogException;
+	GetMetricAggRulesResponse getMetricAggRules(GetMetricAggRulesRequest request) throws LogException;
+	UpdateMetricAggRulesResponse updateMetricAggRules(UpdateMetricAggRulesRequest request) throws LogException;
+	DeleteMetricAggRulesResponse deleteMetricAggRules(DeleteMetricAggRulesRequest request) throws LogException;
 }
