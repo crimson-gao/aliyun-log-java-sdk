@@ -9,7 +9,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -20,16 +24,15 @@ public class TagResourcesTest extends FunctionTest {
     @Before
     public void setUp() {
         safeCreateProject(TEST_PROJECT, "test tag sources");
-        waitForSeconds(10);
     }
 
     @After
     public void clearDown() {
-        safeDeleteProject(TEST_PROJECT);
+        safeDeleteProjectWithoutSleep(TEST_PROJECT);
     }
 
     @Test
-    public void testTagSources() {
+    public void testTagSources() throws LogException {
         //test invalid resourceType
         try {
             client.tagResources(createTagSources("project-1", TEST_PROJECT, 2, false));
@@ -62,15 +65,11 @@ public class TagResourcesTest extends FunctionTest {
             assertEquals("request tag key value pair size must little than 20", e.GetErrorMessage());
         }
         //created correctly
-        try {
-            client.tagResources(createTagSources("project", TEST_PROJECT, 3, false));
-        } catch (LogException e) {
-            fail(e.GetErrorMessage());
-        }
+        client.tagResources(createTagSources("project", TEST_PROJECT, 3, false));
     }
 
     @Test
-    public void testUnTagSources() {
+    public void testUnTagSources() throws LogException {
         //invalid delete
         try {
             client.untagResources(createTagSources("project-1", TEST_PROJECT, 2, true));
@@ -100,28 +99,20 @@ public class TagResourcesTest extends FunctionTest {
             assertEquals("PostBodyInvalid", e.GetErrorCode());
             assertEquals("tag key value pair count exceed", e.GetErrorMessage());
         }
-        try {
-            client.tagResources(createTagSources("project", TEST_PROJECT, 3, false));
-        } catch (LogException e) {
-            fail(e.GetErrorMessage());
-        }
+        client.tagResources(createTagSources("project", TEST_PROJECT, 3, false));
 
         //delete & list
-        try {
-            client.untagResources(createTagSources("project", TEST_PROJECT, 2, true));
-            ListTagResourcesResponse resources = client.listTagResources(new ListTagResourcesRequest("project",
-                    Arrays.asList(TEST_PROJECT), Collections.singletonMap("tag-key-" + 2, "tag-value-" + 2)));
-            JSONObject parseObject = JSONObject.parseObject(resources.getTagList());
-            List<String> array = JSONArray.parseArray(parseObject.getString("tagResources"), String.class);
-            assertEquals(1, array.size());
-            JSONObject res = JSONObject.parseObject(array.get(0));
-            assertEquals("project", res.getString("resourceType"));
-            assertEquals(TEST_PROJECT, res.getString("resourceId"));
-            assertEquals("tag-key-2", res.getString("tagKey"));
-            assertEquals("tag-value-2", res.getString("tagValue"));
-        } catch (LogException e) {
-            fail(e.GetErrorMessage());
-        }
+        client.untagResources(createTagSources("project", TEST_PROJECT, 2, true));
+        ListTagResourcesResponse resources = client.listTagResources(new ListTagResourcesRequest("project",
+                Arrays.asList(TEST_PROJECT), Collections.singletonMap("tag-key-" + 2, "tag-value-" + 2)));
+        JSONObject parseObject = JSONObject.parseObject(resources.getTagList());
+        List<String> array = JSONArray.parseArray(parseObject.getString("tagResources"), String.class);
+        assertEquals(1, array.size());
+        JSONObject res = JSONObject.parseObject(array.get(0));
+        assertEquals("project", res.getString("resourceType"));
+        assertEquals(TEST_PROJECT, res.getString("resourceId"));
+        assertEquals("tag-key-2", res.getString("tagKey"));
+        assertEquals("tag-value-2", res.getString("tagValue"));
     }
 
     private String createTagSources(String type, String id, int length, boolean untag) {

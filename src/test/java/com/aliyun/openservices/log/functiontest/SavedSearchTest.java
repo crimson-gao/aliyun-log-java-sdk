@@ -26,7 +26,6 @@ public class SavedSearchTest extends FunctionTest {
     @Before
     public void setUp() {
         safeCreateProject(TEST_PROJECT, "savedsearch test");
-        waitForSeconds(5);
     }
 
     @Test
@@ -47,64 +46,51 @@ public class SavedSearchTest extends FunctionTest {
         savedSearch.setSearchQuery("*");
         try {
             client.createSavedSearch(new CreateSavedSearchRequest(TEST_PROJECT, savedSearch));
+            fail("createSavedSearch should fail");
         } catch (LogException ex) {
             assertEquals(ex.GetErrorMessage(), "savedsearch quota exceed");
             assertEquals(ex.GetErrorCode(), "ExceedQuota");
         }
-        try {
-            for (int i = 0; i < 100; i++) {
-                String name = savedsearchName + i;
-                for (int j = 0; j < 10; j++) {
-                    // Test cache hit
-                    GetSavedSearchResponse getSavedSearchResponse = client.getSavedSearch(new GetSavedSearchRequest(TEST_PROJECT, name));
-                    SavedSearch getSavedSearch = getSavedSearchResponse.getSavedSearch();
-                    assertEquals(getSavedSearch.getSavedSearchName(), name);
-                    assertEquals(getSavedSearch.getDisplayName(), name);
-                    assertEquals(getSavedSearch.getSearchQuery(), "*");
-                    assertEquals(getSavedSearch.getLogstore(), "logstore-1");
-                }
-            }
-        } catch (LogException e) {
-            fail(e.GetErrorMessage());
-        }
-        //list
-        try {
-            for (int idx = 0; idx < 10; idx++) {
+        for (int i = 0; i < 100; i++) {
+            String name = savedsearchName + i;
+            for (int j = 0; j < 10; j++) {
                 // Test cache hit
-                ListSavedSearchResponse listSavedSearch = client.listSavedSearch(new ListSavedSearchRequest(TEST_PROJECT));
-                assertEquals(listSavedSearch.getCount(), 100);
-                assertEquals(listSavedSearch.getTotal(), 100);
-                List<SavedSearch> savedSearches = listSavedSearch.getSavedSearches();
-                for (SavedSearch search : savedSearches) {
-                    assertTrue(search.getSavedSearchName().startsWith(savedsearchName));
-                    assertTrue(search.getDisplayName().startsWith(savedsearchName));
-                }
+                GetSavedSearchResponse getSavedSearchResponse = client.getSavedSearch(new GetSavedSearchRequest(TEST_PROJECT, name));
+                SavedSearch getSavedSearch = getSavedSearchResponse.getSavedSearch();
+                assertEquals(getSavedSearch.getSavedSearchName(), name);
+                assertEquals(getSavedSearch.getDisplayName(), name);
+                assertEquals(getSavedSearch.getSearchQuery(), "*");
+                assertEquals(getSavedSearch.getLogstore(), "logstore-1");
             }
-        } catch (LogException e) {
-            fail(e.GetErrorMessage());
         }
+        for (int idx = 0; idx < 10; idx++) {
+            // Test cache hit
+            ListSavedSearchResponse listSavedSearch = client.listSavedSearch(new ListSavedSearchRequest(TEST_PROJECT));
+            assertEquals(listSavedSearch.getCount(), 100);
+            assertEquals(listSavedSearch.getTotal(), 100);
+            List<SavedSearch> savedSearches = listSavedSearch.getSavedSearches();
+            for (SavedSearch search : savedSearches) {
+                assertTrue(search.getSavedSearchName().startsWith(savedsearchName));
+                assertTrue(search.getDisplayName().startsWith(savedsearchName));
+            }
+        }
+
         //update
-        try {
-            SavedSearch updateSaveSearch = new SavedSearch();
-            updateSaveSearch.setSavedSearchName(savedsearchName + 0);
-            updateSaveSearch.setLogstore("logstore-2");
-            updateSaveSearch.setDisplayName(savedsearchName + "update");
-            updateSaveSearch.setSearchQuery("*");
-            client.updateSavedSearch(new UpdateSavedSearchRequest(TEST_PROJECT, updateSaveSearch));
-        } catch (LogException e) {
-            fail(e.GetErrorMessage());
-        }
+        SavedSearch updateSaveSearch = new SavedSearch();
+        updateSaveSearch.setSavedSearchName(savedsearchName + 0);
+        updateSaveSearch.setLogstore("logstore-2");
+        updateSaveSearch.setDisplayName(savedsearchName + "update");
+        updateSaveSearch.setSearchQuery("*");
+        client.updateSavedSearch(new UpdateSavedSearchRequest(TEST_PROJECT, updateSaveSearch));
+
         //get
-        try {
-            GetSavedSearchResponse getSavedSearchResponse = client.getSavedSearch(new GetSavedSearchRequest(TEST_PROJECT, savedsearchName + 0));
-            SavedSearch getSavedSearch = getSavedSearchResponse.getSavedSearch();
-            assertEquals(getSavedSearch.getSavedSearchName(), savedsearchName + 0);
-            assertEquals(getSavedSearch.getDisplayName(), savedsearchName + "update");
-            assertEquals(getSavedSearch.getSearchQuery(), "*");
-            assertEquals(getSavedSearch.getLogstore(), "logstore-2");
-        } catch (LogException e) {
-            fail(e.GetErrorMessage());
-        }
+        GetSavedSearchResponse getSavedSearchResponse = client.getSavedSearch(new GetSavedSearchRequest(TEST_PROJECT, savedsearchName + 0));
+        SavedSearch getSavedSearch = getSavedSearchResponse.getSavedSearch();
+        assertEquals(getSavedSearch.getSavedSearchName(), savedsearchName + 0);
+        assertEquals(getSavedSearch.getDisplayName(), savedsearchName + "update");
+        assertEquals(getSavedSearch.getSearchQuery(), "*");
+        assertEquals(getSavedSearch.getLogstore(), "logstore-2");
+
         //delete
         for (int i = 0; i < 100; i++) {
             client.deleteSavedSearch(new DeleteSavedSearchRequest(TEST_PROJECT, savedsearchName + i));
@@ -118,6 +104,7 @@ public class SavedSearchTest extends FunctionTest {
         }
         try {
             client.deleteSavedSearch(new DeleteSavedSearchRequest(TEST_PROJECT, savedsearchName + "100"));
+            fail("deleteSavedSearch not exist savedsearch");
         } catch (LogException ex) {
             assertEquals(ex.GetErrorMessage(), "specified savedsearch does not exist");
             assertEquals(ex.GetErrorCode(), "SavedSearchNotExist");
