@@ -125,6 +125,8 @@ public interface LogService {
 	 *            keys in query, if "all_hit" is contained in the query, only
 	 *            the logs contains all the keys in query are matched logs,
 	 *            other wise logs contain any key in query are matched logs.
+	 * @param powerSql
+	 *            if the query runs using a power instance
 	 * @return a response contains a sub set of the logs matched the input
 	 *         parameters
 	 * @throws LogException
@@ -136,7 +138,8 @@ public interface LogService {
 	 */
     GetLogsResponse GetLogs(String project, String logStore, int from,
                             int to, String topic, String query, int line, int offset,
-                            boolean reverse) throws LogException;
+                            boolean reverse,
+							boolean powerSql) throws LogException;
 
 	/**
 	 * Get The sub set of logs data from log service server which match input
@@ -3547,4 +3550,13 @@ public interface LogService {
 	GetResourceRecordResponse    getResourceRecord(GetResourceRecordRequest request) throws LogException;
 	DeleteResourceRecordResponse deleteResourceRecord(DeleteResourceRecordRequest request) throws LogException;
 	ListResourceRecordResponse   listResourceRecord(ListResourceRecordRequest request) throws LogException;
+	CreateOrUpdateSqlInstanceResponse createSqlInstance(CreateOrUpdateSqlInstanceRequest request) throws LogException;
+	CreateOrUpdateSqlInstanceResponse updateSqlInstance(CreateOrUpdateSqlInstanceRequest request) throws LogException;
+	ListSqlInstanceResponse listSqlInstance(ListSqlInstanceRequest request) throws LogException;
+
+	CreateMetricAggRulesResponse createMetricAggRules(CreateMetricAggRulesRequest request) throws LogException;
+	ListMetricAggRulesResponse listMetricAggRules(ListMetricAggRulesRequest request) throws LogException;
+	GetMetricAggRulesResponse getMetricAggRules(GetMetricAggRulesRequest request) throws LogException;
+	UpdateMetricAggRulesResponse updateMetricAggRules(UpdateMetricAggRulesRequest request) throws LogException;
+	DeleteMetricAggRulesResponse deleteMetricAggRules(DeleteMetricAggRulesRequest request) throws LogException;
 }

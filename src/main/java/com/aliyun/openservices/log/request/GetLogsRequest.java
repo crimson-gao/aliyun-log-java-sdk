@@ -69,12 +69,13 @@ public class GetLogsRequest extends Request {
 	 */
 	public GetLogsRequest(String project, String logStore, int from, int to, 
 			String topic, String query, int offset, int line,
-			boolean reverse) {
+			boolean reverse,
+			boolean powerSql) {
 		this(project, logStore,  from, to, topic, query);
 		SetOffset(offset);
 		SetLine(line);
 		SetReverse(reverse);
-
+		SetPowerSql(powerSql);
 	}
 
 	/**
@@ -187,6 +188,15 @@ public class GetLogsRequest extends Request {
 		SetParam(Consts.CONST_OFFSET, String.valueOf(offset));
 	}
 
+	/**
+	 *set request powerSql
+	 *
+	 * @param powerSql
+	 *
+	 */
+	public void SetPowerSql(boolean powerSql) {
+		SetParam(Consts.CONST_POWER_SQL,String.valueOf(powerSql));
+	}
 	/**
 	 * Get request offset
 	 * 
