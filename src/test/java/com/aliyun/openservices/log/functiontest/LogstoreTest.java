@@ -8,20 +8,22 @@ import com.aliyun.openservices.log.response.GetIndexResponse;
 import com.aliyun.openservices.log.response.GetLogStoreResponse;
 import com.aliyun.openservices.log.response.ListLogStoresResponse;
 import com.aliyun.openservices.log.response.ListProjectResponse;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 
 public class LogstoreTest extends FunctionTest {
 
 
-    private final String PROJECT_PREFIX = "test-java-sdk-logstore-";
+    private static final String PROJECT_PREFIX = "test-java-sdk-logstore-";
 
 
     private final static String INDEX_STRING = "{\"log_reduce\":false,\"line\":{\"caseSensitive\":false,\"chn\":false,\"token\":" +
@@ -30,17 +32,17 @@ public class LogstoreTest extends FunctionTest {
             "\"token\":[\",\",\" \",\"'\",\"\\\"\",\";\",\"=\",\"(\",\")\",\"[\",\"]\",\"{\",\"}\",\"?\",\"@\",\"&\",\"<\",\">\",\"/\",\":\",\"\\n\",\"\\t\",\"\\r\"]}," +
             "\"key2\":{\"doc_value\":true,\"alias\":\"\",\"type\":\"long\"}},\"ttl\":1}";
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         deleteAll();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() throws Exception {
         deleteAll();
     }
 
-    private void deleteAll() throws Exception {
+    private static void deleteAll() throws Exception {
         ListProjectResponse response = client.ListProject(PROJECT_PREFIX, 0, 100);
         if (response != null) {
             for (Project project : response.getProjects()) {
@@ -49,20 +51,17 @@ public class LogstoreTest extends FunctionTest {
         }
     }
 
-    private void deleteProject(String project) {
+    private static void deleteProject(String project) throws Exception {
         try {
             ListLogStoresResponse response = client.ListLogStores(project, 0, 100, "");
             for (String logstore : response.GetLogStores()) {
                 client.DeleteLogStore(project, logstore);
             }
-        } catch (LogException ex) {
-            ex.printStackTrace();
-        }
-        try {
             client.DeleteProject(project);
-            waitForSeconds(30);
         } catch (LogException ex) {
-            ex.printStackTrace();
+            if (!ex.GetErrorCode().equals("ProjectNotExist")) {
+                throw ex;
+            }
         }
     }
 
@@ -77,13 +76,13 @@ public class LogstoreTest extends FunctionTest {
                 break;
             } catch (LogException ex) {
                 if (ex.GetErrorCode().equalsIgnoreCase("ProjectAlreadyExist")) {
-                    waitForSeconds(10);
+                    waitForSeconds(5);
                 } else {
                     fail(ex.GetErrorMessage());
                 }
             }
         }
-        int numberOfLogstore = randomInt(100);
+        int numberOfLogstore = randomInt(100) + 1;
         for (int i = 0; i < numberOfLogstore; i++) {
             LogStore logStore = new LogStore();
             logStore.SetLogStoreName("logstore-" + i);
@@ -141,9 +140,11 @@ public class LogstoreTest extends FunctionTest {
         assertEquals(size, response.GetCount());
 
         for (int i = 0; i < numberOfLogstore; i++) {
-            client.DeleteLogStore(project, "logstore-" + i);
+            String logstoreName = "logstore-" + i;
+            client.DeleteLogStore(project, logstoreName);
+            System.out.println("Delete logstore " + logstoreName);
             int total = 0;
-            String query = "logstore-" + i;
+            String query = logstoreName;
             ListLogStoresResponse response2 = client.ListLogStores(project, 0, 10, query);
             for (int j = i + 1; j < numberOfLogstore; j++) {
                 String x = "logstore-" + j;
@@ -151,6 +152,8 @@ public class LogstoreTest extends FunctionTest {
                     total++;
                 }
             }
+            List<String> logstores = response2.GetLogStores();
+            assertFalse(logstores.contains(logstoreName));
             int count = Math.min(10, total);
             assertEquals(count, response2.GetCount());
             assertEquals(total, response2.GetTotal());
@@ -265,8 +268,6 @@ public class LogstoreTest extends FunctionTest {
             }
         }
 
-        waitForSeconds(120);
-
         for (int i = 0; i < numberOfLogstore; i++) {
             GetLogStoreResponse response = client.GetLogStore(project, "logstore-" + i);
             LogStore logStore = response.GetLogStore();
@@ -286,7 +287,6 @@ public class LogstoreTest extends FunctionTest {
                 String x = "logstore-" + j;
                 if (x.contains(query)) {
                     total++;
-                } else {
                 }
             }
             int count = Math.min(10, total);
@@ -304,16 +304,19 @@ public class LogstoreTest extends FunctionTest {
         assertEquals(size, response.GetCount());
 
         for (int i = 0; i < numberOfLogstore; i++) {
-            client.DeleteLogStore(project, "logstore-" + i);
+            String logstoreName = "logstore-" + i;
+            client.DeleteLogStore(project, logstoreName);
+            System.out.println("Delete logstore " + logstoreName);
             int total = 0;
-            String query = "logstore-" + i;
-            ListLogStoresResponse response2 = client.ListLogStores(project, 0, 10, query);
+            ListLogStoresResponse response2 = client.ListLogStores(project, 0, 10, logstoreName);
             for (int j = i + 1; j < numberOfLogstore; j++) {
                 String x = "logstore-" + j;
-                if (x.contains(query)) {
+                if (x.contains(logstoreName)) {
                     total++;
                 }
             }
+            List<String> logstores = response2.GetLogStores();
+            assertFalse(logstores.contains(logstoreName));
             int count = Math.min(10, total);
             assertEquals(count, response2.GetCount());
             assertEquals(total, response2.GetTotal());
@@ -322,7 +325,7 @@ public class LogstoreTest extends FunctionTest {
 
     @Test
     public void testConcurrentModify() throws Exception {
-        int max = 4;
+        int max = randomInt(10);
         Thread[] threads = new Thread[max];
         final AtomicReference<Exception> error = new AtomicReference<Exception>();
         for (int i = 0; i < max; i++) {

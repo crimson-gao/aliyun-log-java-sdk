@@ -22,8 +22,8 @@ public class ExternalStoreTest extends FunctionTest {
     private static final String project = "test-java-sdk-external-store-" + getNowTimestamp();
 
     @BeforeClass
-    public static void setUp() {
-        safeCreateProject(project, "");
+    public static void setUp() throws Exception {
+        client.CreateProject(project, "");
     }
 
     @AfterClass
@@ -73,9 +73,6 @@ public class ExternalStoreTest extends FunctionTest {
         GetExternalStoreResponse getResponse2 = client.getExternalStore(getRequest2);
         assertEquals(getResponse2.getExternalStore().getParameter().getHost(), "test-host-2");
 
-        //list
-        waitForSeconds(10);
-//        ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, null, 0, 10);//pattern 支持模糊查询，为null/""代表查询所有
         ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, "vpc", 0, 10);
         ListExternalStroesResponse listResponse = client.listExternalStores(listRequest);
         assertTrue(listResponse.getExternalStores().contains("name-rds-vpc"));
@@ -106,7 +103,6 @@ public class ExternalStoreTest extends FunctionTest {
             assertEquals(400, ex.GetHttpCode());
         }
 
-        //get
 //        注意，此处会返回创建者的accessid和accesskey
         GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(project, "name-oss");
         GetExternalStoreResponse getResponse1 = client.getExternalStore(getRequest1);   //LogException: Internal Server Error
@@ -127,7 +123,6 @@ public class ExternalStoreTest extends FunctionTest {
         GetExternalStoreResponse getResponse2 = client.getExternalStore(getRequest2);
         assertEquals(getResponse2.getExternalStore().getParameter().getEndpoint(), "oss-cn-hangzhou.aliyuncs.com");
 
-        waitForSeconds(10); //need to wait to get value
         //list
         ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, "", 0, 10);
         ListExternalStroesResponse response = client.listExternalStores(listRequest);
@@ -136,7 +131,6 @@ public class ExternalStoreTest extends FunctionTest {
         //delete
         DeleteExternalStoreRequest deleteRequest = new DeleteExternalStoreRequest(project, "name-oss");
         client.deleteExternalStore(deleteRequest);
-        waitForSeconds(5);
         client.createExternalStore(createRequest);
         client.deleteExternalStore(deleteRequest);
     }
