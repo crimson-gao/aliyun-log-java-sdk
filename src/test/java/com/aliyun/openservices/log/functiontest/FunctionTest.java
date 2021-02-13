@@ -19,7 +19,10 @@ public abstract class FunctionTest {
 
     static final Random RANDOM = new Random();
     static final Credentials credentials = Credentials.load();
-    static Client client = new Client(credentials.getEndpoint(), credentials.getAccessKeyId(), credentials.getAccessKey());
+    static Client client = new Client(
+            credentials.getEndpoint(),
+            credentials.getAccessKeyId(),
+            credentials.getAccessKey());
 
     static int getNowTimestamp() {
         return (int) (new Date().getTime() / 1000);
@@ -57,7 +60,7 @@ public abstract class FunctionTest {
     }
 
     static int randomInt() {
-        return RANDOM.nextInt();
+        return RANDOM.nextInt(100000);
     }
 
     static long randomLong() {
@@ -114,6 +117,18 @@ public abstract class FunctionTest {
             waitOneMinutes();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    static void createOrUpdateLogStoreSimple(String project, LogStore logStore) throws Exception {
+        safeCreateProject(project, "");
+        try {
+            client.CreateLogStore(project, logStore);
+        } catch (LogException ex) {
+            if (!ex.GetErrorCode().equals("LogStoreAlreadyExist")) {
+                throw new IllegalStateException(ex);
+            }
+            client.UpdateLogStore(project, logStore);
         }
     }
 
