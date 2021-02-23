@@ -75,6 +75,10 @@ public class OdpsShipperConfig implements ShipperConfig {
 		return partitionTimeFormat;
 	}
 
+	public int getBufferInterval() {
+		return bufferInterval;
+	}
+
 	public String GetShipperType() {
 		return "odps";
 	}

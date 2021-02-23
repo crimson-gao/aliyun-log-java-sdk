@@ -138,6 +138,10 @@ public class OssShipperConfig implements ShipperConfig {
 		return compressType;
 	}
 
+	public String getTimeZone() {
+		return timeZone;
+	}
+
 	public void setOssBucket(String ossBucket) {
 		this.ossBucket = ossBucket;
 	}
@@ -164,10 +168,6 @@ public class OssShipperConfig implements ShipperConfig {
 
 	public void setPathFormat(String pathFormat) {
 		this.pathFormat = pathFormat;
-	}
-
-	public String getTimeZone() {
-		return timeZone;
 	}
 
 	public void setTimeZone(String timeZone) {
