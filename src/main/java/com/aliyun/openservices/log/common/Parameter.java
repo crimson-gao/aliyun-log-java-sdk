@@ -16,6 +16,7 @@ public class Parameter implements Serializable {
     private String username;
 
     private String password;
+    @JSONField(name = "db")
     private String database;
 
     private String region;
