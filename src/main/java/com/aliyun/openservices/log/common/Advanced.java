@@ -8,11 +8,6 @@ import com.aliyun.openservices.log.exception.LogException;
 
 import java.util.ArrayList;
 
-/**
- * Created by 冷倾(qingdao.pqd) on 2019/05/28
- *
- * @author <a href="mailto:qingdao.pqd@alibaba-inc.com">lengqing(kingdompan)</a>
- */
 public class Advanced {
     private boolean forceMulticonfig = false;
     private ArrayList<String> dirBlacklist = new ArrayList<String>();
