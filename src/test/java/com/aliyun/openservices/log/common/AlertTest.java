@@ -48,32 +48,32 @@ public class AlertTest {
 
         alertConfiguration.setThreshold(1);
         List<AlertConfiguration.Tag> labels = new ArrayList<AlertConfiguration.Tag>();
-        labels.add(new AlertConfiguration.Tag(){{
+        labels.add(new AlertConfiguration.Tag() {{
             setKey("l1");
             setValue("v1");
         }});
-        labels.add(new AlertConfiguration.Tag(){{
+        labels.add(new AlertConfiguration.Tag() {{
             setKey("l2");
             setValue("v2");
         }});
         alertConfiguration.setLabels(labels);
 
         List<AlertConfiguration.Tag> annotations = new ArrayList<AlertConfiguration.Tag>();
-        annotations.add(new AlertConfiguration.Tag(){{
+        annotations.add(new AlertConfiguration.Tag() {{
             setKey("ak1");
             setValue("av1");
         }});
         alertConfiguration.setAnnotations(annotations);
 
         List<AlertConfiguration.SeverityConfiguration> severityConfigurations = new ArrayList<AlertConfiguration.SeverityConfiguration>();
-        severityConfigurations.add(new AlertConfiguration.SeverityConfiguration(){{
+        severityConfigurations.add(new AlertConfiguration.SeverityConfiguration() {{
             setSeverity(AlertConfiguration.Severity.High);
-            setEvalCondition(new AlertConfiguration.ConditionConfiguration(){{
+            setEvalCondition(new AlertConfiguration.ConditionConfiguration() {{
                 setCondition("latency > 90");
                 setCountCondition("__count__ > 3");
             }});
         }});
-        severityConfigurations.add(new AlertConfiguration.SeverityConfiguration(){{
+        severityConfigurations.add(new AlertConfiguration.SeverityConfiguration() {{
             setSeverity(AlertConfiguration.Severity.Medium);
         }});
         alertConfiguration.setSeverityConfigurations(severityConfigurations);
@@ -82,7 +82,7 @@ public class AlertTest {
         alertConfiguration.setNoDataSeverity(AlertConfiguration.Severity.High);
         alertConfiguration.setSendResolved(true);
 
-        List<AlertConfiguration.JoinConfiguration> joinConfigs  = new ArrayList<AlertConfiguration.JoinConfiguration>();
+        List<AlertConfiguration.JoinConfiguration> joinConfigs = new ArrayList<AlertConfiguration.JoinConfiguration>();
         AlertConfiguration.JoinConfiguration joinConfig = new AlertConfiguration.JoinConfiguration();
         joinConfig.setType("left_join");
         joinConfig.setCondition("$0.name == $1.name");
@@ -101,7 +101,7 @@ public class AlertTest {
         alertConfiguration.setPolicyConfiguration(policyConfiguration);
 
         String body = JsonUtils.serialize(alertConfiguration);
-        assertEquals(body, "{\"annotations\":[{\"key\":\"ak1\",\"value\":\"av1\"}],\"conditionConfiguration\":{\"condition\":\"name == 'k8s'\",\"countCondition\":\"__count__ > 20\"},\"groupConfiguration\":{\"type\":\"no_group\"},\"joinConfigurations\":[{\"condition\":\"$0.name == $1.name\",\"type\":\"left_join\"}],\"labels\":[{\"key\":\"l1\",\"value\":\"v1\"},{\"key\":\"l2\",\"value\":\"v2\"}],\"noDataFire\":true,\"noDataSeverity\":8,\"notifyThreshold\":1,\"policyConfiguration\":{\"actionPolicyId\":\"yyyyyyyy\",\"alertPolicyId\":\"xxxxxx\",\"repeatInterval\":\"4m\",\"useDefault\":true},\"queryList\":[{\"chartTitle\":\"chart1\",\"end\":\"now\",\"logStore\":\"logstore-test\",\"project\":\"test-project\",\"query\":\"* | select name, count(uid) as uv group by name\",\"region\":\"cn-heyuan\",\"roleArn\":\"acs:*:xxxxx\",\"start\":\"-60s\",\"timeSpanType\":\"Custom\"},{\"end\":\"now\",\"query\":\"* | select name, min(latency) group by name\",\"start\":\"-86400s\",\"store\":\"test-alert-latency\",\"timeSpanType\":\"Relative\"}],\"sendRecoveryMessage\":false,\"sendResolved\":true,\"severityConfigurations\":[{\"evalCondition\":{\"condition\":\"latency > 90\",\"countCondition\":\"__count__ > 3\"},\"severity\":8},{\"severity\":6}],\"threshold\":1,\"type\":\"default\",\"version\":\"2.0\"}");
+        assertEquals(body, "{\"annotations\":[{\"key\":\"ak1\",\"value\":\"av1\"}],\"autoAnnotation\":false,\"conditionConfiguration\":{\"condition\":\"name == 'k8s'\",\"countCondition\":\"__count__ > 20\"},\"groupConfiguration\":{\"type\":\"no_group\"},\"joinConfigurations\":[{\"condition\":\"$0.name == $1.name\",\"type\":\"left_join\"}],\"labels\":[{\"key\":\"l1\",\"value\":\"v1\"},{\"key\":\"l2\",\"value\":\"v2\"}],\"noDataFire\":true,\"noDataSeverity\":8,\"notifyThreshold\":1,\"policyConfiguration\":{\"actionPolicyId\":\"yyyyyyyy\",\"alertPolicyId\":\"xxxxxx\",\"repeatInterval\":\"4m\",\"useDefault\":true},\"queryList\":[{\"chartTitle\":\"chart1\",\"end\":\"now\",\"logStore\":\"logstore-test\",\"project\":\"test-project\",\"query\":\"* | select name, count(uid) as uv group by name\",\"region\":\"cn-heyuan\",\"roleArn\":\"acs:*:xxxxx\",\"start\":\"-60s\",\"timeSpanType\":\"Custom\"},{\"end\":\"now\",\"query\":\"* | select name, min(latency) group by name\",\"start\":\"-86400s\",\"store\":\"test-alert-latency\",\"timeSpanType\":\"Relative\"}],\"sendRecoveryMessage\":false,\"sendResolved\":true,\"severityConfigurations\":[{\"evalCondition\":{\"condition\":\"latency > 90\",\"countCondition\":\"__count__ > 3\"},\"severity\":8},{\"severity\":6}],\"threshold\":1,\"type\":\"default\",\"version\":\"2.0\"}");
     }
 
     @Test
@@ -115,33 +115,34 @@ public class AlertTest {
         assertEquals(alertConfiguration.getThreshold(), 1);
 
         assertNotNull(alertConfiguration.getQueryList());
-        assertEquals(alertConfiguration.getQueryList().size(),2);
-        assertEquals(alertConfiguration.getQueryList().get(0).getProject(),"test-project");
-        assertEquals(alertConfiguration.getQueryList().get(0).getRoleArn(),"acs:*:xxxxx");
-        assertEquals(alertConfiguration.getQueryList().get(0).getQuery(),"* | select name, count(uid) as uv group by name");
-        assertEquals(alertConfiguration.getQueryList().get(0).getRegion(),"cn-heyuan");
+        assertEquals(alertConfiguration.getQueryList().size(), 2);
+        assertEquals(alertConfiguration.getQueryList().get(0).getProject(), "test-project");
+        assertEquals(alertConfiguration.getQueryList().get(0).getRoleArn(), "acs:*:xxxxx");
+        assertEquals(alertConfiguration.getQueryList().get(0).getQuery(), "* | select name, count(uid) as uv group by name");
+        assertEquals(alertConfiguration.getQueryList().get(0).getRegion(), "cn-heyuan");
 
-        assertEquals(alertConfiguration.getConditionConfiguration().getCondition(),"name == 'k8s'");
-        assertEquals(alertConfiguration.getConditionConfiguration().getCountCondition(),"__count__ > 20");
+        assertEquals(alertConfiguration.getConditionConfiguration().getCondition(), "name == 'k8s'");
+        assertEquals(alertConfiguration.getConditionConfiguration().getCountCondition(), "__count__ > 20");
 
-        assertEquals(alertConfiguration.getThreshold(),1);
+        assertEquals(alertConfiguration.getThreshold(), 1);
 
-        assertEquals(alertConfiguration.getLabels().size(),2);
-        assertEquals(alertConfiguration.getLabels().get(0).getKey(),"l1");
-        assertEquals(alertConfiguration.getLabels().get(0).getValue(),"v1");
-        assertEquals(alertConfiguration.getLabels().get(1).getKey(),"l2");
-        assertEquals(alertConfiguration.getLabels().get(1).getValue(),"v2");
+        assertEquals(alertConfiguration.getLabels().size(), 2);
+        assertEquals(alertConfiguration.getLabels().get(0).getKey(), "l1");
+        assertEquals(alertConfiguration.getLabels().get(0).getValue(), "v1");
+        assertEquals(alertConfiguration.getLabels().get(1).getKey(), "l2");
+        assertEquals(alertConfiguration.getLabels().get(1).getValue(), "v2");
 
-        assertEquals(alertConfiguration.getAnnotations().size(),1);
+        assertEquals(alertConfiguration.getAnnotations().size(), 1);
         assertEquals(alertConfiguration.getAnnotations().get(0).getKey(), "ak1");
         assertEquals(alertConfiguration.getAnnotations().get(0).getValue(), "av1");
 
 
         assertTrue(alertConfiguration.isNoDataFire());
+        assertFalse(alertConfiguration.isAutoAnnotation());
         assertEquals(alertConfiguration.getNoDataSeverity(), AlertConfiguration.Severity.High.value());
         assertTrue(alertConfiguration.isSendResolved());
 
-        assertEquals(alertConfiguration.getJoinConfigurations().size(),1);
+        assertEquals(alertConfiguration.getJoinConfigurations().size(), 1);
         assertEquals(alertConfiguration.getJoinConfigurations().get(0).getType(), "left_join");
         assertEquals(alertConfiguration.getJoinConfigurations().get(0).getCondition(), "$0.name == $1.name");
 
@@ -163,14 +164,14 @@ public class AlertTest {
         templateConfiguration.setVersion("1");
         templateConfiguration.setType("sys");
         templateConfiguration.setLang("cn");
-        HashMap<String,String> tokens = new HashMap<String, String>();
-        tokens.put("default.logstore","test_logstore");
+        HashMap<String, String> tokens = new HashMap<String, String>();
+        tokens.put("default.logstore", "test_logstore");
         tokens.put("default.app", "sls.audit.alert_policy_default");
         templateConfiguration.setTokens(tokens);
         alertConfiguration.setTemplateConfiguration(templateConfiguration);
 
         String body = JsonUtils.serialize(alertConfiguration);
-        assertEquals(body, "{\"noDataFire\":false,\"noDataSeverity\":6,\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"}");
+        assertEquals(body, "{\"autoAnnotation\":false,\"noDataFire\":false,\"noDataSeverity\":6,\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"}");
     }
 
     @Test
@@ -182,6 +183,7 @@ public class AlertTest {
         assertEquals(alertConfiguration.getType(), "tpl");
         assertEquals(alertConfiguration.getThreshold(), 1);
         assertFalse(alertConfiguration.isNoDataFire());
+        assertFalse(alertConfiguration.isAutoAnnotation());
         assertNotNull(alertConfiguration.getGroupConfiguration());
         assertNotNull(alertConfiguration.getJoinConfigurations());
         assertNotNull(alertConfiguration.getSeverityConfigurations());
@@ -194,9 +196,9 @@ public class AlertTest {
         assertEquals(alertConfiguration.getTemplateConfiguration().getLang(), "cn");
         assertEquals(alertConfiguration.getTemplateConfiguration().getType(), "sys");
         assertEquals(alertConfiguration.getTemplateConfiguration().getVersion(), "1");
-        Map<String, String> tokens  = alertConfiguration.getTemplateConfiguration().getTokens();
-        assertEquals(tokens.get("default.logstore"),"test_logstore");
-        assertEquals(tokens.get("default.app"),"sls.audit.alert_policy_default");
+        Map<String, String> tokens = alertConfiguration.getTemplateConfiguration().getTokens();
+        assertEquals(tokens.get("default.logstore"), "test_logstore");
+        assertEquals(tokens.get("default.app"), "sls.audit.alert_policy_default");
         assertNull(tokens.get("xxx"));
     }
 
@@ -212,12 +214,12 @@ public class AlertTest {
         templateConfiguration.setVersion("1");
         templateConfiguration.setType("sys");
         templateConfiguration.setLang("cn");
-        HashMap<String,String> tokens = new HashMap<String, String>();
-        tokens.put("default.logstore","test_logstore");
+        HashMap<String, String> tokens = new HashMap<String, String>();
+        tokens.put("default.logstore", "test_logstore");
         tokens.put("default.app", "sls.audit.alert_policy_default");
         templateConfiguration.setTokens(tokens);
-        HashMap<String,String> annotations = new HashMap<String, String>();
-        annotations.put("__k2","dwdd");
+        HashMap<String, String> annotations = new HashMap<String, String>();
+        annotations.put("__k2", "dwdd");
         templateConfiguration.setAnnotations(annotations);
         alertConfiguration.setTemplateConfiguration(templateConfiguration);
         alert.setConfiguration(alertConfiguration);
@@ -228,7 +230,7 @@ public class AlertTest {
         alert.setSchedule(schedule);
 
         String body = JsonUtils.serialize(alert);
-        assertEquals(body, "{\"configuration\":{\"noDataFire\":false,\"noDataSeverity\":6,\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"annotations\":{\"__k2\":\"dwdd\"},\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"},\"recyclable\":false,\"schedule\":{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"status\":\"Enabled\",\"type\":\"Alert\"}");
+        assertEquals(body, "{\"configuration\":{\"autoAnnotation\":false,\"noDataFire\":false,\"noDataSeverity\":6,\"notifyThreshold\":1,\"sendRecoveryMessage\":false,\"sendResolved\":false,\"templateConfiguration\":{\"annotations\":{\"__k2\":\"dwdd\"},\"lang\":\"cn\",\"tokens\":{\"default.logstore\":\"test_logstore\",\"default.app\":\"sls.audit.alert_policy_default\"},\"type\":\"sys\",\"version\":\"1\"},\"threshold\":1,\"type\":\"tpl\",\"version\":\"2.0\"},\"recyclable\":false,\"schedule\":{\"interval\":\"60s\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"status\":\"Enabled\",\"type\":\"Alert\"}");
     }
 
     @Test

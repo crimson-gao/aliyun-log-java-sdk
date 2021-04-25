@@ -48,6 +48,9 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
     @JSONField
     private boolean sendRecoveryMessage;
 
+    @JSONField
+    private boolean autoAnnotation;
+
     public String getCondition() {
         return condition;
     }
@@ -95,6 +98,14 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
     @Deprecated
     public void setSendRecoveryMessage(boolean sendRecoveryMessage) {
         this.sendRecoveryMessage = sendRecoveryMessage;
+    }
+
+    public boolean isAutoAnnotation() {
+        return autoAnnotation;
+    }
+
+    public void setAutoAnnotation(boolean autoAnnotation) {
+        this.autoAnnotation = autoAnnotation;
     }
 
     @Deprecated
@@ -149,6 +160,9 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
             if (severityVal != null) {
                 setNoDataSeverity(severityVal);
             }
+        }
+        if (value.containsKey("autoAnnotation")) {
+            setAutoAnnotation(value.getBoolean("autoAnnotation"));
         }
         if (value.containsKey("sendResolved")) {
             setSendResolved(value.getBoolean("sendResolved"));
