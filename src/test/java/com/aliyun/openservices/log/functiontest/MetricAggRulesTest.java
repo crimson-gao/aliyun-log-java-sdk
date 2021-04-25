@@ -1,70 +1,130 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.aliyun.openservices.log.Client;
+import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.common.MetricAggRuleItem;
 import com.aliyun.openservices.log.common.MetricAggRules;
+import com.aliyun.openservices.log.common.SubStore;
+import com.aliyun.openservices.log.common.SubStoreKey;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.CreateMetricAggRulesRequest;
 import com.aliyun.openservices.log.request.DeleteMetricAggRulesRequest;
 import com.aliyun.openservices.log.request.GetMetricAggRulesRequest;
 import com.aliyun.openservices.log.request.ListMetricAggRulesRequest;
 import com.aliyun.openservices.log.request.UpdateMetricAggRulesRequest;
-import org.junit.Ignore;
+import com.aliyun.openservices.log.response.CreateMetricAggRulesResponse;
+import com.aliyun.openservices.log.response.DeleteMetricAggRulesResponse;
+import com.aliyun.openservices.log.response.GetMetricAggRulesResponse;
+import com.aliyun.openservices.log.response.ListMetricAggRulesResponse;
+import com.aliyun.openservices.log.response.UpdateMetricAggRulesResponse;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@Ignore
-public class MetricAggRulesTest {
+public class MetricAggRulesTest extends FunctionTest {
+    private static final String TEST_PROJECT = "test-metric-agg-project-" + getNowTimestamp();
+    private static final String TEST_LOG_STORE = "test_logstore";
+    private static final String TEST_METRIC_STORE = "test_metricstore";
+    private static final String TEST_METRIC_STORE1 = "test_metricstore1";
 
-    private static final String endpoint = "cn-hangzhou.log.aliyuncs.com";
-    private static final String accessKeyId = "";
-    private static final String accessKeySecret = "";
-    private static final String project = "k8s-log-cdc990939f2f547e883a4cb9236e85872";
-    private static final Client client = new Client(endpoint, accessKeyId, accessKeySecret);
+    @Before
+    public void setUp() throws LogException {
+        safeCreateProject(TEST_PROJECT, "test metric_agg_rules");
 
+        client.CreateLogStore(TEST_PROJECT, new LogStore(TEST_LOG_STORE, 1, 2));
+
+        List<SubStoreKey> list = new ArrayList<SubStoreKey>();
+        list.add(new SubStoreKey("__name__", "text"));
+        list.add(new SubStoreKey("__labels__", "text"));
+        list.add(new SubStoreKey("__time_nano__", "long"));
+        list.add(new SubStoreKey("__value__", "double"));
+        SubStore subStore = new SubStore("prom", 30, 2, 2, list);
+
+        LogStore metricStore = new LogStore(TEST_METRIC_STORE, 30, 2);
+        metricStore.setTelemetryType("Metrics");
+        client.CreateLogStore(TEST_PROJECT, metricStore);
+        client.createSubStore(TEST_PROJECT, TEST_METRIC_STORE, subStore);
+
+        LogStore metricStore1 = new LogStore(TEST_METRIC_STORE1, 30, 2);
+        metricStore.setTelemetryType("Metrics");
+        client.CreateLogStore(TEST_PROJECT, metricStore1);
+        client.createSubStore(TEST_PROJECT, TEST_METRIC_STORE1, subStore);
+
+    }
+
+    @After
+    public void clearData() {
+        safeDeleteLogStore(TEST_PROJECT, TEST_LOG_STORE);
+        safeDeleteLogStore(TEST_PROJECT, TEST_METRIC_STORE);
+        safeDeleteLogStore(TEST_PROJECT, TEST_METRIC_STORE1);
+        safeDeleteProjectWithoutSleep(TEST_PROJECT);
+    }
 
     @Test
-    public void test() throws LogException {
+    public void testCrud() throws LogException {
         String testId = "metric_agg_rules_sql";
-        MetricAggRules metricAggRules = createSqlConfig(accessKeyId, accessKeySecret, testId);
+        MetricAggRules metricAggRules = createSqlConfig(testId);
         crud(testId, metricAggRules);
 
         testId = "metric_agg_rules_promql";
-        metricAggRules = createPromqlConfig(accessKeyId, accessKeySecret, testId);
+        metricAggRules = createPromqlConfig(testId);
         crud(testId, metricAggRules);
     }
 
+
     private void crud(String testId, MetricAggRules metricAggRules) throws LogException {
-        testCreateMetricAggRules(metricAggRules);
-        testGetMetricAggRules(testId);
-        testUpdateMetricAggRules(metricAggRules);
-        testListMetricAggRules();
-        testDeleteMetricAggRules(testId);
+        CreateMetricAggRulesResponse createMetricAggRulesResponse = testCreateMetricAggRules(metricAggRules);
+        Assert.assertNotNull(createMetricAggRulesResponse);
+
+        GetMetricAggRulesResponse getMetricAggRulesResponse = testGetMetricAggRules(testId);
+        MetricAggRules metricAggRules1 = getMetricAggRulesResponse.getMetricAggRules();
+        Assert.assertNotNull(createMetricAggRulesResponse);
+        Assert.assertEquals(metricAggRules.getName(), metricAggRules1.getName());
+        Assert.assertEquals(metricAggRules.getDesc(), metricAggRules1.getDesc());
+
+        metricAggRules.setDesc("test_update");
+        UpdateMetricAggRulesResponse updateMetricAggRulesResponse = testUpdateMetricAggRules(metricAggRules);
+        Assert.assertNotNull(updateMetricAggRulesResponse);
+
+        GetMetricAggRulesResponse getMetricAggRulesResponse1 = testGetMetricAggRules(testId);
+        MetricAggRules metricAggRules2 = getMetricAggRulesResponse1.getMetricAggRules();
+        Assert.assertNotNull(getMetricAggRulesResponse1);
+        Assert.assertEquals("test_update", metricAggRules2.getDesc());
+
+        ListMetricAggRulesResponse listMetricAggRulesResponse = testListMetricAggRules();
+        Assert.assertNotNull(createMetricAggRulesResponse);
+        Assert.assertTrue(listMetricAggRulesResponse.getMetricAggRules().size() > 0);
+
+        DeleteMetricAggRulesResponse deleteMetricAggRulesResponse = testDeleteMetricAggRules(testId);
+        Assert.assertNotNull(deleteMetricAggRulesResponse);
     }
 
-    private void testCreateMetricAggRules(MetricAggRules metricAggRules) throws LogException {
-        client.createMetricAggRules(new CreateMetricAggRulesRequest(project, metricAggRules));
+    private CreateMetricAggRulesResponse testCreateMetricAggRules(MetricAggRules metricAggRules) throws LogException {
+        return client.createMetricAggRules(new CreateMetricAggRulesRequest(TEST_PROJECT, metricAggRules));
     }
 
-    private void testGetMetricAggRules(String testId) throws LogException {
-        client.getMetricAggRules(new GetMetricAggRulesRequest(project, testId));
+    private GetMetricAggRulesResponse testGetMetricAggRules(String testId) throws LogException {
+        return client.getMetricAggRules(new GetMetricAggRulesRequest(TEST_PROJECT, testId));
     }
 
-    private void testUpdateMetricAggRules(MetricAggRules metricAggRules) throws LogException {
-        client.updateMetricAggRules(new UpdateMetricAggRulesRequest(project, metricAggRules));
+    private UpdateMetricAggRulesResponse testUpdateMetricAggRules(MetricAggRules metricAggRules) throws LogException {
+        return client.updateMetricAggRules(new UpdateMetricAggRulesRequest(TEST_PROJECT, metricAggRules));
     }
 
-    private void testListMetricAggRules() throws LogException {
-        client.listMetricAggRules(new ListMetricAggRulesRequest(project));
+    private ListMetricAggRulesResponse testListMetricAggRules() throws LogException {
+        return client.listMetricAggRules(new ListMetricAggRulesRequest(TEST_PROJECT));
     }
 
-    private void testDeleteMetricAggRules(String testId) throws LogException {
-        client.deleteMetricAggRules(new DeleteMetricAggRulesRequest(project, testId));
+    private DeleteMetricAggRulesResponse testDeleteMetricAggRules(String testId) throws LogException {
+        return client.deleteMetricAggRules(new DeleteMetricAggRulesRequest(TEST_PROJECT, testId));
     }
 
-    private MetricAggRules createSqlConfig(String accessKeyID, String accessKeySecret, String testId) {
+    private MetricAggRules createSqlConfig(String testId) {
         MetricAggRuleItem metricAggRuleItem = new MetricAggRuleItem();
         metricAggRuleItem.setName(testId);
         metricAggRuleItem.setQueryType("sql");
@@ -107,19 +167,19 @@ public class MetricAggRulesTest {
         metricAggRules.setId(testId);
         metricAggRules.setName(testId);
         metricAggRules.setDesc("测试CreateMetricAggRules");
-        metricAggRules.setSrcStore("internal-operation_log");
-        metricAggRules.setSrcAccessKeyID(accessKeyID);
-        metricAggRules.setSrcAccessKeySecret(accessKeySecret);
-        metricAggRules.setDestEndpoint(endpoint);
-        metricAggRules.setDestProject("test-hangzhou-b");
-        metricAggRules.setDestStore("test");
-        metricAggRules.setDestAccessKeyID(accessKeyID);
-        metricAggRules.setDestAccessKeySecret(accessKeySecret);
+        metricAggRules.setSrcStore(TEST_LOG_STORE);
+        metricAggRules.setSrcAccessKeyID(credentials.getAccessKeyId());
+        metricAggRules.setSrcAccessKeySecret(credentials.getAccessKey());
+        metricAggRules.setDestEndpoint(credentials.getEndpoint());
+        metricAggRules.setDestProject(TEST_PROJECT);
+        metricAggRules.setDestStore(TEST_METRIC_STORE1);
+        metricAggRules.setDestAccessKeyID(credentials.getAccessKeyId());
+        metricAggRules.setDestAccessKeySecret(credentials.getAccessKey());
         metricAggRules.setAggRules(new MetricAggRuleItem[]{metricAggRuleItem, metricAggRuleItem1});
         return metricAggRules;
     }
 
-    private MetricAggRules createPromqlConfig(String accessKeyID, String accessKeySecret, String testId) {
+    private MetricAggRules createPromqlConfig(String testId) {
         MetricAggRuleItem metricAggRuleItem = new MetricAggRuleItem();
         metricAggRuleItem.setName(testId);
         metricAggRuleItem.setQueryType("promql");
@@ -139,14 +199,14 @@ public class MetricAggRulesTest {
         metricAggRules.setId(testId);
         metricAggRules.setName(testId);
         metricAggRules.setDesc("测试CreateMetricAggRules");
-        metricAggRules.setSrcStore("internal-operation_log");
-        metricAggRules.setSrcAccessKeyID(accessKeyID);
-        metricAggRules.setSrcAccessKeySecret(accessKeySecret);
-        metricAggRules.setDestEndpoint(endpoint);
-        metricAggRules.setDestProject("test-hangzhou-b");
-        metricAggRules.setDestStore("test2");
-        metricAggRules.setDestAccessKeyID(accessKeyID);
-        metricAggRules.setDestAccessKeySecret(accessKeySecret);
+        metricAggRules.setSrcStore(TEST_METRIC_STORE);
+        metricAggRules.setSrcAccessKeyID(credentials.getAccessKeyId());
+        metricAggRules.setSrcAccessKeySecret(credentials.getAccessKey());
+        metricAggRules.setDestEndpoint(credentials.getEndpoint());
+        metricAggRules.setDestProject(TEST_PROJECT);
+        metricAggRules.setDestStore(TEST_METRIC_STORE1);
+        metricAggRules.setDestAccessKeyID(credentials.getAccessKeyId());
+        metricAggRules.setDestAccessKeySecret(credentials.getEndpoint());
         metricAggRules.setAggRules(new MetricAggRuleItem[]{metricAggRuleItem});
         return metricAggRules;
     }
