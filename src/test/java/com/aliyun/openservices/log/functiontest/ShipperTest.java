@@ -22,8 +22,12 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ShipperTest extends JobIntgTest {
     private static final String TEST_LOGSTORE = "test-logstore";
@@ -45,6 +49,22 @@ public class ShipperTest extends JobIntgTest {
         logStore.setEnableWebTracking(true);
         logStore.setAppendMeta(true);
         createOrUpdateLogStoreSimple(TEST_PROJECT, logStore);
+    }
+
+    @Test
+    public void testGetNotExistShipper() {
+        Random random = new Random(1024);
+        for (int i = 0; i < 5; i++) {
+            String shipperName = "shipper-" + random.nextInt(10000);
+            try {
+                client.GetShipperConfig(TEST_PROJECT, TEST_LOGSTORE, shipperName);
+                fail();
+            } catch (LogException ex) {
+                assertEquals(ex.GetHttpCode(), 404);
+                assertEquals(ex.GetErrorCode(), "ShipperNotExist");
+                assertEquals(ex.GetErrorMessage(), "The shipper " + shipperName + " does not exist");
+            }
+        }
     }
 
     @Test
@@ -95,19 +115,19 @@ public class ShipperTest extends JobIntgTest {
         assertTrue(fieldupdate.contains("id"));
         // test bufferInterval
         String bufferInterval = odpsJson.getString("bufferInterval");
-        assertEquals("1800",bufferInterval);
+        assertEquals("1800", bufferInterval);
         // test partitionTimeFormatString
         String partitionTimeFormatString = odpsJson.getString("partitionTimeFormat");
-        assertEquals("yyyy_MM_dd_HH_mm",partitionTimeFormatString);
+        assertEquals("yyyy_MM_dd_HH_mm", partitionTimeFormatString);
         // test odpsEndpoint
         String odpsEndpointString = odpsJson.getString("odpsEndpoint");
-        assertEquals("http://odps-ext.aliyun-inc.com/api",odpsEndpointString);
+        assertEquals("http://odps-ext.aliyun-inc.com/api", odpsEndpointString);
         // test partitionColumn
         List<String> partitionColumnList = (List<String>) odpsJson.get("partitionColumn");
-        assertEquals("__PARTITION_TIME__",partitionColumnList.get(0));
+        assertEquals("__PARTITION_TIME__", partitionColumnList.get(0));
         // test odpsProject
         String odpsProjectString = odpsJson.getString("odpsProject");
-        assertEquals("dpdefault_925366",odpsProjectString);
+        assertEquals("dpdefault_925366", odpsProjectString);
 
         int startTime = (int) (System.currentTimeMillis() / 1000.0 - 7200);
         int endTime = (int) (System.currentTimeMillis() / 1000.0);
@@ -207,7 +227,7 @@ public class ShipperTest extends JobIntgTest {
         assertEquals("parquet", storageObj.get("format"));
         JSONObject detailObj = storageObj.getJSONObject("detail");
         JSONArray columnsArray = detailObj.getJSONArray("columns");
-        assertEquals(5,columnsArray.size());
+        assertEquals(5, columnsArray.size());
 
         int startTime = (int) (System.currentTimeMillis() / 1000.0 - 7200);
         int endTime = (int) (System.currentTimeMillis() / 1000.0);
@@ -275,8 +295,8 @@ public class ShipperTest extends JobIntgTest {
         JSONObject storageObj = ossJson.getJSONObject("storage");
         assertEquals("csv", storageObj.get("format"));
         JSONObject detailObj = storageObj.getJSONObject("detail");
-        assertEquals("\n",detailObj.get("lineFeed"));
-        assertEquals("\"",detailObj.get("quote"));
+        assertEquals("\n", detailObj.get("lineFeed"));
+        assertEquals("\"", detailObj.get("quote"));
         List<String> columnsList = (List<String>) detailObj.get("columns");
         assertTrue(columnsList.contains("__topic__"));
         assertTrue(columnsList.contains("alarm_count"));
