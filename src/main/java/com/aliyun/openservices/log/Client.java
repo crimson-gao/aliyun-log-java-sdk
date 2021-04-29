@@ -5196,7 +5196,7 @@ public class Client implements LogService {
 		String requestId = GetRequestId(resHeaders);
 		JSONArray array = ParseResponseMessageToArray(response, requestId);
 		List<SqlInstance> sqlInstances = new ArrayList<SqlInstance>();
-		for(int i = 0;i < array.size();++i) {
+		for(int i = 0; array != null && i < array.size();++i) {
 			SqlInstance sqlInstance = new SqlInstance();
 			sqlInstance.fromJson(array.getJSONObject(i));
 			sqlInstances.add(sqlInstance);
