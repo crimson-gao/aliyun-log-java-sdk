@@ -19,7 +19,7 @@ import com.aliyun.openservices.log.common.Consts;
  * @author sls_dev
  * 
  */
-public class GetLogsResponse extends Response {
+public class GetLogsResponse extends BasicGetLogsResponse {
 
 	private static final long serialVersionUID = -7866328557378599379L;
 
@@ -33,15 +33,10 @@ public class GetLogsResponse extends Response {
 	private long mElapsedMilliSecond = 0;
 	private long mLimited = 0;
 	private double mCpuSec =0;
-
-
-
 	private long mCpuCores = 0;
 
 	private ArrayList<String> mKeys;
 	private ArrayList<ArrayList<String>> mTerms;
-
-	private ArrayList<QueriedLog> mLogs = new ArrayList<QueriedLog>();
 
 	/**
 	 * Construct the response with http headers
@@ -90,7 +85,7 @@ public class GetLogsResponse extends Response {
 			mTerms = new ArrayList<ArrayList<String>>();
 			if (terms != null) {
 				for(int i = 0;i <terms.size();++i){
-					ArrayList<String> list = new ArrayList();
+					ArrayList<String> list = new ArrayList<String>();
 					JSONArray term = terms.getJSONArray(i);
 					if(term.size()==2){
 						list.add(term.getString(0));
@@ -101,7 +96,7 @@ public class GetLogsResponse extends Response {
 			}
 			
 			if (object.containsKey("limited")) {
-				mLimited = Long.valueOf(object.getString("limited"));
+				mLimited = Long.parseLong(object.getString("limited"));
 			}
 			
 			if (object.containsKey("marker")) {
@@ -218,7 +213,7 @@ public class GetLogsResponse extends Response {
 	 *            log datas
 	 */
 	public void SetLogs(List<QueriedLog> logs) {
-		mLogs = new ArrayList<QueriedLog>(logs);
+		setLogs(logs);
 	}
 
 	/**
@@ -227,8 +222,9 @@ public class GetLogsResponse extends Response {
 	 * @param log
 	 *            log data to add
 	 */
+	@Deprecated
 	public void AddLog(QueriedLog log) {
-		mLogs.add(log);
+		addLog(log);
 	}
 
 	/**
@@ -236,8 +232,9 @@ public class GetLogsResponse extends Response {
 	 * 
 	 * @return all log data
 	 */
+	@Deprecated
 	public ArrayList<QueriedLog> GetLogs() {
-		return mLogs;
+		return logs;
 	}
 
 	/**
@@ -246,7 +243,7 @@ public class GetLogsResponse extends Response {
 	 * @return log number
 	 */
 	public int GetCount() {
-		return mLogs.size();
+		return logs.size();
 	}
 
 	/**

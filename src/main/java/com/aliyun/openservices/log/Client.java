@@ -598,7 +598,7 @@ public class Client implements LogService {
 				JSONArray logsArray = new JSONArray();
 				for (LogItem item : logItems) {
 					JSONObject jsonObjInner = new JSONObject();
-					jsonObjInner.put("__time__", item.mLogTime);
+					jsonObjInner.put(Consts.CONST_RESULT_TIME, item.mLogTime);
 					for (LogContent content : item.mContents) {
 						jsonObjInner.put(content.mKey, content.mValue);
 					}
@@ -718,8 +718,7 @@ public class Client implements LogService {
 		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
 		CodingUtils.assertParameterNotNull(topic, "topic");
 		CodingUtils.assertParameterNotNull(query, "query");
-		GetLogsRequest request = new GetLogsRequest(project, logStore, from,
-				to, topic, query);
+		GetLogsRequest request = new GetLogsRequest(project, logStore, from, to, topic, query);
 		return GetLogs(request);
 	}
 	public GetLogsResponse GetLogs(String project, String logStore, int from,
@@ -776,10 +775,10 @@ public class Client implements LogService {
 		ResponseMessage response = SendData(project, HttpMethod.GET,
 				resourceUri, urlParameter, headParameter);
 		Map<String, String> resHeaders = response.getHeaders();
+		GetLogsResponse getLogsResponse = new GetLogsResponse(resHeaders);
 		String requestId = GetRequestId(resHeaders);
 		JSONArray object = ParseResponseMessageToArrayWithFastJson(response, requestId);
-		GetLogsResponse getLogsResponse = new GetLogsResponse(resHeaders);
-		ExtractLogsWithFastJson(getLogsResponse, object);
+		extractLogsWithFastJson(getLogsResponse, object, requestId);
 		return getLogsResponse;
 	}
 
@@ -807,7 +806,9 @@ public class Client implements LogService {
 		}
 	}
 
-	private void ExtractLogsWithFastJson(GetLogsResponse response, JSONArray logs) {
+	private void extractLogsWithFastJson(BasicGetLogsResponse response,
+										 JSONArray logs,
+										 String requestId) throws LogException {
 		if (logs == null) {
 			return;
 		}
@@ -815,7 +816,7 @@ public class Client implements LogService {
 			for (int i = 0; i < logs.size(); i++) {
 				JSONObject jsonObject = logs.getJSONObject(i);
 				if (jsonObject != null) {
-					response.AddLog(extractLogFromJSON(jsonObject));
+					response.addLog(extractLogFromJSON(jsonObject, requestId));
 				}
 			}
 		} catch (JSONException e) {
@@ -823,23 +824,7 @@ public class Client implements LogService {
 		}
 	}
 
-	private void extractLogsWithFastJson(GetContextLogsResponse response, JSONArray logs) {
-		if (logs == null) {
-			return;
-		}
-		try {
-			for (int i = 0; i < logs.size(); i++) {
-				JSONObject jsonObject = logs.getJSONObject(i);
-				if (jsonObject != null) {
-					response.addLog(extractLogFromJSON(jsonObject));
-				}
-			}
-		} catch (JSONException e) {
-			// ignore;
-		}
-	}
-
-	private QueriedLog extractLogFromJSON(JSONObject log) throws JSONException {
+	private QueriedLog extractLogFromJSON(JSONObject log, String requestId) throws JSONException, LogException {
 		String source = "";
 		LogItem logItem = new LogItem();
 		Set<String> keySet = log.keySet();
@@ -848,7 +833,12 @@ public class Client implements LogService {
 			if (key.equals(Consts.CONST_RESULT_SOURCE)) {
 				source = value;
 			} else if (key.equals(Consts.CONST_RESULT_TIME)) {
-				logItem.mLogTime = Integer.parseInt(value);
+				try {
+					logItem.mLogTime = Integer.parseInt(value);
+				} catch (NumberFormatException ex) {
+					throw new LogException(Consts.INVALID_LOG_TIME,
+							"The field __time__ is invalid in your query result: " + value, requestId);
+				}
 			} else {
 				logItem.PushBack(key, value);
 			}
@@ -869,7 +859,7 @@ public class Client implements LogService {
 		String requestId = GetRequestId(resHeaders);
 		JSONArray object = ParseResponseMessageToArrayWithFastJson(response, requestId);
 		GetLogsResponse getLogsResponse = new GetLogsResponse(resHeaders);
-		ExtractLogsWithFastJson(getLogsResponse, object);
+		extractLogsWithFastJson(getLogsResponse, object, requestId);
 		return getLogsResponse;
 	}
 
@@ -886,7 +876,7 @@ public class Client implements LogService {
 		String requestId = GetRequestId(resHeaders);
 		JSONObject object = parseResponseMessageToObjectWithFastJSON(response, requestId);
 		GetContextLogsResponse logsResponse = new GetContextLogsResponse(resHeaders, object);
-		extractLogsWithFastJson(logsResponse, object.getJSONArray("logs"));
+		extractLogsWithFastJson(logsResponse, object.getJSONArray("logs"), requestId);
 		return logsResponse;
 	}
 

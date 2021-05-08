@@ -422,4 +422,6 @@ public class Consts {
     public static final String DASHBOARD_NAME_KEY = "dashboardName";
     public static final String LOGSTORE_KEY = "logstore";
     public static final String JOB_SCHEDULE_URI = "/jobschedules";
+
+    public static final String INVALID_LOG_TIME = "InvalidLogTime";
 }
