@@ -152,6 +152,12 @@ public class ShipperTest extends JobIntgTest {
     @Test
     public void testCreateJsonOssShipper() throws LogException {
         String shipperName = "ossjsonshipper";
+        try {
+            client.DeleteShipper(TEST_PROJECT, TEST_LOGSTORE, shipperName);
+        } catch (LogException ex) {
+            assertEquals("ShipperNotExist", ex.GetErrorCode(), ex.GetErrorMessage());
+        }
+
         OssShipperConfig ossConfig = new OssShipperConfig(ossBucket, ossPrefix, roleArn, bufferInterval, bufferSize, compressType, pathFormat, "json", "");
         OssShipperJsonStorageDetail detail = (OssShipperJsonStorageDetail) ossConfig.GetStorageDetail();
         detail.setEnableTag(false);
