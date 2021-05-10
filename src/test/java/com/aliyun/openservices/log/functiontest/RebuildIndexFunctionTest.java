@@ -32,9 +32,9 @@ import static org.junit.Assert.fail;
 
 public class RebuildIndexFunctionTest extends FunctionTest {
 
-    static String project = "test-project-to-alert-" + getNowTimestamp();
-    static String logstore = "test_rebuild_index_" + getNowTimestamp();
-    static String jobName = "rebuild-index-6";
+    private static final String project = "test-project-to-alert-" + getNowTimestamp();
+    private static final String logstore = "test_rebuild_index_" + getNowTimestamp();
+    private static final String jobName = "rebuild-index-6";
 
     @Before
     public void setUp() {
@@ -63,7 +63,7 @@ public class RebuildIndexFunctionTest extends FunctionTest {
         ListProjectResponse response = client.ListProject(project, 0, 100);
         if (response != null) {
             for (Project project : response.getProjects()) {
-                safeDeleteProject(project.getProjectName());
+                safeDeleteProjectWithoutSleep(project.getProjectName());
             }
         }
     }
@@ -84,7 +84,7 @@ public class RebuildIndexFunctionTest extends FunctionTest {
     public void testCreate() throws Exception {
         RebuildIndex job = createRebuildIndex();
         client.createRebuildIndex(new CreateRebuildIndexRequest(project, job));//index config doesn't exist
-        Thread.sleep(3000);
+        waitForSeconds(3);
         testGet();
     }
 
@@ -92,8 +92,8 @@ public class RebuildIndexFunctionTest extends FunctionTest {
     public void testGet() throws Exception {
         GetRebuildIndexResponse response = client.getRebuildIndex(new GetRebuildIndexRequest(project, jobName));
         RebuildIndex ri = response.getRebuildIndex();
-        Assert.assertEquals(jobName, ri.getName());
-        Assert.assertEquals("test rebuild index", ri.getDisplayName());
+        assertEquals(jobName, ri.getName());
+        assertEquals("test rebuild index", ri.getDisplayName());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class RebuildIndexFunctionTest extends FunctionTest {
         List<String> list = Arrays.asList(",", " ", "'", "\"", ";", "=", "(", ")", "[", "]", "{", "}", "?", "@", "&", "<", ">", "/", ":", "\n", "\t", "\r");
         IndexKeys indexKeys = new IndexKeys();
         for (int i = 1; i <= 10; i++) {
-            indexKeys.AddKey("key-"+i, new IndexKey(list,false, "text", ""));
+            indexKeys.AddKey("key-" + i, new IndexKey(list, false, "text", ""));
         }
         index.SetKeys(indexKeys);
         try {
