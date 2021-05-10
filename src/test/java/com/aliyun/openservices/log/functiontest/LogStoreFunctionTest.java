@@ -81,9 +81,6 @@ public class LogStoreFunctionTest extends FunctionTest {
 
     @Test
     public void testUpdateLogStore() throws Exception {
-        // todo fix this cache not deleted yet
-        waitForSeconds(60);
-
         String logstoreName = "logstore-for-testing1";
 
         LogStore logStore = new LogStore();

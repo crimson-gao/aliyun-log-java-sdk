@@ -111,6 +111,6 @@ public class LogTest extends FunctionTest {
 
     @AfterClass
     public static void tearDown() {
-//        safeDeleteProject(TEST_PROJECT);
+        safeDeleteProjectWithoutSleep(TEST_PROJECT);
     }
 }
