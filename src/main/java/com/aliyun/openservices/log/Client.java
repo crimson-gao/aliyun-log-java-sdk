@@ -4386,19 +4386,6 @@ public class Client implements LogService {
         return new DeleteAlertResponse(responseMessage.getHeaders());
     }
 
-	@Override
-	public DeleteJobScheduleResponse deleteJobSchedule(DeleteJobScheduleRequest request) throws LogException {
-		ResponseMessage message = send(request);
-		return new DeleteJobScheduleResponse(message.getHeaders());
-	}
-
-	@Override
-	@Deprecated
-	public DeleteETLResponse deleteETL(DeleteETLRequest request) throws LogException {
-        ResponseMessage responseMessage = send(request);
-        return new DeleteETLResponse(responseMessage.getHeaders());
-    }
-
     @Override
     public GetAlertResponse getAlert(GetAlertRequest request) throws LogException {
         ResponseMessage response = send(request);
@@ -4409,42 +4396,12 @@ public class Client implements LogService {
     }
 
     @Override
-	@Deprecated
-    public GetJobScheduleResponse getJobSchedule(GetJobScheduleRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        JSONObject responseBody = parseResponseBody(message, message.getRequestId());
-        GetJobScheduleResponse response = new GetJobScheduleResponse(message.getHeaders());
-        response.deserialize(responseBody, message.getRequestId());
-        return response;
-    }
-
-    @Override
-	@Deprecated
-    public GetETLResponse getETL(GetETLRequest request) throws LogException {
-        ResponseMessage response = send(request);
-        JSONObject responseBody = parseResponseBody(response, response.getRequestId());
-        GetETLResponse etlResponse = new GetETLResponse(response.getHeaders());
-        etlResponse.deserialize(responseBody, response.getRequestId());
-        return etlResponse;
-    }
-
-    @Override
     public ListAlertResponse listAlert(ListAlertRequest request) throws LogException {
         ResponseMessage response = send(request);
         JSONObject responseBody = parseResponseBody(response, response.getRequestId());
         ListAlertResponse alertResponse = new ListAlertResponse(response.getHeaders());
         alertResponse.deserialize(responseBody, response.getRequestId());
         return alertResponse;
-    }
-
-    @Override
-	@Deprecated
-    public ListETLResponse listETL(ListETLRequest request) throws LogException {
-        ResponseMessage response = send(request);
-        JSONObject responseBody = parseResponseBody(response, response.getRequestId());
-        ListETLResponse listETLResponse = new ListETLResponse(response.getHeaders());
-        listETLResponse.deserialize(responseBody, response.getRequestId());
-        return listETLResponse;
     }
 
 	@Override
@@ -4467,13 +4424,6 @@ public class Client implements LogService {
 		ResponseMessage message = send(request);
 		return new UpdateReportResponse(message.getHeaders());
 	}
-
-    @Override
-	@Deprecated
-    public UpdateETLResponse updateETL(UpdateETLRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        return new UpdateETLResponse(message.getHeaders());
-    }
 
 	@Override
 	public DeleteReportResponse deleteReport(DeleteReportRequest request) throws LogException {
@@ -4908,44 +4858,6 @@ public class Client implements LogService {
     }
 
     @Override
-	@Deprecated
-    public CreateETLResponse createETL(CreateETLRequest request) throws LogException {
-        ResponseMessage responseMessage = send(request);
-        return new CreateETLResponse(responseMessage.getHeaders());
-    }
-
-    @Override
-	@Deprecated
-    public CreateJobScheduleResponse createJobSchedule(CreateJobScheduleRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        CreateJobScheduleResponse response = new CreateJobScheduleResponse(message.getHeaders());
-        JSONObject responseBody = parseResponseBody(message, message.getRequestId());
-        response.deserialize(responseBody, message.getRequestId());
-        return response;
-    }
-
-    @Override
-	@Deprecated
-    public UpdateJobScheduleResponse updateJobSchedule(UpdateJobScheduleRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        return new UpdateJobScheduleResponse(message.getHeaders());
-    }
-
-    @Override
-	@Deprecated
-    public StartJobScheduleResponse startJobSchedule(StartJobScheduleRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        return new StartJobScheduleResponse(message.getHeaders());
-    }
-
-    @Override
-	@Deprecated
-    public StopJobScheduleResponse stopJobSchedule(StopJobScheduleRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        return new StopJobScheduleResponse(message.getHeaders());
-    }
-
-    @Override
     public GetJobResponse getJob(GetJobRequest request) throws LogException {
         ResponseMessage response = send(request);
         JSONObject responseBody = parseResponseBody(response, response.getRequestId());
@@ -4997,16 +4909,6 @@ public class Client implements LogService {
         ListJobsResponse jobsResponse = new ListJobsResponse(response.getHeaders());
         jobsResponse.deserialize(responseBody, response.getRequestId());
         return jobsResponse;
-    }
-
-    @Override
-	@Deprecated
-    public ListJobSchedulesResponse listJobSchedules(ListJobSchedulesRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        JSONObject response = parseResponseBody(message, message.getRequestId());
-        ListJobSchedulesResponse jobRunsResponse = new ListJobSchedulesResponse(message.getHeaders());
-        jobRunsResponse.deserialize(response, message.getRequestId());
-        return jobRunsResponse;
     }
 
 	@Override

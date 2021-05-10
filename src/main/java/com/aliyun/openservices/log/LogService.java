@@ -2620,16 +2620,6 @@ public interface LogService {
      */
     CreateAlertResponse createAlert(CreateAlertRequest request) throws LogException;
 
-    CreateETLResponse createETL(CreateETLRequest request) throws LogException;
-
-    CreateJobScheduleResponse createJobSchedule(CreateJobScheduleRequest request) throws LogException;
-
-    UpdateJobScheduleResponse updateJobSchedule(UpdateJobScheduleRequest request) throws LogException;
-
-    StartJobScheduleResponse startJobSchedule(StartJobScheduleRequest request) throws LogException;
-
-    StopJobScheduleResponse stopJobSchedule(StopJobScheduleRequest request) throws LogException;
-
 	CreateETLV2Response createETLV2(CreateETLV2Request request) throws LogException;
 
 	UpdateETLV2Response updateETLV2(UpdateETLV2Request request) throws LogException;
@@ -2703,7 +2693,6 @@ public interface LogService {
 	 */
 	DeleteAlertResponse deleteAlert(DeleteAlertRequest request) throws LogException;
 
-    DeleteJobScheduleResponse deleteJobSchedule(DeleteJobScheduleRequest request) throws LogException;
 
     /**
      * get alert
@@ -2720,14 +2709,6 @@ public interface LogService {
      */
     GetAlertResponse getAlert(GetAlertRequest request) throws LogException;
 
-    /**
-     * Get job schedule.
-     *
-     * @param request
-     * @throws LogException
-     */
-    GetJobScheduleResponse getJobSchedule(GetJobScheduleRequest request) throws LogException;
-
 	/**
 	 * list alert
 	 *
@@ -2743,32 +2724,15 @@ public interface LogService {
 	 */
 	ListAlertResponse listAlert(ListAlertRequest request) throws LogException;
 
-    /**
-     * Lists job schedules.
-     *
-     * @param request
-     * @return List of {@code JobSchedule} objects.
-     * @throws LogException
-     */
-    ListJobSchedulesResponse listJobSchedules(ListJobSchedulesRequest request) throws LogException;
-
     CreateReportResponse createReport(CreateReportRequest request) throws LogException;
 
     GetReportResponse getReport(GetReportRequest request) throws LogException;
 
-    GetETLResponse getETL(GetETLRequest request) throws LogException;
-
     UpdateReportResponse updateReport(UpdateReportRequest request) throws LogException;
-
-    UpdateETLResponse updateETL(UpdateETLRequest request) throws LogException;
 
     DeleteReportResponse deleteReport(DeleteReportRequest request) throws LogException;
 
-    DeleteETLResponse deleteETL(DeleteETLRequest request) throws LogException;
-
     ListReportResponse listReport(ListReportRequest request) throws LogException;
-
-    ListETLResponse listETL(ListETLRequest request) throws LogException;
 
     EnableReportResponse enableReport(EnableReportRequest request) throws LogException;
 
