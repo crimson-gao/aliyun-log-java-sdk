@@ -15,7 +15,6 @@ public class LogStoreInternalTest extends FunctionTest {
     @Before
     public void setUp() {
         safeCreateProject(TEST_PROJECT, "");
-        waitForSeconds(10);
     }
 
     @After

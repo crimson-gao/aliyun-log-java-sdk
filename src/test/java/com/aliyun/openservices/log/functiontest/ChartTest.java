@@ -21,13 +21,12 @@ public class ChartTest extends FunctionTest {
     @Before
     public void setUp() {
         safeCreateProject(TEST_PROJECT, "test chart");
-        waitForSeconds(10);
         createDashboard();
     }
 
     @After
     public void afterTest() {
-        safeDeleteProject(TEST_PROJECT);
+        safeDeleteProjectWithoutSleep(TEST_PROJECT);
     }
 
     @Test

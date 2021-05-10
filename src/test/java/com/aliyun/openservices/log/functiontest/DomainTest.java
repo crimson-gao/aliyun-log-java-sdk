@@ -15,7 +15,6 @@ public class DomainTest extends FunctionTest {
     @Before
     public void setUp() {
         safeCreateProject(TEST_PROJECT, "test domain");
-        waitForSeconds(10);
     }
 
     @After

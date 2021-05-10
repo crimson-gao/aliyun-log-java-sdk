@@ -29,7 +29,6 @@ public class DashboardTest extends FunctionTest {
     @Before
     public void setUp() {
         safeCreateProject(TEST_PROJECT, "dashboardtest");
-        waitForSeconds(65);
     }
 
     @After
@@ -141,7 +140,7 @@ public class DashboardTest extends FunctionTest {
             client.updateDashboard(new UpdateDashboardRequest(TEST_PROJECT, dashboard));
             fail();
         } catch (LogException ex) {
-            assertEquals(ex.GetErrorMessage(), "chart quota exceed");
+            assertEquals(ex.GetErrorMessage(), "You have too many charts in your dashboard");
             assertEquals(ex.GetErrorCode(), "ExceedQuota");
         }
         for (int i = 0; i < 100; i++) {
