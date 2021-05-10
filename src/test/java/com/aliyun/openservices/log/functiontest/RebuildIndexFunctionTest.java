@@ -20,7 +20,6 @@ import com.aliyun.openservices.log.response.GetRebuildIndexResponse;
 import com.aliyun.openservices.log.response.ListProjectResponse;
 import com.aliyun.openservices.log.response.ListRebuildIndexResponse;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
