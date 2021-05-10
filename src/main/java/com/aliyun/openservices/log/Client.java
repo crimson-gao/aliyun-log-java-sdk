@@ -11,8 +11,6 @@ import com.aliyun.openservices.log.common.ACL;
 import com.aliyun.openservices.log.common.Chart;
 import com.aliyun.openservices.log.common.Config;
 import com.aliyun.openservices.log.common.Consts;
-import com.aliyun.openservices.log.common.Consts.CompressType;
-import com.aliyun.openservices.log.common.Consts.CursorMode;
 import com.aliyun.openservices.log.common.ConsumerGroup;
 import com.aliyun.openservices.log.common.Dashboard;
 import com.aliyun.openservices.log.common.Domain;
@@ -52,9 +50,13 @@ import com.aliyun.openservices.log.common.ShipperTasksStatistic;
 import com.aliyun.openservices.log.common.SqlInstance;
 import com.aliyun.openservices.log.common.SubStore;
 import com.aliyun.openservices.log.common.TagContent;
+import com.aliyun.openservices.log.common.Consts.CompressType;
+import com.aliyun.openservices.log.common.Consts.CursorMode;
 import com.aliyun.openservices.log.common.auth.Credentials;
 import com.aliyun.openservices.log.common.auth.DefaultCredentails;
 import com.aliyun.openservices.log.common.auth.ECSRoleCredentials;
+import com.aliyun.openservices.log.common.ScheduledSQL;
+
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.http.client.ClientConfiguration;
 import com.aliyun.openservices.log.http.client.ClientConnectionContainer;
@@ -73,6 +75,7 @@ import com.aliyun.openservices.log.http.utils.DateUtil;
 import com.aliyun.openservices.log.internal.ErrorCodes;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.*;
+
 import com.aliyun.openservices.log.util.Args;
 import com.aliyun.openservices.log.util.DigestUtils;
 import com.aliyun.openservices.log.util.GzipUtils;
@@ -5102,6 +5105,68 @@ public class Client implements LogService {
 		return new StartExportResponse(responseMessage.getHeaders());
 	}
 
+	@Override
+	public CreateScheduledSQLResponse createScheduledSQL(CreateScheduledSQLRequest request) throws LogException{
+		ScheduledSQL scheduledSQL = (ScheduledSQL) request.getBody();
+		Integer fromTime = scheduledSQL.getConfiguration().getFromTime();
+        Integer toTime = scheduledSQL.getConfiguration().getToTime();
+		boolean timeRange = fromTime > 1451577600 && toTime > fromTime ;
+		boolean sustained = fromTime > 1451577600 && toTime == 0;
+		if ((!timeRange) && (!sustained)){
+			throw new IllegalArgumentException("Invalid fromTime: "+fromTime+" toTime: "+toTime+
+                    ", please ensure fromTime more than 1451577600.");
+		}
+		ResponseMessage resp = send(request);
+		return new CreateScheduledSQLResponse(resp.getHeaders());
+	}
+	@Override
+	public DeleteScheduledSQLResponse deleteScheduledSQL(DeleteScheduledSQLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		return new DeleteScheduledSQLResponse(resp.getHeaders());
+	}
+	@Override
+	public GetScheduledSQLResponse getScheduledSQL(GetScheduledSQLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		GetScheduledSQLResponse scheduledSQLResp = new GetScheduledSQLResponse(resp.getHeaders());
+		scheduledSQLResp.deserialize(respBody, resp.getRequestId());
+		return scheduledSQLResp;
+	}
+	@Override
+	public ListScheduledSQLResponse listScheduledSQL(ListScheduledSQLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		ListScheduledSQLResponse listResp = new ListScheduledSQLResponse(resp.getHeaders());
+		listResp.deserialize(respBody, resp.getRequestId());
+		return listResp;
+	}
+	@Override
+	public UpdateScheduledSQLResponse updateScheduledSQL(UpdateScheduledSQLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		return new UpdateScheduledSQLResponse(resp.getHeaders());
+	}
+	@Override
+	public GetJobInstanceResponse getJobInstance(GetJobInstanceRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		GetJobInstanceResponse getJobInstanceRes = new GetJobInstanceResponse(resp.getHeaders());
+		getJobInstanceRes.deserialize(respBody, resp.getRequestId());
+		return getJobInstanceRes;
+	}
+	@Override
+	public ModifyJobInstanceStateResponse modifyJobInstanceState(ModifyJobInstanceStateRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new ModifyJobInstanceStateResponse(responseMessage.getHeaders());
+	}
+	@Override
+	public ListJobInstancesResponse listJobInstances(ListJobInstancesRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		ListJobInstancesResponse listResp = new ListJobInstancesResponse(resp.getHeaders());
+		listResp.deserialize(respBody, resp.getRequestId());
+		return listResp;
+	}
+
 	private ResponseMessage send(BasicRequest request) throws LogException {
         Args.notNull(request, "request");
         final String project = request.GetProject();
@@ -5254,4 +5319,5 @@ public class Client implements LogService {
 		DeleteETLV2Response deleteETLV2Response = deleteETLV2(request);
 		return new DeleteMetricAggRulesResponse(deleteETLV2Response.GetAllHeaders());
 	}
+
 }

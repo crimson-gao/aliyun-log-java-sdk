@@ -423,5 +423,13 @@ public class Consts {
     public static final String LOGSTORE_KEY = "logstore";
     public static final String JOB_SCHEDULE_URI = "/jobschedules";
 
+    // Scheduled SQL
+    public static final String JOB_INSTANCES_URI = "/jobinstances";
+    public static final String JOB_INSTANCES_RESULT = "result";
+    public static final String JOB_INSTANCES_STATE = "state";
+    public static final String JOB_INSTANCES_START_TIME = "start";
+    public static final String JOB_INSTANCES_END_TIME = "end";
+    public static final String SCHEDULED_SQL_RUNNING = "RUNNING";
+    
     public static final String INVALID_LOG_TIME = "InvalidLogTime";
 }

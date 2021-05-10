@@ -1,6 +1,3 @@
-/*
- * Copyright (C) Alibaba Cloud Computing All rights reserved.
- */
 package com.aliyun.openservices.log.request;
 
 import com.aliyun.openservices.log.common.Consts;

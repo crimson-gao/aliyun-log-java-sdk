@@ -2658,6 +2658,21 @@ public interface LogService {
 
 	StartExportResponse startExport(StartExportRequest request) throws LogException;
 
+	CreateScheduledSQLResponse createScheduledSQL(CreateScheduledSQLRequest request) throws LogException;
+
+	DeleteScheduledSQLResponse deleteScheduledSQL(DeleteScheduledSQLRequest request) throws LogException;
+
+	GetScheduledSQLResponse getScheduledSQL(GetScheduledSQLRequest request) throws LogException;
+
+	ListScheduledSQLResponse listScheduledSQL(ListScheduledSQLRequest request) throws LogException;
+
+	UpdateScheduledSQLResponse updateScheduledSQL(UpdateScheduledSQLRequest request) throws LogException;
+
+	GetJobInstanceResponse getJobInstance(GetJobInstanceRequest request) throws LogException;
+
+	ModifyJobInstanceStateResponse modifyJobInstanceState(ModifyJobInstanceStateRequest request) throws LogException;
+
+	ListJobInstancesResponse listJobInstances(ListJobInstancesRequest request) throws LogException;
     /**
 	 * update alert
 	 *

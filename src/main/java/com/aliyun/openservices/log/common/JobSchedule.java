@@ -78,6 +78,12 @@ public class JobSchedule implements Serializable {
 
     private boolean runImmediately = false;
 
+    /**
+     * timeZone eg. +0800
+     */
+    @JSONField
+    private String timeZone;
+
     public String getId() {
         return id;
     }
@@ -223,6 +229,14 @@ public class JobSchedule implements Serializable {
         this.runImmediately = runImmediately;
     }
 
+    public String getTimeZone() {
+        return timeZone;
+    }
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
+
     public void deserialize(JSONObject value) {
         id = JsonUtils.readOptionalString(value, "id");
         displayName = JsonUtils.readOptionalString(value, "displayName");
@@ -247,6 +261,7 @@ public class JobSchedule implements Serializable {
                 break;
         }
         status = JsonUtils.readOptionalString(value, "status");
+        timeZone = JsonUtils.readOptionalString(value, "timeZone");
         startTime = JsonUtils.readOptionalDate(value, "startTime");
         completeTime = JsonUtils.readOptionalDate(value, "completeTime");
         createTime = JsonUtils.readOptionalDate(value, "createTime");
