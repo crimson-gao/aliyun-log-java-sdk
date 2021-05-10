@@ -1,13 +1,23 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.aliyun.openservices.log.common.*;
+import com.aliyun.openservices.log.common.Consts;
+import com.aliyun.openservices.log.common.EtlFunctionFcConfig;
+import com.aliyun.openservices.log.common.EtlJob;
+import com.aliyun.openservices.log.common.EtlLogConfig;
+import com.aliyun.openservices.log.common.EtlSourceConfig;
+import com.aliyun.openservices.log.common.EtlTriggerConfig;
+import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.CreateEtlJobRequest;
 import com.aliyun.openservices.log.request.DeleteEtlJobRequest;
 import com.aliyun.openservices.log.request.GetEtlJobRequest;
 import com.aliyun.openservices.log.request.ListEtlJobRequest;
 import com.aliyun.openservices.log.request.UpdateEtlJobRequest;
-import com.aliyun.openservices.log.response.*;
+import com.aliyun.openservices.log.response.CreateEtlJobResponse;
+import com.aliyun.openservices.log.response.DeleteEtlJobResponse;
+import com.aliyun.openservices.log.response.GetEtlJobResponse;
+import com.aliyun.openservices.log.response.ListEtlJobResponse;
+import com.aliyun.openservices.log.response.UpdateEtlJobResponse;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,6 +25,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+
 public class FcTriggerFunctionTest extends JobIntgTest {
     private static String fcRegion = "cn-hangzhou";
     private static String fcAccountId = credentials.getAliuid();

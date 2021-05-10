@@ -5,8 +5,20 @@ import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.common.SubStore;
 import com.aliyun.openservices.log.common.SubStoreKey;
 import com.aliyun.openservices.log.exception.LogException;
-import com.aliyun.openservices.log.response.*;
-import org.junit.*;
+import com.aliyun.openservices.log.response.CreateSubStoreResponse;
+import com.aliyun.openservices.log.response.DeleteSubStoreResponse;
+import com.aliyun.openservices.log.response.GetLogStoreResponse;
+import com.aliyun.openservices.log.response.GetSubStoreResponse;
+import com.aliyun.openservices.log.response.GetSubStoreTTLResponse;
+import com.aliyun.openservices.log.response.ListLogStoresResponse;
+import com.aliyun.openservices.log.response.ListSubStoreResponse;
+import com.aliyun.openservices.log.response.UpdateLogStoreResponse;
+import com.aliyun.openservices.log.response.UpdateSubStoreResponse;
+import com.aliyun.openservices.log.response.UpdateSubStoreTTLResponse;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -104,7 +116,6 @@ public class SubStoreTest extends FunctionTest {
     }
 
     //this method is not implemented for metric store not Implemented yet!
-    @Ignore
     @Test
     public void testCURDLogStoreV2() throws LogException {
         listLogStoreV2();

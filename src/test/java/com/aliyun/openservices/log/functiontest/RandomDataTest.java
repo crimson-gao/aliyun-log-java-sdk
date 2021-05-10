@@ -6,14 +6,13 @@ import com.aliyun.openservices.log.common.QueriedLog;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.GetLogsRequest;
 import com.aliyun.openservices.log.response.GetLogsResponse;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RandomDataTest extends FunctionTest {
-    @Ignore
+
     @Test
     public void test() {
         while (true) {

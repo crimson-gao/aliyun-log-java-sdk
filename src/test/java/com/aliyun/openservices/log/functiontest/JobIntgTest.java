@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 abstract class JobIntgTest extends FunctionTest {
 
-    static final String TEST_PROJECT = "test-project-intg-to-job";
+    static final String TEST_PROJECT = "sls-test-" + getNowTimestamp();
     static final String TEST_DASHBOARD = "dashboardtest";
 
     @Before

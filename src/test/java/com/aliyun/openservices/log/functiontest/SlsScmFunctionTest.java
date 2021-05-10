@@ -1,6 +1,7 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.aliyun.openservices.log.Client;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.ACL;
 import com.aliyun.openservices.log.common.ACLPrivileges;
 import com.aliyun.openservices.log.common.ApsaraLogConfigInputDetail;
@@ -23,11 +24,8 @@ import com.aliyun.openservices.log.response.ListACLResponse;
 import com.aliyun.openservices.log.response.ListConfigResponse;
 import com.aliyun.openservices.log.response.ListMachineGroupResponse;
 import com.aliyun.openservices.log.response.ListProjectResponse;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-@Ignore
+
 public class SlsScmFunctionTest extends FunctionTest {
 	static private String project = "project-test-scm";
 	static private String logStore = "test-java-sdk";

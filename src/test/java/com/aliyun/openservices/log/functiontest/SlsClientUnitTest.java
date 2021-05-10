@@ -54,7 +54,6 @@ import com.aliyun.openservices.log.response.ListMachineGroupResponse;
 import com.aliyun.openservices.log.response.ListShardResponse;
 import com.aliyun.openservices.log.response.Response;
 import com.aliyun.openservices.log.util.LZ4Encoder;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -74,6 +73,7 @@ import java.util.zip.Deflater;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * java sdk unittest
@@ -92,8 +92,6 @@ public class SlsClientUnitTest {
             TEST_ACCESS_KEY);
 
 
-
-    @Ignore
     @Test
     public void TestExtractResponseMessage() {
         // / normal case
@@ -153,8 +151,6 @@ public class SlsClientUnitTest {
         assertEquals(contents.get(1).mValue, "value_4");
     }
 
-
-    @Ignore
     @Test
     public void TestParserResponseMessage() {
 
@@ -346,10 +342,10 @@ public class SlsClientUnitTest {
 
         assertEquals(config.GetConfigName(), "testconfig");
 
-        assertEquals(((ConfigInputDetail) (((ConfigInputDetail) (config.GetInputDetail())))).GetLogType(), inputDetail.getString("logType"));
+        assertEquals(((ConfigInputDetail) (config.GetInputDetail())).GetLogType(), inputDetail.getString("logType"));
         assertEquals(((ConfigInputDetail) (config.GetInputDetail())).GetLogPath(), inputDetail.getString("logPath"));
         assertEquals(((ConfigInputDetail) (config.GetInputDetail())).GetFilePattern(), inputDetail.getString("filePattern"));
-        assertEquals(((ConfigInputDetail) (config.GetInputDetail())).GetLocalStorage(), inputDetail.getBoolean("localStorage"));
+        assertEquals(config.GetInputDetail().GetLocalStorage(), inputDetail.getBoolean("localStorage"));
         assertEquals(((ConfigInputDetail) (config.GetInputDetail())).GetTimeFormat(), inputDetail.getString("timeFormat"));
         assertEquals(((ConfigInputDetail) (config.GetInputDetail())).GetLogBeginRegex(), inputDetail.getString("logBeginRegex"));
         assertEquals(((ConfigInputDetail) (config.GetInputDetail())).GetRegex(), inputDetail.getString("regex"));
@@ -361,13 +357,13 @@ public class SlsClientUnitTest {
             assertEquals(keyList.get(i), key.getString(i));
         }
 
-        List<String> filterRegexList = ((ConfigInputDetail) (config.GetInputDetail())).GetFilterRegex();
+        List<String> filterRegexList = config.GetInputDetail().GetFilterRegex();
         assertEquals(filterRegexList.size(), filterRegex.size());
         for (int i = 0; i < filterRegexList.size(); i++) {
             assertEquals(filterRegexList.get(i), filterRegex.getString(i));
         }
 
-        List<String> filterKeyList = ((ConfigInputDetail) (config.GetInputDetail())).GetFilterKey();
+        List<String> filterKeyList = config.GetInputDetail().GetFilterKey();
         assertEquals(filterKeyList.size(), filterKey.size());
         for (int i = 0; i < filterKeyList.size(); i++) {
             assertEquals(filterKeyList.get(i), filterKey.getString(i));
@@ -407,7 +403,7 @@ public class SlsClientUnitTest {
         try {
             group = logClientMock.ExtractMachineGroupFromResponse(jObj, "");
         } catch (LogException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
 
         assertEquals(group.GetGroupName(), "testgroup");
@@ -439,7 +435,7 @@ public class SlsClientUnitTest {
         try {
             acl = logClientMock.ExtractACLFromResponse(jObj, "");
         } catch (LogException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
 
         assertEquals(acl.GetPrinciple(), "test1");
@@ -448,7 +444,6 @@ public class SlsClientUnitTest {
         assertEquals(acl.GetCreateTime(), 1434520236);
     }
 
-    @Ignore
     @Test
     public void TestParseResponseMessage() {
         ResponseMessage response = new ResponseMessage();
@@ -457,7 +452,7 @@ public class SlsClientUnitTest {
         try {
             testBytes = SlsClientTestData.TEST_RESPONSE_RAW_DATA.getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
 
         response.setContent(new ByteArrayInputStream(testBytes));
@@ -475,7 +470,7 @@ public class SlsClientUnitTest {
             assertEquals(result.getIntValue("lastModifyTime"), origin.getIntValue("lastModifyTime"));
 
         } catch (Exception e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
     }
 
@@ -487,7 +482,7 @@ public class SlsClientUnitTest {
         try {
             testBytes = SlsClientTestData.TEST_RESPONSE_RAW_ARRAY.getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
 
         response.setContent(new ByteArrayInputStream(testBytes));
@@ -507,7 +502,7 @@ public class SlsClientUnitTest {
             }
 
         } catch (Exception e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
     }
 
@@ -561,14 +556,14 @@ public class SlsClientUnitTest {
             mock.ChangeResponse(response);
             mock.CreateConfig(project, config);
         } catch (LogException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
 
         byte[] errorBody = null;
         try {
             errorBody = SlsClientTestData.TEST_STANDARD_ERROR.getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
         InputStream errorContent = new ByteArrayInputStream(errorBody);
         response.setStatusCode(400);
@@ -632,21 +627,21 @@ public class SlsClientUnitTest {
         try {
             config.SetOutputDetail(outputDetail.toString());
         } catch (LogException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
 
         try {
             mock.ChangeResponse(response);
             mock.UpdateConfig(project, config);
         } catch (LogException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
 
         byte[] errorBody = null;
         try {
             errorBody = SlsClientTestData.TEST_STANDARD_ERROR.getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
         InputStream errorContent = new ByteArrayInputStream(errorBody);
         response.setStatusCode(400);
@@ -676,14 +671,14 @@ public class SlsClientUnitTest {
             mock.ChangeResponse(response);
             mock.DeleteConfig(project, testConfigName);
         } catch (LogException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
 
         byte[] errorBody = null;
         try {
             errorBody = SlsClientTestData.TEST_STANDARD_ERROR.getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
         InputStream errorContent = new ByteArrayInputStream(errorBody);
         response.setStatusCode(400);
@@ -697,7 +692,6 @@ public class SlsClientUnitTest {
         }
     }
 
-    @Ignore
     @Test
     public void TestGetConfig() {
         String testConfigName = "test_config";
@@ -745,7 +739,7 @@ public class SlsClientUnitTest {
         try {
             body = jsonStr.getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
         InputStream content = new ByteArrayInputStream(body);
 
@@ -773,14 +767,14 @@ public class SlsClientUnitTest {
             assertEquals("regex does not match", inputDetail.GetRegex(), ((ConfigInputDetail) (res.GetConfig().GetInputDetail())).GetRegex());
             assertEquals("topicFormat does not match", inputDetail.GetTopicFormat(), ((ConfigInputDetail) (res.GetConfig().GetInputDetail())).GetTopicFormat());
         } catch (LogException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
 
         byte[] errorBody = null;
         try {
             errorBody = SlsClientTestData.TEST_STANDARD_ERROR.getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
         InputStream errorContent = new ByteArrayInputStream(errorBody);
         response.setStatusCode(400);
@@ -797,7 +791,7 @@ public class SlsClientUnitTest {
         try {
             invalidBody = SlsClientTestData.TEST_INVALID_JSON.getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
         InputStream invalidContent = new ByteArrayInputStream(invalidBody);
         response.setStatusCode(200);
@@ -829,7 +823,7 @@ public class SlsClientUnitTest {
         try {
             body = jsonStr.getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
         InputStream content = new ByteArrayInputStream(body);
 
@@ -1433,7 +1427,6 @@ public class SlsClientUnitTest {
         }
     }
 
-    @Ignore
     @Test
     public void TestPutLogs() {
         LogContent content1 = new LogContent();
@@ -1920,7 +1913,6 @@ public class SlsClientUnitTest {
         }
     }
 
-    @Ignore
     @Test
     public void TestBatchGetLog() {
         LogContent content1 = new LogContent();
@@ -2371,7 +2363,6 @@ public class SlsClientUnitTest {
         }
     }
 
-    @Ignore
     @Test
     public void TestGetLogs() {
         LogItem item1 = new LogItem();
@@ -2701,7 +2692,6 @@ public class SlsClientUnitTest {
         assertEquals("test", e.GetRequestId());
     }
 
-    @Ignore
     @Test
     public void TestCommonMisc() {
         LogStore logStore = new LogStore();
@@ -2834,7 +2824,7 @@ public class SlsClientUnitTest {
         int size = logBytes.length;
         ByteArrayOutputStream out = new ByteArrayOutputStream(size);
         byte[] buf = new byte[10240];
-        while (compresser.finished() == false) {
+        while (!compresser.finished()) {
             int count = compresser.deflate(buf);
             out.write(buf, 0, count);
         }

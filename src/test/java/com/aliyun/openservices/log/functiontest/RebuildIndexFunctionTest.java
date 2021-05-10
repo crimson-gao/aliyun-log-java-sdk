@@ -1,12 +1,28 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.aliyun.openservices.log.common.*;
+import com.aliyun.openservices.log.common.Index;
+import com.aliyun.openservices.log.common.IndexKey;
+import com.aliyun.openservices.log.common.IndexKeys;
+import com.aliyun.openservices.log.common.LogStore;
+import com.aliyun.openservices.log.common.Project;
+import com.aliyun.openservices.log.common.RebuildIndex;
+import com.aliyun.openservices.log.common.RebuildIndexConfiguration;
 import com.aliyun.openservices.log.exception.LogException;
-import com.aliyun.openservices.log.request.*;
+import com.aliyun.openservices.log.request.CreateIndexRequest;
+import com.aliyun.openservices.log.request.CreateRebuildIndexRequest;
+import com.aliyun.openservices.log.request.DeleteRebuildIndexRequest;
+import com.aliyun.openservices.log.request.DisableJobRequest;
+import com.aliyun.openservices.log.request.EnableJobRequest;
+import com.aliyun.openservices.log.request.GetRebuildIndexRequest;
+import com.aliyun.openservices.log.request.ListRebuildIndexRequest;
+import com.aliyun.openservices.log.request.StopRebuildIndexRequest;
 import com.aliyun.openservices.log.response.GetRebuildIndexResponse;
 import com.aliyun.openservices.log.response.ListProjectResponse;
 import com.aliyun.openservices.log.response.ListRebuildIndexResponse;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -72,7 +88,6 @@ public class RebuildIndexFunctionTest extends FunctionTest {
         testGet();
     }
 
-    @Ignore
     @Test
     public void testGet() throws Exception {
         GetRebuildIndexResponse response = client.getRebuildIndex(new GetRebuildIndexRequest(project, jobName));
@@ -81,7 +96,6 @@ public class RebuildIndexFunctionTest extends FunctionTest {
         Assert.assertEquals("test rebuild index", ri.getDisplayName());
     }
 
-    @Ignore
     @Test
     public void testStop() {
         try {
@@ -108,7 +122,6 @@ public class RebuildIndexFunctionTest extends FunctionTest {
         assertEquals("rebuild-index-6", response.getResults().get(0).getName());
     }
 
-    @Ignore
     @Test
     public void testInvalidOperation() throws Exception {
         client.enableJob(new EnableJobRequest(project, jobName));

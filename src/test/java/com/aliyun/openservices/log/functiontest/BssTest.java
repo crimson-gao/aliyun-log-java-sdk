@@ -1,22 +1,23 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.aliyun.openservices.log.common.*;
+import com.aliyun.openservices.log.common.AliyunBSSSource;
+import com.aliyun.openservices.log.common.Ingestion;
+import com.aliyun.openservices.log.common.IngestionConfiguration;
+import com.aliyun.openservices.log.common.JobSchedule;
+import com.aliyun.openservices.log.common.JobScheduleType;
+import com.aliyun.openservices.log.common.JobState;
 import com.aliyun.openservices.log.exception.LogException;
-import com.aliyun.openservices.log.request.*;
+import com.aliyun.openservices.log.request.CreateIngestionRequest;
+import com.aliyun.openservices.log.request.GetIngestionRequest;
+import com.aliyun.openservices.log.request.StartIngestionRequest;
+import com.aliyun.openservices.log.request.StopIngestionRequest;
+import com.aliyun.openservices.log.request.UpdateIngestionRequest;
 import com.aliyun.openservices.log.response.GetIngestionResponse;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-/**
- * bss test
- *
- * @version 1.0
- * @since 2019-10-11 17:41
- */
-@Ignore
 public class BssTest extends JobIntgTest {
     private static String getIngestionName() {
         return "ingestion-" + getNowTimestamp();

@@ -25,7 +25,6 @@ import com.aliyun.openservices.log.response.GetJobResponse;
 import com.aliyun.openservices.log.response.ListJobsResponse;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-@Ignore
 public class JobFunctionTest extends FunctionTest {
 
     private static final String TEST_PROJECT = "project-test-" + getNowTimestamp();

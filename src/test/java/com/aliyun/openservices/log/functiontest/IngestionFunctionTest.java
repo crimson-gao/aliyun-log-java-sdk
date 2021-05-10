@@ -14,12 +14,11 @@ import com.aliyun.openservices.log.request.StartIngestionRequest;
 import com.aliyun.openservices.log.request.StopIngestionRequest;
 import com.aliyun.openservices.log.request.UpdateIngestionRequest;
 import com.aliyun.openservices.log.response.GetIngestionResponse;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-@Ignore
+
 public class IngestionFunctionTest extends JobIntgTest {
 
     private static String getIngestionName() {

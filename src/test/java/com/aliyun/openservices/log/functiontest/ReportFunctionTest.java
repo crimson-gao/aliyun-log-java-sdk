@@ -21,7 +21,6 @@ import com.aliyun.openservices.log.request.ListReportRequest;
 import com.aliyun.openservices.log.response.GetReportResponse;
 import com.aliyun.openservices.log.response.ListDashboardResponse;
 import com.aliyun.openservices.log.response.ListReportResponse;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -60,7 +59,6 @@ public class ReportFunctionTest extends JobIntgTest {
         return report;
     }
 
-    @Ignore
     @Test
     public void testCrud() throws Exception {
         // test list jobs
