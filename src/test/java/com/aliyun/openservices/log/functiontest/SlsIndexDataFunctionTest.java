@@ -80,7 +80,6 @@ public class SlsIndexDataFunctionTest extends FunctionTest {
 
         try {
             client.CreateIndex(project, logStore, index);
-            waitForSeconds(60);
 
             Index res = client.GetIndex(project, logStore).GetIndex();
 //            assertEquals(index.GetTtl(), res.GetTtl());
@@ -205,12 +204,10 @@ public class SlsIndexDataFunctionTest extends FunctionTest {
             assertEquals(res.GetCount(), 100);
             assertTrue(res.IsCompleted());
             ArrayList<QueriedLog> queriedLogs = res.GetLogs();
-            int index = 0;
             for (QueriedLog log : queriedLogs) {
                 LogItem item = log.GetLogItem();
                 assertEquals(topic ,item.GetLogContents().get(0)
                                 .GetValue());
-                index++;
             }
         } catch (LogException e) {
             fail(e.GetErrorCode() + ":" + e.GetErrorMessage());
