@@ -1,11 +1,11 @@
 package com.aliyun.openservices.log.functiontest;
 
 
+import com.aliyun.openservices.log.common.EncryptConf;
+import com.aliyun.openservices.log.common.EncryptUserCmkConf;
 import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.response.GetLogStoreResponse;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -13,14 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class LogStoreFunctionTest extends FunctionTest {
-
-    private static final String TEST_PROJECT = "project-to-test-logstore-" + getNowTimestamp();
-
-    @Before
-    public void setUp() {
-        safeCreateProject(TEST_PROJECT, "");
-    }
+public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
 
     @Test
     public void testCreateLogStore() throws Exception {
@@ -28,7 +21,10 @@ public class LogStoreFunctionTest extends FunctionTest {
         logStore1.SetLogStoreName("");
         logStore1.SetShardCount(2);
         logStore1.SetTtl(7);
-        logStore1.setAppendMeta(true);
+        boolean appendMeta = randomBoolean();
+        logStore1.setAppendMeta(appendMeta);
+        boolean webTracking = randomBoolean();
+        logStore1.setEnableWebTracking(webTracking);
         try {
             client.CreateLogStore(TEST_PROJECT, logStore1);
             fail("Create invalid logstore should fail");
@@ -42,7 +38,59 @@ public class LogStoreFunctionTest extends FunctionTest {
         logStore.SetLogStoreName("logstore-for-testing1");
         logStore.SetShardCount(2);
         logStore.SetTtl(7);
-        logStore.setAppendMeta(true);
+        logStore.setAppendMeta(appendMeta);
+        logStore.setEnableWebTracking(webTracking);
+        logStore.setmAutoSplit(randomBoolean());
+
+        if (logStore.ismAutoSplit()) {
+            logStore.setmMaxSplitShard(1000);
+            try {
+                client.CreateLogStore(TEST_PROJECT, logStore);
+                fail("Create invalid logstore should fail");
+            } catch (LogException ex) {
+                assertEquals(ex.GetErrorCode(), "LogStoreInfoInvalid");
+                assertEquals(ex.GetErrorMessage(), "maxSplitShard must be within range [1, 64]");
+                assertEquals(ex.GetHttpCode(), 400);
+            }
+            logStore.setmMaxSplitShard(randomBetween(1, 64));
+        }
+
+        EncryptConf encryptConf = new EncryptConf(true);
+        encryptConf.setEncryptType("typex");
+        EncryptUserCmkConf cmkConf = new EncryptUserCmkConf();
+        cmkConf.setArn("roleArn");
+        cmkConf.setCmkKeyId("cmdk");
+        cmkConf.setRegionId("cn-hangzhou");
+        logStore.SetEncryptConf(encryptConf);
+
+        try {
+            client.CreateLogStore(TEST_PROJECT, logStore);
+            fail("Create invalid encrypt type should fail");
+        } catch (LogException ex) {
+            assertEquals(ex.GetErrorCode(), "LogStoreInfoInvalid");
+            assertEquals(ex.GetErrorMessage(), "The encrypt_conf is invalid, [encrypt_type] key is missing or not supportedtypex");
+            assertEquals(ex.GetHttpCode(), 400);
+        }
+//        encryptConf.setEncryptType("aes_ofb");
+
+        // TODO test encrypt conf
+        logStore.SetEncryptConf(null);
+        logStore.setArchiveSeconds(randomInt(100));
+        try {
+            client.CreateLogStore(TEST_PROJECT, logStore);
+            fail("Create invalid archive seconds should fail");
+        } catch (LogException ex) {
+            assertEquals(ex.GetErrorCode(), "ParameterInvalid");
+            assertEquals(ex.GetErrorMessage(), "invalid archive seconds " + logStore.getArchiveSeconds());
+            assertEquals(ex.GetHttpCode(), 400);
+        }
+
+        logStore.setArchiveSeconds(randomBetween(86400, logStore.GetTtl() * 86400));
+
+        if (randomBoolean()) {
+            logStore.setTelemetryType("metrics");
+        }
+
         client.CreateLogStore(TEST_PROJECT, logStore);
 
         GetLogStoreResponse response = client.GetLogStore(TEST_PROJECT, "logstore-for-testing1");
@@ -51,7 +99,13 @@ public class LogStoreFunctionTest extends FunctionTest {
         assertEquals(7, logStore2.GetTtl());
         assertEquals(2, logStore2.GetShardCount());
         assertEquals("logstore-for-testing1", logStore2.GetLogStoreName());
-
+        assertEquals(appendMeta, logStore2.isAppendMeta());
+        assertEquals(webTracking, logStore2.isEnableWebTracking());
+        assertEquals(logStore.getTelemetryType(), logStore2.getTelemetryType());
+        assertEquals(logStore.getArchiveSeconds(), logStore2.getArchiveSeconds());
+        assertEquals(logStore.getUsedStorage(), 0);
+        assertEquals(logStore.getProductType(), logStore2.getProductType());
+        assertEquals(logStore.getEncryptConf(), logStore2.getEncryptConf());
         try {
             client.CreateLogStore(TEST_PROJECT, logStore);
             fail("Create duplicate logstore should fail");
@@ -74,6 +128,12 @@ public class LogStoreFunctionTest extends FunctionTest {
         assertEquals(30, logStore3.GetTtl());
         assertEquals(3, logStore3.GetShardCount());
         assertEquals("logstore-for-testing2", logStore3.GetLogStoreName());
+        assertEquals(webTracking, logStore3.isEnableWebTracking());
+        assertEquals(logStore.getTelemetryType(), logStore3.getTelemetryType());
+        assertEquals(logStore.getArchiveSeconds(), logStore3.getArchiveSeconds());
+        assertEquals(logStore.getUsedStorage(), 0);
+        assertEquals(logStore.getProductType(), logStore3.getProductType());
+        assertEquals(logStore.getEncryptConf(), logStore3.getEncryptConf());
 
         client.DeleteLogStore(TEST_PROJECT, "logstore-for-testing1");
         client.DeleteLogStore(TEST_PROJECT, "logstore-for-testing2");
@@ -113,10 +173,5 @@ public class LogStoreFunctionTest extends FunctionTest {
         assertEquals(logstoreName, logStore2.GetLogStoreName());
 
         client.DeleteLogStore(TEST_PROJECT, logstoreName);
-    }
-
-    @After
-    public void tearDown() {
-        safeDeleteProjectWithoutSleep(TEST_PROJECT);
     }
 }
