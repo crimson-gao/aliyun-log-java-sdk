@@ -12,8 +12,6 @@ import com.aliyun.openservices.log.request.ListDashboardRequest;
 import com.aliyun.openservices.log.request.UpdateDashboardRequest;
 import com.aliyun.openservices.log.response.GetDashboardResponse;
 import com.aliyun.openservices.log.response.ListDashboardResponse;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -22,19 +20,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class DashboardTest extends FunctionTest {
-
-    private static final String TEST_PROJECT = "test-project-to-dashboard" + getNowTimestamp();
-
-    @Before
-    public void setUp() {
-        safeCreateProject(TEST_PROJECT, "dashboardtest");
-    }
-
-    @After
-    public void tearDown() {
-        safeDeleteProjectWithoutSleep(TEST_PROJECT);
-    }
+public class DashboardTest extends MetaAPIBaseFunctionTest {
 
     @Test
     public void testListDashboard() throws Exception {
@@ -71,7 +57,7 @@ public class DashboardTest extends FunctionTest {
         try {
             client.deleteDashboard(new DeleteDashboardRequest(TEST_PROJECT, dashboardName));
         } catch (LogException ex) {
-            System.out.println(ex.toString());
+            assertEquals("DashboardNotExist", ex.GetErrorCode());
             assertEquals("specified dashboard does not exist", ex.getMessage());
         }
 

@@ -5,8 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.ListTagResourcesRequest;
 import com.aliyun.openservices.log.response.ListTagResourcesResponse;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -18,18 +16,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class TagResourcesTest extends FunctionTest {
-    private static final String TEST_PROJECT = "test-project-to-tagsources-" + getNowTimestamp();
-
-    @Before
-    public void setUp() {
-        safeCreateProject(TEST_PROJECT, "test tag sources");
-    }
-
-    @After
-    public void clearDown() {
-        safeDeleteProjectWithoutSleep(TEST_PROJECT);
-    }
+public class TagResourcesTest extends MetaAPIBaseFunctionTest {
 
     @Test
     public void testTagSources() throws LogException {

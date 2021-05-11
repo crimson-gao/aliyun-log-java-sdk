@@ -9,8 +9,6 @@ import com.aliyun.openservices.log.request.ListSavedSearchRequest;
 import com.aliyun.openservices.log.request.UpdateSavedSearchRequest;
 import com.aliyun.openservices.log.response.GetSavedSearchResponse;
 import com.aliyun.openservices.log.response.ListSavedSearchResponse;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -19,14 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class SavedSearchTest extends FunctionTest {
-
-    private static final String TEST_PROJECT = "test-project-to-savedsearch-" + getNowTimestamp();
-
-    @Before
-    public void setUp() {
-        safeCreateProject(TEST_PROJECT, "savedsearch test");
-    }
+public class SavedSearchTest extends MetaAPIBaseFunctionTest {
 
     @Test
     public void testCRUD() throws LogException {
@@ -109,10 +100,5 @@ public class SavedSearchTest extends FunctionTest {
             assertEquals(ex.GetErrorMessage(), "specified savedsearch does not exist");
             assertEquals(ex.GetErrorCode(), "SavedSearchNotExist");
         }
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        safeDeleteProjectWithoutSleep(TEST_PROJECT);
     }
 }

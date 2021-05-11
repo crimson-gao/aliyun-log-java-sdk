@@ -74,6 +74,6 @@ abstract class JobIntgTest extends FunctionTest {
 
     @After
     public void tearDown() throws Exception {
-        client.DeleteProject(TEST_PROJECT);
+//        client.DeleteProject(TEST_PROJECT);
     }
 }

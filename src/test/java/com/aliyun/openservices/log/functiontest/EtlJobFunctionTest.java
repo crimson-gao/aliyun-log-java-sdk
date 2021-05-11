@@ -18,16 +18,16 @@ import com.aliyun.openservices.log.response.DeleteEtlJobResponse;
 import com.aliyun.openservices.log.response.GetEtlJobResponse;
 import com.aliyun.openservices.log.response.ListEtlJobResponse;
 import com.aliyun.openservices.log.response.UpdateEtlJobResponse;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 
-public class FcTriggerFunctionTest extends JobIntgTest {
+public class EtlJobFunctionTest extends JobIntgTest {
     private static String fcRegion = "cn-hangzhou";
     private static String fcAccountId = credentials.getAliuid();
     private static String roleArn = "acs:ram::" + fcAccountId + ":role/aliyunlogetlrole";
@@ -46,7 +46,6 @@ public class FcTriggerFunctionTest extends JobIntgTest {
         logStore.setEnableWebTracking(true);
         logStore.setAppendMeta(true);
         createOrUpdateLogStore(TEST_PROJECT, logStore);
-        waitForSeconds(1);
         try {
             DeleteEtlJobRequest req = new DeleteEtlJobRequest(TEST_PROJECT, etlJobName);
             client.deleteEtlJob(req);
@@ -57,13 +56,6 @@ public class FcTriggerFunctionTest extends JobIntgTest {
             client.deleteEtlJob(req);
         } catch (LogException e) {
         }
-        waitForSeconds(1);
-    }
-
-
-    @AfterClass
-    public static void cleanup() {
-
     }
 
     @Test
@@ -76,7 +68,6 @@ public class FcTriggerFunctionTest extends JobIntgTest {
     }
 
     private void testCreateEtlJob() {
-
         EtlSourceConfig sourceConfig = new EtlSourceConfig(logstore);
         EtlTriggerConfig triggerConfig = new EtlTriggerConfig(roleArn, 300, 1);
         EtlFunctionFcConfig fcConfig = new EtlFunctionFcConfig(Consts.FUNCTION_PROVIDER_FC, credentials.getEndpoint(), fcAccountId, fcRegion, fcService, fcFunction);
@@ -121,7 +112,7 @@ public class FcTriggerFunctionTest extends JobIntgTest {
             triggerConfig.setStartingUnixtime(-1);
             CreateEtlJobRequest req = new CreateEtlJobRequest(TEST_PROJECT, job);
             client.createEtlJob(req);
-            assertTrue(false);
+            fail();
         } catch (LogException e) {
             System.out.println(e.GetErrorMessage());
             assertEquals(e.GetErrorCode(), "PostBodyInvalid");
@@ -270,7 +261,7 @@ public class FcTriggerFunctionTest extends JobIntgTest {
             UpdateEtlJobRequest req = new UpdateEtlJobRequest(TEST_PROJECT, job);
             UpdateEtlJobResponse resp = client.updateEtlJob(req);
             System.out.println(resp.GetAllHeaders());
-            assertTrue(false);
+            fail();
         } catch (LogException e) {
             System.out.print(e.GetErrorMessage());
             assertEquals(e.GetErrorCode(), "PostBodyInvalid");
@@ -299,7 +290,7 @@ public class FcTriggerFunctionTest extends JobIntgTest {
         } catch (LogException e) {
             System.out.print(e.GetErrorCode());
             System.out.print(e.GetErrorMessage());
-            assertTrue(false);
+            fail();
         }
         try {
             ListEtlJobRequest req = new ListEtlJobRequest(TEST_PROJECT, 0, 10);
@@ -316,7 +307,7 @@ public class FcTriggerFunctionTest extends JobIntgTest {
                 } else if (jobName.equalsIgnoreCase(etlJobName + "_1")) {
                     GetEtlJobResponse getresp = client.getEtlJob(new GetEtlJobRequest(TEST_PROJECT, etlJobName + "_1"));
                     assertEquals(getresp.getEtljob().getJobName(), etlJobName + "_1");
-                    assertTrue(!getresp.getEtljob().getEnable());
+                    assertFalse(getresp.getEtljob().getEnable());
                     ++hit;
                 }
             }

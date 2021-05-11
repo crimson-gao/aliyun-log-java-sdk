@@ -3,44 +3,27 @@ package com.aliyun.openservices.log.functiontest;
 import com.aliyun.openservices.log.common.Domain;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.response.ListDomainsResponse;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-public class DomainTest extends FunctionTest {
-    private static final String TEST_PROJECT = "test-domain-project-" + getNowTimestamp();
-
-    @Before
-    public void setUp() {
-        safeCreateProject(TEST_PROJECT, "test domain");
-    }
-
-    @After
-    public void afterTest() {
-        safeDeleteProject(TEST_PROJECT);
-    }
+public class DomainTest extends MetaAPIBaseFunctionTest {
 
     @Test
-    public void testCRUD() {
-        //delete
-        //Unauthorized
-        //this api does not support sub user or role
+    public void testCRUD() throws LogException {
         try {
             client.deleteDomain(TEST_PROJECT, "test-domain");
         } catch (LogException e) {
-            System.err.println(e.GetErrorCode());
-            System.err.println(e.GetErrorMessage());
+            assertEquals("Unauthorized", e.GetErrorCode());
+            assertEquals("this api does not support sub user or role", e.GetErrorMessage());
+            assertEquals(401, e.GetHttpCode());
         }
         //create
+        client.createDomain(TEST_PROJECT, new Domain("test-domain"));
         try {
             client.createDomain(TEST_PROJECT, new Domain("test-domain"));
-        } catch (LogException e) {
-            fail(e.GetErrorMessage());
-        }
-        try {
-            client.createDomain(TEST_PROJECT, new Domain("test-domain"));
+            fail();
         } catch (LogException e) {
             assertEquals("ExceedQuota", e.GetErrorCode());
             assertEquals("domain quota exceed", e.GetErrorMessage());
@@ -48,18 +31,10 @@ public class DomainTest extends FunctionTest {
         //get no get
         //update no update
         //list
-        try {
-            ListDomainsResponse domains = client.listDomains(TEST_PROJECT, "", 0, 10);
-            assertEquals(1, domains.getCount());
-            assertEquals(1, domains.getTotal());
-            assertEquals("test-domain", domains.getDomains().get(0).getDomainName());
-        } catch (LogException e) {
-            fail(e.GetErrorMessage());
-        }
-        try {
-            client.deleteDomain(TEST_PROJECT, "test-domain");
-        } catch (LogException e) {
-            fail(e.GetErrorMessage());
-        }
+        ListDomainsResponse domains = client.listDomains(TEST_PROJECT, "", 0, 10);
+        assertEquals(1, domains.getCount());
+        assertEquals(1, domains.getTotal());
+        assertEquals("test-domain", domains.getDomains().get(0).getDomainName());
+//        client.deleteDomain(TEST_PROJECT, "test-domain");
     }
 }

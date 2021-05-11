@@ -10,26 +10,13 @@ import com.aliyun.openservices.log.request.ListExternalStoresRequest;
 import com.aliyun.openservices.log.request.UpdateExternalStoreRequest;
 import com.aliyun.openservices.log.response.GetExternalStoreResponse;
 import com.aliyun.openservices.log.response.ListExternalStroesResponse;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class ExternalStoreTest extends FunctionTest {
-    private static final String project = "test-java-sdk-external-store-" + getNowTimestamp();
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        client.CreateProject(project, "");
-    }
-
-    @AfterClass
-    public static void tearDown() {
-        safeDeleteProjectWithoutSleep(project);
-    }
+public class ExternalStoreTest extends MetaAPIBaseFunctionTest {
 
     @Test
     public void testRdsVpc() throws LogException {
@@ -41,7 +28,7 @@ public class ExternalStoreTest extends FunctionTest {
         parameter.setTable("test-table");
         parameter.setUsername("test-user");
         ExternalStore externalStore = new ExternalStore("name-rds-vpc", "rds-vpc", parameter);
-        CreateExternalStoreRequest createRequest = new CreateExternalStoreRequest(project, externalStore);
+        CreateExternalStoreRequest createRequest = new CreateExternalStoreRequest(TEST_PROJECT, externalStore);
         client.createExternalStore(createRequest);
 
         try {
@@ -53,7 +40,7 @@ public class ExternalStoreTest extends FunctionTest {
         }
 
         //get
-        GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(project, "name-rds-vpc");
+        GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(TEST_PROJECT, "name-rds-vpc");
         GetExternalStoreResponse getResponse1 = client.getExternalStore(getRequest1);
         assertEquals(getResponse1.getExternalStore().getParameter().getHost(), "test-host");
 
@@ -65,20 +52,20 @@ public class ExternalStoreTest extends FunctionTest {
         parameter2.setTable("test-table-2");
         parameter2.setUsername("test-user-2");
         ExternalStore externalStore2 = new ExternalStore("name-rds-vpc", "rds-vpc", parameter2);
-        UpdateExternalStoreRequest updateRequest = new UpdateExternalStoreRequest(project, externalStore2);
+        UpdateExternalStoreRequest updateRequest = new UpdateExternalStoreRequest(TEST_PROJECT, externalStore2);
         client.updateExternalStore(updateRequest);
 
         //get
-        GetExternalStoreRequest getRequest2 = new GetExternalStoreRequest(project, "name-rds-vpc");
+        GetExternalStoreRequest getRequest2 = new GetExternalStoreRequest(TEST_PROJECT, "name-rds-vpc");
         GetExternalStoreResponse getResponse2 = client.getExternalStore(getRequest2);
         assertEquals(getResponse2.getExternalStore().getParameter().getHost(), "test-host-2");
 
-        ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, "vpc", 0, 10);
+        ListExternalStoresRequest listRequest = new ListExternalStoresRequest(TEST_PROJECT, "vpc", 0, 10);
         ListExternalStroesResponse listResponse = client.listExternalStores(listRequest);
         assertTrue(listResponse.getExternalStores().contains("name-rds-vpc"));
 
         //delete
-        DeleteExternalStoreRequest deleteRequest = new DeleteExternalStoreRequest(project, "name-rds-vpc");
+        DeleteExternalStoreRequest deleteRequest = new DeleteExternalStoreRequest(TEST_PROJECT, "name-rds-vpc");
         client.deleteExternalStore(deleteRequest);
     }
 
@@ -92,7 +79,7 @@ public class ExternalStoreTest extends FunctionTest {
         parameter.setAccesskey("789");
         parameter.setBucket("0");
         ExternalStore externalStore = new ExternalStore("name-oss", "oss", parameter);
-        CreateExternalStoreRequest createRequest = new CreateExternalStoreRequest(project, externalStore);
+        CreateExternalStoreRequest createRequest = new CreateExternalStoreRequest(TEST_PROJECT, externalStore);
         client.createExternalStore(createRequest);
 
         try {
@@ -104,7 +91,7 @@ public class ExternalStoreTest extends FunctionTest {
         }
 
 //        注意，此处会返回创建者的accessid和accesskey
-        GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(project, "name-oss");
+        GetExternalStoreRequest getRequest1 = new GetExternalStoreRequest(TEST_PROJECT, "name-oss");
         GetExternalStoreResponse getResponse1 = client.getExternalStore(getRequest1);   //LogException: Internal Server Error
         assertEquals(getResponse1.getExternalStore().getParameter().getEndpoint(), "oss-cn-hangzhou.aliyuncs.com");
 
@@ -115,21 +102,21 @@ public class ExternalStoreTest extends FunctionTest {
         parameter2.setAccesskey("987");
         parameter2.setBucket("1");
         ExternalStore externalStore2 = new ExternalStore("name-oss", "oss", parameter2);
-        UpdateExternalStoreRequest updateRequest = new UpdateExternalStoreRequest(project, externalStore2);
+        UpdateExternalStoreRequest updateRequest = new UpdateExternalStoreRequest(TEST_PROJECT, externalStore2);
         client.updateExternalStore(updateRequest);
 
         //get
-        GetExternalStoreRequest getRequest2 = new GetExternalStoreRequest(project, "name-oss");
+        GetExternalStoreRequest getRequest2 = new GetExternalStoreRequest(TEST_PROJECT, "name-oss");
         GetExternalStoreResponse getResponse2 = client.getExternalStore(getRequest2);
         assertEquals(getResponse2.getExternalStore().getParameter().getEndpoint(), "oss-cn-hangzhou.aliyuncs.com");
 
         //list
-        ListExternalStoresRequest listRequest = new ListExternalStoresRequest(project, "", 0, 10);
+        ListExternalStoresRequest listRequest = new ListExternalStoresRequest(TEST_PROJECT, "", 0, 10);
         ListExternalStroesResponse response = client.listExternalStores(listRequest);
         assertTrue(response.getExternalStores().contains("name-oss"));
 
         //delete
-        DeleteExternalStoreRequest deleteRequest = new DeleteExternalStoreRequest(project, "name-oss");
+        DeleteExternalStoreRequest deleteRequest = new DeleteExternalStoreRequest(TEST_PROJECT, "name-oss");
         client.deleteExternalStore(deleteRequest);
         client.createExternalStore(createRequest);
         client.deleteExternalStore(deleteRequest);

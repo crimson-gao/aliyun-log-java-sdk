@@ -155,7 +155,7 @@ public class ShipperTest extends JobIntgTest {
         try {
             client.DeleteShipper(TEST_PROJECT, TEST_LOGSTORE, shipperName);
         } catch (LogException ex) {
-            assertEquals("ShipperNotExist", ex.GetErrorCode(), ex.GetErrorMessage());
+            assertEquals(ex.GetErrorMessage(), "ShipperNotExist", ex.GetErrorCode());
         }
 
         OssShipperConfig ossConfig = new OssShipperConfig(ossBucket, ossPrefix, roleArn, bufferInterval, bufferSize, compressType, pathFormat, "json", "");
