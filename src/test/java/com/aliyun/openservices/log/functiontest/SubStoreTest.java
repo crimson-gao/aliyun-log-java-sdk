@@ -23,6 +23,8 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.fail;
+
 public class SubStoreTest extends FunctionTest {
     static int timestamp = getNowTimestamp();
     static String PROJECT = "test-substore-project-" + timestamp;
@@ -31,7 +33,9 @@ public class SubStoreTest extends FunctionTest {
     @Before
     public void setUp() {
         safeCreateProject(PROJECT, "SubStoreTest");
-        createOrUpdateLogStore(PROJECT, new LogStore(LOGSTORE1, 1, 1));
+        LogStore logStore = new LogStore(LOGSTORE1, 1, 1);
+        logStore.setTelemetryType("Metrics");
+        createOrUpdateLogStore(PROJECT, logStore);
     }
 
     @After
@@ -73,7 +77,7 @@ public class SubStoreTest extends FunctionTest {
         Assert.assertEquals("test_substore_name1", listSubStoreResponse.getSubStoreNames().get(0));
     }
 
-    private void updateSubStore() throws LogException {
+    private void updateSubStore() {
         SubStore subStore = new SubStore();
         subStore.setName("test_substore_name1");
         subStore.setTtl(15);
@@ -84,8 +88,15 @@ public class SubStoreTest extends FunctionTest {
         SubStoreKey subStoreKey3 = new SubStoreKey("__value__", "double");
         SubStoreKey subStoreKey4 = new SubStoreKey("__time_nano__", "long");
         subStore.setKeys(Arrays.asList(subStoreKey1, subStoreKey2, subStoreKey3, subStoreKey4));
-        UpdateSubStoreResponse updateSubStoreResponse = client.updateSubStore(PROJECT, LOGSTORE1, subStore);
-        Assert.assertNotNull(updateSubStoreResponse);
+        try {
+            client.updateSubStore(PROJECT, LOGSTORE1, subStore);
+            fail();
+        }catch (LogException e){
+            Assert.assertEquals(e.GetErrorMessage(), "this method is not implemented for metric store not Implemented yet!");
+            Assert.assertEquals(e.GetErrorCode(), "NotImplemented");
+            Assert.assertEquals(e.GetHttpCode(), 501);
+        }
+
     }
 
     private void getSubStore() throws LogException {
@@ -94,8 +105,8 @@ public class SubStoreTest extends FunctionTest {
         Assert.assertNotNull(subStore);
         Assert.assertEquals("test_substore_name1", subStore.getName());
         Assert.assertEquals(15, subStore.getTtl());
-        Assert.assertEquals(2, subStore.getSortedKeyCount());
-        Assert.assertEquals(3, subStore.getTimeIndex());
+        Assert.assertEquals(1, subStore.getSortedKeyCount());
+        Assert.assertEquals(2, subStore.getTimeIndex());
         List<SubStoreKey> keyList = subStore.getKeys();
         Assert.assertEquals(4, keyList.size());
     }
