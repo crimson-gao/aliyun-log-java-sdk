@@ -1,35 +1,30 @@
 package com.aliyun.openservices.log.response;
 
-
-import com.aliyun.openservices.log.common.ETL;
+import com.alibaba.fastjson.JSONObject;
+import com.aliyun.openservices.log.common.JobInstance;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.internal.ErrorCodes;
-import com.alibaba.fastjson.JSONObject;
-
 import java.util.Map;
 
-public class GetETLResponse extends Response {
-
+/**
+ * ScheduledSQL jobInstances Response
+ */
+public class GetJobInstanceResponse extends Response {
     private static final long serialVersionUID = 889623903109968396L;
-
-    private ETL etl;
-
-    public GetETLResponse(Map<String, String> headers) {
+    private JobInstance jobInstance;
+    public GetJobInstanceResponse(Map<String, String> headers) {
         super(headers);
     }
-
-    public ETL getEtl() {
-        return etl;
+    public JobInstance getJobInstance() {
+        return jobInstance;
     }
-
-    public void setEtl(ETL etl) {
-        this.etl = etl;
+    public void setJobInstance(JobInstance jobInstance) {
+        this.jobInstance = jobInstance;
     }
-
     public void deserialize(JSONObject value, String requestId) throws LogException {
-        etl = new ETL();
+        jobInstance = new JobInstance();
         try {
-            etl.deserialize(value);
+            jobInstance.deserialize(value);
         } catch (final Exception ex) {
             throw new LogException(ErrorCodes.BAD_RESPONSE, "Unable to deserialize JSON to model: " + ex.getMessage(), ex, requestId);
         }

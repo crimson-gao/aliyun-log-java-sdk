@@ -11,8 +11,6 @@ import com.aliyun.openservices.log.common.ACL;
 import com.aliyun.openservices.log.common.Chart;
 import com.aliyun.openservices.log.common.Config;
 import com.aliyun.openservices.log.common.Consts;
-import com.aliyun.openservices.log.common.Consts.CompressType;
-import com.aliyun.openservices.log.common.Consts.CursorMode;
 import com.aliyun.openservices.log.common.ConsumerGroup;
 import com.aliyun.openservices.log.common.Dashboard;
 import com.aliyun.openservices.log.common.Domain;
@@ -52,9 +50,13 @@ import com.aliyun.openservices.log.common.ShipperTasksStatistic;
 import com.aliyun.openservices.log.common.SqlInstance;
 import com.aliyun.openservices.log.common.SubStore;
 import com.aliyun.openservices.log.common.TagContent;
+import com.aliyun.openservices.log.common.Consts.CompressType;
+import com.aliyun.openservices.log.common.Consts.CursorMode;
 import com.aliyun.openservices.log.common.auth.Credentials;
 import com.aliyun.openservices.log.common.auth.DefaultCredentails;
 import com.aliyun.openservices.log.common.auth.ECSRoleCredentials;
+import com.aliyun.openservices.log.common.ScheduledSQL;
+
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.http.client.ClientConfiguration;
 import com.aliyun.openservices.log.http.client.ClientConnectionContainer;
@@ -73,6 +75,7 @@ import com.aliyun.openservices.log.http.utils.DateUtil;
 import com.aliyun.openservices.log.internal.ErrorCodes;
 import com.aliyun.openservices.log.request.*;
 import com.aliyun.openservices.log.response.*;
+
 import com.aliyun.openservices.log.util.Args;
 import com.aliyun.openservices.log.util.DigestUtils;
 import com.aliyun.openservices.log.util.GzipUtils;
@@ -4383,19 +4386,6 @@ public class Client implements LogService {
         return new DeleteAlertResponse(responseMessage.getHeaders());
     }
 
-	@Override
-	public DeleteJobScheduleResponse deleteJobSchedule(DeleteJobScheduleRequest request) throws LogException {
-		ResponseMessage message = send(request);
-		return new DeleteJobScheduleResponse(message.getHeaders());
-	}
-
-	@Override
-	@Deprecated
-	public DeleteETLResponse deleteETL(DeleteETLRequest request) throws LogException {
-        ResponseMessage responseMessage = send(request);
-        return new DeleteETLResponse(responseMessage.getHeaders());
-    }
-
     @Override
     public GetAlertResponse getAlert(GetAlertRequest request) throws LogException {
         ResponseMessage response = send(request);
@@ -4406,42 +4396,12 @@ public class Client implements LogService {
     }
 
     @Override
-	@Deprecated
-    public GetJobScheduleResponse getJobSchedule(GetJobScheduleRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        JSONObject responseBody = parseResponseBody(message, message.getRequestId());
-        GetJobScheduleResponse response = new GetJobScheduleResponse(message.getHeaders());
-        response.deserialize(responseBody, message.getRequestId());
-        return response;
-    }
-
-    @Override
-	@Deprecated
-    public GetETLResponse getETL(GetETLRequest request) throws LogException {
-        ResponseMessage response = send(request);
-        JSONObject responseBody = parseResponseBody(response, response.getRequestId());
-        GetETLResponse etlResponse = new GetETLResponse(response.getHeaders());
-        etlResponse.deserialize(responseBody, response.getRequestId());
-        return etlResponse;
-    }
-
-    @Override
     public ListAlertResponse listAlert(ListAlertRequest request) throws LogException {
         ResponseMessage response = send(request);
         JSONObject responseBody = parseResponseBody(response, response.getRequestId());
         ListAlertResponse alertResponse = new ListAlertResponse(response.getHeaders());
         alertResponse.deserialize(responseBody, response.getRequestId());
         return alertResponse;
-    }
-
-    @Override
-	@Deprecated
-    public ListETLResponse listETL(ListETLRequest request) throws LogException {
-        ResponseMessage response = send(request);
-        JSONObject responseBody = parseResponseBody(response, response.getRequestId());
-        ListETLResponse listETLResponse = new ListETLResponse(response.getHeaders());
-        listETLResponse.deserialize(responseBody, response.getRequestId());
-        return listETLResponse;
     }
 
 	@Override
@@ -4464,13 +4424,6 @@ public class Client implements LogService {
 		ResponseMessage message = send(request);
 		return new UpdateReportResponse(message.getHeaders());
 	}
-
-    @Override
-	@Deprecated
-    public UpdateETLResponse updateETL(UpdateETLRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        return new UpdateETLResponse(message.getHeaders());
-    }
 
 	@Override
 	public DeleteReportResponse deleteReport(DeleteReportRequest request) throws LogException {
@@ -4905,44 +4858,6 @@ public class Client implements LogService {
     }
 
     @Override
-	@Deprecated
-    public CreateETLResponse createETL(CreateETLRequest request) throws LogException {
-        ResponseMessage responseMessage = send(request);
-        return new CreateETLResponse(responseMessage.getHeaders());
-    }
-
-    @Override
-	@Deprecated
-    public CreateJobScheduleResponse createJobSchedule(CreateJobScheduleRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        CreateJobScheduleResponse response = new CreateJobScheduleResponse(message.getHeaders());
-        JSONObject responseBody = parseResponseBody(message, message.getRequestId());
-        response.deserialize(responseBody, message.getRequestId());
-        return response;
-    }
-
-    @Override
-	@Deprecated
-    public UpdateJobScheduleResponse updateJobSchedule(UpdateJobScheduleRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        return new UpdateJobScheduleResponse(message.getHeaders());
-    }
-
-    @Override
-	@Deprecated
-    public StartJobScheduleResponse startJobSchedule(StartJobScheduleRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        return new StartJobScheduleResponse(message.getHeaders());
-    }
-
-    @Override
-	@Deprecated
-    public StopJobScheduleResponse stopJobSchedule(StopJobScheduleRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        return new StopJobScheduleResponse(message.getHeaders());
-    }
-
-    @Override
     public GetJobResponse getJob(GetJobRequest request) throws LogException {
         ResponseMessage response = send(request);
         JSONObject responseBody = parseResponseBody(response, response.getRequestId());
@@ -4994,16 +4909,6 @@ public class Client implements LogService {
         ListJobsResponse jobsResponse = new ListJobsResponse(response.getHeaders());
         jobsResponse.deserialize(responseBody, response.getRequestId());
         return jobsResponse;
-    }
-
-    @Override
-	@Deprecated
-    public ListJobSchedulesResponse listJobSchedules(ListJobSchedulesRequest request) throws LogException {
-        ResponseMessage message = send(request);
-        JSONObject response = parseResponseBody(message, message.getRequestId());
-        ListJobSchedulesResponse jobRunsResponse = new ListJobSchedulesResponse(message.getHeaders());
-        jobRunsResponse.deserialize(response, message.getRequestId());
-        return jobRunsResponse;
     }
 
 	@Override
@@ -5100,6 +5005,68 @@ public class Client implements LogService {
 	public StartExportResponse startExport(StartExportRequest request) throws LogException {
 		ResponseMessage responseMessage = send(request);
 		return new StartExportResponse(responseMessage.getHeaders());
+	}
+
+	@Override
+	public CreateScheduledSQLResponse createScheduledSQL(CreateScheduledSQLRequest request) throws LogException{
+		ScheduledSQL scheduledSQL = (ScheduledSQL) request.getBody();
+		Integer fromTime = scheduledSQL.getConfiguration().getFromTime();
+        Integer toTime = scheduledSQL.getConfiguration().getToTime();
+		boolean timeRange = fromTime > 1451577600 && toTime > fromTime ;
+		boolean sustained = fromTime > 1451577600 && toTime == 0;
+		if ((!timeRange) && (!sustained)){
+			throw new IllegalArgumentException("Invalid fromTime: "+fromTime+" toTime: "+toTime+
+                    ", please ensure fromTime more than 1451577600.");
+		}
+		ResponseMessage resp = send(request);
+		return new CreateScheduledSQLResponse(resp.getHeaders());
+	}
+	@Override
+	public DeleteScheduledSQLResponse deleteScheduledSQL(DeleteScheduledSQLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		return new DeleteScheduledSQLResponse(resp.getHeaders());
+	}
+	@Override
+	public GetScheduledSQLResponse getScheduledSQL(GetScheduledSQLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		GetScheduledSQLResponse scheduledSQLResp = new GetScheduledSQLResponse(resp.getHeaders());
+		scheduledSQLResp.deserialize(respBody, resp.getRequestId());
+		return scheduledSQLResp;
+	}
+	@Override
+	public ListScheduledSQLResponse listScheduledSQL(ListScheduledSQLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		ListScheduledSQLResponse listResp = new ListScheduledSQLResponse(resp.getHeaders());
+		listResp.deserialize(respBody, resp.getRequestId());
+		return listResp;
+	}
+	@Override
+	public UpdateScheduledSQLResponse updateScheduledSQL(UpdateScheduledSQLRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		return new UpdateScheduledSQLResponse(resp.getHeaders());
+	}
+	@Override
+	public GetJobInstanceResponse getJobInstance(GetJobInstanceRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		GetJobInstanceResponse getJobInstanceRes = new GetJobInstanceResponse(resp.getHeaders());
+		getJobInstanceRes.deserialize(respBody, resp.getRequestId());
+		return getJobInstanceRes;
+	}
+	@Override
+	public ModifyJobInstanceStateResponse modifyJobInstanceState(ModifyJobInstanceStateRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new ModifyJobInstanceStateResponse(responseMessage.getHeaders());
+	}
+	@Override
+	public ListJobInstancesResponse listJobInstances(ListJobInstancesRequest request) throws LogException {
+		ResponseMessage resp = send(request);
+		JSONObject respBody = parseResponseBody(resp, resp.getRequestId());
+		ListJobInstancesResponse listResp = new ListJobInstancesResponse(resp.getHeaders());
+		listResp.deserialize(respBody, resp.getRequestId());
+		return listResp;
 	}
 
 	private ResponseMessage send(BasicRequest request) throws LogException {
@@ -5254,4 +5221,5 @@ public class Client implements LogService {
 		DeleteETLV2Response deleteETLV2Response = deleteETLV2(request);
 		return new DeleteMetricAggRulesResponse(deleteETLV2Response.GetAllHeaders());
 	}
+
 }
