@@ -296,8 +296,6 @@ public class LogStore implements Serializable {
 
     public void FromJsonString(String logStoreString) throws LogException {
         try {
-        	System.out.println(logStoreString);
-
             JSONObject dict = JSONObject.parseObject(logStoreString);
             FromJsonObject(dict);
         } catch (JSONException e) {

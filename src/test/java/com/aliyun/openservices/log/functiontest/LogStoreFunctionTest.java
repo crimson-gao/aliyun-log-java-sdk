@@ -95,7 +95,7 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
 
         GetLogStoreResponse response = client.GetLogStore(TEST_PROJECT, "logstore-for-testing1");
         LogStore logStore2 = response.GetLogStore();
-        assertTrue(logStore2.isAppendMeta());
+        assertEquals(appendMeta, logStore2.isAppendMeta());
         assertEquals(7, logStore2.GetTtl());
         assertEquals(2, logStore2.GetShardCount());
         assertEquals("logstore-for-testing1", logStore2.GetLogStoreName());
@@ -106,6 +106,10 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
         assertEquals(logStore.getUsedStorage(), 0);
         assertEquals(logStore.getProductType(), logStore2.getProductType());
         assertEquals(logStore.getEncryptConf(), logStore2.getEncryptConf());
+        int now = getNowTimestamp();
+        assertTrue(Math.abs(now - logStore2.GetCreateTime()) < 60);
+        assertTrue(Math.abs(now - logStore2.GetLastModifyTime()) < 60);
+
         try {
             client.CreateLogStore(TEST_PROJECT, logStore);
             fail("Create duplicate logstore should fail");
@@ -120,6 +124,7 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
         logStore.SetShardCount(3);
         logStore.SetTtl(30);
         logStore.setAppendMeta(false);
+        logStore.setEnableWebTracking(false);
         client.CreateLogStore(TEST_PROJECT, logStore);
 
         response = client.GetLogStore(TEST_PROJECT, "logstore-for-testing2");
@@ -128,12 +133,14 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
         assertEquals(30, logStore3.GetTtl());
         assertEquals(3, logStore3.GetShardCount());
         assertEquals("logstore-for-testing2", logStore3.GetLogStoreName());
-        assertEquals(webTracking, logStore3.isEnableWebTracking());
+        assertEquals(false, logStore3.isEnableWebTracking());
         assertEquals(logStore.getTelemetryType(), logStore3.getTelemetryType());
         assertEquals(logStore.getArchiveSeconds(), logStore3.getArchiveSeconds());
         assertEquals(logStore.getUsedStorage(), 0);
         assertEquals(logStore.getProductType(), logStore3.getProductType());
         assertEquals(logStore.getEncryptConf(), logStore3.getEncryptConf());
+        assertTrue(Math.abs(now - logStore3.GetCreateTime()) < 60);
+        assertTrue(Math.abs(now - logStore3.GetLastModifyTime()) < 60);
 
         client.DeleteLogStore(TEST_PROJECT, "logstore-for-testing1");
         client.DeleteLogStore(TEST_PROJECT, "logstore-for-testing2");
