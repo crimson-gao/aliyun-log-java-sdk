@@ -4,6 +4,8 @@ import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.util.Args;
+import org.junit.Rule;
+import org.junit.rules.Timeout;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,6 +25,9 @@ public abstract class FunctionTest {
             credentials.getEndpoint(),
             credentials.getAccessKeyId(),
             credentials.getAccessKey());
+
+    @Rule
+    public Timeout testTimeout = new Timeout(60000);
 
     static int getNowTimestamp() {
         return (int) (new Date().getTime() / 1000);
