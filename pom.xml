@@ -205,10 +205,6 @@
                             <pattern>org.apache.commons</pattern>
                             <shadedPattern>com.aliyun.log.thirdparty.org.apache.commons</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>org.hamcrest</pattern>
-                            <shadedPattern>com.aliyun.log.thirdparty.org.hamcrest</shadedPattern>
-                        </relocation>
                     </relocations>
                     <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
