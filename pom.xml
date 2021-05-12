@@ -188,7 +188,6 @@
                     <artifactSet>
                         <excludes>
                             <exclude>com.alibaba:fastjson:jar:</exclude>
-                            <exclude>commons-validator:commons-validator:jar:</exclude>
                             <exclude>net.jpountz.lz4:lz4:jar:</exclude>
                         </excludes>
                     </artifactSet>
@@ -203,8 +202,12 @@
                             <shadedPattern>com.aliyun.log.thirdparty.org.apache.http</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>org.apache.commons.beanutils</pattern>
-                            <shadedPattern>com.aliyun.log.thirdparty.org.apache.commons.beanutils</shadedPattern>
+                            <pattern>org.apache.commons</pattern>
+                            <shadedPattern>com.aliyun.log.thirdparty.org.apache.commons</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.hamcrest</pattern>
+                            <shadedPattern>com.aliyun.log.thirdparty.org.hamcrest</shadedPattern>
                         </relocation>
                     </relocations>
                     <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
