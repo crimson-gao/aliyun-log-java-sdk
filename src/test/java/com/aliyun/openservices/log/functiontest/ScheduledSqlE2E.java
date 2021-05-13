@@ -31,7 +31,7 @@ public class ScheduledSqlE2E extends FunctionTest {
     private final String sumScheduledTimeQuery = "* | SELECT sum(if (try_cast(\"__tag__:__schedule_time__\" as bigint) % 60 = 0, 0, 1)) from dest-sql-log where number_id!=0";
 
     public ScheduledSqlE2E() {
-        super(1200 * 1000);
+        super(10800 * 1000);
     }
     @Before
     public void setup() {
