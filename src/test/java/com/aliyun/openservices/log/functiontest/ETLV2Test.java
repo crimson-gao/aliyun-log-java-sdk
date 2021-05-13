@@ -1,5 +1,6 @@
 package com.aliyun.openservices.log.functiontest;
 
+import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.common.AliyunLOGSink;
 import com.aliyun.openservices.log.common.ETLConfiguration;
 import com.aliyun.openservices.log.common.ETLV2;
@@ -20,6 +21,7 @@ import com.aliyun.openservices.log.response.ListETLV2Response;
 import com.aliyun.openservices.log.response.StartETLV2Response;
 import com.aliyun.openservices.log.response.StopETLV2Response;
 import com.aliyun.openservices.log.response.UpdateETLV2Response;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -33,17 +35,31 @@ import static org.junit.Assert.assertTrue;
 
 public class ETLV2Test extends JobIntgTest {
 
-    private static final String accessKeyId = "";
-    private static final String accessKeySecret = "";
+    private static final String accessKeyId = credentials.getAccessKeyId();
+    private static final String accessKeySecret = credentials.getAccessKey();
     private static final String roleArn = "";
-    private static final String logstore = "";
-    private static final String sinkLogstore = "";
-    private static final String etlName = "";
+    private static final String logstore = "test";
+    private static final String sinkLogstore = "dest";
+    private static final String etlName = "etl-v2-1";
     private static ETLV2 etlV2 = createETL();
 
+    public ETLV2Test() {
+        super(1200 * 1000);
+    }
+
+    @Before
+    public void testPrepare() {
+        new ETLV2Test();
+        LogStore logStore = structureLogStore(logstore);
+        LogStore sinkLogStore = structureLogStore(sinkLogstore);
+        reCreateLogStore(TEST_PROJECT, logStore);
+        reCreateLogStore(TEST_PROJECT, sinkLogStore);
+        waitOneMinutes();
+    }
 
     @Test
     public void testETLCrud() throws LogException, InterruptedException {
+        new ETLV2Test();
         testCreateETL();
         testGetETL();
         testUpdateETL();
@@ -53,15 +69,13 @@ public class ETLV2Test extends JobIntgTest {
         testDeleteETL();
     }
 
-    @Test
-    public void testCreateETL() throws LogException {
+    private void testCreateETL() throws LogException {
         System.out.println("Create ETL ready to start.......");
         // Create
         CreateETLV2Response createETLV2Response = client.createETLV2(new CreateETLV2Request(TEST_PROJECT, etlV2));
     }
 
-    @Test
-    public void testGetETL() throws LogException, InterruptedException {
+    private void testGetETL() throws LogException, InterruptedException {
         System.out.println("Get ETL ready to start.......");
         Thread.sleep(2000);
         // Get
@@ -72,8 +86,7 @@ public class ETLV2Test extends JobIntgTest {
         assertEquals("Resident", getETLV2Response.getEtl().getSchedule().getType().toString());
     }
 
-    @Test
-    public void testUpdateETL() throws LogException {
+    private void testUpdateETL() throws LogException {
         System.out.println("Update ETL ready to start.......");
         etlV2.setDisplayName("UpdateTest");
         // Update
@@ -84,8 +97,7 @@ public class ETLV2Test extends JobIntgTest {
         assertEquals("UpdateTest", getETLV2Response.getEtl().getDisplayName());
     }
 
-    @Test
-    public void testStopETL() throws InterruptedException {
+    private void testStopETL() throws InterruptedException {
         System.out.println("Stop ETL ready to start.......");
         try {
             StopETLV2Response stopETLV2Response = client.stopETLV2(new StopETLV2Request(TEST_PROJECT, etlName));
@@ -99,16 +111,14 @@ public class ETLV2Test extends JobIntgTest {
 
     }
 
-    @Test
-    public void testStartETL() throws LogException, InterruptedException {
+    private void testStartETL() throws LogException, InterruptedException {
         System.out.println("Start ETL ready to start.......");
         StartETLV2Response stopETLResponse = client.startETLV2(new StartETLV2Request(TEST_PROJECT, etlName));
         boolean res = etlStatus("RUNNING");
         assertTrue(res);
     }
 
-    @Test
-    public void testListETL() throws LogException {
+    private void testListETL() throws LogException {
         System.out.println("List ETL ready to start.......");
         ListETLV2Response listETLV2Response = client.listETLV2(new ListETLV2Request(TEST_PROJECT));
         Integer expectCount = 1;
@@ -118,8 +128,7 @@ public class ETLV2Test extends JobIntgTest {
         assertNotNull(listETLV2Response.getResults().get(0).getScheduleId());
     }
 
-    @Test
-    public void testDeleteETL() throws LogException {
+    private void testDeleteETL() throws LogException {
         System.out.println("Delete ETL ready to start.......");
         DeleteETLV2Response deleteETLV2Response = client.deleteETLV2(new DeleteETLV2Request(TEST_PROJECT, etlName));
         // proof delete
@@ -176,4 +185,13 @@ public class ETLV2Test extends JobIntgTest {
             }
         }
     }
+
+    private LogStore structureLogStore(String logStoreName) {
+        LogStore logStore = new LogStore();
+        logStore.SetTtl(30);
+        logStore.SetShardCount(2);
+        logStore.SetLogStoreName(logStoreName);
+        return logStore;
+    }
+
 }

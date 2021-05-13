@@ -18,6 +18,14 @@ abstract class JobIntgTest extends FunctionTest {
     static final String TEST_PROJECT = "sls-test-" + getNowTimestamp();
     static final String TEST_DASHBOARD = "dashboardtest";
 
+    public JobIntgTest() {
+
+    }
+
+    public JobIntgTest(int timeOut){
+        super(timeOut);
+    }
+
     @Before
     public void setUp() {
         safeCreateProject(TEST_PROJECT, "");

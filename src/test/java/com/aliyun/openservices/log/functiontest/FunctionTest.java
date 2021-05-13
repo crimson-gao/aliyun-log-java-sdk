@@ -25,9 +25,18 @@ public abstract class FunctionTest {
             credentials.getEndpoint(),
             credentials.getAccessKeyId(),
             credentials.getAccessKey());
-
     @Rule
     public Timeout testTimeout = new Timeout(60000);
+
+    public FunctionTest() {
+
+    }
+
+    public FunctionTest(int time) {
+        this.testTimeout = new Timeout(time);
+    }
+
+
 
     static int getNowTimestamp() {
         return (int) (new Date().getTime() / 1000);

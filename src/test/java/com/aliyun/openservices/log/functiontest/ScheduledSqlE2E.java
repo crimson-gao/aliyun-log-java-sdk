@@ -2,6 +2,7 @@ package com.aliyun.openservices.log.functiontest;
 
 
 import com.aliyun.openservices.log.Client;
+
 import com.aliyun.openservices.log.common.*;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.*;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -28,8 +30,12 @@ public class ScheduledSqlE2E extends FunctionTest {
     private final String sumNumberIdQuery = "*|SELECT sum(number_id) as sum_id";
     private final String sumScheduledTimeQuery = "* | SELECT sum(if (try_cast(\"__tag__:__schedule_time__\" as bigint) % 60 = 0, 0, 1)) from dest-sql-log where number_id!=0";
 
+    public ScheduledSqlE2E() {
+        super(1200 * 1000);
+    }
     @Before
     public void setup() {
+        new ScheduledSqlE2E();
         // 原始资源初始化
         safeCreateProject(sourceProject, "");
         waitOneMinutes();
@@ -43,6 +49,7 @@ public class ScheduledSqlE2E extends FunctionTest {
      */
     @Test
     public void testScheduledSqlInTheSameRegion() throws LogException, InterruptedException {
+        new ScheduledSqlE2E();
         String testDescription = "时间范围设置为持续性: ";
         System.out.println(testDescription + "Ready start test the same region...");
         // 创建源Logstore
@@ -93,6 +100,7 @@ public class ScheduledSqlE2E extends FunctionTest {
      */
     @Test
     public void testScheduledSqlInTheSameRegionForTimeRange() throws LogException, InterruptedException {
+        new ScheduledSqlE2E();
         String testDescription = "时间范围为固定范围: ";
         System.out.println(testDescription + "Ready start test the same region for time range...");
         // 创建源Logstore
@@ -142,6 +150,7 @@ public class ScheduledSqlE2E extends FunctionTest {
      */
     @Test
     public void testScheduledSqlInTheSameRegionFullTenMines() throws LogException, InterruptedException {
+        new ScheduledSqlE2E();
         String testDescription = "整分每10min调度一次: ";
         System.out.println(testDescription + "Ready start test the same region for time range...");
         // 创建源Logstore
@@ -191,6 +200,7 @@ public class ScheduledSqlE2E extends FunctionTest {
      */
     @Test
     public void testScheduledSqlInTheSameRegionTenMines() throws LogException, InterruptedException {
+        new ScheduledSqlE2E();
         String testDescription = "相对每10min调度一次: ";
         System.out.println(testDescription + "Ready start test the same region for time range...");
         // 创建源Logstore
@@ -239,6 +249,7 @@ public class ScheduledSqlE2E extends FunctionTest {
     @Test
     @Ignore
     public void testScheduledSqlInTheDifferentRegion() throws LogException, InterruptedException {
+        new ScheduledSqlE2E();
         String testDescription = "跨区域场景: ";
         System.out.println(testDescription + "Ready start test cross region...");
         // 创建源Logstore
