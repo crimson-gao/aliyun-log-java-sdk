@@ -36,6 +36,8 @@ public class ScheduledSqlE2E extends FunctionTest {
     @Before
     public void setup() {
         new ScheduledSqlE2E();
+        // 删除初始化project
+        safeDeleteProject(sourceProject);
         // 原始资源初始化
         safeCreateProject(sourceProject, "");
         waitOneMinutes();
@@ -447,7 +449,7 @@ public class ScheduledSqlE2E extends FunctionTest {
                 destProject, destLogStore, fromTime, toTime, fromTimeExpr, toTimeExpr);
         scheduledSQLStructure.setConfiguration(scheduledSQLConfiguration);
 
-        jobSchedule.setDelay(10);
+        jobSchedule.setDelay(30);
         scheduledSQLStructure.setSchedule(jobSchedule);
         return scheduledSQLStructure;
     }
