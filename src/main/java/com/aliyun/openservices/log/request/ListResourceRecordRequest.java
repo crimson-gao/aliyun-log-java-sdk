@@ -13,6 +13,8 @@ public class ListResourceRecordRequest extends RecordRequest {
     private String tag;
     private String searchedValue;
     private String searchedJson;
+    private String jsonPath;
+    private String jsonPathValue;
     private List<String> recordIds = new ArrayList<String>();
 
     public String getSearchedValue() {
@@ -55,6 +57,22 @@ public class ListResourceRecordRequest extends RecordRequest {
         this.tag = tag;
     }
 
+    public String getJsonPathValue() {
+        return jsonPathValue;
+    }
+
+    public void setJsonPathValue(String jsonPathValue) {
+        this.jsonPathValue = jsonPathValue;
+    }
+
+    public String getJsonPath() {
+        return jsonPath;
+    }
+
+    public void setJsonPath(String jsonPath) {
+        this.jsonPath = jsonPath;
+    }
+
     public ListResourceRecordRequest(String resourceName) {
         this(resourceName, null, 0, 100);
     }
@@ -91,6 +109,15 @@ public class ListResourceRecordRequest extends RecordRequest {
         if (searchedJson != null && !searchedJson.isEmpty()) {
             SetParam(Consts.RESOURCE_SEARCHED_JSON, searchedJson);
         }
+
+        if (jsonPath != null && !jsonPath.isEmpty()) {
+            SetParam(Consts.RESOURCE_JSON_PATH, jsonPath);
+        }
+
+        if (jsonPathValue != null && !jsonPathValue.isEmpty()) {
+            SetParam(Consts.RESOURCE_JSON_PATH_VALUE, jsonPathValue);
+        }
+
         return super.GetAllParams();
     }
 
