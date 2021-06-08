@@ -26,6 +26,7 @@ public class LogStore implements Serializable {
     private int archiveSeconds = 0;
     private String telemetryType = "";
     private EncryptConf encryptConf = null;
+    private int hotTTL = -1;
 
     public int getArchiveSeconds() {
         return archiveSeconds;
@@ -84,6 +85,7 @@ public class LogStore implements Serializable {
         this.archiveSeconds = logStore.getArchiveSeconds();
         this.telemetryType = logStore.getTelemetryType();
         this.encryptConf = logStore.encryptConf;
+        this.hotTTL = logStore.hotTTL;
     }
 
     public long getPreserveStorage() {
@@ -200,6 +202,14 @@ public class LogStore implements Serializable {
     	return this.encryptConf;
     }
 
+    public int getHotTTL() {
+        return hotTTL;
+    }
+
+    public void setHotTTL(int hotTTL) {
+        this.hotTTL = hotTTL;
+    }
+
 	public JSONObject ToRequestJson() {
         JSONObject logStoreDict = new JSONObject();
         logStoreDict.put("logstoreName", GetLogStoreName());
@@ -216,6 +226,9 @@ public class LogStore implements Serializable {
         logStoreDict.put("resourceQuota", resourceQuota);
         logStoreDict.put("archiveSeconds", archiveSeconds);
         logStoreDict.put("telemetryType", telemetryType);
+        if(hotTTL > 0) {
+            logStoreDict.put("hot_ttl",hotTTL);
+        }
         if (this.encryptConf != null)
         {
         	logStoreDict.put("encrypt_conf", this.encryptConf.ToJsonObject());
@@ -288,6 +301,10 @@ public class LogStore implements Serializable {
             	EncryptConf encypt_config = new EncryptConf();
             	encypt_config.FromJsonObject(dict.getJSONObject("encrypt_conf"));
             	this.encryptConf = encypt_config;
+            }
+            if (dict.containsKey("hot_ttl"))
+            {
+                this.hotTTL = dict.getInteger("hot_ttl");
             }
         } catch (JSONException e) {
             throw new LogException("FailToGenerateLogStore", e.getMessage(), e, "");
