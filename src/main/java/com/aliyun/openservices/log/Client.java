@@ -5010,10 +5010,10 @@ public class Client implements LogService {
 	@Override
 	public CreateScheduledSQLResponse createScheduledSQL(CreateScheduledSQLRequest request) throws LogException{
 		ScheduledSQL scheduledSQL = (ScheduledSQL) request.getBody();
-		Integer fromTime = scheduledSQL.getConfiguration().getFromTime();
-        Integer toTime = scheduledSQL.getConfiguration().getToTime();
-		boolean timeRange = fromTime > 1451577600 && toTime > fromTime ;
-		boolean sustained = fromTime > 1451577600 && toTime == 0;
+		Long fromTime = scheduledSQL.getConfiguration().getFromTime();
+        Long toTime = scheduledSQL.getConfiguration().getToTime();
+		boolean timeRange = fromTime > 1451577600L && toTime > fromTime;
+		boolean sustained = fromTime > 1451577600L && toTime == 0;
 		if ((!timeRange) && (!sustained)){
 			throw new IllegalArgumentException("Invalid fromTime: "+fromTime+" toTime: "+toTime+
                     ", please ensure fromTime more than 1451577600.");

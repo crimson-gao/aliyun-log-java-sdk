@@ -16,8 +16,26 @@ public class ScheduledSQLConfiguration extends JobConfiguration {
     private String toTimeExpr;
     private Integer maxRunTimeInSeconds;
     private Integer maxRetries;
-    private Integer fromTime = 0;
-    private Integer toTime = 0;
+    private Long fromTime = 0L;
+    private Long toTime = 0L;
+    private String dataFormat = "log2log";
+    private ScheduledSQLParameters parameters;
+
+    public String getDataFormat() {
+        return dataFormat;
+    }
+
+    public void setDataFormat(String dataFormat) {
+        this.dataFormat = dataFormat;
+    }
+
+    public ScheduledSQLParameters getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(ScheduledSQLParameters parameters) {
+        this.parameters = parameters;
+    }
 
     public String getDestEndpoint() {
         return destEndpoint;
@@ -99,20 +117,20 @@ public class ScheduledSQLConfiguration extends JobConfiguration {
         this.maxRetries = maxRetries;
     }
 
-    public void setFromTime(Integer fromTime) {
-        this.fromTime = fromTime;
-    }
-
-    public Integer getFromTime() {
+    public Long getFromTime() {
         return fromTime;
     }
 
-    public void setToTime(Integer toTime) {
-        this.toTime = toTime;
+    public void setFromTime(Long fromTime) {
+        this.fromTime = fromTime;
     }
 
-    public Integer getToTime() {
+    public Long getToTime() {
         return toTime;
+    }
+
+    public void setToTime(Long toTime) {
+        this.toTime = toTime;
     }
 
     public String getSqlType() {
@@ -154,8 +172,16 @@ public class ScheduledSQLConfiguration extends JobConfiguration {
         toTimeExpr = value.getString("toTimeExpr");
         maxRunTimeInSeconds = value.getIntValue("maxRunTimeInSeconds");
         maxRetries = value.getIntValue("maxRetries");
-        fromTime = value.getIntValue("fromTime");
-        toTime = value.getIntValue("toTime");
+        fromTime = value.getLongValue("fromTime");
+        toTime = value.getLongValue("toTime");
+        dataFormat = value.getString("dataFormat");
+        if (dataFormat.equals("log2metric")) {
+            parameters = new Log2MetricParameters();
+            parameters.deserialize(value.getJSONObject("parameters"));
+        } else if (dataFormat.equals("metric2metric")) {
+            parameters = new Metric2MetricParameters();
+            parameters.deserialize(value.getJSONObject("parameters"));
+        }
     }
 
     @Override
@@ -209,6 +235,12 @@ public class ScheduledSQLConfiguration extends JobConfiguration {
         if (getToTime() != null ? !getToTime().equals(that.getToTime()) : that.getToTime() != null) {
             return false;
         }
+        if (getDataFormat() != null ? !getDataFormat().equals(that.getDataFormat()) : that.getDataFormat() != null) {
+            return false;
+        }
+        if (getParameters() != null ? !getParameters().equals(that.getParameters()) : that.getParameters() != null) {
+            return false;
+        }
         return getMaxRunTimeInSeconds() != null ? !getMaxRunTimeInSeconds().equals(that.getMaxRunTimeInSeconds()) : that.getMaxRunTimeInSeconds() != null;
     }
 
@@ -225,6 +257,8 @@ public class ScheduledSQLConfiguration extends JobConfiguration {
         result = 31 * result + (getToTimeExpr() != null ? getToTimeExpr().hashCode() : 0);
         result = 31 * result + (getMaxRetries() != null ? getMaxRetries().hashCode() : 0);
         result = 31 * result + (getMaxRunTimeInSeconds() != null ? getMaxRunTimeInSeconds().hashCode() : 0);
+        result = 31 * result + (getDataFormat() != null ? getDataFormat().hashCode() : 0);
+        result = 31 * result + (getParameters() != null ? getParameters().hashCode() : 0);
         return result;
     }
 }
