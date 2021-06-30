@@ -439,7 +439,7 @@ public class ScheduledSqlE2E extends FunctionTest {
 
     private ScheduledSQL generateScheduledSQL(String sqlTaskName, String sourceLogstore,
                                               String destEndpoint, String destProject, String destLogStore,
-                                              int fromTime, int toTime, String displayName, JobSchedule jobSchedule,
+                                              long fromTime, long toTime, String displayName, JobSchedule jobSchedule,
                                               String fromTimeExpr, String toTimeExpr) {
         ScheduledSQL scheduledSQLStructure = new ScheduledSQL();
         scheduledSQLStructure.setName(sqlTaskName);
@@ -456,7 +456,7 @@ public class ScheduledSqlE2E extends FunctionTest {
 
     private ScheduledSQLConfiguration generateConfig(String sourceLogstore, String destEndpoint,
                                                      String destProject, String destLogStore,
-                                                     int fromTime, int toTime,
+                                                     long fromTime, long toTime,
                                                      String fromTimeExpr, String toTimeExpr) {
         String script = "SELECT COUNT(DISTINCT(id)) as number_id from " + sourceLogstore + " where dev='slog3_6'";
         int maxRetries = 10;

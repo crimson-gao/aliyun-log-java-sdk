@@ -31,8 +31,8 @@ public class ScheduledSQLTest extends FunctionTest{
     private final String toTimeExpr = "-0s";
     private final Integer maxRunTimeInSeconds = 1800;
     private final Integer maxRetries = 10;
-    private final Integer fromTime = getLastHourTime(25);
-    private final Integer toTime = getLastHourTime(-2);
+    private final Long fromTime = getLastHourTime(25);
+    private final Long toTime = getLastHourTime(-2);
     private final String sqlTaskName = "sql-153203245";
     private final int delay = 10;
     private final String interval = "60s";
@@ -57,15 +57,15 @@ public class ScheduledSQLTest extends FunctionTest{
     public void testInvalidTimeRange() throws LogException {
         System.out.println("testInvalidTimeRange ready to start.......");
         ScheduledSQLConfiguration configuration = scheduledSql.getConfiguration();
-        configuration.setFromTime(0);
-        configuration.setToTime(0);
+        configuration.setFromTime(0L);
+        configuration.setToTime(0L);
         scheduledSql.setConfiguration(configuration);
         try {
             client.createScheduledSQL(new CreateScheduledSQLRequest(project, scheduledSql));
         } catch (IllegalArgumentException e) {
             assertEquals("Invalid fromTime: 0 toTime: 0", e.getMessage());
         }
-        configuration.setFromTime(0);
+        configuration.setFromTime(0L);
         configuration.setToTime(toTime);
         scheduledSql.setConfiguration(configuration);
         try {
@@ -82,7 +82,7 @@ public class ScheduledSQLTest extends FunctionTest{
             assertEquals("Invalid fromTime: "+toTime+" toTime: "+toTime, e.getMessage());
         }
         configuration.setFromTime(fromTime);
-        configuration.setToTime(-1);
+        configuration.setToTime(-1L);
         scheduledSql.setConfiguration(configuration);
         try {
             client.createScheduledSQL(new CreateScheduledSQLRequest(project, scheduledSql));
@@ -263,11 +263,11 @@ public class ScheduledSQLTest extends FunctionTest{
         System.out.println("Get JobInstance ready to start.....");
         return client.getJobInstance(new GetJobInstanceRequest(project,sqlTaskName,instanceId));
     }
-    private Integer getLastHourTime(int n) {
+    private Long getLastHourTime(int n) {
         Calendar ca = Calendar.getInstance();
         ca.set(Calendar.MINUTE, 0);
         ca.set(Calendar.SECOND, 0);
         ca.set(Calendar.HOUR_OF_DAY, ca.get(Calendar.HOUR_OF_DAY) - n);
-        return (int) (ca.getTimeInMillis() / 1000);
+        return ca.getTimeInMillis() / 1000;
     }
 }
