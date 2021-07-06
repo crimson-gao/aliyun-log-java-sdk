@@ -45,7 +45,7 @@ public class EtlJobFunctionTest extends JobIntgTest {
         logStore.SetLogStoreName(logstore);
         logStore.setEnableWebTracking(true);
         logStore.setAppendMeta(true);
-        createOrUpdateLogStore(TEST_PROJECT, logStore);
+        createOrUpdateLogStoreNoWait(TEST_PROJECT, logStore);
         try {
             DeleteEtlJobRequest req = new DeleteEtlJobRequest(TEST_PROJECT, etlJobName);
             client.deleteEtlJob(req);
