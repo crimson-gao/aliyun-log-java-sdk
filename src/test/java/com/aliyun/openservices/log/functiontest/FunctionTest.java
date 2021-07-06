@@ -134,6 +134,23 @@ public abstract class FunctionTest {
         }
     }
 
+    static void createOrUpdateLogStoreNoWait(String project, LogStore logStore) {
+        safeCreateProject(project, "");
+        try {
+            client.CreateLogStore(project, logStore);
+            return;
+        } catch (LogException ex) {
+            if (!ex.GetErrorCode().equals("LogStoreAlreadyExist")) {
+                throw new IllegalStateException(ex);
+            }
+        }
+        try {
+            client.UpdateLogStore(project, logStore);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     static void createOrUpdateLogStoreSimple(String project, LogStore logStore) throws Exception {
         safeCreateProject(project, "");
         try {
