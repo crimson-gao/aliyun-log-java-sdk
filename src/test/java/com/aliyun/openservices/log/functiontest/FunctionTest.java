@@ -26,7 +26,7 @@ public abstract class FunctionTest {
             credentials.getAccessKeyId(),
             credentials.getAccessKey());
     @Rule
-    public Timeout testTimeout = new Timeout(60000);
+    public Timeout testTimeout = new Timeout(300000);
 
     public FunctionTest() {
 
