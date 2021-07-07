@@ -70,30 +70,15 @@ public class LogstoreTest extends FunctionTest {
         String project = PROJECT_PREFIX + randomInt();
         Index index = new Index();
         index.FromJsonString(INDEX_STRING);
-        while (true) {
-            try {
-                client.CreateProject(project, "");
-                break;
-            } catch (LogException ex) {
-                if (ex.GetErrorCode().equalsIgnoreCase("ProjectAlreadyExist")) {
-                    waitForSeconds(5);
-                } else {
-                    fail(ex.GetErrorMessage());
-                }
-            }
-        }
+        client.CreateProject(project, "");
+
         int numberOfLogstore = randomInt(100) + 1;
         for (int i = 0; i < numberOfLogstore; i++) {
             LogStore logStore = new LogStore();
             logStore.SetLogStoreName("logstore-" + i);
             logStore.SetShardCount(2);
             logStore.SetTtl(2);
-            try {
-                client.CreateLogStore(project, logStore);
-            } catch (LogException ex) {
-                ex.printStackTrace();
-                fail();
-            }
+            client.CreateLogStore(project, logStore);
             try {
                 client.GetIndex(project, logStore.GetLogStoreName());
                 fail();
@@ -162,30 +147,14 @@ public class LogstoreTest extends FunctionTest {
 
     private void crudLogstore() throws Exception {
         String project = PROJECT_PREFIX + randomInt();
-        while (true) {
-            try {
-                client.CreateProject(project, "");
-                break;
-            } catch (LogException ex) {
-                if (ex.GetErrorCode().equalsIgnoreCase("ProjectAlreadyExist")) {
-                    waitForSeconds(10);
-                } else {
-                    throw ex;
-                }
-            }
-        }
+        client.CreateProject(project, "");
         int numberOfLogstore = randomInt(100);
         for (int i = 0; i < numberOfLogstore; i++) {
             LogStore logStore = new LogStore();
             logStore.SetLogStoreName("logstore-" + i);
             logStore.SetShardCount(2);
             logStore.SetTtl(2);
-            try {
-                client.CreateLogStore(project, logStore);
-            } catch (LogException ex) {
-                ex.printStackTrace();
-                throw ex;
-            }
+            client.CreateLogStore(project, logStore);
         }
         for (int i = 0; i < numberOfLogstore; i++) {
             GetLogStoreResponse response = client.GetLogStore(project, "logstore-" + i);
@@ -241,18 +210,7 @@ public class LogstoreTest extends FunctionTest {
     @Test
     public void testCrud() throws Exception {
         String project = PROJECT_PREFIX + randomInt();
-        while (true) {
-            try {
-                client.CreateProject(project, "");
-                break;
-            } catch (LogException ex) {
-                if (ex.GetErrorCode().equalsIgnoreCase("ProjectAlreadyExist")) {
-                    waitForSeconds(10);
-                } else {
-                    fail(ex.GetErrorMessage());
-                }
-            }
-        }
+        client.CreateProject(project, "");
         int numberOfLogstore = randomBetween(1, 100);
 
         for (int i = 0; i < numberOfLogstore; i++) {

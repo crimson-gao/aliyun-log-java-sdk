@@ -13,10 +13,8 @@ import com.aliyun.openservices.log.response.GetSubStoreTTLResponse;
 import com.aliyun.openservices.log.response.ListLogStoresResponse;
 import com.aliyun.openservices.log.response.ListSubStoreResponse;
 import com.aliyun.openservices.log.response.UpdateLogStoreResponse;
-import com.aliyun.openservices.log.response.UpdateSubStoreResponse;
 import com.aliyun.openservices.log.response.UpdateSubStoreTTLResponse;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
