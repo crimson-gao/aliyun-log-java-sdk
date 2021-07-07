@@ -26,7 +26,7 @@ public class ListShardFunctionTest extends MetaAPIBaseFunctionTest {
             assertEquals("logstore logstore1 does not exist", ex.GetErrorMessage());
         }
         LogStore logStore = new LogStore(logstore1, 1, 3);
-        createOrUpdateLogStore(TEST_PROJECT, logStore);
+        createOrUpdateLogStoreNoWait(TEST_PROJECT, logStore);
         ListShardResponse response = client.ListShard(TEST_PROJECT, logstore1);
         List<Shard> shards = response.GetShards();
         assertEquals(3, shards.size());

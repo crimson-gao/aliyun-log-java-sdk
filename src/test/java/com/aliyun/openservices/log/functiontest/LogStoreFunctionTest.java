@@ -133,7 +133,7 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
         assertEquals(30, logStore3.GetTtl());
         assertEquals(3, logStore3.GetShardCount());
         assertEquals("logstore-for-testing2", logStore3.GetLogStoreName());
-        assertEquals(false, logStore3.isEnableWebTracking());
+        assertFalse(logStore3.isEnableWebTracking());
         assertEquals(logStore.getTelemetryType(), logStore3.getTelemetryType());
         assertEquals(logStore.getArchiveSeconds(), logStore3.getArchiveSeconds());
         assertEquals(logStore.getUsedStorage(), 0);

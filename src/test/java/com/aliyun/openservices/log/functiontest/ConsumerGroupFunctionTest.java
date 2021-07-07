@@ -24,7 +24,7 @@ public class ConsumerGroupFunctionTest extends FunctionTest {
         logStore.SetLogStoreName(TEST_LOGSTORE);
         logStore.SetShardCount(2);
         logStore.SetTtl(1);
-        createOrUpdateLogStore(TEST_PROJECT, logStore);
+        createOrUpdateLogStoreNoWait(TEST_PROJECT, logStore);
     }
 
     @Test

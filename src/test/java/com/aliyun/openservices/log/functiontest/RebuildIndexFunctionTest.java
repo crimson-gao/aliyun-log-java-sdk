@@ -41,7 +41,7 @@ public class RebuildIndexFunctionTest extends FunctionTest {
         logStore.SetLogStoreName(logstore);
         logStore.SetTtl(1);
         logStore.SetShardCount(1);
-        createOrUpdateLogStore(project, logStore);
+        createOrUpdateLogStoreNoWait(project, logStore);
         enableIndex();
     }
 

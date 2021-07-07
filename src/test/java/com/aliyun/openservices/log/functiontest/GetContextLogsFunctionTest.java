@@ -49,7 +49,7 @@ public class GetContextLogsFunctionTest extends LogTest {
         return logGroupCount;
     }
 
-    private class PackInfo {
+    private static class PackInfo {
         public String packID;
         public String packMeta;
 
@@ -62,8 +62,7 @@ public class GetContextLogsFunctionTest extends LogTest {
     private PackInfo extractPackInfo(QueriedLog log) {
         PackInfo ret = new PackInfo("", "");
         ArrayList<LogContent> contents = log.GetLogItem().GetLogContents();
-        for (int i = 0; i < contents.size(); ++i) {
-            LogContent content = contents.get(i);
+        for (LogContent content : contents) {
             if (content.GetKey().equals("__tag__:__pack_id__")) {
                 ret.packID = content.GetValue();
             } else if (content.GetKey().equals("__pack_meta__")) {

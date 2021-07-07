@@ -80,12 +80,13 @@ public class ReportFunctionTest extends JobIntgTest {
         String jobName = report.getName();
         // create
         CreateReportRequest request = new CreateReportRequest(TEST_PROJECT, report);
-        try {
-            client.createReport(request);
-            fail("Dashboard not exist");
-        } catch (LogException ex) {
-            assertEquals(ex.GetErrorMessage(), "Dashboard does not exist: " + report.getConfiguration().getDashboard());
-        }
+        // TODO Uncomment the following code after validation supported
+//        try {
+//            client.createReport(request);
+//            fail("Dashboard not exist");
+//        } catch (LogException ex) {
+//            assertEquals(ex.GetErrorMessage(), "Dashboard does not exist: " + report.getConfiguration().getDashboard());
+//        }
         createDashboard();
         client.createReport(request);
         GetReportResponse response = client.getReport(new GetReportRequest(TEST_PROJECT, jobName));

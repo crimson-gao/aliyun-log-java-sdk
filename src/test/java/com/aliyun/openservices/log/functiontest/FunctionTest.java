@@ -26,7 +26,7 @@ public abstract class FunctionTest {
             credentials.getAccessKeyId(),
             credentials.getAccessKey());
     @Rule
-    public Timeout testTimeout = new Timeout(60000);
+    public Timeout testTimeout = new Timeout(300000);
 
     public FunctionTest() {
 
@@ -129,6 +129,23 @@ public abstract class FunctionTest {
         try {
             client.UpdateLogStore(project, logStore);
             waitOneMinutes();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    static void createOrUpdateLogStoreNoWait(String project, LogStore logStore) {
+        safeCreateProject(project, "");
+        try {
+            client.CreateLogStore(project, logStore);
+            return;
+        } catch (LogException ex) {
+            if (!ex.GetErrorCode().equals("LogStoreAlreadyExist")) {
+                throw new IllegalStateException(ex);
+            }
+        }
+        try {
+            client.UpdateLogStore(project, logStore);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

@@ -9,9 +9,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class GetCursorTimeTest extends BaseDataTest {
+
     @Test
     public void testGetCursorTime() throws LogException {
-        enableIndex();
         prepareLogs();
         for (int i = 0; i < SHARD_COUNT; i++) {
             GetCursorResponse begin = client.GetCursor(project, logStore.GetLogStoreName(), i, Consts.CursorMode.BEGIN);
