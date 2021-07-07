@@ -3,7 +3,6 @@ package com.aliyun.openservices.log.common;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 
 public class MetricAggRuleItem implements Serializable {
 
@@ -103,15 +102,35 @@ public class MetricAggRuleItem implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MetricAggRuleItem)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         MetricAggRuleItem that = (MetricAggRuleItem) o;
-        return beginUnixTime == that.beginUnixTime && endUnixTime == that.endUnixTime && interval == that.interval && delaySeconds == that.delaySeconds && Objects.equals(name, that.name) && Objects.equals(queryType, that.queryType) && Objects.equals(query, that.query) && Objects.equals(timeName, that.timeName) && Arrays.equals(metricNames, that.metricNames) && Objects.equals(labelNames, that.labelNames);
+
+        if (beginUnixTime != that.beginUnixTime) return false;
+        if (endUnixTime != that.endUnixTime) return false;
+        if (interval != that.interval) return false;
+        if (delaySeconds != that.delaySeconds) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (queryType != null ? !queryType.equals(that.queryType) : that.queryType != null) return false;
+        if (query != null ? !query.equals(that.query) : that.query != null) return false;
+        if (timeName != null ? !timeName.equals(that.timeName) : that.timeName != null) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(metricNames, that.metricNames)) return false;
+        return labelNames != null ? labelNames.equals(that.labelNames) : that.labelNames == null;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(name, queryType, query, timeName, labelNames, beginUnixTime, endUnixTime, interval, delaySeconds);
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (queryType != null ? queryType.hashCode() : 0);
+        result = 31 * result + (query != null ? query.hashCode() : 0);
+        result = 31 * result + (timeName != null ? timeName.hashCode() : 0);
         result = 31 * result + Arrays.hashCode(metricNames);
+        result = 31 * result + (labelNames != null ? labelNames.hashCode() : 0);
+        result = 31 * result + beginUnixTime;
+        result = 31 * result + endUnixTime;
+        result = 31 * result + interval;
+        result = 31 * result + delaySeconds;
         return result;
     }
 }

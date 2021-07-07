@@ -17,7 +17,6 @@ import com.aliyun.openservices.log.response.GetMetricAggRulesResponse;
 import com.aliyun.openservices.log.response.ListMetricAggRulesResponse;
 import com.aliyun.openservices.log.response.UpdateMetricAggRulesResponse;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class MetricAggRulesTest extends FunctionTest {
     private static final String TEST_PROJECT = "test-metric-agg-project-" + getNowTimestamp();
@@ -82,29 +84,28 @@ public class MetricAggRulesTest extends FunctionTest {
             testCreateMetricAggRules(m);
         }
         ListMetricAggRulesResponse listMetricAggRulesResponse = testListMetricAggRules();
-        Assert.assertNotNull(listMetricAggRulesResponse);
-        Assert.assertEquals(t, listMetricAggRulesResponse.getMetricAggRules().size());
+        assertNotNull(listMetricAggRulesResponse);
+        assertEquals(t, listMetricAggRulesResponse.getMetricAggRules().size());
     }
-
 
     private void crud(String testId, MetricAggRules metricAggRules) throws LogException {
         CreateMetricAggRulesResponse createMetricAggRulesResponse = testCreateMetricAggRules(metricAggRules);
-        Assert.assertNotNull(createMetricAggRulesResponse);
+        assertNotNull(createMetricAggRulesResponse);
 
         GetMetricAggRulesResponse getMetricAggRulesResponse = testGetMetricAggRules(testId);
         MetricAggRules metricAggRules1 = getMetricAggRulesResponse.getMetricAggRules();
-        Assert.assertNotNull(createMetricAggRulesResponse);
-        Assert.assertEquals(metricAggRules.getName(), metricAggRules1.getName());
-        Assert.assertEquals(metricAggRules.getDesc(), metricAggRules1.getDesc());
-        Assert.assertEquals(metricAggRules.getDestAccessKeyID(), metricAggRules1.getDestAccessKeyID());
-        Assert.assertEquals(metricAggRules.getDestAccessKeySecret(), metricAggRules1.getDestAccessKeySecret());
-        Assert.assertEquals(metricAggRules.getDestEndpoint(), metricAggRules1.getDestEndpoint());
-        Assert.assertEquals(metricAggRules.getDestProject(), metricAggRules1.getDestProject());
-        Assert.assertEquals(metricAggRules.getDestStore(), metricAggRules1.getDestStore());
-        Assert.assertEquals(metricAggRules.getSrcAccessKeyID(), metricAggRules1.getSrcAccessKeyID());
-        Assert.assertEquals(metricAggRules.getSrcAccessKeySecret(), metricAggRules1.getSrcAccessKeySecret());
-        Assert.assertEquals(metricAggRules.getSrcStore(), metricAggRules1.getSrcStore());
-        Assert.assertEquals(metricAggRules.getAggRules()[0], metricAggRules1.getAggRules()[0]);
+        assertNotNull(createMetricAggRulesResponse);
+        assertEquals(metricAggRules.getName(), metricAggRules1.getName());
+        assertEquals(metricAggRules.getDesc(), metricAggRules1.getDesc());
+        assertEquals(metricAggRules.getDestAccessKeyID(), metricAggRules1.getDestAccessKeyID());
+        assertEquals(metricAggRules.getDestAccessKeySecret(), metricAggRules1.getDestAccessKeySecret());
+        assertEquals(metricAggRules.getDestEndpoint(), metricAggRules1.getDestEndpoint());
+        assertEquals(metricAggRules.getDestProject(), metricAggRules1.getDestProject());
+        assertEquals(metricAggRules.getDestStore(), metricAggRules1.getDestStore());
+        assertEquals(metricAggRules.getSrcAccessKeyID(), metricAggRules1.getSrcAccessKeyID());
+        assertEquals(metricAggRules.getSrcAccessKeySecret(), metricAggRules1.getSrcAccessKeySecret());
+        assertEquals(metricAggRules.getSrcStore(), metricAggRules1.getSrcStore());
+        assertEquals(metricAggRules.getAggRules()[0], metricAggRules1.getAggRules()[0]);
 
         metricAggRules.setDesc("test_update");
         metricAggRules.setDestStore(TEST_METRIC_STORE1);
@@ -126,26 +127,26 @@ public class MetricAggRulesTest extends FunctionTest {
         metricAggRuleItem.setLabelNames(map);
         metricAggRules.setAggRules(new MetricAggRuleItem[]{metricAggRuleItem});
         UpdateMetricAggRulesResponse updateMetricAggRulesResponse = testUpdateMetricAggRules(metricAggRules);
-        Assert.assertNotNull(updateMetricAggRulesResponse);
+        assertNotNull(updateMetricAggRulesResponse);
 
         GetMetricAggRulesResponse getMetricAggRulesResponse1 = testGetMetricAggRules(testId);
         MetricAggRules metricAggRules2 = getMetricAggRulesResponse1.getMetricAggRules();
-        Assert.assertNotNull(getMetricAggRulesResponse1);
-        Assert.assertEquals(metricAggRules.getDesc(), metricAggRules2.getDesc());
-        Assert.assertEquals(metricAggRules.getName(), metricAggRules2.getName());
-        Assert.assertEquals(metricAggRules.getDesc(), metricAggRules2.getDesc());
-        Assert.assertEquals(metricAggRules.getDestAccessKeyID(), metricAggRules2.getDestAccessKeyID());
-        Assert.assertEquals(metricAggRules.getDestAccessKeySecret(), metricAggRules2.getDestAccessKeySecret());
-        Assert.assertEquals(metricAggRules.getDestEndpoint(), metricAggRules2.getDestEndpoint());
-        Assert.assertEquals(metricAggRules.getDestProject(), metricAggRules2.getDestProject());
-        Assert.assertEquals(metricAggRules.getDestStore(), metricAggRules2.getDestStore());
-        Assert.assertEquals(metricAggRules.getSrcAccessKeyID(), metricAggRules2.getSrcAccessKeyID());
-        Assert.assertEquals(metricAggRules.getSrcAccessKeySecret(), metricAggRules2.getSrcAccessKeySecret());
-        Assert.assertEquals(metricAggRules.getSrcStore(), metricAggRules2.getSrcStore());
-        Assert.assertEquals(metricAggRules.getAggRules()[0], metricAggRules2.getAggRules()[0]);
+        assertNotNull(getMetricAggRulesResponse1);
+        assertEquals(metricAggRules.getDesc(), metricAggRules2.getDesc());
+        assertEquals(metricAggRules.getName(), metricAggRules2.getName());
+        assertEquals(metricAggRules.getDesc(), metricAggRules2.getDesc());
+        assertEquals(metricAggRules.getDestAccessKeyID(), metricAggRules2.getDestAccessKeyID());
+        assertEquals(metricAggRules.getDestAccessKeySecret(), metricAggRules2.getDestAccessKeySecret());
+        assertEquals(metricAggRules.getDestEndpoint(), metricAggRules2.getDestEndpoint());
+        assertEquals(metricAggRules.getDestProject(), metricAggRules2.getDestProject());
+        assertEquals(metricAggRules.getDestStore(), metricAggRules2.getDestStore());
+        assertEquals(metricAggRules.getSrcAccessKeyID(), metricAggRules2.getSrcAccessKeyID());
+        assertEquals(metricAggRules.getSrcAccessKeySecret(), metricAggRules2.getSrcAccessKeySecret());
+        assertEquals(metricAggRules.getSrcStore(), metricAggRules2.getSrcStore());
+        assertEquals(metricAggRules.getAggRules()[0], metricAggRules2.getAggRules()[0]);
 
         DeleteMetricAggRulesResponse deleteMetricAggRulesResponse = testDeleteMetricAggRules(testId);
-        Assert.assertNotNull(deleteMetricAggRulesResponse);
+        assertNotNull(deleteMetricAggRulesResponse);
     }
 
     private CreateMetricAggRulesResponse testCreateMetricAggRules(MetricAggRules metricAggRules) throws LogException {
