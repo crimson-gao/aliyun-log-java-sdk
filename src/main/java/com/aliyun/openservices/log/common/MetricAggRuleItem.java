@@ -1,7 +1,9 @@
 package com.aliyun.openservices.log.common;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 public class MetricAggRuleItem implements Serializable {
 
@@ -96,5 +98,20 @@ public class MetricAggRuleItem implements Serializable {
 
     public void setDelaySeconds(int delaySeconds) {
         this.delaySeconds = delaySeconds;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MetricAggRuleItem)) return false;
+        MetricAggRuleItem that = (MetricAggRuleItem) o;
+        return beginUnixTime == that.beginUnixTime && endUnixTime == that.endUnixTime && interval == that.interval && delaySeconds == that.delaySeconds && Objects.equals(name, that.name) && Objects.equals(queryType, that.queryType) && Objects.equals(query, that.query) && Objects.equals(timeName, that.timeName) && Arrays.equals(metricNames, that.metricNames) && Objects.equals(labelNames, that.labelNames);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(name, queryType, query, timeName, labelNames, beginUnixTime, endUnixTime, interval, delaySeconds);
+        result = 31 * result + Arrays.hashCode(metricNames);
+        return result;
     }
 }

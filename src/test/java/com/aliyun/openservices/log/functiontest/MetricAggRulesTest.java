@@ -74,6 +74,16 @@ public class MetricAggRulesTest extends FunctionTest {
         testId = "metric_agg_rules_promql";
         metricAggRules = createPromqlConfig(testId);
         crud(testId, metricAggRules);
+
+        int t = randomBetween(1, 10);
+        for (int i = 0; i < t; i++) {
+            String id = "metric_agg_rules_" + i;
+            MetricAggRules m = createSqlConfig(id);
+            testCreateMetricAggRules(m);
+        }
+        ListMetricAggRulesResponse listMetricAggRulesResponse = testListMetricAggRules();
+        Assert.assertNotNull(listMetricAggRulesResponse);
+        Assert.assertEquals(t, listMetricAggRulesResponse.getMetricAggRules().size());
     }
 
 
@@ -86,19 +96,53 @@ public class MetricAggRulesTest extends FunctionTest {
         Assert.assertNotNull(createMetricAggRulesResponse);
         Assert.assertEquals(metricAggRules.getName(), metricAggRules1.getName());
         Assert.assertEquals(metricAggRules.getDesc(), metricAggRules1.getDesc());
+        Assert.assertEquals(metricAggRules.getDestAccessKeyID(), metricAggRules1.getDestAccessKeyID());
+        Assert.assertEquals(metricAggRules.getDestAccessKeySecret(), metricAggRules1.getDestAccessKeySecret());
+        Assert.assertEquals(metricAggRules.getDestEndpoint(), metricAggRules1.getDestEndpoint());
+        Assert.assertEquals(metricAggRules.getDestProject(), metricAggRules1.getDestProject());
+        Assert.assertEquals(metricAggRules.getDestStore(), metricAggRules1.getDestStore());
+        Assert.assertEquals(metricAggRules.getSrcAccessKeyID(), metricAggRules1.getSrcAccessKeyID());
+        Assert.assertEquals(metricAggRules.getSrcAccessKeySecret(), metricAggRules1.getSrcAccessKeySecret());
+        Assert.assertEquals(metricAggRules.getSrcStore(), metricAggRules1.getSrcStore());
+        Assert.assertEquals(metricAggRules.getAggRules()[0], metricAggRules1.getAggRules()[0]);
 
         metricAggRules.setDesc("test_update");
+        metricAggRules.setDestStore(TEST_METRIC_STORE1);
+        metricAggRules.setSrcStore(TEST_METRIC_STORE);
+        MetricAggRuleItem metricAggRuleItem = metricAggRules.getAggRules()[0];
+        metricAggRuleItem.setBeginUnixTime(1610506300);
+        metricAggRuleItem.setEndUnixTime(1610516300);
+        metricAggRuleItem.setInterval(120);
+        metricAggRuleItem.setDelaySeconds(120);
+        metricAggRuleItem.setQueryType("sql");
+        metricAggRuleItem.setQuery("* | select max(__time__) as time, COUNT_if(Status < 300) as ok1, count_if(Status >= 300) as not_ok1, Method as method1,UserAgent as agent1 from log  group by method1, agent1 limit 100000");
+        metricAggRuleItem.setMetricNames(new String[]{
+                "ok1",
+                "not_ok1"
+        });
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("method1", "method1");
+        map.put("agent1", "agent1");
+        metricAggRuleItem.setLabelNames(map);
+        metricAggRules.setAggRules(new MetricAggRuleItem[]{metricAggRuleItem});
         UpdateMetricAggRulesResponse updateMetricAggRulesResponse = testUpdateMetricAggRules(metricAggRules);
         Assert.assertNotNull(updateMetricAggRulesResponse);
 
         GetMetricAggRulesResponse getMetricAggRulesResponse1 = testGetMetricAggRules(testId);
         MetricAggRules metricAggRules2 = getMetricAggRulesResponse1.getMetricAggRules();
         Assert.assertNotNull(getMetricAggRulesResponse1);
-        Assert.assertEquals("test_update", metricAggRules2.getDesc());
-
-        ListMetricAggRulesResponse listMetricAggRulesResponse = testListMetricAggRules();
-        Assert.assertNotNull(createMetricAggRulesResponse);
-        Assert.assertTrue(listMetricAggRulesResponse.getMetricAggRules().size() > 0);
+        Assert.assertEquals(metricAggRules.getDesc(), metricAggRules2.getDesc());
+        Assert.assertEquals(metricAggRules.getName(), metricAggRules2.getName());
+        Assert.assertEquals(metricAggRules.getDesc(), metricAggRules2.getDesc());
+        Assert.assertEquals(metricAggRules.getDestAccessKeyID(), metricAggRules2.getDestAccessKeyID());
+        Assert.assertEquals(metricAggRules.getDestAccessKeySecret(), metricAggRules2.getDestAccessKeySecret());
+        Assert.assertEquals(metricAggRules.getDestEndpoint(), metricAggRules2.getDestEndpoint());
+        Assert.assertEquals(metricAggRules.getDestProject(), metricAggRules2.getDestProject());
+        Assert.assertEquals(metricAggRules.getDestStore(), metricAggRules2.getDestStore());
+        Assert.assertEquals(metricAggRules.getSrcAccessKeyID(), metricAggRules2.getSrcAccessKeyID());
+        Assert.assertEquals(metricAggRules.getSrcAccessKeySecret(), metricAggRules2.getSrcAccessKeySecret());
+        Assert.assertEquals(metricAggRules.getSrcStore(), metricAggRules2.getSrcStore());
+        Assert.assertEquals(metricAggRules.getAggRules()[0], metricAggRules2.getAggRules()[0]);
 
         DeleteMetricAggRulesResponse deleteMetricAggRulesResponse = testDeleteMetricAggRules(testId);
         Assert.assertNotNull(deleteMetricAggRulesResponse);
