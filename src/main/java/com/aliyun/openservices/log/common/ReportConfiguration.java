@@ -92,6 +92,8 @@ public class ReportConfiguration extends DashboardBasedJobConfiguration {
                 return new DingTalkNotification();
             case EMAIL:
                 return new EmailNotification();
+            case WEBHOOK:
+                return new WebhookNotification();
             default:
                 throw new IllegalArgumentException("Unimplemented report notification type: " + type);
         }
