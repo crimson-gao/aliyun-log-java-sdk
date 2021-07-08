@@ -45,21 +45,27 @@ public class EtlJobFunctionTest extends JobIntgTest {
         logStore.SetLogStoreName(logstore);
         logStore.setEnableWebTracking(true);
         logStore.setAppendMeta(true);
-        createOrUpdateLogStoreNoWait(TEST_PROJECT, logStore);
-        try {
-            DeleteEtlJobRequest req = new DeleteEtlJobRequest(TEST_PROJECT, etlJobName);
-            client.deleteEtlJob(req);
-        } catch (LogException e) {
-        }
-        try {
-            DeleteEtlJobRequest req = new DeleteEtlJobRequest(TEST_PROJECT, etlJobName + "_1");
-            client.deleteEtlJob(req);
-        } catch (LogException e) {
+        // The quota of etljob is logstore count*5 so we need to wait cache updated.
+        createOrUpdateLogStore(TEST_PROJECT, logStore);
+
+        while (true) {
+            try {
+                ListEtlJobResponse response = client.listEtlJob(new ListEtlJobRequest(TEST_PROJECT, 0, 100));
+                if (response.getCount() == 0) {
+                    break;
+                }
+                for (String etlJobName : response.getEtlJobNameList()) {
+                    DeleteEtlJobRequest req = new DeleteEtlJobRequest(TEST_PROJECT, etlJobName);
+                    client.deleteEtlJob(req);
+                }
+            } catch (LogException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
     @Test
-    public void testCrud(){
+    public void testCrud() {
         testCreateEtlJob();
         testGetEtlJob();
         testUpdateEtlJob();
@@ -83,7 +89,6 @@ public class EtlJobFunctionTest extends JobIntgTest {
             System.out.println(e.GetErrorMessage());
             sourceConfig.setLogstoreName(logstore);
             assertEquals(e.GetErrorCode(), "PostBodyInvalid");
-            assertTrue(true);
         }
         try {
             triggerConfig.setMaxRetryTime(1000);
@@ -94,7 +99,6 @@ public class EtlJobFunctionTest extends JobIntgTest {
             System.out.println(e.GetErrorMessage());
             triggerConfig.setMaxRetryTime(1);
             assertEquals(e.GetErrorCode(), "PostBodyInvalid");
-            assertTrue(true);
         }
         try {
             triggerConfig.setTriggerInterval(-1);
@@ -105,7 +109,6 @@ public class EtlJobFunctionTest extends JobIntgTest {
             System.out.println(e.GetErrorMessage());
             triggerConfig.setTriggerInterval(100);
             assertEquals(e.GetErrorCode(), "PostBodyInvalid");
-            assertTrue(true);
         }
         try {
             triggerConfig.setStartFromUnixtime(10000);
@@ -117,7 +120,6 @@ public class EtlJobFunctionTest extends JobIntgTest {
             System.out.println(e.GetErrorMessage());
             assertEquals(e.GetErrorCode(), "PostBodyInvalid");
             triggerConfig.setStartFromLastest();
-            assertTrue(true);
         }
         try {
             triggerConfig.setRoleArn(" ");
@@ -128,7 +130,6 @@ public class EtlJobFunctionTest extends JobIntgTest {
             System.out.println(e.GetErrorMessage());
             triggerConfig.setRoleArn(roleArn);
             assertEquals(e.GetErrorCode(), "PostBodyInvalid");
-            assertTrue(true);
         }
         try {
             fcConfig.setFunctionProvider("StreamCompute");
@@ -139,7 +140,6 @@ public class EtlJobFunctionTest extends JobIntgTest {
             System.out.println(e.GetErrorMessage());
             fcConfig.setFunctionProvider(Consts.FUNCTION_PROVIDER_FC);
             assertEquals(e.GetErrorCode(), "PostBodyInvalid");
-            assertTrue(true);
         }
         try {
             fcConfig.setAccountId("");
@@ -184,7 +184,6 @@ public class EtlJobFunctionTest extends JobIntgTest {
             System.out.println(e.GetErrorMessage());
             job.setFunctionParameter(functionParameter);
             assertEquals(e.GetErrorCode(), "PostBodyInvalid");
-            assertTrue(true);
         }
         try {
             job.setJobName("1");
@@ -195,14 +194,12 @@ public class EtlJobFunctionTest extends JobIntgTest {
             System.out.println(e.GetErrorMessage());
             job.setJobName(etlJobName);
             assertEquals(e.GetErrorCode(), "PostBodyInvalid");
-            assertTrue(true);
         }
         try {
             CreateEtlJobRequest req = new CreateEtlJobRequest(TEST_PROJECT, job);
             CreateEtlJobResponse createEtlJobResponse = client.createEtlJob(req);
-            assertTrue(true);
         } catch (LogException e) {
-            System.out.println("job: "+e.GetErrorCode());
+            System.out.println("job: " + e.GetErrorCode());
             System.out.println(e.GetErrorMessage());
             fail();
         }
@@ -212,20 +209,15 @@ public class EtlJobFunctionTest extends JobIntgTest {
             job.setEnable(false);
             CreateEtlJobRequest req2 = new CreateEtlJobRequest(TEST_PROJECT, job);
             CreateEtlJobResponse createEtlJobResponse2 = client.createEtlJob(req2);
-            assertTrue(true);
         } catch (LogException e) {
-            System.out.println("job_1: "+e.GetErrorCode());
+            System.out.println("job_1: " + e.GetErrorCode());
             System.out.println(e.GetErrorMessage());
             fail();
         }
     }
 
     private void testGetEtlJob() {
-        try {
-            Thread.sleep(2000);
-        }catch (InterruptedException e){
-            e.printStackTrace();
-        }
+        waitForSeconds(2);
         GetEtlJobRequest req = new GetEtlJobRequest(TEST_PROJECT, etlJobName);
         try {
             GetEtlJobResponse resp = client.getEtlJob(req);
