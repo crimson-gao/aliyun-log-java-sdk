@@ -2,52 +2,23 @@ package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.JSONObject;
 
-import java.util.*;
-
 public class Log2MetricParameters implements ScheduledSQLParameters {
     private String timeKey;
-    private List<String> metricKeys;
-    private List<String> labelKeys;
-    private List<String> hashLabels;
-    private Map<String, String> addLabels;
+    private String metricKeys;
+    private String labelKeys;
+    private String hashLabels;
+    private String addLabels;
 
     public Log2MetricParameters() {
-    }
-
-    public Log2MetricParameters(List<String> metricKeys) {
-        this.metricKeys = metricKeys;
-    }
-
-    public Log2MetricParameters appendMetricKeys(String... keys) {
-        append(metricKeys, keys);
-        return this;
-    }
-
-    public Log2MetricParameters appendLabelKeys(String... labels) {
-        append(labelKeys, labels);
-        return this;
-    }
-
-    @Override
-    public void appendHashLabels(String... labels) {
-        append(hashLabels, labels);
-    }
-
-    @Override
-    public void appendAddLabels(String key, String value) {
-        if (addLabels == null) {
-            addLabels = new HashMap<String, String>();
-        }
-        addLabels.put(key, value);
     }
 
     @Override
     public void deserialize(JSONObject value) {
         timeKey = value.getString("timeKey");
-        metricKeys = value.getJSONArray("metricKeys").toJavaList(String.class);
-        labelKeys = value.getJSONArray("labelKeys").toJavaList(String.class);
-        hashLabels = value.getJSONArray("hashLabels").toJavaList(String.class);
-        addLabels = value.getJSONObject("addLabels").toJavaObject(Map.class);
+        metricKeys = value.getString("metricKeys");
+        labelKeys = value.getString("labelKeys");
+        hashLabels = value.getString("hashLabels");
+        addLabels = value.getString("addLabels");
     }
 
     @Override
@@ -81,18 +52,6 @@ public class Log2MetricParameters implements ScheduledSQLParameters {
         return getAddLabels() != null ? getAddLabels().equals(that.getAddLabels()) : that.getAddLabels() == null;
     }
 
-    @Override
-    public String toString() {
-        return JSONObject.toJSONString(this);
-    }
-
-    private void append(List<String> list, String... s) {
-        if (list == null) {
-            list = new ArrayList<String>();
-        }
-        list.addAll(Arrays.asList(s));
-    }
-
     public String getTimeKey() {
         return timeKey;
     }
@@ -101,35 +60,35 @@ public class Log2MetricParameters implements ScheduledSQLParameters {
         this.timeKey = timeKey;
     }
 
-    public List<String> getMetricKeys() {
+    public String getMetricKeys() {
         return metricKeys;
     }
 
-    public void setMetricKeys(List<String> metricKeys) {
+    public void setMetricKeys(String metricKeys) {
         this.metricKeys = metricKeys;
     }
 
-    public List<String> getLabelKeys() {
+    public String getLabelKeys() {
         return labelKeys;
     }
 
-    public void setLabelKeys(List<String> labelKeys) {
+    public void setLabelKeys(String labelKeys) {
         this.labelKeys = labelKeys;
     }
 
-    public List<String> getHashLabels() {
+    public String getHashLabels() {
         return hashLabels;
     }
 
-    public void setHashLabels(List<String> hashLabels) {
+    public void setHashLabels(String hashLabels) {
         this.hashLabels = hashLabels;
     }
 
-    public Map<String, String> getAddLabels() {
+    public String getAddLabels() {
         return addLabels;
     }
 
-    public void setAddLabels(Map<String, String> addLabels) {
+    public void setAddLabels(String addLabels) {
         this.addLabels = addLabels;
     }
 }
