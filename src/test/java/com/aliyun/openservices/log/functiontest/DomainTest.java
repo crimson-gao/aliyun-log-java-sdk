@@ -14,6 +14,7 @@ public class DomainTest extends MetaAPIBaseFunctionTest {
     public void testCRUD() throws LogException {
         try {
             client.deleteDomain(TEST_PROJECT, "test-domain");
+            fail();
         } catch (LogException e) {
             assertEquals("Unauthorized", e.GetErrorCode());
             assertEquals("this api does not support sub user or role", e.GetErrorMessage());

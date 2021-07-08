@@ -69,6 +69,7 @@ public class DashboardTest extends MetaAPIBaseFunctionTest {
         client.createDashboard(createDashboardRequest);
         try {
             client.createDashboard(createDashboardRequest);
+            fail();
         } catch (LogException ex) {
             assertEquals(ex.GetErrorMessage(), "specified dashboard already exists");
             assertEquals(ex.GetErrorCode(), "ParameterInvalid");
@@ -110,6 +111,7 @@ public class DashboardTest extends MetaAPIBaseFunctionTest {
         dashboard.setChartList(charts);
         try {
             client.updateDashboard(new UpdateDashboardRequest(TEST_PROJECT, dashboard));
+            fail();
         } catch (LogException ex) {
             assertEquals(ex.GetErrorMessage(), "Duplicate chart title: " + chart1.getTitle());
             assertEquals(ex.GetErrorCode(), "PostBodyInvalid");
@@ -134,6 +136,7 @@ public class DashboardTest extends MetaAPIBaseFunctionTest {
         }
         try {
             client.deleteChart(new DeleteChartRequest(TEST_PROJECT, dashboardName, "chart-100"));
+            fail();
         } catch (LogException ex) {
             assertEquals(ex.GetErrorMessage(), "specified chart does not exist");
             assertEquals(ex.GetErrorCode(), "ChartNotExist");
