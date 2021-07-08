@@ -179,8 +179,9 @@ public class WebTrackingTest extends LogTest {
         object.put("__logs__", array);
         Response response = postTestLogs(logStoreName, object, true);
         assertEquals(200, response.status);
+        waitForSeconds(5);
 
-        List<Logs.LogGroup> logGroups = pullAllLogGroups(TEST_PROJECT, logStoreName, 0);
+        List<Logs.LogGroup> logGroups = pullAllLogGroups(TEST_PROJECT, logStoreName, 1);
         assertEquals(1, logGroups.size());
         Logs.LogGroup logGroup = logGroups.get(0);
         assertEquals("test-topic", logGroup.getTopic());
@@ -206,7 +207,7 @@ public class WebTrackingTest extends LogTest {
     }
 
     private static class Response {
-        private int status;
+        private final int status;
 
         Response(int status) {
             this.status = status;
@@ -254,8 +255,6 @@ public class WebTrackingTest extends LogTest {
                 @Override
                 public Response handleResponse(final HttpResponse response) throws IOException {
                     int status = response.getStatusLine().getStatusCode();
-//                    HttpEntity entity = response.getEntity();
-//                    String body = entity != null ? EntityUtils.toString(entity) : null;
                     return new Response(status);
                 }
             };
