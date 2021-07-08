@@ -175,10 +175,10 @@ public class ScheduledSQLConfiguration extends JobConfiguration {
         fromTime = value.getLongValue("fromTime");
         toTime = value.getLongValue("toTime");
         dataFormat = value.getString("dataFormat");
-        if (dataFormat.equals("log2metric")) {
+        if ("log2metric".equals(dataFormat)) {
             parameters = new Log2MetricParameters();
             parameters.deserialize(value.getJSONObject("parameters"));
-        } else if (dataFormat.equals("metric2metric")) {
+        } else if ("metric2metric".equals(dataFormat)) {
             parameters = new Metric2MetricParameters();
             parameters.deserialize(value.getJSONObject("parameters"));
         }
