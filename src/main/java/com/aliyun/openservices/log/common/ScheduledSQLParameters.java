@@ -10,8 +10,4 @@ public interface ScheduledSQLParameters {
      * Deserialize parameters from JSON object.
      **/
     void deserialize(JSONObject value);
-
-    void appendHashLabels(String... labels);
-
-    void appendAddLabels(String key, String value);
 }
