@@ -79,7 +79,7 @@ public class DefaultServiceClient extends ServiceClient {
     public DefaultServiceClient(ClientConfiguration config) {
         super(config);
         this.connectionManager = createHttpClientConnectionManager();
-        this.httpClient = createHttpClient(this.connectionManager);
+        this.httpClient = createHttpClient(this.connectionManager, config);
         RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
         requestConfigBuilder.setConnectTimeout(config.getConnectionTimeout());
         requestConfigBuilder.setSocketTimeout(config.getSocketTimeout());
@@ -164,10 +164,11 @@ public class DefaultServiceClient extends ServiceClient {
         response.setContent(new ByteArrayInputStream(contentBytes));
     }
 
-    protected CloseableHttpClient createHttpClient(HttpClientConnectionManager connectionManager) {
+    protected CloseableHttpClient createHttpClient(HttpClientConnectionManager connectionManager,
+                                                   ClientConfiguration config) {
         return HttpClients.custom()
                 .setConnectionManager(connectionManager)
-                .setConnectionManagerShared(true)
+                .setConnectionManagerShared(config.isConnManagerShared())
                 .disableContentCompression()
                 .disableAutomaticRetries()
                 .build();

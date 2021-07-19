@@ -33,6 +33,7 @@ public class ClientConfiguration {
     protected long idleConnectionTime = DEFAULT_IDLE_CONNECTION_TIME;
     protected int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
     protected boolean useReaper = DEFAULT_USE_REAPER;
+    private boolean connManagerShared = false;
 
     public ClientConfiguration() {
     }
@@ -203,5 +204,13 @@ public class ClientConfiguration {
      */
     public void setUseReaper(boolean useReaper) {
         this.useReaper = useReaper;
+    }
+
+    public boolean isConnManagerShared() {
+        return connManagerShared;
+    }
+
+    public void setConnManagerShared(boolean connManagerShared) {
+        this.connManagerShared = connManagerShared;
     }
 }
