@@ -165,8 +165,12 @@ public class DefaultServiceClient extends ServiceClient {
     }
 
     protected CloseableHttpClient createHttpClient(HttpClientConnectionManager connectionManager) {
-        return HttpClients.custom().setConnectionManager(connectionManager)
-                .disableContentCompression().disableAutomaticRetries().build();
+        return HttpClients.custom()
+                .setConnectionManager(connectionManager)
+                .setConnectionManagerShared(true)
+                .disableContentCompression()
+                .disableAutomaticRetries()
+                .build();
     }
 
     protected HttpClientConnectionManager createHttpClientConnectionManager() {
