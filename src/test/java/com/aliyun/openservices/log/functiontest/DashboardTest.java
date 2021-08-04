@@ -117,13 +117,14 @@ public class DashboardTest extends MetaAPIBaseFunctionTest {
             assertEquals(ex.GetErrorCode(), "PostBodyInvalid");
         }
         charts.clear();
-        for (int i = 0; i < 100; i++) {
+        int chartQuota = 200;
+        for (int i = 0; i < chartQuota; i++) {
             charts.add(createChart("chart-" + i));
         }
         dashboard.setChartList(charts);
         client.updateDashboard(new UpdateDashboardRequest(TEST_PROJECT, dashboard));
         try {
-            charts.add(createChart("chart-100"));
+            charts.add(createChart("chart-" + chartQuota));
             dashboard.setChartList(charts);
             client.updateDashboard(new UpdateDashboardRequest(TEST_PROJECT, dashboard));
             fail();
@@ -131,11 +132,11 @@ public class DashboardTest extends MetaAPIBaseFunctionTest {
             assertEquals(ex.GetErrorMessage(), "You have too many charts in your dashboard");
             assertEquals(ex.GetErrorCode(), "ExceedQuota");
         }
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < chartQuota; i++) {
             client.deleteChart(new DeleteChartRequest(TEST_PROJECT, dashboardName, "chart-" + i));
         }
         try {
-            client.deleteChart(new DeleteChartRequest(TEST_PROJECT, dashboardName, "chart-100"));
+            client.deleteChart(new DeleteChartRequest(TEST_PROJECT, dashboardName, "chart-" + chartQuota));
             fail();
         } catch (LogException ex) {
             assertEquals(ex.GetErrorMessage(), "specified chart does not exist");
