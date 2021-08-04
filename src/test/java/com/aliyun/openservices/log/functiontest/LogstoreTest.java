@@ -43,11 +43,23 @@ public class LogstoreTest extends FunctionTest {
     }
 
     private static void deleteAll() throws Exception {
-        ListProjectResponse response = client.ListProject(PROJECT_PREFIX, 0, 100);
-        if (response != null) {
+        LogException error = null;
+        while (true) {
+            ListProjectResponse response = client.ListProject(PROJECT_PREFIX, 0, 100);
             for (Project project : response.getProjects()) {
-                deleteProject(project.getProjectName());
+                try {
+                    deleteProject(project.getProjectName());
+                } catch (LogException ex) {
+                    ex.printStackTrace();
+                    error = ex;
+                }
             }
+            if (response.getCount() < 100) {
+                break;
+            }
+        }
+        if (error != null) {
+            throw error;
         }
     }
 
@@ -164,13 +176,7 @@ public class LogstoreTest extends FunctionTest {
 
             int total = 0;
             String query = "logstore-" + i;
-            ListLogStoresResponse response2 = null;
-            try {
-                response2 = client.ListLogStores(project, 0, 10, query);
-            } catch (LogException ex) {
-                ex.printStackTrace();
-                throw ex;
-            }
+            ListLogStoresResponse response2 = client.ListLogStores(project, 0, 10, query);
             for (int j = 0; j < numberOfLogstore; j++) {
                 String x = "logstore-" + j;
                 if (x.contains(query)) {
@@ -188,7 +194,7 @@ public class LogstoreTest extends FunctionTest {
 
         response = client.ListLogStores(project, 0, size, "");
         assertEquals(numberOfLogstore, response.GetTotal());
-        assertEquals(size, response.GetCount());
+        assertEquals(Math.min(size, numberOfLogstore), response.GetCount());
 
         for (int i = 0; i < numberOfLogstore; i++) {
             client.DeleteLogStore(project, "logstore-" + i);
@@ -308,5 +314,4 @@ public class LogstoreTest extends FunctionTest {
             fail(err.getMessage());
         }
     }
-
 }
