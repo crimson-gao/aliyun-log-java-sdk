@@ -37,6 +37,7 @@ public class RebuildIndexFunctionTest extends FunctionTest {
 
     @Before
     public void setUp() {
+        safeCreateProject(project, "RebuildIndexFunctionTest");
         LogStore logStore = new LogStore();
         logStore.SetLogStoreName(logstore);
         logStore.SetTtl(1);
@@ -49,6 +50,7 @@ public class RebuildIndexFunctionTest extends FunctionTest {
     public void clearData() throws Exception {
         safeDeleteLogStore(project, logstore);
         deleteAll();
+        safeDeleteProjectWithoutSleep(project);
     }
 
     private final static String INDEX_STRING = "{\"log_reduce\":false,\"line\":{\"caseSensitive\":false,\"chn\":false,\"token\":" +
@@ -85,18 +87,17 @@ public class RebuildIndexFunctionTest extends FunctionTest {
         client.createRebuildIndex(new CreateRebuildIndexRequest(project, job));//index config doesn't exist
         waitForSeconds(3);
         testGet();
+        testInvalidOperation();
     }
 
-    @Test
-    public void testGet() throws Exception {
+    private void testGet() throws Exception {
         GetRebuildIndexResponse response = client.getRebuildIndex(new GetRebuildIndexRequest(project, jobName));
         RebuildIndex ri = response.getRebuildIndex();
         assertEquals(jobName, ri.getName());
         assertEquals("test rebuild index", ri.getDisplayName());
     }
 
-    @Test
-    public void testStop() {
+    private void testStop() {
         try {
             client.stopRebuildIndex(new StopRebuildIndexRequest(project, jobName));
         } catch (LogException e) {
@@ -109,6 +110,7 @@ public class RebuildIndexFunctionTest extends FunctionTest {
     @Test
     public void testDelete() throws Exception {
         testCreate();
+        testStop();
         client.deleteRebuildIndex(new DeleteRebuildIndexRequest(project, jobName));
     }
 
@@ -121,10 +123,17 @@ public class RebuildIndexFunctionTest extends FunctionTest {
         assertEquals("rebuild-index-6", response.getResults().get(0).getName());
     }
 
-    @Test
-    public void testInvalidOperation() throws Exception {
-        client.enableJob(new EnableJobRequest(project, jobName));
-        client.disableJob(new DisableJobRequest(project, jobName));
+    private void testInvalidOperation() {
+        try {
+            client.enableJob(new EnableJobRequest(project, jobName));
+        } catch (LogException e) {
+            assertEquals("ParameterInvalid", e.GetErrorCode());
+        }
+        try {
+            client.disableJob(new DisableJobRequest(project, jobName));
+        } catch (LogException e) {
+            assertEquals("ParameterInvalid", e.GetErrorCode());
+        }
     }
 
     private static void enableIndex() {

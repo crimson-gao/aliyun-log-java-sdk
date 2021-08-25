@@ -58,7 +58,7 @@ public class IngestionFunctionTest extends JobIntgTest {
     public void testCrud() throws Exception {
         Ingestion ingestion = createIngestion();
         String jobName = ingestion.getName();
-        String project = "ali-sls-etl-staging";
+        String project = TEST_PROJECT;
         client.createIngestion(new CreateIngestionRequest(project, ingestion));
         client.updateIngestion(new UpdateIngestionRequest(project, ingestion));
         GetIngestionResponse response = client.getIngestion(new GetIngestionRequest(project, jobName));
