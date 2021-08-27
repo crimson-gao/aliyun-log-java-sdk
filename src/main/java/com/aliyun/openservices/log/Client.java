@@ -743,11 +743,6 @@ public class Client implements LogService {
 	}
 
 	public GetLogsResponse executeLogstoreSql(String project, String logStore, int from,
-											  int to, String sql) throws LogException {
-		return executeLogstoreSql(project, logStore, from, to, sql, false);
-	}
-
-	public GetLogsResponse executeLogstoreSql(String project, String logStore, int from,
 											  int to, String sql, boolean powerSql) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
@@ -799,10 +794,6 @@ public class Client implements LogService {
 		JSONArray object = ParseResponseMessageToArrayWithFastJson(response, requestId);
 		extractLogsWithFastJson(getLogsResponse, object, requestId);
 		return getLogsResponse;
-	}
-
-	public GetLogsResponse executeProjectSql(String project, String sql) throws LogException {
-		return executeProjectSql(project, sql, false);
 	}
 
 	public GetLogsResponse executeProjectSql(String project,

@@ -169,30 +169,6 @@ public interface LogService {
 	 *            the end time of the data to get
 	 * @param sql
 	 *            the sql string which must follow <a href="https://help.aliyun.com/document_detail/43772.html">Search|Analysis syntax in SLS</a>
-	 * @return a response contains a result set of the sql
-	 * @throws LogException
-	 *             if any error happen when get the data from log service server
-	 * @throws NullPointerException
-	 *             if any parameter is null
-	 * @throws IllegalArgumentException
-	 *             if project or logstore is empty
-	 */
-	GetLogsResponse executeLogstoreSql(String project, String logStore, int from,
-									   int to, String sql) throws LogException;
-
-	/**
-	 * Execute the SQL in the Project and Logstore with input parameters.
-	 *
-	 * @param project
-	 *            the project name
-	 * @param logStore
-	 *            the logstore name
-	 * @param from
-	 *            the begin time of the data to get
-	 * @param to
-	 *            the end time of the data to get
-	 * @param sql
-	 *            the sql string which must follow <a href="https://help.aliyun.com/document_detail/43772.html">Search|Analysis syntax in SLS</a>
 	 * @param powerSql
 	 *            execute in enhanced sql mode if true, or normal mode if false
 	 * @return a response contains a result set of the sql
@@ -238,23 +214,6 @@ public interface LogService {
 	 *             if any error happen when get the data from log service server
 	 */
     GetLogsResponse GetProjectLogs(GetProjectLogsRequest request) throws LogException;
-
-	/**
-	 * Execute the SQL in the Project with input parameters.
-	 *
-	 * @param project
-	 *            the project name
-	 * @param sql
-	 *            the sql string which must follow SQL syntax
-	 * @return a response contains a result set of the sql
-	 * @throws LogException
-	 *             if any error happen when get the data from log service server
-	 * @throws NullPointerException
-	 *             if any parameter is null
-	 * @throws IllegalArgumentException
-	 *             if project or logstore is empty
-	 */
-	GetLogsResponse executeProjectSql(String project, String sql) throws LogException;
 
 	/**
 	 * Execute the SQL in the Project with input parameters.
