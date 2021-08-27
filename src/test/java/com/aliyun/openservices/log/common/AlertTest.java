@@ -2,7 +2,6 @@ package com.aliyun.openservices.log.common;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.util.JsonUtils;
 import org.junit.Test;
 
