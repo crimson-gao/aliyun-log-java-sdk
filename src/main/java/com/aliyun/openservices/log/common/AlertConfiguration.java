@@ -4,10 +4,13 @@ package com.aliyun.openservices.log.common;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.JSONSerializable;
+import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.aliyun.openservices.log.internal.Unmarshaller;
 import com.aliyun.openservices.log.util.JsonUtils;
 import com.aliyun.openservices.log.util.Utils;
 
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +53,37 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
 
     @JSONField
     private boolean autoAnnotation;
+    @JSONField
+    private String version;
+    @JSONField
+    private String type;
+    /**
+     * Optional eval threshold, defaults to 1.
+     */
+    @JSONField
+    private int threshold = 1;
+    @JSONField
+    private boolean noDataFire;
+    @JSONField
+    private int noDataSeverity = Severity.Medium.value();
+    @JSONField
+    private boolean sendResolved;
+    @JSONField
+    private TemplateConfiguration templateConfiguration;
+    @JSONField
+    private ConditionConfiguration conditionConfiguration;
+    @JSONField
+    private List<Tag> annotations;
+    @JSONField
+    private List<Tag> labels;
+    @JSONField
+    private List<SeverityConfiguration> severityConfigurations;
+    @JSONField
+    private List<JoinConfiguration> joinConfigurations;
+    @JSONField
+    private GroupConfiguration groupConfiguration;
+    @JSONField
+    private PolicyConfiguration policyConfiguration;
 
     public String getCondition() {
         return condition;
@@ -91,6 +125,11 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
     }
 
     @Deprecated
+    public void setThrottling(String throttling) {
+        this.throttling = throttling;
+    }
+
+    @Deprecated
     public boolean getSendRecoveryMessage() {
         return sendRecoveryMessage;
     }
@@ -108,16 +147,10 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         this.autoAnnotation = autoAnnotation;
     }
 
-    @Deprecated
-    public void setThrottling(String throttling) {
-//        Args.checkDuration(throttling);
-        this.throttling = throttling;
-    }
-
     @Override
     public void deserialize(JSONObject value) {
         super.deserialize(value);
-        setVersion(JsonUtils.readOptionalString(value,"version"));
+        setVersion(JsonUtils.readOptionalString(value, "version"));
         if (getVersion() != null) {
             deserializeAlert2(value);
         } else {
@@ -147,9 +180,9 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         if (value.containsKey("muteUntil")) {
             muteUntil = Utils.timestampToDate(value.getLong("muteUntil"));
         }
-        setVersion(JsonUtils.readOptionalString(value,"version"));
-        setType(JsonUtils.readOptionalString(value,"type"));
-        if (value.containsKey("threshold")){
+        setVersion(JsonUtils.readOptionalString(value, "version"));
+        setType(JsonUtils.readOptionalString(value, "type"));
+        if (value.containsKey("threshold")) {
             setThreshold(value.getInteger("threshold"));
         }
         if (value.containsKey("noDataFire")) {
@@ -217,7 +250,7 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
                 return joinConfiguration;
             }
         });
-        groupConfiguration  = new GroupConfiguration();
+        groupConfiguration = new GroupConfiguration();
         if (value.containsKey("groupConfiguration") && value.getJSONObject("groupConfiguration") != null) {
             groupConfiguration.deserialize(value.getJSONObject("groupConfiguration"));
         }
@@ -276,6 +309,248 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         return result;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(int threshold) {
+        this.threshold = threshold;
+    }
+
+    public boolean isNoDataFire() {
+        return noDataFire;
+    }
+
+    public void setNoDataFire(boolean noDataFire) {
+        this.noDataFire = noDataFire;
+    }
+
+    public int getNoDataSeverity() {
+        return noDataSeverity;
+    }
+
+    public void setNoDataSeverity(Severity noDataSeverity) {
+        this.noDataSeverity = noDataSeverity.value();
+    }
+
+    public boolean isSendResolved() {
+        return sendResolved;
+    }
+
+    public void setSendResolved(boolean sendResolved) {
+        this.sendResolved = sendResolved;
+    }
+
+    public TemplateConfiguration getTemplateConfiguration() {
+        return templateConfiguration;
+    }
+
+    public void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
+        this.templateConfiguration = templateConfiguration;
+    }
+
+    public ConditionConfiguration getConditionConfiguration() {
+        return conditionConfiguration;
+    }
+
+    public void setConditionConfiguration(ConditionConfiguration conditionConfiguration) {
+        this.conditionConfiguration = conditionConfiguration;
+    }
+
+    public List<Tag> getAnnotations() {
+        return annotations;
+    }
+
+    public void setAnnotations(List<Tag> annotations) {
+        this.annotations = annotations;
+    }
+
+    public List<Tag> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<Tag> labels) {
+        this.labels = labels;
+    }
+
+    public List<SeverityConfiguration> getSeverityConfigurations() {
+        return severityConfigurations;
+    }
+
+    public void setSeverityConfigurations(List<SeverityConfiguration> severityConfigurations) {
+        this.severityConfigurations = severityConfigurations;
+    }
+
+    public List<JoinConfiguration> getJoinConfigurations() {
+        return joinConfigurations;
+    }
+
+    public void setJoinConfigurations(List<JoinConfiguration> joinConfigurations) {
+        this.joinConfigurations = joinConfigurations;
+    }
+
+    public GroupConfiguration getGroupConfiguration() {
+        return groupConfiguration;
+    }
+
+    public void setGroupConfiguration(GroupConfiguration groupConfiguration) {
+        this.groupConfiguration = groupConfiguration;
+    }
+
+    public PolicyConfiguration getPolicyConfiguration() {
+        return policyConfiguration;
+    }
+
+    public void setPolicyConfiguration(PolicyConfiguration policyConfiguration) {
+        this.policyConfiguration = policyConfiguration;
+    }
+
+    public enum Severity {
+        Report(2), Low(4), Medium(6), High(8), Critical(10);
+
+        private int value = 0;
+
+        private Severity(int value) {
+            this.value = value;
+        }
+
+        public static Severity valueOf(int value) {
+            switch (value) {
+                case 2:
+                    return Report;
+                case 4:
+                    return Low;
+                case 6:
+                    return Medium;
+                case 8:
+                    return High;
+                case 10:
+                    return Critical;
+                default:
+                    return null;
+            }
+        }
+
+        public int value() {
+            return this.value;
+        }
+    }
+
+    public enum JoinType implements JSONSerializable {
+        CROSS_JOIN("cross_join"),
+        INNER_JOIN("inner_join"),
+        LEFT_JOIN("left_join"),
+        RIGHT_JOIN("right_join"),
+        FULL_JOIN("full_join"),
+        LEFT_EXCLUDE("left_exclude"),
+        RIGHT_EXCLUDE("right_exclude"),
+        CONCAT("concat"),
+        NO_JOIN("no_join");
+
+        private final String value;
+
+        JoinType(String value) {
+            this.value = value;
+        }
+
+        public static JoinType fromString(String value) {
+            for (JoinType type : JoinType.values()) {
+                if (type.value.equals(value)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        @Override
+        public void write(JSONSerializer serializer, Object fieldName, Type fieldType, int features) {
+            serializer.write(toString());
+        }
+    }
+
+    public enum GroupType implements JSONSerializable {
+        NO_GROUP("no_group"),
+        LABELS_AUTO("labels_auto"),
+        CUSTOM("custom");
+
+        private final String value;
+
+        GroupType(String value) {
+            this.value = value;
+        }
+
+        public static GroupType fromString(String value) {
+            for (GroupType type : GroupType.values()) {
+                if (type.value.equals(value)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        @Override
+        public void write(JSONSerializer serializer, Object fieldName, Type fieldType, int features) {
+            serializer.write(toString());
+        }
+    }
+
+    public enum StoreType implements JSONSerializable {
+        LOG("log"),
+        METRIC("metric"),
+        META("meta");
+
+        private final String value;
+
+        StoreType(String value) {
+            this.value = value;
+        }
+
+        public static StoreType fromString(String value) {
+            for (StoreType type : StoreType.values()) {
+                if (type.value.equals(value)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        @Override
+        public void write(JSONSerializer serializer, Object fieldName, Type fieldType, int features) {
+            serializer.write(toString());
+        }
+    }
+
     public static class TemplateConfiguration {
         @JSONField
         private String id;
@@ -286,9 +561,9 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         @JSONField
         private String lang;
         @JSONField
-        private Map<String,String> tokens;
+        private Map<String, String> tokens;
         @JSONField
-        private Map<String,String> annotations;
+        private Map<String, String> annotations;
 
         public String getId() {
             return id;
@@ -339,10 +614,10 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         }
 
         public void deserialize(JSONObject value) {
-            setId(JsonUtils.readOptionalString(value,"id"));
-            setType(JsonUtils.readOptionalString(value,"type"));
-            setLang(JsonUtils.readOptionalString(value,"lang"));
-            setVersion(JsonUtils.readOptionalString(value,"version"));
+            setId(JsonUtils.readOptionalString(value, "id"));
+            setType(JsonUtils.readOptionalString(value, "type"));
+            setLang(JsonUtils.readOptionalString(value, "lang"));
+            setVersion(JsonUtils.readOptionalString(value, "version"));
             setTokens(JsonUtils.readOptionalMap(value, "tokens"));
             setAnnotations(JsonUtils.readOptionalMap(value, "annotations"));
         }
@@ -353,6 +628,7 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
         private String condition;
         @JSONField
         private String countCondition;
+
         public String getCondition() {
             return condition;
         }
@@ -371,8 +647,8 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
 
         public void deserialize(JSONObject value) {
             if (value != null) {
-                setCondition(JsonUtils.readOptionalString(value,"condition"));
-                setCountCondition(JsonUtils.readOptionalString(value,"countCondition"));
+                setCondition(JsonUtils.readOptionalString(value, "condition"));
+                setCountCondition(JsonUtils.readOptionalString(value, "countCondition"));
             }
         }
     }
@@ -553,197 +829,9 @@ public class AlertConfiguration extends DashboardBasedJobConfiguration {
 
         public void deserialize(JSONObject value) {
             setUseDefault(value.getBoolean("useDefault"));
-            setRepeatInterval(JsonUtils.readOptionalString(value,"repeatInterval"));
+            setRepeatInterval(JsonUtils.readOptionalString(value, "repeatInterval"));
             setActionPolicyId(JsonUtils.readOptionalString(value, "actionPolicyId"));
             setAlertPolicyId(JsonUtils.readOptionalString(value, "alertPolicyId"));
-        }
-    }
-
-    @JSONField
-    private String version;
-
-    @JSONField
-    private String type;
-
-    /**
-     * Optional eval threshold, defaults to 1.
-     */
-    @JSONField
-    private int threshold = 1;
-
-    @JSONField
-    private boolean noDataFire;
-
-    @JSONField
-    private int noDataSeverity = Severity.Medium.value();
-
-    @JSONField
-    private boolean sendResolved;
-
-    @JSONField
-    private TemplateConfiguration templateConfiguration;
-
-    @JSONField
-    private ConditionConfiguration conditionConfiguration;
-
-    @JSONField
-    private List<Tag> annotations;
-
-    @JSONField
-    private List<Tag> labels;
-
-    @JSONField
-    private List<SeverityConfiguration> severityConfigurations;
-
-    @JSONField
-    private List<JoinConfiguration> joinConfigurations;
-
-    @JSONField
-    private GroupConfiguration groupConfiguration;
-
-    @JSONField
-    private PolicyConfiguration policyConfiguration;
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public int getThreshold() {
-        return threshold;
-    }
-
-    public void setThreshold(int threshold) {
-        this.threshold = threshold;
-    }
-
-    public boolean isNoDataFire() {
-        return noDataFire;
-    }
-
-    public void setNoDataFire(boolean noDataFire) {
-        this.noDataFire = noDataFire;
-    }
-
-    public int getNoDataSeverity() {
-        return noDataSeverity;
-    }
-
-    public void setNoDataSeverity(Severity noDataSeverity) {
-        this.noDataSeverity = noDataSeverity.value();
-    }
-
-    public boolean isSendResolved() {
-        return sendResolved;
-    }
-
-    public void setSendResolved(boolean sendResolved) {
-        this.sendResolved = sendResolved;
-    }
-
-    public TemplateConfiguration getTemplateConfiguration() {
-        return templateConfiguration;
-    }
-
-    public void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
-        this.templateConfiguration = templateConfiguration;
-    }
-
-    public ConditionConfiguration getConditionConfiguration() {
-        return conditionConfiguration;
-    }
-
-    public void setConditionConfiguration(ConditionConfiguration conditionConfiguration) {
-        this.conditionConfiguration = conditionConfiguration;
-    }
-
-    public List<Tag> getAnnotations() {
-        return annotations;
-    }
-
-    public void setAnnotations(List<Tag> annotations) {
-        this.annotations = annotations;
-    }
-
-    public List<Tag> getLabels() {
-        return labels;
-    }
-
-    public void setLabels(List<Tag> labels) {
-        this.labels = labels;
-    }
-
-    public List<SeverityConfiguration> getSeverityConfigurations() {
-        return severityConfigurations;
-    }
-
-    public void setSeverityConfigurations(List<SeverityConfiguration> severityConfigurations) {
-        this.severityConfigurations = severityConfigurations;
-    }
-
-    public List<JoinConfiguration> getJoinConfigurations() {
-        return joinConfigurations;
-    }
-
-    public void setJoinConfigurations(List<JoinConfiguration> joinConfigurations) {
-        this.joinConfigurations = joinConfigurations;
-    }
-
-    public GroupConfiguration getGroupConfiguration() {
-        return groupConfiguration;
-    }
-
-    public void setGroupConfiguration(GroupConfiguration groupConfiguration) {
-        this.groupConfiguration = groupConfiguration;
-    }
-
-    public PolicyConfiguration getPolicyConfiguration() {
-        return policyConfiguration;
-    }
-
-    public void setPolicyConfiguration(PolicyConfiguration policyConfiguration) {
-        this.policyConfiguration = policyConfiguration;
-    }
-
-    public enum Severity {
-        Report(2), Low(4), Medium(6), High(8), Critical(10);
-
-        private int value = 0;
-
-        private Severity(int value) {
-            this.value = value;
-        }
-
-        public static Severity valueOf(int value) {
-            switch (value) {
-                case 2:
-                    return Report;
-                case 4:
-                    return Low;
-                case 6:
-                    return Medium;
-                case 8:
-                    return High;
-                case 10:
-                    return Critical;
-                default:
-                    return null;
-            }
-        }
-
-        public int value() {
-            return this.value;
         }
     }
 
