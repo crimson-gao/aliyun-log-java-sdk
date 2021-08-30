@@ -84,21 +84,30 @@ public class AlertFunctionTest extends JobIntgTest {
         alert.setName(jobName);
         alert.setDisplayName("Alert-test-v2");
         AlertConfiguration configuration = new AlertConfiguration();
+        configuration.setDashboard("internal-alert-analysis");
 
         configuration.setVersion("2.0");
+        configuration.setType("default");
         Query query1 = new Query();
+        query1.setRegion("cn-heyuan");
+        query1.setProject(TEST_PROJECT);
+        query1.setStoreType(AlertConfiguration.StoreType.LOG.toString());
         query1.setStore("test-alert-access");
         query1.setStart("-86400s");
         query1.setEnd("now");
         query1.setTimeSpanType(TimeSpanType.RELATIVE);
-        query1.setQuery("* | select name, count(uid) as uv group by name");
+        query1.setQuery("* | select count(*) as cnt");
+
 
         Query query2 = new Query();
+        query2.setRegion("cn-heyuan");
+        query2.setProject(TEST_PROJECT);
         query2.setStart("-86400s");
         query2.setEnd("now");
         query2.setTimeSpanType(TimeSpanType.RELATIVE);
-        query2.setQuery("* | select name, min(latency) group by name");
+        query2.setQuery("* | select count(*) as cnt");
         query2.setStore("test-alert-latency");
+        query2.setStoreType(AlertConfiguration.StoreType.LOG.toString());
 
         List<Query> queries = new ArrayList<Query>();
         queries.add(query1);
@@ -108,18 +117,13 @@ public class AlertFunctionTest extends JobIntgTest {
         List<AlertConfiguration.JoinConfiguration> joinConfigs  = new ArrayList<AlertConfiguration.JoinConfiguration>();
         AlertConfiguration.JoinConfiguration joinConfig = new AlertConfiguration.JoinConfiguration();
         joinConfig.setType("left_join");
-        joinConfig.setCondition("$0.name == $1.name");
+        joinConfig.setCondition("$0.cnt == $1.cnt");
         joinConfigs.add(joinConfig);
         configuration.setJoinConfigurations(joinConfigs);
-
-        AlertConfiguration.ConditionConfiguration conditionConfig = new AlertConfiguration.ConditionConfiguration();
-        conditionConfig.setCondition("name == 'k8s'");
-        configuration.setConditionConfiguration(conditionConfig);
 
         AlertConfiguration.GroupConfiguration groupConfig = new AlertConfiguration.GroupConfiguration();
         groupConfig.setType("no_group");
         configuration.setGroupConfiguration(groupConfig);
-
 
         List<AlertConfiguration.Tag> annotations = new ArrayList<AlertConfiguration.Tag>();
         annotations.add(new AlertConfiguration.Tag(){{
@@ -128,15 +132,23 @@ public class AlertFunctionTest extends JobIntgTest {
         }});
         annotations.add(new AlertConfiguration.Tag(){{
             setKey("name");
-            setValue("this is ${name}");
+            setValue("this is name");
         }});
         configuration.setAnnotations(annotations);
+
+        List<AlertConfiguration.Tag> labels = new ArrayList<AlertConfiguration.Tag>();
+        labels.add(new AlertConfiguration.Tag(){{
+            setKey("env");
+            setValue("test");
+        }});
+        configuration.setLabels(labels);
+
 
         List<AlertConfiguration.SeverityConfiguration> severityConfigurations = new ArrayList<AlertConfiguration.SeverityConfiguration>();
         severityConfigurations.add(new AlertConfiguration.SeverityConfiguration(){{
             setSeverity(AlertConfiguration.Severity.High);
             setEvalCondition(new AlertConfiguration.ConditionConfiguration(){{
-                setCondition("latency > 90");
+                setCondition("cnt > 90");
                 setCountCondition("__count__ > 3");
             }});
         }});
@@ -146,10 +158,9 @@ public class AlertFunctionTest extends JobIntgTest {
         configuration.setSeverityConfigurations(severityConfigurations);
 
         AlertConfiguration.PolicyConfiguration policyConfiguration = new AlertConfiguration.PolicyConfiguration();
-        policyConfiguration.setActionPolicyId("alert_policy");
-        policyConfiguration.setAlertPolicyId("default-alert-policy");
-        policyConfiguration.setUseDefault(true);
-        policyConfiguration.setRepeatInterval("20m");
+        policyConfiguration.setActionPolicyId("my.test-test");
+        policyConfiguration.setAlertPolicyId("sls.builtin.dynamic");
+        policyConfiguration.setRepeatInterval("1m");
         configuration.setPolicyConfiguration(policyConfiguration);
 
         configuration.setNoDataFire(true);
