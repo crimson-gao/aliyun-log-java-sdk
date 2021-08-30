@@ -20,10 +20,6 @@ public class ResourceWebhookIntegration implements Serializable {
     @JSONField(name = "headers")
     private List<Header> headers;
 
-    public ResourceWebhookIntegration() {
-        headers = new ArrayList<Header>();
-    }
-
     public String getId() {
         return id;
     }

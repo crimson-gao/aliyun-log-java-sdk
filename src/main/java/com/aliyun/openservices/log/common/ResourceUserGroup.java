@@ -15,10 +15,6 @@ public class ResourceUserGroup implements Serializable {
     @JSONField(name = "members")
     private List<String> members;
 
-    public ResourceUserGroup() {
-        enabled = true;
-    }
-
     public String getGroupId() {
         return groupId;
     }

@@ -23,9 +23,6 @@ public class ResourceUser implements Serializable {
     @JSONField(name = "voice_enabled")
     private boolean voiceEnabled;
 
-    public ResourceUser() {
-    }
-
     public String getUserId() {
         return userId;
     }
