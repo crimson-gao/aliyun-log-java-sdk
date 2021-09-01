@@ -13,9 +13,9 @@ import com.aliyun.openservices.log.common.TagContent;
 
 /**
  * The request used to send data to sls server
- * 
+ *
  * @author sls_dev
- * 
+ *
  */
 public class PutLogsRequest extends Request {
 	private static final long serialVersionUID = 7226856831224917838L;
@@ -28,6 +28,8 @@ public class PutLogsRequest extends Request {
 	private CompressType compressType = CompressType.LZ4;
 	private String mContentType = Consts.CONST_PROTO_BUF;
 	private byte[] mLogGroupBytes = null;
+	private Integer hashRouteKeySeqId;
+
 	/**
 	 * @return the compressType
 	 */
@@ -41,7 +43,7 @@ public class PutLogsRequest extends Request {
 	public void SetCompressType(CompressType compressType) {
 		this.compressType = compressType;
 	}
-	
+
 	public String getContentType() {
 		return mContentType;
 	}
@@ -52,7 +54,7 @@ public class PutLogsRequest extends Request {
 
 	/**
 	 * Construct a put log request
-	 * 
+	 *
 	 * @param project
 	 *            project name
 	 * @param logStore
@@ -77,7 +79,7 @@ public class PutLogsRequest extends Request {
 	}
 	/**
 	 * Construct a put log request
-	 * 
+	 *
 	 * @param project
 	 *            project name
 	 * @param logStore
@@ -102,7 +104,7 @@ public class PutLogsRequest extends Request {
 
 	/**
 	 * Construct a put log request
-	 * 
+	 *
 	 * @param project
 	 *            project name
 	 * @param logStore
@@ -148,7 +150,7 @@ public class PutLogsRequest extends Request {
 
 	/**
 	 * Get log store
-	 * 
+	 *
 	 * @return log store
 	 */
 	public String GetLogStore() {
@@ -157,7 +159,7 @@ public class PutLogsRequest extends Request {
 
 	/**
 	 * Set log store
-	 * 
+	 *
 	 * @param logStore
 	 *            log store name
 	 */
@@ -167,7 +169,7 @@ public class PutLogsRequest extends Request {
 
 	/**
 	 * Get the topic
-	 * 
+	 *
 	 * @return the topic
 	 */
 	public String GetTopic() {
@@ -176,7 +178,7 @@ public class PutLogsRequest extends Request {
 
 	/**
 	 * Set topic value
-	 * 
+	 *
 	 * @param topic
 	 *            topic value
 	 */
@@ -186,7 +188,7 @@ public class PutLogsRequest extends Request {
 
 	/**
 	 * Get log source
-	 * 
+	 *
 	 * @return log source
 	 */
 	public String GetSource() {
@@ -195,7 +197,7 @@ public class PutLogsRequest extends Request {
 
 	/**
 	 * Set log source
-	 * 
+	 *
 	 * @param source
 	 *            log source
 	 */
@@ -205,7 +207,7 @@ public class PutLogsRequest extends Request {
 
 	/**
 	 * Get all the log data
-	 * 
+	 *
 	 * @return log data
 	 */
 	public ArrayList<LogItem> GetLogItems() {
@@ -230,7 +232,7 @@ public class PutLogsRequest extends Request {
 
 	/**
 	 * Set the log data , shallow copy is used to set the log data
-	 * 
+	 *
 	 * @param logItems
 	 *            log data
 	 */
@@ -239,13 +241,21 @@ public class PutLogsRequest extends Request {
 	}
 
 	public void SetTags(List<TagContent> tags) { mTags = new ArrayList<TagContent>(tags); }
-	
+
 	public void SetRouteKey(String hashKey)
 	{
-		SetParam(Consts.CONST_ROUTE_KEY,hashKey);
+		mHashKey = hashKey;
 	}
 	public String GetRouteKey()
 	{
 		return mHashKey;
 	}
+
+    public Integer getHashRouteKeySeqId() {
+        return hashRouteKeySeqId;
+    }
+
+    public void setHashRouteKeySeqId(Integer hashRouteKeySeqId) {
+        this.hashRouteKeySeqId = hashRouteKeySeqId;
+    }
 }
