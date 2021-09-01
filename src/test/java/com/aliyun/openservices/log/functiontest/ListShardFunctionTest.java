@@ -17,13 +17,13 @@ public class ListShardFunctionTest extends MetaAPIBaseFunctionTest {
 
     @Test
     public void testListShard() throws LogException {
-        String logstore1 = "logstore1";
+        String logstore1 = "logstore-listshards";
         try {
             client.ListShard(TEST_PROJECT, logstore1);
             fail();
         } catch (LogException ex) {
             assertEquals("LogStoreNotExist", ex.GetErrorCode());
-            assertEquals("logstore logstore1 does not exist", ex.GetErrorMessage());
+            assertEquals("logstore " + logstore1 + " does not exist", ex.GetErrorMessage());
         }
         LogStore logStore = new LogStore(logstore1, 1, 3);
         createOrUpdateLogStoreNoWait(TEST_PROJECT, logStore);

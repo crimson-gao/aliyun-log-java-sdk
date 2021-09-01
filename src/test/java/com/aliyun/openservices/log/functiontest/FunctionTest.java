@@ -143,7 +143,6 @@ public abstract class FunctionTest {
     }
 
     static void createOrUpdateLogStoreNoWait(String project, LogStore logStore) {
-        safeCreateProject(project, "");
         try {
             client.CreateLogStore(project, logStore);
             return;
