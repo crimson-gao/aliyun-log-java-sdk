@@ -5,7 +5,7 @@ import org.junit.Before;
 
 public class MetaAPIBaseFunctionTest extends FunctionTest {
 
-    protected static final String TEST_PROJECT = "sls-test-" + getNowTimestamp();
+    protected static final String TEST_PROJECT = makeProjectName();
 
     @Before
     public void setUp() {

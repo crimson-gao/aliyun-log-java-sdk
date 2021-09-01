@@ -15,14 +15,11 @@ import static org.junit.Assert.fail;
 
 public class ProjectFunctionTest extends FunctionTest {
 
-    // For testing environment, please make sure the endpoint
-    // project1.<endpoint> is accessible.
-    private static final String TEST_PROJECT = "sls-test-project-" + getNowTimestamp();
-
+    private static final String TEST_PROJECT = makeProjectName();
 
     @Test
     public void testUpdateProjectList() throws LogException {
-        String project = TEST_PROJECT + getNowTimestamp();
+        String project = TEST_PROJECT;
         client.CreateProject(project, "abc");
 
         GetProjectResponse response = client.GetProject(project);
@@ -37,7 +34,7 @@ public class ProjectFunctionTest extends FunctionTest {
         for (Project project1 : response1.getProjects()) {
             assertEquals(project1.getProjectDesc(), "124");
         }
-        client.DeleteProject(project);
+        safeDeleteProjectWithoutSleep(project);
     }
 
     private void verifyUpdate(final String description,
@@ -68,13 +65,14 @@ public class ProjectFunctionTest extends FunctionTest {
     @Test
     public void testCreateProject() throws Exception {
         String desc = randomString();
-        client.CreateProject(TEST_PROJECT, desc);
-        GetProjectResponse response = client.GetProject(TEST_PROJECT);
+        String project = makeProjectName();
+        client.CreateProject(project, desc);
+        GetProjectResponse response = client.GetProject(project);
         assertEquals(response.GetProjectDescription(), desc);
         assertEquals(response.GetProjectStatus(), "Normal");
-        client.DeleteProject(TEST_PROJECT);
+        safeDeleteProjectWithoutSleep(project);
         try {
-            client.GetProject(TEST_PROJECT);
+            client.GetProject(project);
             fail();
         } catch (LogException ex) {
             assertEquals("ProjectNotExist", ex.GetErrorCode());

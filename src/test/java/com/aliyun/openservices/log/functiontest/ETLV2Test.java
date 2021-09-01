@@ -44,7 +44,7 @@ public class ETLV2Test extends JobIntgTest {
     private static ETLV2 etlV2 = createETL();
 
     public ETLV2Test() {
-        super(1200 * 1000);
+        setTestTimeout(1200 * 1000);
     }
 
     @Before

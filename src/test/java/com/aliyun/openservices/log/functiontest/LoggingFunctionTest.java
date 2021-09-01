@@ -10,7 +10,6 @@ import com.aliyun.openservices.log.request.DeleteLoggingRequest;
 import com.aliyun.openservices.log.request.GetLoggingRequest;
 import com.aliyun.openservices.log.request.UpdateLoggingRequest;
 import com.aliyun.openservices.log.response.GetLoggingResponse;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class LoggingFunctionTest extends FunctionTest {
+public class LoggingFunctionTest extends MetaAPIBaseFunctionTest {
 
     private static final String[] TYPES_ALLOWED = new String[]{
             "operation_log",
@@ -34,19 +33,21 @@ public class LoggingFunctionTest extends FunctionTest {
             "logtail_status"
     };
 
-    private static String TEST_PROJECT;
     private static List<String> TEST_LOGSTORES;
 
     @Before
-    public void setUp() throws Exception {
-        TEST_PROJECT = "test-project-to-logging-" + getNowTimestamp();
-        client.CreateProject(TEST_PROJECT, "");
+    public void setUp() {
+        super.setUp();
         TEST_LOGSTORES = new ArrayList<String>();
-        for (String type : TYPES_ALLOWED) {
-            String logstoreName = "internal-" + type;
-            LogStore logStore = new LogStore(logstoreName, 1, 1);
-            client.CreateLogStore(TEST_PROJECT, logStore);
-            TEST_LOGSTORES.add(logstoreName);
+        try {
+            for (String type : TYPES_ALLOWED) {
+                String logstoreName = "internal-" + type;
+                LogStore logStore = new LogStore(logstoreName, 1, 1);
+                client.CreateLogStore(TEST_PROJECT, logStore);
+                TEST_LOGSTORES.add(logstoreName);
+            }
+        } catch (LogException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -259,7 +260,7 @@ public class LoggingFunctionTest extends FunctionTest {
         LoggingDetail detail = response.getLogging().getLoggingDetails().get(0);
         assertEquals(detail.getLogstore(), goodLogstore);
         assertEquals(detail.getType(), goodType);
-        client.DeleteProject(TEST_PROJECT);
+        safeDeleteProjectWithoutSleep(TEST_PROJECT);
         try {
             client.getLogging(new GetLoggingRequest(TEST_PROJECT));
             fail();
@@ -268,10 +269,5 @@ public class LoggingFunctionTest extends FunctionTest {
                 assertEquals(ex.GetErrorCode(), "LoggingNotExist");
             }
         }
-    }
-
-    @After
-    public void tearDown() {
-        safeDeleteProjectWithoutSleep(TEST_PROJECT);
     }
 }

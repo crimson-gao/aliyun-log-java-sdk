@@ -56,7 +56,6 @@ public class MetricAggRulesTest extends FunctionTest {
         metricStore.setTelemetryType("Metrics");
         client.CreateLogStore(TEST_PROJECT, metricStore1);
         client.createSubStore(TEST_PROJECT, TEST_METRIC_STORE1, subStore);
-
     }
 
     @After

@@ -7,29 +7,13 @@ import com.aliyun.openservices.log.common.JobSchedule;
 import com.aliyun.openservices.log.common.JobScheduleType;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.CreateDashboardRequest;
-import org.junit.After;
-import org.junit.Before;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-abstract class JobIntgTest extends FunctionTest {
+abstract class JobIntgTest extends MetaAPIBaseFunctionTest {
 
-    static final String TEST_PROJECT = "sls-test-" + getNowTimestamp();
     static final String TEST_DASHBOARD = "dashboardtest";
-
-    public JobIntgTest() {
-
-    }
-
-    public JobIntgTest(int timeOut){
-        super(timeOut);
-    }
-
-    @Before
-    public void setUp() {
-        safeCreateProject(TEST_PROJECT, "");
-    }
 
     protected void createDashboard() throws LogException {
         Dashboard dashboard = new Dashboard();
@@ -78,10 +62,5 @@ abstract class JobIntgTest extends FunctionTest {
         }
         schedule.setDelay(0);
         return schedule;
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        client.DeleteProject(TEST_PROJECT);
     }
 }

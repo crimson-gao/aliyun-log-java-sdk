@@ -22,8 +22,6 @@ import com.aliyun.openservices.log.request.GetJobRequest;
 import com.aliyun.openservices.log.request.ListJobsRequest;
 import com.aliyun.openservices.log.response.GetJobResponse;
 import com.aliyun.openservices.log.response.ListJobsResponse;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -32,14 +30,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class JobFunctionTest extends FunctionTest {
-
-    private static final String TEST_PROJECT = "project-test-" + getNowTimestamp();
-
-    @Before
-    public void setUp() {
-        safeCreateProject(TEST_PROJECT, "JobFunctionTest");
-    }
+public class JobFunctionTest extends MetaAPIBaseFunctionTest {
 
     private static String getJobName() {
         return "job-" + getNowTimestamp();
@@ -142,10 +133,5 @@ public class JobFunctionTest extends FunctionTest {
         listJobsResponse = client.listJobs(listReq);
         assertEquals(11, (int) listJobsResponse.getTotal());
         assertEquals(10, (int) listJobsResponse.getCount());
-    }
-
-    @After
-    public void tearDown() {
-        safeDeleteProject(TEST_PROJECT);
     }
 }

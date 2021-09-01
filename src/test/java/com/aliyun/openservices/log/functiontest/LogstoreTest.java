@@ -22,10 +22,6 @@ import static org.junit.Assert.fail;
 
 public class LogstoreTest extends FunctionTest {
 
-
-    private static final String PROJECT_PREFIX = "test-java-sdk-logstore-";
-
-
     private final static String INDEX_STRING = "{\"log_reduce\":false,\"line\":{\"caseSensitive\":false,\"chn\":false,\"token\":" +
             "[\",\",\" \",\"'\",\"\\\"\",\";\",\"=\",\"(\",\")\",\"[\",\"]\",\"{\",\"}\",\"?\",\"@\",\"&\",\"<\",\">\",\"/\",\":\",\"\\n\",\"\\t\",\"\\r\"]}," +
             "\"keys\":{\"key1\":{\"doc_value\":true,\"caseSensitive\":false,\"chn\":false,\"alias\":\"\",\"type\":\"text\"," +
@@ -45,7 +41,7 @@ public class LogstoreTest extends FunctionTest {
     private static void deleteAll() throws Exception {
         LogException error = null;
         while (true) {
-            ListProjectResponse response = client.ListProject(PROJECT_PREFIX, 0, 100);
+            ListProjectResponse response = client.ListProject(PROJECT_NAME_PREFIX, 0, 100);
             for (Project project : response.getProjects()) {
                 try {
                     deleteProject(project.getProjectName());
@@ -69,7 +65,7 @@ public class LogstoreTest extends FunctionTest {
             for (String logstore : response.GetLogStores()) {
                 client.DeleteLogStore(project, logstore);
             }
-            client.DeleteProject(project);
+            safeDeleteProjectWithoutSleep(project);
         } catch (LogException ex) {
             if (!ex.GetErrorCode().equals("ProjectNotExist")) {
                 throw ex;
@@ -79,7 +75,7 @@ public class LogstoreTest extends FunctionTest {
 
     @Test
     public void testGetIndex() throws Exception {
-        String project = PROJECT_PREFIX + randomInt();
+        String project = makeProjectName();
         Index index = new Index();
         index.FromJsonString(INDEX_STRING);
         client.CreateProject(project, "");
@@ -158,7 +154,7 @@ public class LogstoreTest extends FunctionTest {
     }
 
     private void crudLogstore() throws Exception {
-        String project = PROJECT_PREFIX + randomInt();
+        String project = makeProjectName();
         client.CreateProject(project, "");
         int numberOfLogstore = randomInt(100);
         for (int i = 0; i < numberOfLogstore; i++) {
@@ -215,7 +211,7 @@ public class LogstoreTest extends FunctionTest {
 
     @Test
     public void testCrud() throws Exception {
-        String project = PROJECT_PREFIX + randomInt();
+        String project = makeProjectName();
         client.CreateProject(project, "");
         int numberOfLogstore = randomBetween(1, 100);
 

@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 public abstract class FunctionTest {
 
     static final Random RANDOM = new Random();
+    static final String PROJECT_NAME_PREFIX = "sls-sdk-testp-";
     static final Credentials credentials = Credentials.load();
     static Client client = new Client(
             credentials.getEndpoint(),
@@ -29,14 +30,19 @@ public abstract class FunctionTest {
     public Timeout testTimeout = new Timeout(300000);
 
     public FunctionTest() {
-
     }
 
     public FunctionTest(int time) {
         this.testTimeout = new Timeout(time);
     }
 
+    public void setTestTimeout(int testTimeout) {
+        this.testTimeout = new Timeout(testTimeout);
+    }
 
+    static String makeProjectName() {
+        return PROJECT_NAME_PREFIX + randomBetween(0, 10000) + "-" + getNowTimestamp();
+    }
 
     static int getNowTimestamp() {
         return (int) (new Date().getTime() / 1000);
@@ -86,11 +92,13 @@ public abstract class FunctionTest {
     }
 
     static void safeDeleteProjectWithoutSleep(String project) {
-        try {
-            client.DeleteProject(project);
-        } catch (LogException ex) {
-            if (!ex.GetErrorCode().equals("ProjectNotExist")) {
-                fail("Delete project failed: " + ex.GetErrorMessage());
+        if (project != null && project.startsWith(PROJECT_NAME_PREFIX)) {
+            try {
+                client.DeleteProject(project);
+            } catch (LogException ex) {
+                if (!ex.GetErrorCode().equals("ProjectNotExist")) {
+                    fail("Delete project failed: " + ex.GetErrorMessage());
+                }
             }
         }
     }

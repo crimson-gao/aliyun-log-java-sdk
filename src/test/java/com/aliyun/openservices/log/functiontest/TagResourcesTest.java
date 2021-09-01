@@ -54,6 +54,12 @@ public class TagResourcesTest extends MetaAPIBaseFunctionTest {
         //created correctly
         client.tagResources(createTagSources("project", TEST_PROJECT, 3, false));
     }
+//
+//    @Test
+//    public void testDispatchTagRequest() throws LogException {
+//        client.tagResources(createTagSources("project", "project-test-zone", 3, false));
+//        client.untagResources(createTagSources("project", "project-test-zone", 2, true));
+//    }
 
     @Test
     public void testUnTagSources() throws LogException {

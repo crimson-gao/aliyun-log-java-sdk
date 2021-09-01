@@ -2,25 +2,12 @@ package com.aliyun.openservices.log.functiontest;
 
 import com.aliyun.openservices.log.common.InternalLogStore;
 import com.aliyun.openservices.log.exception.LogException;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
-public class LogStoreInternalTest extends FunctionTest {
-    private static final String TEST_PROJECT = "test-logstoreinternal-project-" + getNowTimestamp();
+public class LogStoreInternalTest extends MetaAPIBaseFunctionTest {
     private static final String TEST_LOGSTORE = "test-store-" + getNowTimestamp();
-
-    @Before
-    public void setUp() {
-        safeCreateProject(TEST_PROJECT, "");
-    }
-
-    @After
-    public void afterTest() {
-        safeDeleteProject(TEST_PROJECT);
-    }
 
     @Test
     public void testCreateAndUpdate() {
