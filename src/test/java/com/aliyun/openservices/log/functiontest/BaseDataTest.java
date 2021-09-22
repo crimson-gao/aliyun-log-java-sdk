@@ -28,7 +28,7 @@ public abstract class BaseDataTest extends FunctionTest {
     public void ensureDataReady() {
         timestamp = getNowTimestamp();
         PACK_ID_PREFIX = "ABCDEF" + timestamp + "-";
-        project = "test-project-" + timestamp;
+        project = makeProjectName();
         logStore = new LogStore();
         logStore.SetTtl(1);
         logStore.SetShardCount(SHARD_COUNT);
