@@ -458,6 +458,7 @@ public class Client implements LogService {
 		Map<String, String> urlParameter = request.GetAllParams();
 		String project = request.GetProject();
 		Map<String, String> headParameter = GetCommonHeadPara(project);
+		CodingUtils.validateLogstore(request.getLogStore());
 		String resourceUri = "/logstores/" + request.getLogStore() + Consts.CONST_GETLOGTAILPROFILE_URI;
 		ResponseMessage response = SendData(project, HttpMethod.GET,
 				resourceUri, urlParameter, headParameter);
@@ -484,6 +485,7 @@ public class Client implements LogService {
 		Map<String, String> urlParameter = request.GetAllParams();
 		String project = request.GetProject();
 		Map<String, String> headParameter = GetCommonHeadPara(project);
+		CodingUtils.validateLogstore(request.GetLogStore());
 		String resourceUri = "/logstores/" + request.GetLogStore() + "/index";
 		ResponseMessage response = SendData(project, HttpMethod.GET,
 				resourceUri, urlParameter, headParameter);
@@ -880,6 +882,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		String logStore = request.GetLogStore();
 		Map<String, String> headParameter = GetCommonHeadPara(project);
+		CodingUtils.validateLogstore(logStore);
 		String resourceUri = "/logstores/" + logStore + "/index";
 		ResponseMessage response = SendData(project, HttpMethod.GET,
 				resourceUri, urlParameter, headParameter);
@@ -897,6 +900,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		String logStore = request.getLogstore();
 		Map<String, String> headParameter = GetCommonHeadPara(project);
+		CodingUtils.validateLogstore(logStore);
 		String resourceUri = "/logstores/" + logStore;
 		ResponseMessage response = SendData(project, HttpMethod.GET,
 				resourceUri, urlParameter, headParameter);
@@ -971,8 +975,8 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
 		String shardId = String.valueOf(request.GetShardId());
+		CodingUtils.validateLogstore(logStore);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shards/" + shardId;
 		headParameter.put(Consts.CONST_CONTENT_LENGTH, String.valueOf(0));
@@ -997,8 +1001,8 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
 		String shardId = String.valueOf(request.GetShardId());
+		CodingUtils.validateLogstore(logStore);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shards/" + shardId;
 		headParameter.put(Consts.CONST_CONTENT_LENGTH, String.valueOf(0));
@@ -1044,9 +1048,9 @@ public class Client implements LogService {
 
 	public ListShardResponse SplitShard(String project, String logStore,
 			int shardId, String midHash) throws LogException {
-		Args.notNullOrEmpty(project, "project");
-		Args.notNullOrEmpty(logStore, "logStore");
-		Args.notNullOrEmpty(logStore, "shardId");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.assertStringNotNullOrEmpty(logStore, "shardId");
 		return SplitShard(new SplitShardRequest(project, logStore, shardId, midHash));
 	}
 
@@ -1056,7 +1060,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		int shardId = request.GetShardId();
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shards/" + shardId;
@@ -1072,9 +1076,9 @@ public class Client implements LogService {
 
 	public ListShardResponse MergeShards(String project, String logStore,
 			int shardId) throws LogException {
-		Args.notNullOrEmpty(project, "project");
-		Args.notNullOrEmpty(logStore, "logStore");
-		Args.notNullOrEmpty(logStore, "shardId");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.assertStringNotNullOrEmpty(logStore, "shardId");
 		return MergeShards(new MergeShardsRequest(project, logStore, shardId));
 	}
 
@@ -1084,7 +1088,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		int shardId = request.GetShardId();
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shards/" + shardId;
@@ -1123,7 +1127,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shards";
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -1168,9 +1172,9 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		String shardId = String.valueOf(request.GetShardId());
-		CodingUtils.assertStringNotNullOrEmpty(shardId, "shardId");
+		CodingUtils.validateShardId(shardId);
 
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shards/" + shardId;
@@ -1212,9 +1216,10 @@ public class Client implements LogService {
 
     @Override
     public PullLogsResponse pullLogs(PullLogsRequest request) throws LogException {
-        Args.notNull(request, "request");
+		CodingUtils.assertParameterNotNull(request, "request");
         String project = request.GetProject();
         String logStore = request.getLogStore();
+		CodingUtils.validateLogstore(logStore);
 
         Map<String, String> headers = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shards/" + request.getShardId();
@@ -1287,7 +1292,7 @@ public class Client implements LogService {
 		Config config = request.GetConfig();
 		CodingUtils.assertParameterNotNull(config, "config");
 		String configName = config.GetConfigName();
-		CodingUtils.assertStringNotNullOrEmpty(configName, "configName");
+		CodingUtils.validateConfig(configName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		byte[] body = encodeToUtf8(config.ToRequestString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
@@ -1321,7 +1326,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String configName = request.GetConfigName();
-		CodingUtils.assertStringNotNullOrEmpty(configName, "configName");
+		CodingUtils.validateConfig(configName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/configs/" + configName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -1345,7 +1350,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String configName = request.GetConfigName();
-		CodingUtils.assertStringNotNullOrEmpty(configName, "configName");
+		CodingUtils.validateConfig(configName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/configs/" + configName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -1471,7 +1476,7 @@ public class Client implements LogService {
 		MachineGroup group = request.GetMachineGroup();
 		CodingUtils.assertParameterNotNull(group, "group");
 		String groupName = group.GetGroupName();
-		CodingUtils.assertStringNotNullOrEmpty(groupName, "groupName");
+		CodingUtils.validateMachineGroup(groupName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		byte[] body = encodeToUtf8(group.ToRequestString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
@@ -1505,7 +1510,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String groupName = request.GetGroupName();
-		CodingUtils.assertStringNotNullOrEmpty(groupName, "groupName");
+		CodingUtils.validateMachineGroup(groupName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/machinegroups/" + groupName + "/configs";
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -1558,7 +1563,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String groupName = request.GetGroupName();
-		CodingUtils.assertStringNotNullOrEmpty(groupName, "groupName");
+		CodingUtils.validateMachineGroup(groupName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/machinegroups/" + groupName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -1575,7 +1580,7 @@ public class Client implements LogService {
 	public ListMachinesResponse ListMachines(String project,
 			String machineGroup, int offset, int size) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(machineGroup, "groupName");
+		CodingUtils.validateMachineGroup(machineGroup);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/machinegroups/" + machineGroup + "/machines";
 		headParameter.put(Consts.CONST_CONTENT_LENGTH, String.valueOf(0));
@@ -1629,7 +1634,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String groupName = request.GetGroupName();
-		CodingUtils.assertStringNotNullOrEmpty(groupName, "groupName");
+		CodingUtils.validateMachineGroup(groupName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/machinegroups/" + groupName + "/approve";
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -1652,7 +1657,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String groupName = request.GetGroupName();
-		CodingUtils.assertStringNotNullOrEmpty(groupName, "groupName");
+		CodingUtils.validateMachineGroup(groupName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/machinegroups/" + groupName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -1736,9 +1741,9 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String groupName = request.GetGroupName();
-		CodingUtils.assertStringNotNullOrEmpty(groupName, "groupName");
+		CodingUtils.validateMachineGroup(groupName);
 		String configName = request.GetConfigName();
-		CodingUtils.assertStringNotNullOrEmpty(configName, "configName");
+		CodingUtils.validateConfig(configName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/machinegroups/" + groupName + "/configs/" + configName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -1764,9 +1769,9 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String groupName = request.GetGroupName();
-		CodingUtils.assertStringNotNullOrEmpty(groupName, "groupName");
+		CodingUtils.validateMachineGroup(groupName);
 		String configName = request.GetConfigName();
-		CodingUtils.assertStringNotNullOrEmpty(configName, "configName");
+		CodingUtils.validateConfig(configName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/machinegroups/" + groupName + "/configs/" + configName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -2256,7 +2261,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStoreName = request.GetLogStoreName();
-		CodingUtils.assertStringNotNullOrEmpty(logStoreName, "logStoreName");
+		CodingUtils.validateLogstore(logStoreName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStoreName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -2279,7 +2284,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String linkStoreName = request.getLinkStoreName();
-		CodingUtils.assertStringNotNullOrEmpty(linkStoreName, "linkStoreName");
+		CodingUtils.validateLogstore(linkStoreName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		String resourceUri = "/logstores/" + linkStoreName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -2325,7 +2330,7 @@ public class Client implements LogService {
 	@Override
 	public DeleteProjectConsumerGroupResponse DeleteProjectConsumerGroup(String project, String consumerGroup) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		String resourceUri = "/consumergroups/" + consumerGroup;
 		headParameter.put(Consts.CONST_CONTENT_TYPE, String.valueOf(0));
@@ -2361,7 +2366,7 @@ public class Client implements LogService {
 																		 boolean inOrder,
 																		 int timeoutInSec) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		final JSONObject asJson = new JSONObject();
 		asJson.put("order", inOrder);
@@ -2379,7 +2384,7 @@ public class Client implements LogService {
 	@Override
 	public ProjectConsumerGroupUpdateCheckPointResponse UpdateProjectConsumerGroupCheckPoint(String project, String consumerGroup, String consumer, String logStore, int shard, String checkpoint) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		CodingUtils.assertStringNotNullOrEmpty(consumer, "consumer");
 		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
 		CodingUtils.assertStringNotNullOrEmpty(checkpoint, "checkpoint");
@@ -2389,7 +2394,7 @@ public class Client implements LogService {
 	@Override
 	public ProjectConsumerGroupUpdateCheckPointResponse UpdateProjectConsumerGroupCheckPoint(String project, String consumerGroup, String logStore, int shard, String checkpoint) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
 		CodingUtils.assertStringNotNullOrEmpty(checkpoint, "checkpoint");
 		return UpdateProjectConsumerGroupCheckPoint(project, consumerGroup, "", logStore, shard, checkpoint, true);
@@ -2430,7 +2435,7 @@ public class Client implements LogService {
 	@Override
 	public ProjectConsumerGroupCheckPointResponse GetProjectConsumerGroupCheckPoint(String project, String consumerGroup, String logStore) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
 		return GetProjectConsumerGroupCheckPoint(project, consumerGroup, logStore, -1);
 	}
@@ -2438,14 +2443,14 @@ public class Client implements LogService {
 	@Override
 	public ProjectConsumerGroupCheckPointResponse GetProjectConsumerGroupCheckPoint(String project, String consumerGroup) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		return GetProjectConsumerGroupCheckPoint(project, consumerGroup, "", -1);
 	}
 
 	@Override
 	public ProjectConsumerGroupHeartBeatResponse ProjectConsumerGroupHeartBeat(String project, String consumerGroup, String consumer, Map<String, ArrayList<Integer>> logStoreShards) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		CodingUtils.assertStringNotNullOrEmpty(consumer, "consumer");
 		String resourceUri = "/consumergroups/" + consumerGroup;
 		ProjectConsumerGroupHeartBeatRequest request = new ProjectConsumerGroupHeartBeatRequest(
@@ -2469,7 +2474,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStoreName = request.GetLogStoreName();
-		CodingUtils.assertStringNotNullOrEmpty(logStoreName, "logStoreName");
+		CodingUtils.validateLogstore(logStoreName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStoreName + "/storage";
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -2496,7 +2501,7 @@ public class Client implements LogService {
 		LogStore logStore = request.GetLogStore();
 		CodingUtils.assertParameterNotNull(logStore, "logStore");
 		String logStoreName = logStore.GetLogStoreName();
-		CodingUtils.assertStringNotNullOrEmpty(logStoreName, "logStoreName");
+		CodingUtils.validateLogstore(logStoreName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		byte[] body = encodeToUtf8(logStore.ToRequestString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
@@ -2511,8 +2516,8 @@ public class Client implements LogService {
 	@Override
 	public GetLogStoreResponse GetLogStore(String project, String logStoreName)
 			throws LogException {
-		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStoreName, "logStoreName");
+		CodingUtils.validateProject(project);
+		CodingUtils.validateLogstore(logStoreName);
 		return GetLogStore(new GetLogStoreRequest(project, logStoreName));
 	}
 
@@ -2535,7 +2540,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStoreName = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStoreName, "logStoreName");
+		CodingUtils.validateLogstore(logStoreName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStoreName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -2561,6 +2566,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		Map<String, String> urlParameter = request.GetAllParams();
+		CodingUtils.validateLogstore(request.getLogstoreName());
 		String resourceUri = "/logstores/" + request.getLogstoreName() + "/substores";
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		ResponseMessage response = SendData(project, HttpMethod.GET,
@@ -2590,6 +2596,7 @@ public class Client implements LogService {
 		String subStoreName = request.getSubStoreName();
 		CodingUtils.assertStringNotNullOrEmpty(project, "subStoreName");
 		Map<String, String> urlParameter = request.GetAllParams();
+		CodingUtils.validateLogstore(request.getLogstoreName());
 		String resourceUri = "/logstores/" + request.getLogstoreName() + "/substores/" + subStoreName;
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		ResponseMessage response = SendData(project, HttpMethod.GET,
@@ -2618,7 +2625,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStoreName = request.getLogStoreName();
-		CodingUtils.assertParameterNotNull(logStoreName, "logStoreName");
+		CodingUtils.validateLogstore(logStoreName);
 		SubStore subStore = request.getSubStore();
 		CodingUtils.assertParameterNotNull(subStore, "subStore");
 		if (!subStore.isValid()) {
@@ -2649,7 +2656,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStoreName = request.getLogStoreName();
-		CodingUtils.assertParameterNotNull(logStoreName, "logStoreName");
+		CodingUtils.validateLogstore(logStoreName);
 		SubStore subStore = request.getSubStore();
 		CodingUtils.assertParameterNotNull(subStore, "subStore");
 		if (!subStore.isValid()) {
@@ -2682,7 +2689,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStoreName = request.getLogStoreName();
-		CodingUtils.assertStringNotNullOrEmpty(logStoreName, "logStoreName");
+		CodingUtils.validateLogstore(logStoreName);
 		String subStoreName = request.getSubStoreName();
 		CodingUtils.assertStringNotNullOrEmpty(subStoreName, "subStoreName");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
@@ -2706,7 +2713,7 @@ public class Client implements LogService {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		Map<String, String> urlParameter = request.GetAllParams();
 		String logstoreName = request.getLogstoreName();
-		CodingUtils.assertStringNotNullOrEmpty(logstoreName, "logstoreName");
+		CodingUtils.validateLogstore(logstoreName);
 		String resourceUri = "/logstores/" + logstoreName + "/substores/storage/ttl";
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		ResponseMessage response = SendData(project, HttpMethod.GET,
@@ -2732,7 +2739,7 @@ public class Client implements LogService {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		Map<String, String> urlParameter = request.GetAllParams();
 		String logstoreName = request.getLogstoreName();
-		CodingUtils.assertStringNotNullOrEmpty(logstoreName, "logstoreName");
+		CodingUtils.validateLogstore(logstoreName);
 		String resourceUri = "/logstores/" + logstoreName + "/substores/storage/ttl";
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		ResponseMessage response = SendData(project, HttpMethod.PUT,
@@ -2751,11 +2758,11 @@ public class Client implements LogService {
 
 	public CreateExternalStoreResponse createExternalStore(CreateExternalStoreRequest request) throws LogException {
 		String project = request.GetProject();
-		Args.notNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		ExternalStore externalStore = request.getExternalStore();
-		Args.notNull(externalStore, "ExternalStore");
+		CodingUtils.assertParameterNotNull(externalStore, "ExternalStore");
 		String externalStoreName = externalStore.getExternalStoreName();
-		Args.notNullOrEmpty(externalStoreName, "externalStoreName");
+		CodingUtils.assertStringNotNullOrEmpty(externalStoreName, "externalStoreName");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		byte[] body = encodeToUtf8(externalStore.toJson().toJSONString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
@@ -2769,9 +2776,9 @@ public class Client implements LogService {
 
 	public DeleteExternalStoreResponse deleteExternalStore(DeleteExternalStoreRequest request) throws LogException {
 		String project = request.GetProject();
-		Args.notNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String externalStoreName = request.getExternalStoreName();
-		Args.notNullOrEmpty(externalStoreName, "externalStoreName");
+		CodingUtils.assertStringNotNullOrEmpty(externalStoreName, "externalStoreName");
 		Map<String, String> urlParameter = request.GetAllParams();
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		String resourceUri = "/externalstores/" + externalStoreName;
@@ -2782,11 +2789,11 @@ public class Client implements LogService {
 
 	public UpdateExternalStoreResponse updateExternalStore(UpdateExternalStoreRequest request) throws LogException {
 		String project = request.GetProject();
-		Args.notNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		ExternalStore externalStore = request.getExternalStore();
-		Args.notNull(externalStore, "ExternalStore");
+		CodingUtils.assertParameterNotNull(externalStore, "ExternalStore");
 		String externalStoreName = externalStore.getExternalStoreName();
-		Args.notNull(externalStoreName, "externalStoreName");
+		CodingUtils.assertParameterNotNull(externalStoreName, "externalStoreName");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		byte[] body = encodeToUtf8(externalStore.toJson().toJSONString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
@@ -2800,9 +2807,9 @@ public class Client implements LogService {
 
 	public GetExternalStoreResponse getExternalStore(GetExternalStoreRequest request) throws LogException {
 		String project = request.GetProject();
-		Args.notNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String externalStoreName = request.getExternalStoreName();
-		Args.notNullOrEmpty(externalStoreName, "externalStoreName");
+		CodingUtils.assertStringNotNullOrEmpty(externalStoreName, "externalStoreName");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		String resourceUri = "/externalstores/" + externalStoreName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -2816,9 +2823,9 @@ public class Client implements LogService {
 	}
 
 	public ListExternalStroesResponse listExternalStores(ListExternalStoresRequest request) throws LogException {
-		Args.notNull(request, "request");
+		CodingUtils.assertParameterNotNull(request, "request");
 		String project = request.GetProject();
-		Args.notNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		Map<String, String> urlParameter = request.GetAllParams();
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		String resourceUri = "/externalstores";
@@ -2837,7 +2844,7 @@ public class Client implements LogService {
 	public CreateIndexResponse CreateIndex(String project, String logStore,
 										   String indexJsonString) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		CodingUtils.assertParameterNotNull(indexJsonString, "indexJsonString");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		byte[] body = encodeToUtf8(indexJsonString);
@@ -2866,7 +2873,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		Index index = request.GetIndex();
 		CodingUtils.assertParameterNotNull(index, "index");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
@@ -2884,7 +2891,7 @@ public class Client implements LogService {
 	public UpdateIndexResponse UpdateIndex(String project, String logStore,
 										   String indexJsonString) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		CodingUtils.assertParameterNotNull(indexJsonString, "indexJsonString");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		byte[] body = encodeToUtf8(indexJsonString);
@@ -2913,7 +2920,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		Index index = request.GetIndex();
 		CodingUtils.assertParameterNotNull(index, "index");
 
@@ -2943,7 +2950,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/index";
@@ -2988,7 +2995,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/index";
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -3008,7 +3015,7 @@ public class Client implements LogService {
 	    String project = request.GetProject();
 	    CodingUtils.assertStringNotNullOrEmpty(project, "project");
 	    String logStore = request.GetLogStore();
-	    CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 
 	    Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/index";
@@ -3023,7 +3030,7 @@ public class Client implements LogService {
 	public CreateShipperResponse CreateShipper(String project, String logStore,
 			String shipperName, ShipperConfig shipConfig) throws LogException {
 		CodingUtils.assertParameterNotNull(project, "project");
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		CodingUtils.assertParameterNotNull(shipperName, "shipperName");
 		CodingUtils.assertParameterNotNull(shipConfig, "shipConfig");
 
@@ -3046,8 +3053,8 @@ public class Client implements LogService {
 	public UpdateShipperResponse UpdateShipper(String project, String logStore,
 			String shipperName, ShipperConfig shipConfig) throws LogException {
 		CodingUtils.assertParameterNotNull(project, "project");
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
-		CodingUtils.assertParameterNotNull(shipperName, "shipperName");
+		CodingUtils.validateLogstore(logStore);
+		CodingUtils.validateShipper(shipperName);
 		CodingUtils.assertParameterNotNull(shipConfig, "shipConfig");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shipper/" + shipperName;
@@ -3069,8 +3076,8 @@ public class Client implements LogService {
 	public DeleteShipperResponse DeleteShipper(String project, String logStore,
 			String shipperName) throws LogException {
 		CodingUtils.assertParameterNotNull(project, "project");
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
-		CodingUtils.assertParameterNotNull(shipperName, "shipperName");
+		CodingUtils.validateLogstore(logStore);
+		CodingUtils.validateShipper(shipperName);
 
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shipper/" + shipperName;
@@ -3085,8 +3092,8 @@ public class Client implements LogService {
 	public GetShipperResponse GetShipperConfig(String project, String logStore,
 			String shipperName) throws LogException {
 		CodingUtils.assertParameterNotNull(project, "project");
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
-		CodingUtils.assertParameterNotNull(shipperName, "shipperName");
+		CodingUtils.validateLogstore(logStore);
+		CodingUtils.validateShipper(shipperName);
 
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shipper/" + shipperName;
@@ -3118,7 +3125,7 @@ public class Client implements LogService {
 	public ListShipperResponse ListShipper(String project, String logStore)
 			throws LogException {
 		CodingUtils.assertParameterNotNull(project, "project");
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/shipper";
 		Map<String, String> urlParameter = new HashMap<String, String>();
@@ -3136,8 +3143,8 @@ public class Client implements LogService {
 			String logStore, String shipperName, int startTime, int endTime,
 			String statusType, int offset, int size) throws LogException {
 		CodingUtils.assertParameterNotNull(project, "project");
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
-		CodingUtils.assertParameterNotNull(shipperName, "shipperName");
+		CodingUtils.validateLogstore(logStore);
+		CodingUtils.validateShipper(shipperName);
 		CodingUtils.assertParameterNotNull(statusType, "statusType");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 
@@ -3164,8 +3171,8 @@ public class Client implements LogService {
 			String logStore, String shipperName, List<String> taskList)
 			throws LogException {
 		CodingUtils.assertParameterNotNull(project, "project");
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
-		CodingUtils.assertParameterNotNull(shipperName, "shipperName");
+		CodingUtils.validateLogstore(logStore);
+		CodingUtils.validateShipper(shipperName);
 		CodingUtils.assertParameterNotNull(taskList, "taskList");
 
 		Map<String, String> headParameter = GetCommonHeadPara(project);
@@ -3225,6 +3232,7 @@ public class Client implements LogService {
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		byte[] body = encodeToUtf8(consumerGroup.ToRequestString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		CodingUtils.validateLogstore(request.GetLogStore());
 		String resourceUri = "/logstores/" + request.GetLogStore() + "/consumergroups";
 		Map<String, String> urlParameter = new HashMap<String, String>();
 		ResponseMessage response = SendData(project, HttpMethod.POST,
@@ -3237,7 +3245,7 @@ public class Client implements LogService {
 			String logStore, String consumerGroup, Boolean inOrder,
 			Integer timeoutInSec) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logstore");
+		CodingUtils.validateLogstore(logStore);
 		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		final JSONObject asJson = new JSONObject();
@@ -3282,8 +3290,8 @@ public class Client implements LogService {
 	public DeleteConsumerGroupResponse DeleteConsumerGroup(String project,
 			String logStore, String consumerGroup) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertParameterNotNull(logStore, "logStore");
-		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.validateLogstore(logStore);
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
         String resourceUri = "/logstores/" + logStore + "/consumergroups/" + consumerGroup;
 		headParameter.put(Consts.CONST_CONTENT_LENGTH, String.valueOf(0));
@@ -3298,7 +3306,7 @@ public class Client implements LogService {
 	public ListConsumerGroupResponse ListConsumerGroup(String project,
 			String logStore) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		String resourceUri = "/logstores/" + logStore + "/consumergroups";
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		Map<String, String> urlParameter = new HashMap<String, String>();
@@ -3339,7 +3347,7 @@ public class Client implements LogService {
 			String project, String logStore, String consumerGroup,
 			String consumer, int shard, String checkpoint) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
 		CodingUtils.assertStringNotNullOrEmpty(consumer, "consumer");
 		CodingUtils.assertStringNotNullOrEmpty(checkpoint, "checkpoint");
@@ -3351,7 +3359,7 @@ public class Client implements LogService {
 			String project, String logStore, String consumerGroup, int shard,
 			String checkpoint) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.validateLogstore(logStore);
 		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
 		CodingUtils.assertStringNotNullOrEmpty(checkpoint, "checkpoint");
 		return UpdateCheckPoint(project, logStore, consumerGroup, "", shard,
@@ -3382,8 +3390,8 @@ public class Client implements LogService {
 													String logStore, String consumerGroup, String consumer,
 													List<Integer> shards) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
-		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.validateLogstore(logStore);
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		CodingUtils.assertStringNotNullOrEmpty(consumer, "consumer");
 		String resourceUri = "/logstores/" + logStore + "/consumergroups/"
 				+ consumerGroup;
@@ -3426,9 +3434,9 @@ public class Client implements LogService {
 											   String consumerGroup,
 											   int shard)
 			throws LogException {
-		Args.notNullOrEmpty(project, "project");
-		Args.notNullOrEmpty(logstore, "logstore");
-		Args.notNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.validateLogstore(logstore);
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		Args.check(shard >= 0, "Shard must be >= 0");
 		ConsumerGroupGetCheckPointRequest request = new ConsumerGroupGetCheckPointRequest(
 				project, logstore, consumerGroup, shard);
@@ -3453,8 +3461,8 @@ public class Client implements LogService {
 			String logStore, String consumerGroup, int shard)
 			throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
-		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
-		CodingUtils.assertStringNotNullOrEmpty(consumerGroup, "consumerGroup");
+		CodingUtils.validateLogstore(logStore);
+		CodingUtils.validateConsumerGroup(consumerGroup);
 		ConsumerGroupGetCheckPointRequest request = new ConsumerGroupGetCheckPointRequest(
 				project, logStore, consumerGroup, shard);
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -3491,7 +3499,7 @@ public class Client implements LogService {
 
 	@Override
 	public GetProjectResponse GetProject(String project) throws LogException {
-		Args.notNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		String resourceUri = "/";
 		Map<String, String> urlParameter = new HashMap<String, String>();
@@ -3507,7 +3515,7 @@ public class Client implements LogService {
 
 	@Override
 	public DeleteProjectResponse DeleteProject(String project) throws LogException {
-		Args.notNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String resourceUri = "/";
 		Map<String, String> urlParameter = new HashMap<String, String>();
 		Map<String, String> headParameter = GetCommonHeadPara(project);
@@ -3519,7 +3527,7 @@ public class Client implements LogService {
 
     @Override
     public UpdateProjectResponse updateProject(UpdateProjectRequest request) throws LogException {
-        Args.notNull(request, "request");
+		CodingUtils.assertParameterNotNull(request, "request");
         final String resourceUri = "/";
         final String project = request.GetProject();
         Map<String, String> headers = GetCommonHeadPara(project);
@@ -3646,7 +3654,7 @@ public class Client implements LogService {
 	}
 
 	// saved search api
-	private void checkSavedSearchResource(SavedSearch savedSearch) {
+	private void checkSavedSearchResource(SavedSearch savedSearch) throws LogException {
 		CodingUtils.assertStringNotNullOrEmpty(savedSearch.getSavedSearchName(), "savedsearchName");
 		CodingUtils.assertStringNotNullOrEmpty(savedSearch.getLogstore(), "logstore");
 	}
@@ -3656,6 +3664,7 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.GetProject(), "projectName");
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		CodingUtils.validateDashboardName(request.getDashboardName());
 		String resourceUri = "/dashboards/" + request.getDashboardName() + "/charts";
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
@@ -3668,6 +3677,7 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.GetProject(), "projectName");
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		CodingUtils.validateDashboardName(request.getDashboardName());
 		String resourceUri = "/dashboards/" + request.getDashboardName() + "/charts/" + request.getChartName();
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
@@ -3680,6 +3690,7 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.GetProject(), "projectName");
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		CodingUtils.validateDashboardName(request.getDashboardName());
 		String resourceUri = "/dashboards/" + request.getDashboardName() + "/charts/" + request.getChartName();
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
@@ -3703,6 +3714,7 @@ public class Client implements LogService {
 	public GetChartResponse getChart(GetChartRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		CodingUtils.validateDashboardName(request.getDashboardName());
 		String resourceUri = "/dashboards/" + request.getDashboardName() + "/charts/" + request.getChartName();
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
@@ -3730,6 +3742,7 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.GetProject(), "projectName");
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		CodingUtils.validateDashboardName(request.getDashboard().getDashboardName());
 		String resourceUri = "/dashboards/" + request.getDashboard().getDashboardName();
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
@@ -3742,6 +3755,7 @@ public class Client implements LogService {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.GetProject(), "projectName");
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		CodingUtils.validateDashboardName(request.getDashboardName());
 		String resourceUri = "/dashboards/" + request.getDashboardName();
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
@@ -3765,6 +3779,7 @@ public class Client implements LogService {
 	public GetDashboardResponse getDashboard(GetDashboardRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		CodingUtils.validateDashboardName(request.getDashboardName());
 		String resourceUri = "/dashboards/" + request.getDashboardName();
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
 		Map<String, String> urlParameter = new HashMap<String, String>();
@@ -3850,7 +3865,7 @@ public class Client implements LogService {
 	public DeleteSavedSearchResponse deleteSavedSearch(DeleteSavedSearchRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.GetProject(), "projectName");
-		CodingUtils.assertStringNotNullOrEmpty(request.getSavedSearchName(), "savedsearchName");
+		CodingUtils.validateSavedSearch(request.getSavedSearchName());
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		String resourceUri = Consts.CONST_SAVEDSEARCH_URI + "/" + request.getSavedSearchName();
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
@@ -3875,7 +3890,7 @@ public class Client implements LogService {
 	public GetSavedSearchResponse getSavedSearch(GetSavedSearchRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		CodingUtils.assertStringNotNullOrEmpty(request.GetProject(), "projectName");
-		CodingUtils.assertStringNotNullOrEmpty(request.getSavedSearchName(), "savedsearchName");
+		CodingUtils.validateSavedSearch(request.getSavedSearchName());
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		String resourceUri = Consts.CONST_SAVEDSEARCH_URI + "/" + request.getSavedSearchName();
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
@@ -4166,6 +4181,7 @@ public class Client implements LogService {
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		byte[] body = encodeToUtf8(request.getResource().ToJsonString());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		CodingUtils.validateResource(request.getResource().getName());
 		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getResource().getName());
 		Map<String, String> urlParameter = new HashMap<String, String>();
 		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT,
@@ -4176,7 +4192,7 @@ public class Client implements LogService {
 	@Override
 	public DeleteResourceResponse deleteResource(DeleteResourceRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.validateResource(request.getResourceName());
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getResourceName());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
@@ -4187,7 +4203,7 @@ public class Client implements LogService {
 	@Override
 	public GetResourceResponse getResource(GetResourceRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.validateResource(request.getResourceName());
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		String resourceUri = String.format(Consts.CONST_RESOURCE_NAME_URI, request.getResourceName());
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
@@ -4254,7 +4270,7 @@ public class Client implements LogService {
 	@Override
 	public CreateResourceRecordResponse createResourceRecord(CreateResourceRecordRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.validateResource(request.getResourceName());
 		CodingUtils.assertParameterNotNull(request.getRecord(), "record");
 		request.getRecord().checkForCreate();
 
@@ -4270,7 +4286,7 @@ public class Client implements LogService {
 	@Override
 	public UpsertResourceRecordResponse upsertResourceRecord(UpsertResourceRecordRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.validateResource(request.getResourceName());
 		CodingUtils.assertParameterNotNull(request.getRecords(), "records");
 		for (ResourceRecord r: request.getRecords()) {
 			CodingUtils.assertParameterNotNull(r, "record");
@@ -4289,9 +4305,9 @@ public class Client implements LogService {
 	@Override
 	public UpdateResourceRecordResponse updateResourceRecord(UpdateResourceRecordRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.validateResource(request.getResourceName());
 		CodingUtils.assertParameterNotNull(request.getRecord(), "record");
-		CodingUtils.assertStringNotNullOrEmpty(request.getRecord().getId(), "recordId");
+		CodingUtils.validateRecordId(request.getRecord().getId());
 		request.getRecord().checkForUpdate();
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
@@ -4306,7 +4322,7 @@ public class Client implements LogService {
 	@Override
 	public DeleteResourceRecordResponse deleteResourceRecord(DeleteResourceRecordRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.validateResource(request.getResourceName());
 		CodingUtils.assertParameterNotNull(request.getRecordIds(), "recordIds");
 		for (String id: request.getRecordIds()) {
 			CodingUtils.assertStringNotNullOrEmpty(id, "recordId");
@@ -4324,8 +4340,8 @@ public class Client implements LogService {
 	@Override
 	public GetResourceRecordResponse getResourceRecord(GetResourceRecordRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
-		CodingUtils.assertStringNotNullOrEmpty(request.getRecordId(), "recordId");
+		CodingUtils.validateResource(request.getResourceName());
+		CodingUtils.validateRecordId(request.getRecordId());
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_ID_URI,
@@ -4352,7 +4368,7 @@ public class Client implements LogService {
 	@Override
 	public ListResourceRecordResponse listResourceRecord(ListResourceRecordRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
-		CodingUtils.assertStringNotNullOrEmpty(request.getResourceName(), "resourceName");
+		CodingUtils.validateResource(request.getResourceName());
 
 		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
 		String resourceUri = String.format(Consts.CONST_RESOURCE_RECORD_URI, request.getResourceName());
@@ -4500,7 +4516,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String etlJobName = request.getEtlJobName();
-		CodingUtils.assertStringNotNullOrEmpty(etlJobName, "etlJobName");
+		CodingUtils.validateETLJob(etlJobName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		String resourceUri = Consts.CONST_ETLJOB_URI + "/" + etlJobName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -4516,7 +4532,7 @@ public class Client implements LogService {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		EtlJob etlJob = request.getEtlJob();
 		CodingUtils.assertParameterNotNull(etlJob, "etlJob");
-		CodingUtils.assertStringNotNullOrEmpty(etlJob.getJobName(), "etlJobName");
+		CodingUtils.validateETLJob(etlJob.getJobName());
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		byte[] body = encodeToUtf8(etlJob.toJsonString(false, false));
 
@@ -4534,7 +4550,7 @@ public class Client implements LogService {
 		String project = request.GetProject();
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String etlJobName = request.getEtlJobName();
-		CodingUtils.assertStringNotNullOrEmpty(etlJobName, "etlJobName");
+		CodingUtils.validateETLJob(etlJobName);
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		String resourceUri = Consts.CONST_ETLJOB_URI + "/" + etlJobName;
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -4813,9 +4829,9 @@ public class Client implements LogService {
 
 	@Override
 	public ListEtlMetaResponse getEtlMeta(String project, String etlMetaName, String etlMetaKey) throws LogException {
-        Args.notNullOrEmpty(project, "project");
-        Args.notNullOrEmpty(etlMetaName, "etlMetaName");
-        Args.notNullOrEmpty(etlMetaKey, "etlMetaKey");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(etlMetaName, "etlMetaName");
+		CodingUtils.assertStringNotNullOrEmpty(etlMetaKey, "etlMetaKey");
 		ListEtlMetaRequest request = new ListEtlMetaRequest(project, 0, 1);
 		request.setEtlMetaName(etlMetaName);
 		request.setEtlMetaKey(etlMetaKey);
@@ -4825,7 +4841,7 @@ public class Client implements LogService {
 
 	@Override
 	public CreateLoggingResponse createLogging(final CreateLoggingRequest request) throws LogException {
-		Args.notNull(request, "request");
+		CodingUtils.assertParameterNotNull(request, "request");
 		final String project = request.GetProject();
 		Map<String, String> headers = GetCommonHeadPara(project);
 		final Logging logging = request.getLogging();
@@ -4836,7 +4852,7 @@ public class Client implements LogService {
 
     @Override
     public UpdateLoggingResponse updateLogging(final UpdateLoggingRequest request) throws LogException {
-        Args.notNull(request, "request");
+		CodingUtils.assertParameterNotNull(request, "request");
         final String project = request.GetProject();
         Map<String, String> headers = GetCommonHeadPara(project);
         final Logging logging = request.getLogging();
@@ -4847,7 +4863,7 @@ public class Client implements LogService {
 
     @Override
     public GetLoggingResponse getLogging(final GetLoggingRequest request) throws LogException {
-        Args.notNull(request, "request");
+		CodingUtils.assertParameterNotNull(request, "request");
         final String project = request.GetProject();
         Map<String, String> headers = GetCommonHeadPara(project);
         ResponseMessage response = SendData(project, HttpMethod.GET,
@@ -4862,7 +4878,7 @@ public class Client implements LogService {
 
     @Override
     public DeleteLoggingResponse deleteLogging(final DeleteLoggingRequest request) throws LogException {
-        Args.notNull(request, "request");
+		CodingUtils.assertParameterNotNull(request, "request");
         final String project = request.GetProject();
         Map<String, String> headers = GetCommonHeadPara(project);
         ResponseMessage response = SendData(project, HttpMethod.DELETE,
@@ -5095,7 +5111,7 @@ public class Client implements LogService {
 	}
 
 	private ResponseMessage send(BasicRequest request) throws LogException {
-        Args.notNull(request, "request");
+		CodingUtils.assertParameterNotNull(request, "request");
         final String project = request.GetProject();
         final Map<String, String> headers = GetCommonHeadPara(project);
         final Object body = request.getBody();
@@ -5104,7 +5120,7 @@ public class Client implements LogService {
     }
 
 	private ResponseMessage send(BasicRequest request, String body) throws LogException {
-		Args.notNull(request, "request");
+		CodingUtils.assertParameterNotNull(request, "request");
 		final String project = request.GetProject();
 		final Map<String, String> headers = GetCommonHeadPara(project);
 		final byte[] requestBody = encodeToUtf8(body);
@@ -5150,7 +5166,7 @@ public class Client implements LogService {
 
 	public CreateOrUpdateSqlInstanceResponse createOrUpdateSqlInstance(CreateOrUpdateSqlInstanceRequest request, HttpMethod method) throws LogException {
 		String project = request.GetProject();
-		Args.notNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		int cu = request.getCu();
 		JSONObject object = new JSONObject();
 		object.put("cu",cu);
@@ -5168,7 +5184,7 @@ public class Client implements LogService {
 	public ListSqlInstanceResponse listSqlInstance(ListSqlInstanceRequest request) throws LogException
 	{
 		String project = request.GetProject();
-		Args.notNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		Map<String, String> urlParameter = new HashMap<String, String>();
 		String resourceUri = "/sqlinstance";
