@@ -3,12 +3,21 @@ package com.aliyun.openservices.log.common;
 import com.alibaba.fastjson.JSONObject;
 
 public class IngestionConfiguration extends JobConfiguration {
+    private String version;
 
     private String logstore;
 
     private DataSource source;
 
     private Integer numberOfInstances;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public String getLogstore() {
         return logstore;
@@ -55,6 +64,7 @@ public class IngestionConfiguration extends JobConfiguration {
 
     @Override
     public void deserialize(JSONObject value) {
+        logstore = value.getString("version");
         logstore = value.getString("logstore");
         numberOfInstances = value.getIntValue("numberOfInstances");
         JSONObject jsonObject = value.getJSONObject("source");
