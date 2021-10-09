@@ -64,7 +64,7 @@ public class IngestionConfiguration extends JobConfiguration {
 
     @Override
     public void deserialize(JSONObject value) {
-        logstore = value.getString("version");
+        version = value.getString("version");
         logstore = value.getString("logstore");
         numberOfInstances = value.getIntValue("numberOfInstances");
         JSONObject jsonObject = value.getJSONObject("source");
