@@ -115,6 +115,7 @@ public class LogException extends Exception {
         return "LogException{" +
                 "httpCode=" + httpCode +
                 ", errorCode='" + errorCode + '\'' +
+                ", message='" + GetErrorMessage() + '\'' +
                 ", requestId='" + requestId + '\'' +
                 '}';
     }
