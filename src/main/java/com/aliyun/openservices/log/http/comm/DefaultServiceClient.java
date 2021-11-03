@@ -234,4 +234,9 @@ public class DefaultServiceClient extends ServiceClient {
         IdleConnectionReaper.removeConnectionManager(this.connectionManager);
         this.connectionManager.shutdown();
     }
+
+    @Override
+    public HttpClientConnectionManager getConnectionManager() {
+        return this.connectionManager;
+    }
 }

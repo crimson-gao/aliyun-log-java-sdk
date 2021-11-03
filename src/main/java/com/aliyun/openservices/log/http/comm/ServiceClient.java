@@ -6,6 +6,7 @@ import com.aliyun.openservices.log.http.client.HttpMethod;
 import com.aliyun.openservices.log.http.client.ServiceException;
 import com.aliyun.openservices.log.http.utils.HttpUtil;
 import com.aliyun.openservices.log.util.Args;
+import org.apache.http.conn.HttpClientConnectionManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -162,5 +163,7 @@ public abstract class ServiceClient {
     }
 
     public abstract void shutdown();
+
+    public abstract HttpClientConnectionManager getConnectionManager();
 }
 

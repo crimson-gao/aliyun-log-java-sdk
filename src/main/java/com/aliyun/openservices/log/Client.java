@@ -85,6 +85,7 @@ import com.aliyun.openservices.log.util.NetworkUtils;
 import com.aliyun.openservices.log.util.Utils;
 import com.aliyun.openservices.log.util.VersionInfoUtils;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.conn.HttpClientConnectionManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -183,6 +184,10 @@ public class Client implements LogService {
 	public void setResourceOwnerAccount(String resourceOwnerAccount) {
 		this.resourceOwnerAccount = resourceOwnerAccount;
 	}
+
+    public HttpClientConnectionManager getConnectionManager() {
+        return serviceClient.getConnectionManager();
+    }
 
 	/**
 	 * Construct the sls client with accessId, accessKey and server address, all
