@@ -103,6 +103,9 @@ public class ExportConfiguration extends JobConfiguration {
         } else if (type == DataSinkType.ALIYUN_TSDB) {
             sink = new AliyunTSDBSink();
             sink.deserialize(obj);
+        } else if (type == DataSinkType.ALIYUN_OSS) {
+            sink = new AliyunOSSSink();
+            sink.deserialize(obj);
         }
         parameters = JsonUtils.readOptionalMap(value, "parameters");
     }
