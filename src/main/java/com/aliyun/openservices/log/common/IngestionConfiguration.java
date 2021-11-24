@@ -1,12 +1,14 @@
 package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 
 public class IngestionConfiguration extends JobConfiguration {
     private String version;
 
     private String logstore;
 
+    @JSONField(serializeUsing = ToSourceSerializer.class)
     private DataSource source;
 
     private Integer numberOfInstances;
@@ -43,7 +45,11 @@ public class IngestionConfiguration extends JobConfiguration {
         this.numberOfInstances = numberOfInstances;
     }
 
-    private DataSource createSource(DataSourceType type) {
+    private DataSource createSource(JSONObject jsonObject) {
+        if (version != null && !version.isEmpty()) {
+            return new IngestionGeneralSource();
+        }
+        DataSourceType type = DataSourceType.fromString(jsonObject.getString("type"));
         switch (type) {
             case JDBC:
                 return new JDBCSource();
@@ -68,8 +74,7 @@ public class IngestionConfiguration extends JobConfiguration {
         logstore = value.getString("logstore");
         numberOfInstances = value.getIntValue("numberOfInstances");
         JSONObject jsonObject = value.getJSONObject("source");
-        DataSourceType kind = DataSourceType.fromString(jsonObject.getString("type"));
-        source = createSource(kind);
+        source = createSource(jsonObject);
         if (source != null) {
             source.deserialize(jsonObject);
         }
