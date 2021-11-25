@@ -6,7 +6,6 @@ import com.aliyun.openservices.log.util.JsonUtils;
 public class AliyunOSSSink extends DataSink {
 
     private String roleArn;
-    private String endpoint;
     private String bucket;
     private String prefix;
     private String suffix;
@@ -14,19 +13,18 @@ public class AliyunOSSSink extends DataSink {
     private String pathFormatType;  // default is "time"
     private int bufferSize;
     private int bufferInterval;
-    private String timeZone;
+    private String timeZone;        // +(-)xxxx style, otherwise +8000
     private String contentType;
     private String compressionType;
     private ExportContentDetail contentDetail;
 
     public AliyunOSSSink() { super(DataSinkType.ALIYUN_OSS); }
 
-    public AliyunOSSSink(String roleArn, String endpoint, String bucket, String prefix,
+    public AliyunOSSSink(String roleArn, String bucket, String prefix,
                          String suffix, String pathFormat, String pathFormatType, int bufferSize, int bufferInterval,
                          String timeZone, String contentType, String compressionType, ExportContentDetail contentDetail) {
         super(DataSinkType.ALIYUN_OSS);
         this.roleArn = roleArn;
-        this.endpoint = endpoint;
         this.bucket = bucket;
         this.prefix = prefix;
         this.suffix = suffix;
@@ -47,14 +45,6 @@ public class AliyunOSSSink extends DataSink {
 
     public void setRoleArn(String roleArn) {
         this.roleArn = roleArn;
-    }
-
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
     }
 
     public String getBucket() {
@@ -149,7 +139,6 @@ public class AliyunOSSSink extends DataSink {
     public void deserialize(JSONObject value) {
         roleArn = value.getString("roleArn");
         bucket = value.getString("bucket");
-        endpoint = value.getString("endpoint");
         prefix = value.getString("prefix");
         suffix = value.getString("suffix");
         pathFormat = value.getString("pathFormat");
@@ -159,9 +148,9 @@ public class AliyunOSSSink extends DataSink {
         timeZone = value.getString("timeZone");
         contentType = value.getString("contentType");
         JSONObject obj = value.getJSONObject("contentDetail");
-        if (contentDetail.equals("csv")) {
+        if (contentType.equals("csv")) {
             contentDetail = new ExportContentCsvDetail();
-        } else if (contentDetail.equals("parquet")) {
+        } else if (contentType.equals("parquet")) {
             contentDetail = new ExportContentParquetDetail();
         } else {
             contentDetail = new ExportContentJsonDetail();
