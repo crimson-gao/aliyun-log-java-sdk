@@ -2158,7 +2158,7 @@ public class Client implements LogService {
 				new ByteArrayInputStream(body), body.length);
 		ResponseMessage response = null;
 		try {
-			this.serviceClient.sendRequest(request, Consts.UTF_8_ENCODING);
+			response = this.serviceClient.sendRequest(request, Consts.UTF_8_ENCODING);
 		} catch (ServiceException e) {
 			throw new LogException("RequestError", "Web request failed: " + e.getMessage(), e, "");
 		} catch (ClientException e) {
