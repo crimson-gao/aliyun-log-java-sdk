@@ -8,9 +8,13 @@
     </parent>
 
 
+<!--    <groupId>com.aliyun.openservices</groupId>-->
+<!--    <artifactId>aliyun-log</artifactId>-->
+<!--    <version>0.6.68-SNAPSHOT</version>-->
+<!--    <packaging>jar</packaging>-->
     <groupId>com.aliyun.openservices</groupId>
-    <artifactId>aliyun-log</artifactId>
-    <version>0.6.68-SNAPSHOT</version>
+    <artifactId>aliyun-sls-v0.6-inner</artifactId>
+    <version>0.7.45-test1</version>
     <packaging>jar</packaging>
 
     <name>Aliyun LOG Java SDK</name>
