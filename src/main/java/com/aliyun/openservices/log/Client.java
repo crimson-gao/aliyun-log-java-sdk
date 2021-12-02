@@ -857,13 +857,16 @@ public class Client implements LogService {
 	}
 
 
-	private void ParseResponseWithFastJsonStreamResolve(ResponseMessage response,
-														GetLogsResponse getLogsResponse, String requestId) throws LogException {
+	private GetLogsResponse ParseResponseWithFastJsonStreamResolve(ResponseMessage response) throws LogException {
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		GetLogsResponse getLogsResponse = null;
 		JSONReader reader = null;
 		try {
 			int statusCode = response.getStatusCode();
 			if (statusCode != Consts.CONST_HTTP_OK) {
 				try {
+					ExtractResponseBody(response);
 					JSONObject object = parseResponseBody(response, requestId);
 					ErrorCheck(object, requestId, statusCode);
 				} catch (LogException ex) {
@@ -872,8 +875,9 @@ public class Client implements LogService {
 				}
 			}
 			if (response.getContent() == null) {
-				return;
+				return getLogsResponse;
 			}
+			getLogsResponse = new GetLogsResponse(resHeaders);
 			reader = new JSONReader(new InputStreamReader(response.getContent(), Consts.UTF_8_ENCODING));
 			reader.startArray();
 			while (reader.hasNext()) {
@@ -899,6 +903,7 @@ public class Client implements LogService {
 			} catch (Exception ignore) {
 			}
 		}
+		return getLogsResponse;
 	}
 
 	private QueriedLog extractLogFromReader(JSONReader reader, String requestId) throws JSONException, LogException {
@@ -957,13 +962,13 @@ public class Client implements LogService {
 		String resourceUri = "/logstores/" + logStore + "/index";
 		ResponseMessage response = SendDataWithResolveResponse(project, HttpMethod.GET,
 				resourceUri, urlParameter, headParameter);
-		Map<String, String> resHeaders = response.getHeaders();
-		String requestId = GetRequestId(resHeaders);
-		GetLogsResponse getLogsResponse = new GetLogsResponse(resHeaders);
-		ParseResponseWithFastJsonStreamResolve(response, getLogsResponse, requestId);
+//		Map<String, String> resHeaders = response.getHeaders();
+//		String requestId = GetRequestId(resHeaders);
+//		GetLogsResponse getLogsResponse = new GetLogsResponse(resHeaders);
+//		ParseResponseWithFastJsonStreamResolve(response, getLogsResponse, requestId);
 //		JSONArray object = ParseResponseMessageToArrayWithFastJson(response, requestId);
 //		extractLogsWithFastJson(getLogsResponse, object, requestId);
-		return getLogsResponse;
+		return ParseResponseWithFastJsonStreamResolve(response);
 	}
 
 	public GetContextLogsResponse getContextLogs(GetContextLogsRequest request) throws LogException {

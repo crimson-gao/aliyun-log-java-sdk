@@ -14,7 +14,7 @@
 <!--    <packaging>jar</packaging>-->
     <groupId>com.aliyun.openservices</groupId>
     <artifactId>aliyun-sls-v0.6-inner</artifactId>
-    <version>0.7.45-test3</version>
+    <version>0.7.45-test5</version>
     <packaging>jar</packaging>
 
     <name>Aliyun LOG Java SDK</name>
