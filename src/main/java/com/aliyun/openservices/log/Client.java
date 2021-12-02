@@ -859,7 +859,6 @@ public class Client implements LogService {
 
 	private void ParseResponseWithFastJsonStreamResolve(ResponseMessage response,
 														GetLogsResponse getLogsResponse, String requestId) throws LogException {
-		String returnStr = encodeResponseBodyToUtf8String(response, requestId);
 		JSONReader reader = null;
 		try {
 			int statusCode = response.getStatusCode();
@@ -883,12 +882,9 @@ public class Client implements LogService {
 			}
 			reader.endArray();
 		} catch (com.alibaba.fastjson.JSONException e) {
-			throw new LogException(ErrorCodes.BAD_RESPONSE,
-					"The response is not valid json string : " + returnStr, e,
-					requestId);
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "resolve json error", e, requestId);
 		} catch (UnsupportedEncodingException e) {
-			throw new LogException(ErrorCodes.BAD_RESPONSE,
-					"The response is not valid utf-8 string: ", e, requestId);
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid utf-8 string: ", e, requestId);
 		} finally {
 			try {
 				if (response != null) {
