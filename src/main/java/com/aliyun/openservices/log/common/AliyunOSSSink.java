@@ -1,6 +1,7 @@
 package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.util.JsonUtils;
 
 public class AliyunOSSSink extends DataSink {
@@ -146,14 +147,17 @@ public class AliyunOSSSink extends DataSink {
         bufferSize = value.getIntValue("bufferSize");
         bufferInterval = value.getIntValue("bufferInterval");
         timeZone = value.getString("timeZone");
+        compressionType = value.getString("compressionType");
         contentType = value.getString("contentType");
         JSONObject obj = value.getJSONObject("contentDetail");
-        if (contentType.equals("csv")) {
+        if ("csv".equals(contentType)) {
             contentDetail = new ExportContentCsvDetail();
-        } else if (contentType.equals("parquet")) {
+        } else if ("parquet".equals(contentType)) {
             contentDetail = new ExportContentParquetDetail();
-        } else {
+        } else if ("json".equals(contentType)) {
             contentDetail = new ExportContentJsonDetail();
+        } else {
+            throw new RuntimeException("ContentType should be json/csv/parquet");
         }
         contentDetail.deserialize(obj);
     }
