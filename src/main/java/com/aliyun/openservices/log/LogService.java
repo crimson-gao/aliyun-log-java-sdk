@@ -2692,6 +2692,8 @@ public interface LogService {
 
 	StartExportResponse startExport(StartExportRequest request) throws LogException;
 
+	RestartExportResponse restartExport(RestartExportRequest request) throws LogException;
+
 	CreateScheduledSQLResponse createScheduledSQL(CreateScheduledSQLRequest request) throws LogException;
 
 	DeleteScheduledSQLResponse deleteScheduledSQL(DeleteScheduledSQLRequest request) throws LogException;
