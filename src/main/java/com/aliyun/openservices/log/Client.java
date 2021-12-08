@@ -886,7 +886,7 @@ public class Client implements LogService {
 			}
 			reader.endArray();
 		} catch (com.alibaba.fastjson.JSONException e) {
-			throw new LogException(ErrorCodes.BAD_RESPONSE, "resolve json error", e, requestId);
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "resolve json error: ", e, requestId);
 		} catch (UnsupportedEncodingException e) {
 			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid utf-8 string: ", e, requestId);
 		} finally {
