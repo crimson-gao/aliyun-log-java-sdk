@@ -6,6 +6,7 @@ package com.aliyun.openservices.log;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONReader;
 import com.alibaba.fastjson.parser.Feature;
 import com.aliyun.openservices.log.common.ACL;
 import com.aliyun.openservices.log.common.Chart;
@@ -87,11 +88,7 @@ import com.aliyun.openservices.log.util.VersionInfoUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.conn.HttpClientConnectionManager;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -859,6 +856,80 @@ public class Client implements LogService {
 		}
 	}
 
+
+	private GetLogsResponse ParseResponseWithFastJsonStreamResolve(ResponseMessage response) throws LogException {
+		Map<String, String> resHeaders = response.getHeaders();
+		String requestId = GetRequestId(resHeaders);
+		GetLogsResponse getLogsResponse = null;
+		JSONReader reader = null;
+		try {
+			int statusCode = response.getStatusCode();
+			if (statusCode != Consts.CONST_HTTP_OK) {
+				try {
+					ExtractResponseBody(response);
+					JSONObject object = parseResponseBody(response, requestId);
+					ErrorCheck(object, requestId, statusCode);
+				} catch (LogException ex) {
+					ex.SetHttpCode(response.getStatusCode());
+					throw ex;
+				}
+			}
+			if (response.getContent() == null) {
+				return getLogsResponse;
+			}
+			getLogsResponse = new GetLogsResponse(resHeaders);
+			reader = new JSONReader(new InputStreamReader(response.getContent(), Consts.UTF_8_ENCODING));
+			reader.startArray();
+			while (reader.hasNext()) {
+				getLogsResponse.addLog(extractLogFromReader(reader, requestId));
+				//getLogsResponse.addLog(new QueriedLog(source, logItem));
+			}
+			reader.endArray();
+		} catch (com.alibaba.fastjson.JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "resolve json error: ", e, requestId);
+		} catch (UnsupportedEncodingException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid utf-8 string: ", e, requestId);
+		} finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+			} catch (IOException ignore) {
+			}
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (Exception ignore) {
+			}
+		}
+		return getLogsResponse;
+	}
+
+	private QueriedLog extractLogFromReader(JSONReader reader, String requestId) throws JSONException, LogException {
+		reader.startObject();
+		String source = "";
+		LogItem logItem = new LogItem();
+		while (reader.hasNext()) {
+			String key = reader.readString();
+			String value = reader.readString();
+			if (key.equals(Consts.CONST_RESULT_SOURCE)) {
+				source = value;
+			} else if (key.equals(Consts.CONST_RESULT_TIME)) {
+				try {
+					logItem.mLogTime = Integer.parseInt(value);
+				} catch (NumberFormatException ex) {
+					throw new LogException(Consts.INVALID_LOG_TIME,
+							"The field __time__ is invalid in your query result: " + value, requestId);
+				}
+			} else {
+				logItem.PushBack(key, value);
+			}
+		}
+		reader.endObject();
+		return new QueriedLog(source, logItem);
+	}
+
 	private QueriedLog extractLogFromJSON(JSONObject log, String requestId) throws JSONException, LogException {
 		String source = "";
 		LogItem logItem = new LogItem();
@@ -889,14 +960,15 @@ public class Client implements LogService {
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		CodingUtils.validateLogstore(logStore);
 		String resourceUri = "/logstores/" + logStore + "/index";
-		ResponseMessage response = SendData(project, HttpMethod.GET,
+		ResponseMessage response = SendDataWithResolveResponse(project, HttpMethod.GET,
 				resourceUri, urlParameter, headParameter);
-		Map<String, String> resHeaders = response.getHeaders();
-		String requestId = GetRequestId(resHeaders);
-		JSONArray object = ParseResponseMessageToArrayWithFastJson(response, requestId);
-		GetLogsResponse getLogsResponse = new GetLogsResponse(resHeaders);
-		extractLogsWithFastJson(getLogsResponse, object, requestId);
-		return getLogsResponse;
+//		Map<String, String> resHeaders = response.getHeaders();
+//		String requestId = GetRequestId(resHeaders);
+//		GetLogsResponse getLogsResponse = new GetLogsResponse(resHeaders);
+//		ParseResponseWithFastJsonStreamResolve(response, getLogsResponse, requestId);
+//		JSONArray object = ParseResponseMessageToArrayWithFastJson(response, requestId);
+//		extractLogsWithFastJson(getLogsResponse, object, requestId);
+		return ParseResponseWithFastJsonStreamResolve(response);
 	}
 
 	public GetContextLogsResponse getContextLogs(GetContextLogsRequest request) throws LogException {
@@ -2051,6 +2123,49 @@ public class Client implements LogService {
 					: "false");
 		}
 		return headParameter;
+	}
+
+	private ResponseMessage SendDataWithResolveResponse(String project, HttpMethod method,
+									 String resourceUri, Map<String, String> urlParams,
+									 Map<String, String> headParams) throws LogException {
+		return SendDataWithResolveResponse(project, method, resourceUri, urlParams, headParams, new byte[0]);
+	}
+
+	protected ResponseMessage SendDataWithResolveResponse(String project, HttpMethod method, String resourceUri,
+									   Map<String, String> parameters, Map<String, String> headers, byte[] body) throws LogException {
+		return SendDataWithResolveResponse(project, method, resourceUri, parameters, headers, body, null, null);
+	}
+
+	private ResponseMessage SendDataWithResolveResponse(String project, HttpMethod method, String resourceUri,
+									 Map<String, String> parameters, Map<String, String> headers, byte[] body,
+									 Map<String, String> outputHeader, String serverIp)
+			throws LogException {
+		if (body.length > 0) {
+			headers.put(Consts.CONST_CONTENT_MD5, DigestUtils.md5Crypt(body));
+		}
+		if (resourceOwnerAccount != null && !resourceOwnerAccount.isEmpty()) {
+			headers.put(Consts.CONST_X_LOG_RESOURCEOWNERACCOUNT, resourceOwnerAccount);
+		}
+		headers.put(Consts.CONST_CONTENT_LENGTH, String.valueOf(body.length));
+		DigestUtils.addSignature(credentials, method.toString(), headers, resourceUri, parameters);
+		URI uri;
+		if (serverIp == null) {
+			uri = GetHostURI(project);
+		} else {
+			uri = GetHostURIByIp(serverIp);
+		}
+		RequestMessage request = BuildRequest(uri, method,
+				resourceUri, parameters, headers,
+				new ByteArrayInputStream(body), body.length);
+		ResponseMessage response = null;
+		try {
+			response = this.serviceClient.sendRequest(request, Consts.UTF_8_ENCODING);
+		} catch (ServiceException e) {
+			throw new LogException("RequestError", "Web request failed: " + e.getMessage(), e, "");
+		} catch (ClientException e) {
+			throw new LogException("RequestError", "Web request failed: " + e.getMessage(), e, "");
+		}
+		return response;
 	}
 
 	private ResponseMessage SendData(String project, HttpMethod method,
