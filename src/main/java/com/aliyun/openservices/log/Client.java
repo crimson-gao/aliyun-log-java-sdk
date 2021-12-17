@@ -5169,6 +5169,12 @@ public class Client implements LogService {
 	}
 
 	@Override
+	public RestartExportResponse restartExport(RestartExportRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new RestartExportResponse(responseMessage.getHeaders());
+	}
+
+	@Override
 	public CreateScheduledSQLResponse createScheduledSQL(CreateScheduledSQLRequest request) throws LogException{
 		ScheduledSQL scheduledSQL = (ScheduledSQL) request.getBody();
 		Long fromTime = scheduledSQL.getConfiguration().getFromTime();
