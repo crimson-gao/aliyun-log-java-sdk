@@ -1,11 +1,13 @@
 package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.aliyun.openservices.log.util.JsonUtils;
 
 import java.util.Map;
 
 public class ExportConfiguration extends JobConfiguration {
+    private String version;
 
     private String logstore;
 
@@ -19,9 +21,18 @@ public class ExportConfiguration extends JobConfiguration {
 
     private int fromTime;
 
+    @JSONField(serializeUsing = ToGeneralSerializer.class)
     private DataSink sink;
 
     private Map<String, String> parameters;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public String getLogstore() {
         return logstore;
@@ -95,6 +106,7 @@ public class ExportConfiguration extends JobConfiguration {
         accessKeySecret = value.getString("accessKeySecret");
         instanceType = value.getString("instanceType");
         fromTime = value.getIntValue("fromTime");
+        version = value.getString("version");
         JSONObject obj = value.getJSONObject("sink");
         DataSinkType type = DataSinkType.fromString(obj.getString("type"));
         if (type == DataSinkType.ALIYUN_ADB) {
@@ -105,6 +117,9 @@ public class ExportConfiguration extends JobConfiguration {
             sink.deserialize(obj);
         } else if (type == DataSinkType.ALIYUN_OSS) {
             sink = new AliyunOSSSink();
+            sink.deserialize(obj);
+        } else if (version != null && !version.isEmpty()) {
+            sink = new ExportGeneralSink();
             sink.deserialize(obj);
         }
         parameters = JsonUtils.readOptionalMap(value, "parameters");

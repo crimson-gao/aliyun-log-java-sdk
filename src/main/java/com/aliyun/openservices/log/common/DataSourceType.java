@@ -12,7 +12,7 @@ public enum DataSourceType implements JSONSerializable {
     JDBC("JDBC"),
     KAFKA("Kafka"),
     ALIYUN_CLOUD_MONITOR("AliyunCloudMonitor"),
-    General("General");
+    GENERAL("General");
 
     private final String name;
 
