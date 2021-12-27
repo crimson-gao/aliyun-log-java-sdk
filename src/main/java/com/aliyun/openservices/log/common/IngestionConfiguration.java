@@ -8,7 +8,7 @@ public class IngestionConfiguration extends JobConfiguration {
 
     private String logstore;
 
-    @JSONField(serializeUsing = ToSourceSerializer.class)
+    @JSONField(serializeUsing = ToGeneralSerializer.class)
     private DataSource source;
 
     private Integer numberOfInstances;

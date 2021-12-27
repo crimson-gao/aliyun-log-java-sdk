@@ -8,9 +8,9 @@ import com.alibaba.fastjson.serializer.SerializeWriter;
 import java.lang.reflect.Type;
 
 
-public class ToSourceSerializer implements ObjectSerializer {
+public class ToGeneralSerializer implements ObjectSerializer {
 
-    public static final ToSourceSerializer instance = new ToSourceSerializer();
+    public static final ToGeneralSerializer instance = new ToGeneralSerializer();
 
     @Override
     public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType,
@@ -22,7 +22,7 @@ public class ToSourceSerializer implements ObjectSerializer {
             return;
         }
 
-        if (object instanceof IngestionGeneralSource) {
+        if (object instanceof IngestionGeneralSource || object instanceof ExportGeneralSink) {
             out.write(object.toString());
         } else {
             out.write(JSONObject.toJSONString(object));

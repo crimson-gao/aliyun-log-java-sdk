@@ -1,17 +1,17 @@
 package com.aliyun.openservices.log.common;
 
+
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
-public class IngestionGeneralSource extends DataSource {
+public class ExportGeneralSink extends DataSink {
 
     private Map<String, Object> fields = new HashMap<String, Object>();
 
-    public IngestionGeneralSource() {
-        super(DataSourceType.GENERAL);
+    public ExportGeneralSink() {
+        super(DataSinkType.GENERAL);
     }
 
     public Map<String, Object> getFields() {
@@ -42,4 +42,5 @@ public class IngestionGeneralSource extends DataSource {
     public String toString() {
         return JSONObject.toJSONString(fields);
     }
+
 }
