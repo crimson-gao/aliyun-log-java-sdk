@@ -5129,6 +5129,7 @@ public class Client implements LogService {
 		int cu = request.getCu();
 		JSONObject object = new JSONObject();
 		object.put("cu",cu);
+		object.put("useAsDefault", request.isUseAsDefault());
 		byte[] body = encodeToUtf8(object.toJSONString());
 		Map<String, String> headParameter = GetCommonHeadPara(project);
 		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
