@@ -213,6 +213,8 @@ public class JobTest {
         ingestionGeneralSource.put("batchMaxSize", "0");
         ingestionGeneralSource.put("type", "RDS");
         ingestionGeneralSource.put("timeZone", "Asia/Shanghai");
+        System.out.println(JsonUtils.serialize(ingestionGeneralSource));
+        System.out.println(JSONObject.toJSONString(ingestionGeneralSource));
         ingestionConfiguration.setSource(ingestionGeneralSource);
         job.setConfiguration(ingestionConfiguration);
         String jobStr = "{\"configuration\":{\"source\":{\"batchMaxSize\":\"0\",\"timeZone\":\"Asia/Shanghai\",\"type\":\"RDS\"}},\"displayName\":\"test ingestion\",\"name\":\"test-ingestion-general\",\"schedule\":{\"interval\":\"2m\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"state\":\"Enabled\",\"type\":\"Ingestion\"}";
@@ -269,14 +271,14 @@ public class JobTest {
         ExportConfiguration exportConfiguration = (ExportConfiguration) job.getConfiguration();
         DataSink dataSink = exportConfiguration.getSink();
         System.out.println(JSONObject.toJSONString(exportConfiguration));
-        System.out.println(dataSink);
+        assertEquals(DataSinkType.GENERAL, dataSink.getType());
 
         ExportGeneralSink exportGeneralSink = (ExportGeneralSink) dataSink;
         System.out.println(JSONObject.toJSONString(exportConfiguration));
         System.out.println(exportGeneralSink.toString());
         System.out.println(dataSink.toString());
         System.out.println(exportGeneralSink.get("instances"));
-        System.out.println(exportGeneralSink.get("name"));
+        assertEquals("库存管理数据库", exportGeneralSink.get("name"));
 
         Export export = new Export();
         export.deserialize(JSONObject.parseObject(body));
