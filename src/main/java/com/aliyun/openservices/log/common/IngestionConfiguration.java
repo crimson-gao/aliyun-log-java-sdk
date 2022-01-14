@@ -1,14 +1,12 @@
 package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.annotation.JSONField;
 
 public class IngestionConfiguration extends JobConfiguration {
     private String version;
 
     private String logstore;
 
-    @JSONField(serializeUsing = ToGeneralSerializer.class)
     private DataSource source;
 
     private Integer numberOfInstances;

@@ -21,7 +21,6 @@ public class ExportConfiguration extends JobConfiguration {
 
     private int fromTime;
 
-    @JSONField(serializeUsing = ToGeneralSerializer.class)
     private DataSink sink;
 
     private Map<String, String> parameters;
