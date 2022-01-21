@@ -1,7 +1,6 @@
 package com.aliyun.openservices.log.common;
 
 import com.alibaba.fastjson.JSONObject;
-import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.util.JsonUtils;
 
 public class AliyunOSSSink extends DataSink {
@@ -152,8 +151,8 @@ public class AliyunOSSSink extends DataSink {
         JSONObject obj = value.getJSONObject("contentDetail");
         if ("csv".equals(contentType)) {
             contentDetail = new ExportContentCsvDetail();
-        } else if ("parquet".equals(contentType)) {
-            contentDetail = new ExportContentParquetDetail();
+        } else if ("parquet".equals(contentType) || "orc".equals(contentType)) {
+            contentDetail = new ExportContentColumnStorageDetail();
         } else if ("json".equals(contentType)) {
             contentDetail = new ExportContentJsonDetail();
         } else {
