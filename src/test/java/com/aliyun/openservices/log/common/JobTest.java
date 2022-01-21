@@ -228,6 +228,7 @@ public class JobTest {
                 "  \"configuration\": {\n" +
                 "    \"logstore\": \"rds-data\",\n" +
                 "    \"sink\": {\n" +
+                "      \"type\": \"test-type\",\n" +
                 "      \"desc\": \"主要存储了xxx\",\n" +
                 "      \"id\": \"stock_storage_1\",\n" +
                 "      \"instances\": [\n" +
@@ -279,6 +280,7 @@ public class JobTest {
         System.out.println(dataSink.toString());
         System.out.println(exportGeneralSink.get("instances"));
         assertEquals("库存管理数据库", exportGeneralSink.get("name"));
+        assertEquals("test-type", exportGeneralSink.get("type"));
 
         Export export = new Export();
         export.deserialize(JSONObject.parseObject(body));

@@ -107,19 +107,22 @@ public class ExportConfiguration extends JobConfiguration {
         fromTime = value.getIntValue("fromTime");
         version = value.getString("version");
         JSONObject obj = value.getJSONObject("sink");
-        DataSinkType type = DataSinkType.fromString(obj.getString("type"));
-        if (type == DataSinkType.ALIYUN_ADB) {
-            sink = new AliyunADBSink();
-            sink.deserialize(obj);
-        } else if (type == DataSinkType.ALIYUN_TSDB) {
-            sink = new AliyunTSDBSink();
-            sink.deserialize(obj);
-        } else if (type == DataSinkType.ALIYUN_OSS) {
-            sink = new AliyunOSSSink();
-            sink.deserialize(obj);
-        } else if (version != null && !version.isEmpty()) {
+        // if version is exist, use ExportGeneralSink
+        if (version != null && !version.isEmpty()) {
             sink = new ExportGeneralSink();
             sink.deserialize(obj);
+        } else {
+            DataSinkType type = DataSinkType.fromString(obj.getString("type"));
+            if (type == DataSinkType.ALIYUN_ADB) {
+                sink = new AliyunADBSink();
+                sink.deserialize(obj);
+            } else if (type == DataSinkType.ALIYUN_TSDB) {
+                sink = new AliyunTSDBSink();
+                sink.deserialize(obj);
+            } else if (type == DataSinkType.ALIYUN_OSS) {
+                sink = new AliyunOSSSink();
+                sink.deserialize(obj);
+            }
         }
         parameters = JsonUtils.readOptionalMap(value, "parameters");
     }
