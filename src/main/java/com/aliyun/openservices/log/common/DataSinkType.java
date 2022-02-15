@@ -31,6 +31,11 @@ public enum DataSinkType implements JSONSerializable {
     }
 
     @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
     public void write(JSONSerializer serializer, Object fieldName, Type fieldType, int features) {
         serializer.write(name);
     }
