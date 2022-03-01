@@ -153,6 +153,7 @@ public class Consts {
     public static final String CONST_OFFSET = "offset";
     public static final String CONST_REVERSE = "reverse";
     public static final String CONST_POWER_SQL="powerSql";
+    public static final String CONST_FORWARD="forward";
     public static final String CONST_QUERY = "query";
     public static final String CONST_TOKEN = "token";
     public static final String CONST_CURSOR = "cursor";

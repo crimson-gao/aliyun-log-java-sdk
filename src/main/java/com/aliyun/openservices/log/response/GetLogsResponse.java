@@ -9,6 +9,7 @@ import java.util.Map;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.QueriedLog;
 import com.aliyun.openservices.log.common.Consts;
 
@@ -34,6 +35,12 @@ public class GetLogsResponse extends BasicGetLogsResponse {
 	private long mLimited = 0;
 	private double mCpuSec =0;
 	private long mCpuCores = 0;
+
+	private boolean mIsPhraseQuery = false;
+	private boolean mScanAll = false;
+	private long mBeginOffset = 0;
+	private long mEndOffset = 0;
+	private long mEndTime = 0;
 
 	private ArrayList<String> mKeys;
 	private ArrayList<ArrayList<String>> mTerms;
@@ -102,7 +109,44 @@ public class GetLogsResponse extends BasicGetLogsResponse {
 			if (object.containsKey("marker")) {
 				mMarker = object.getString("marker");
 			}
+
+			if (object.containsKey("phraseQueryInfo")) {
+				mIsPhraseQuery = true;
+				JSONObject phraseQueryInfo = object.getJSONObject("phraseQueryInfo");
+				if (phraseQueryInfo.containsKey("scanAll")) {
+					mScanAll = Boolean.parseBoolean(phraseQueryInfo.getString("scanAll"));
+				}
+				if (phraseQueryInfo.containsKey("beginOffset")) {
+					mBeginOffset = Long.parseLong(phraseQueryInfo.getString("beginOffset"));
+				}
+				if (phraseQueryInfo.containsKey("endOffset")) {
+					mEndOffset = Long.parseLong(phraseQueryInfo.getString("endOffset"));
+				}
+				if (phraseQueryInfo.containsKey("endTime")) {
+					mEndTime = Long.parseLong(phraseQueryInfo.getString("endTime"));
+				}
+			}
 		}
+	}
+
+	public boolean IsPhraseQuery() {
+		return mIsPhraseQuery;
+	}
+
+	public boolean IsScanAll() {
+		return mScanAll;
+	}
+
+	public long GetBeginOffset() {
+		return mBeginOffset;
+	}
+
+	public long GetEndOffset() {
+		return mEndOffset;
+	}
+
+	public long GetEndTime() {
+		return mEndTime;
 	}
 	
 	public String getmMarker() {

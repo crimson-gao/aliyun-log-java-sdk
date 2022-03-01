@@ -750,6 +750,20 @@ public class Client implements LogService {
 				to, topic, query, offset, line, reverse,powerSql);
 		return GetLogs(request);
 	}
+	public GetLogsResponse 	GetLogs(String project, String logStore, int from,
+									  int to, String topic, String query, int line, int offset,
+									  boolean reverse,
+									  boolean powerSql,
+									  boolean forward) throws LogException {
+		CodingUtils.assertStringNotNullOrEmpty(project, "project");
+		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
+		CodingUtils.assertParameterNotNull(topic, "topic");
+		CodingUtils.assertParameterNotNull(query, "query");
+		GetLogsRequest request = new GetLogsRequest(project, logStore, from,
+				to, topic, query, offset, line, reverse,powerSql, forward);
+		return GetLogs(request);
+	}
+
 
 	public GetLogsResponse executeLogstoreSql(String project, String logStore, int from,
 											  int to, String sql, boolean powerSql) throws LogException {

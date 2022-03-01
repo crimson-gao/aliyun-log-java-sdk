@@ -143,6 +143,52 @@ public interface LogService {
 
 	/**
 	 * Get The sub set of logs data from log service server which match input
+	 * parameters. All the data with logstore and topic in [from, to) which
+	 * contain the keys in query are the matched data.
+	 *
+	 * @param project
+	 *            the project name
+	 * @param logStore
+	 *            the result data logstore
+	 * @param from
+	 *            the begin time of the result data to get
+	 * @param to
+	 *            the end time of the result data to get
+	 * @param topic
+	 *            the result data topic
+	 * @param reverse
+	 *            a flag to determine the return data order, if reverse is set
+	 *            to false, the return logs is ascending order by time, other
+	 *            wise, it's descending order
+	 * @param line
+	 *            how many lines to get, the max lines is decided by the sls
+	 *            backend server
+	 * @param offset
+	 *            the start log index in all the matched logs.
+	 * @param query
+	 *            If the query is not empty, it will return the logs contain the
+	 *            keys in query, if "all_hit" is contained in the query, only
+	 *            the logs contains all the keys in query are matched logs,
+	 *            other wise logs contain any key in query are matched logs.
+	 * @param powerSql
+	 *            if the query runs using a power instance
+	 * @return a response contains a sub set of the logs matched the input
+	 *         parameters
+	 * @throws LogException
+	 *             if any error happen when get the data from log service server
+	 * @throws NullPointerException
+	 *             if any parameter is null
+	 * @throws IllegalArgumentException
+	 *             if project or logstore is empty
+	 */
+	GetLogsResponse GetLogs(String project, String logStore, int from,
+							int to, String topic, String query, int line, int offset,
+							boolean reverse,
+							boolean powerSql,
+							boolean forward) throws LogException;
+
+	/**
+	 * Get The sub set of logs data from log service server which match input
 	 * parameters.
 	 *
 	 * @param request
