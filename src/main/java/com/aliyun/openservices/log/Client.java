@@ -4199,6 +4199,12 @@ public class Client implements LogService {
 	}
 
 	@Override
+	public StartIngestionResponse restartIngestion(RestartIngestionRequest request) throws LogException {
+		ResponseMessage responseMessage = send(request);
+		return new StartIngestionResponse(responseMessage.getHeaders());
+	}
+
+	@Override
 	public CreateRebuildIndexResponse createRebuildIndex(CreateRebuildIndexRequest request) throws LogException {
 		ResponseMessage responseMessage = send(request);
 		return new CreateRebuildIndexResponse(responseMessage.getHeaders());

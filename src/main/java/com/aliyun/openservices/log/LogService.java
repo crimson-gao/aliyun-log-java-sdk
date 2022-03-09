@@ -3548,6 +3548,7 @@ public interface LogService {
 	ListIngestionResponse listIngestion(ListIngestionRequest request) throws LogException;
 	StopIngestionResponse stopIngestion(StopIngestionRequest request) throws LogException;
 	StartIngestionResponse startIngestion(StartIngestionRequest request) throws LogException;
+	StartIngestionResponse restartIngestion(RestartIngestionRequest request) throws LogException;
 
 	CreateRebuildIndexResponse createRebuildIndex(CreateRebuildIndexRequest request) throws LogException;
 	DeleteRebuildIndexResponse deleteRebuildIndex(DeleteRebuildIndexRequest request) throws LogException;
