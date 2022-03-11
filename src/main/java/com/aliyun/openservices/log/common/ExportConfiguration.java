@@ -21,6 +21,16 @@ public class ExportConfiguration extends JobConfiguration {
 
     private int fromTime;
 
+    public int getToTime() {
+        return toTime;
+    }
+
+    public void setToTime(int toTime) {
+        this.toTime = toTime;
+    }
+
+    private int toTime;
+
     private DataSink sink;
 
     private Map<String, String> parameters;
