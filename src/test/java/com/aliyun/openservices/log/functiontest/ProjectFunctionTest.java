@@ -17,6 +17,20 @@ public class ProjectFunctionTest extends FunctionTest {
 
     private static final String TEST_PROJECT = makeProjectName();
 
+
+    @Test
+    public void testProjectNameCannotBeLogtail() {
+        String project = "logtail";
+        try {
+            client.CreateProject(project, "");
+            fail();
+        } catch (LogException ex) {
+            assertEquals(ex.GetHttpCode(), 400);
+            assertEquals(ex.GetErrorCode(), "ProjectAlreadyExist");
+            assertEquals(ex.GetErrorMessage(), "Project logtail already exist");
+        }
+    }
+
     @Test
     public void testUpdateProjectList() throws LogException {
         String project = TEST_PROJECT;
