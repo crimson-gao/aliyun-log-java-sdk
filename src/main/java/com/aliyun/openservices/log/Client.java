@@ -51,6 +51,9 @@ import com.aliyun.openservices.log.common.ShipperTasksStatistic;
 import com.aliyun.openservices.log.common.SqlInstance;
 import com.aliyun.openservices.log.common.SubStore;
 import com.aliyun.openservices.log.common.TagContent;
+import com.aliyun.openservices.log.common.Topostore;
+import com.aliyun.openservices.log.common.TopostoreNode;
+import com.aliyun.openservices.log.common.TopostoreRelation;
 import com.aliyun.openservices.log.common.Consts.CompressType;
 import com.aliyun.openservices.log.common.Consts.CursorMode;
 import com.aliyun.openservices.log.common.auth.Credentials;
@@ -4296,6 +4299,400 @@ public class Client implements LogService {
 		return new StopAuditJobResponse(responseMessage.getHeaders());
 	}
 
+	@Override
+	public CreateTopostoreResponse createTopostore(CreateTopostoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostore(), "topostore");
+		Topostore topostore = request.getTopostore();
+		topostore.checkForCreate();
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(topostore.ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = Consts.TOPOSTORE_URI;
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
+				resourceUri, request.GetAllParams(), headParameter, body);
+		return new CreateTopostoreResponse(response.getHeaders());
+	}
+
+	@Override
+	public UpdateTopostoreResponse updateTopostore(UpdateTopostoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostore(), "topostore");
+		Topostore topostore = request.getTopostore();
+		topostore.checkForUpdate();
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(topostore.ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = Consts.TOPOSTORE_URI + "/" + topostore.getName();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT,
+				resourceUri, request.GetAllParams(), headParameter, body);
+		return new UpdateTopostoreResponse(response.getHeaders());
+	}
+
+	protected Topostore extractTopostoreFromResponse(JSONObject dict, String requestId) throws LogException {
+		Topostore topostore = new Topostore();
+		try {
+			topostore.FromJsonObject(dict);
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid json string : " + dict.toString(), e, requestId);
+		}
+		return topostore;
+	}
+
+	protected List<Topostore> extractTopostores(JSONObject object, String requestId) throws LogException {
+		List<Topostore> topostores = new ArrayList<Topostore>();
+		if (object == null) {
+			return topostores;
+		}
+		JSONArray array = new JSONArray();
+		try {
+			array = object.getJSONArray("items");
+			if (array == null) {
+				return topostores;
+			}
+			for (int index = 0; index < array.size(); index++) {
+				JSONObject jsonObject = array.getJSONObject(index);
+				if (jsonObject == null) {
+					continue;
+				}
+				Topostore topostore = new Topostore();
+				topostore.FromJsonObject(jsonObject);
+				topostores.add(topostore);
+			}
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid config json array string : " + array.toString(), e, requestId);
+		}
+		return topostores;
+	}
+
+
+	@Override
+	public GetTopostoreResponse getTopostore(GetTopostoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostoreName(), "topostoreName");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+
+		String resourceUri =Consts.TOPOSTORE_URI + "/" + request.getTopostoreName();
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, request.GetAllParams(), headParameter);
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		Topostore topostore = extractTopostoreFromResponse(object, requestId);
+		return new GetTopostoreResponse(response.getHeaders(), topostore);
+	}
+
+
+	@Override
+	public ListTopostoreResponse listTopostore(ListTopostoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+
+		String resourceUri =Consts.TOPOSTORE_URI;
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, request.GetAllParams(), headParameter);
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		int count = object.getIntValue(Consts.CONST_COUNT);
+		int total = object.getIntValue(Consts.CONST_TOTAL);
+		List<Topostore> topostores = extractTopostores(object, requestId);
+		return new ListTopostoreResponse(response.getHeaders(), count, total, topostores);
+	}
+
+	@Override
+	public DeleteTopostoreResponse deleteTopostore(DeleteTopostoreRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostoreName(), "topostoreName");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+
+		String resourceUri =Consts.TOPOSTORE_URI + "/" + request.getTopostoreName();
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE,
+				resourceUri, request.GetAllParams(), headParameter);
+		return new DeleteTopostoreResponse(response.getHeaders());
+	}
+
+	@Override
+	public CreateTopostoreNodeResponse createTopostoreNode(CreateTopostoreNodeRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostoreName(), "topostoreName");
+		CodingUtils.assertParameterNotNull(request.getTopostoreNode(), "topostoreNode");
+
+		TopostoreNode topostoreNode = request.getTopostoreNode();
+		topostoreNode.checkForCreate();;
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(topostoreNode.ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() + "/nodes";
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
+				resourceUri, request.GetAllParams(), headParameter, body);
+		return new CreateTopostoreNodeResponse(response.getHeaders());
+	}
+
+	@Override
+	public UpdateTopostoreNodeResponse updateTopostoreNode(UpdateTopostoreNodeRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostoreName(), "topostoreName");
+		CodingUtils.assertParameterNotNull(request.getTopostoreNode(), "topostoreNode");
+
+		TopostoreNode topostoreNode = request.getTopostoreNode();
+		topostoreNode.checkForUpdate();;
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(topostoreNode.ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() + "/nodes/" + topostoreNode.getNodeId();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT,
+				resourceUri, request.GetAllParams(), headParameter, body);
+		return new UpdateTopostoreNodeResponse(response.getHeaders());
+	}
+
+	@Override
+	public DeleteTopostoreNodeResponse deleteTopostoreNode(DeleteTopostoreNodeRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostoreName(), "topostoreName");
+		CodingUtils.assertParameterNotNull(request.getTopostoreNodeIds(), "topostoreNodeIds");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() + "/nodes";
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE,
+				resourceUri, request.GetAllParams(), headParameter);
+		return new DeleteTopostoreNodeResponse(response.getHeaders());
+	}
+
+
+	protected TopostoreNode extractTopostoreNodeFromResponse(JSONObject dict, String requestId) throws LogException {
+		TopostoreNode node = new TopostoreNode();
+		try {
+			node.FromJsonObject(dict);
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid json string : " + dict.toString(), e, requestId);
+		}
+		return node;
+	}
+
+	public GetTopostoreNodeResponse getTopostoreNode(GetTopostoreNodeRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostoreName(), "topostoreName");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+
+		String resourceUri =Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() 
+			+ "/nodes/" +  request.getTopostoreNodeId();
+
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, request.GetAllParams(), headParameter);
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		TopostoreNode node = extractTopostoreNodeFromResponse(object, requestId);
+		return new GetTopostoreNodeResponse(response.getHeaders(), node);
+	}
+
+	protected List<TopostoreNode> extractTopostoreNodesFromResponse(JSONObject object, String requestId) throws LogException {
+		List<TopostoreNode> topostoreNodes = new ArrayList<TopostoreNode>();
+		if (object == null) {
+			return topostoreNodes;
+		}
+		JSONArray array = new JSONArray();
+		try {
+			array = object.getJSONArray("items");
+			if (array == null) {
+				return topostoreNodes;
+			}
+			for (int index = 0; index < array.size(); index++) {
+				JSONObject jsonObject = array.getJSONObject(index);
+				if (jsonObject == null) {
+					continue;
+				}
+				TopostoreNode node = new TopostoreNode();
+				node.FromJsonObject(jsonObject);
+				topostoreNodes.add(node);
+			}
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid config json array string : " + array.toString(), e, requestId);
+		}
+		return topostoreNodes;
+	}
+
+	@Override
+	public ListTopostoreNodeResponse listTopostoreNode(ListTopostoreNodeRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+
+		String resourceUri =Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() + "/nodes";
+
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, request.GetAllParams(), headParameter);
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		List<TopostoreNode> nodes = extractTopostoreNodesFromResponse(object, requestId);
+		return new ListTopostoreNodeResponse(response.getHeaders(), nodes);
+	}
+
+	@Override
+	public UpsertTopostoreNodeResponse upsertTopostoreNode(UpsertTopostoreNodeRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getTopostoreName(), "topostoreName");
+		CodingUtils.assertParameterNotNull(request.getTopostoreNodes(), "topostoreNodes");
+		for (TopostoreNode n: request.getTopostoreNodes()) {
+			n.checkForUpsert();
+		}
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(request.getPostBody());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri =Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() + "/nodes";
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT,
+				resourceUri, request.GetAllParams(), headParameter, body);
+		return new UpsertTopostoreNodeResponse(response.getHeaders());
+	}
+
+	@Override
+	public CreateTopostoreRelationResponse createTopostoreRelation(CreateTopostoreRelationRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostoreName(), "topostoreName");
+		CodingUtils.assertParameterNotNull(request.getTopostoreRelation(), "topostoreRelation");
+
+		TopostoreRelation topostoreRelation = request.getTopostoreRelation();
+		topostoreRelation.checkForCreate();;
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(topostoreRelation.ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() + "/relations";
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.POST,
+				resourceUri, request.GetAllParams(), headParameter, body);
+		return new CreateTopostoreRelationResponse(response.getHeaders());
+	}
+
+	@Override
+	public UpdateTopostoreRelationResponse updateTopostoreRelation(UpdateTopostoreRelationRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostoreName(), "topostoreName");
+		CodingUtils.assertParameterNotNull(request.getTopostoreRelation(), "topostoreRelation");
+
+		TopostoreRelation topostoreRelation = request.getTopostoreRelation();
+		topostoreRelation.checkForUpdate();;
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(topostoreRelation.ToJsonString());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() + "/relations/" + topostoreRelation.getRelationId();
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT,
+				resourceUri, request.GetAllParams(), headParameter, body);
+		return new UpdateTopostoreRelationResponse(response.getHeaders());
+	}
+
+	@Override
+	public DeleteTopostoreRelationResponse deleteTopostoreRelation(DeleteTopostoreRelationRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostoreName(), "topostoreName");
+		CodingUtils.assertParameterNotNull(request.getTopostoreRelationIds(), "topostoreRelationIds");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri = Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() + "/relations";
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.DELETE,
+				resourceUri, request.GetAllParams(), headParameter);
+		return new DeleteTopostoreRelationResponse(response.getHeaders());
+	}
+
+
+	protected TopostoreRelation extractTopostoreRelationFromResponse(JSONObject dict, String requestId) throws LogException {
+		TopostoreRelation relation = new TopostoreRelation();
+		try {
+			relation.FromJsonObject(dict);
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid json string : " + dict.toString(), e, requestId);
+		}
+		return relation;
+	}
+
+	public GetTopostoreRelationResponse getTopostoreRelation(GetTopostoreRelationRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertParameterNotNull(request.getTopostoreName(), "topostoreName");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+
+		String resourceUri =Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() 
+			+ "/relations/" +  request.getTopostoreRelationId();
+
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, request.GetAllParams(), headParameter);
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		TopostoreRelation relation = extractTopostoreRelationFromResponse(object, requestId);
+		return new GetTopostoreRelationResponse(response.getHeaders(), relation);
+	}
+
+	protected List<TopostoreRelation> extractTopostoreRelationsFromResponse(JSONObject object, String requestId) throws LogException {
+		List<TopostoreRelation> topostoreRelations = new ArrayList<TopostoreRelation>();
+		if (object == null) {
+			return topostoreRelations;
+		}
+		JSONArray array = new JSONArray();
+		try {
+			array = object.getJSONArray("items");
+			if (array == null) {
+				return topostoreRelations;
+			}
+			for (int index = 0; index < array.size(); index++) {
+				JSONObject jsonObject = array.getJSONObject(index);
+				if (jsonObject == null) {
+					continue;
+				}
+				TopostoreRelation relation = new TopostoreRelation();
+				relation.FromJsonObject(jsonObject);
+				topostoreRelations.add(relation);
+			}
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid config json array string : " + array.toString(), e, requestId);
+		}
+		return topostoreRelations;
+	}
+
+	@Override
+	public ListTopostoreRelationResponse listTopostoreRelation(ListTopostoreRelationRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+
+		String resourceUri =Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() + "/relations";
+
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.GET, resourceUri, request.GetAllParams(), headParameter);
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		List<TopostoreRelation> relations = extractTopostoreRelationsFromResponse(object, requestId);
+		return new ListTopostoreRelationResponse(response.getHeaders(), relations);
+	}
+
+	@Override
+	public UpsertTopostoreRelationResponse upsertTopostoreRelation(UpsertTopostoreRelationRequest request) throws LogException {
+		CodingUtils.assertParameterNotNull(request, "request");
+		CodingUtils.assertStringNotNullOrEmpty(request.getTopostoreName(), "topostoreName");
+		CodingUtils.assertParameterNotNull(request.getTopostoreRelations(), "topostoreRelations");
+		for (TopostoreRelation n: request.getTopostoreRelations()) {
+			n.checkForUpsert();
+		}
+
+		Map<String, String> headParameter = GetCommonHeadPara(request.GetProject());
+		byte[] body = encodeToUtf8(request.getPostBody());
+		headParameter.put(Consts.CONST_CONTENT_TYPE, Consts.CONST_SLS_JSON);
+		String resourceUri =Consts.TOPOSTORE_URI + "/" + request.getTopostoreName() + "/relations";
+		ResponseMessage response = SendData(request.GetProject(), HttpMethod.PUT,
+				resourceUri, request.GetAllParams(), headParameter, body);
+		return new UpsertTopostoreRelationResponse(response.getHeaders());
+	}
+
+	
 	@Override
 	public CreateResourceResponse createResource(CreateResourceRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");

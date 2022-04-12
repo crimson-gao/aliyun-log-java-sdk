@@ -3610,6 +3610,24 @@ public interface LogService {
 	StartAuditJobResponse startAuditJob(StartAuditJobRequest request) throws LogException;
 	StopAuditJobResponse stopAuditJob(StopAuditJobRequest request) throws LogException;
 
+	CreateTopostoreResponse createTopostore(CreateTopostoreRequest request) throws LogException;
+	UpdateTopostoreResponse updateTopostore(UpdateTopostoreRequest request) throws LogException;
+	GetTopostoreResponse getTopostore(GetTopostoreRequest request) throws LogException;
+	DeleteTopostoreResponse deleteTopostore(DeleteTopostoreRequest request) throws LogException ;
+	ListTopostoreResponse listTopostore(ListTopostoreRequest request) throws LogException ;
+	
+	CreateTopostoreNodeResponse createTopostoreNode(CreateTopostoreNodeRequest request) throws LogException;
+	UpsertTopostoreNodeResponse upsertTopostoreNode(UpsertTopostoreNodeRequest request) throws LogException;
+	UpdateTopostoreNodeResponse updateTopostoreNode(UpdateTopostoreNodeRequest request) throws LogException;
+	DeleteTopostoreNodeResponse deleteTopostoreNode(DeleteTopostoreNodeRequest request) throws LogException;
+	ListTopostoreNodeResponse listTopostoreNode(ListTopostoreNodeRequest request) throws LogException;
+
+	CreateTopostoreRelationResponse createTopostoreRelation(CreateTopostoreRelationRequest request) throws LogException;
+	UpsertTopostoreRelationResponse upsertTopostoreRelation(UpsertTopostoreRelationRequest request) throws LogException;
+	UpdateTopostoreRelationResponse updateTopostoreRelation(UpdateTopostoreRelationRequest request) throws LogException;
+	DeleteTopostoreRelationResponse deleteTopostoreRelation(DeleteTopostoreRelationRequest request) throws LogException;
+	ListTopostoreRelationResponse listTopostoreRelation(ListTopostoreRelationRequest request) throws LogException;
+	
 	CreateResourceResponse createResource(CreateResourceRequest request) throws LogException;
 	UpdateResourceResponse updateResource(UpdateResourceRequest request) throws LogException;
 	GetResourceResponse    getResource(GetResourceRequest request) throws LogException;
