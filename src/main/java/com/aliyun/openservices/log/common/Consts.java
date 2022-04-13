@@ -410,6 +410,56 @@ public class Consts {
     public static final String RESOURCE_JSON_PATH = "jsonPath";
     public static final String RESOURCE_JSON_PATH_VALUE = "jsonPathValue";
 
+    public static final String TOPOSTORE_URI = "/topostores";
+    public static final String TOPOSTORE_OWNER = "owner";
+    public static final String TOPOSTORE_NAME = "name";
+    public static final String TOPOSTORE_NAME_LIST = "names";
+    public static final String TOPOSTORE_TAG = "tag";
+    public static final String TOPOSTORE_TAG_KEY = "tagKey";
+    public static final String TOPOSTORE_SCHEMA = "schema";
+    public static final String TOPOSTORE_EXTINFO  = "extInfo";
+    public static final String TOPOSTORE_ACL = "acl";
+    public static final String TOPOSTORE_TAG_VALUE = "tagValue";
+    public static final String TOPOSTORE_LIST_OFFSET = "offset";
+    public static final String TOPOSTORE_LIST_LIMIT = "limit";
+    public static final String TOPOSTORE_DESCRIPTION = "description";
+    public static final String TOPOSTORE_CREATE_TIME = "createTime";
+    public static final String TOPOSTORE_LAST_MODIFY_TIME = "lastModifyTime";
+
+    public static final String TOPOSTORE_NODE_ID = "nodeId";
+    public static final String TOPOSTORE_NODE_ID_LIST = "nodeIds";
+    public static final String TOPOSTORE_NODE_TYPE = "nodeType";
+    public static final String TOPOSTORE_NODE_TYPE_LIST = "nodeTypes";
+    public static final String TOPOSTORE_NODE_PROPERTY = "property";
+    public static final String TOPOSTORE_NODE_PROPERTY_KEY = "propertyKey";
+    public static final String TOPOSTORE_NODE_PROPERTY_VALUE = "propertyValue";
+    public static final String TOPOSTORE_NODE_DESCRIPTION = "description";
+    public static final String TOPOSTORE_NODE_DISPLAY_NAME = "displayName";
+    public static final String TOPOSTORE_NODE_CREATE_TIME = "createTime";
+    public static final String TOPOSTORE_NODE_LAST_MODIFY_TIME = "lastModifyTime";
+    public static final String TOPOSTORE_NODE_COUNT = "count";
+    public static final String TOPOSTORE_NODE_TOTAL = "total";
+    public static final String TOPOSTORE_NODE_ITEMS = "items";
+
+    public static final String TOPOSTORE_RELATION_ID = "relationId";
+    public static final String TOPOSTORE_RELATION_ID_LIST = "relationIds";
+    public static final String TOPOSTORE_RELATION_SRC_NODE_ID = "srcNodeId";
+    public static final String TOPOSTORE_RELATION_SRC_NODE_ID_LIST = "srcNodeIds";
+    public static final String TOPOSTORE_RELATION_DST_NODE_ID = "dstNodeId";
+    public static final String TOPOSTORE_RELATION_DST_NODE_ID_LIST = "dstNodeIds";
+    public static final String TOPOSTORE_RELATION_TYPE = "relationType";
+    public static final String TOPOSTORE_RELATION_TYPE_LIST = "relationTypes";
+    public static final String TOPOSTORE_RELATION_PROPERTY = "property";
+    public static final String TOPOSTORE_RELATION_PROPERTY_KEY = "propertyKey";
+    public static final String TOPOSTORE_RELATION_DESCRIPTION = "description";
+    public static final String TOPOSTORE_RELATION_DISPLAY_NAME = "displayName";
+    public static final String TOPOSTORE_RELATION_PROPERTY_VALUE = "propertyValue";
+    public static final String TOPOSTORE_RELATION_CREATE_TIME = "createTime";
+    public static final String TOPOSTORE_RELATION_LAST_MODIFY_TIME = "lastModifyTime";
+    public static final String TOPOSTORE_RELATION_COUNT = "count";
+    public static final String TOPOSTORE_RELATION_TOTAL = "total";
+    public static final String TOPOSTORE_RELATION_ITEMS = "items";
+
     public static final String LOGGING_URI = "/logging";
     public static final String METHOD = "method";
     public static final String MOBILE_LIST = "mobileList";
