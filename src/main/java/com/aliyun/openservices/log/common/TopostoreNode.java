@@ -120,12 +120,12 @@ public class TopostoreNode implements Serializable {
 
         // property
         if (dict.containsKey(Consts.TOPOSTORE_NODE_PROPERTY)) {
-            setDescription(dict.getString(Consts.TOPOSTORE_NODE_PROPERTY));
+            setProperty(dict.getString(Consts.TOPOSTORE_NODE_PROPERTY));
         }
 
         // displayName
         if (dict.containsKey(Consts.TOPOSTORE_NODE_DISPLAY_NAME)) {
-            setDescription(dict.getString(Consts.TOPOSTORE_NODE_DISPLAY_NAME));
+            setDisplayName(dict.getString(Consts.TOPOSTORE_NODE_DISPLAY_NAME));
         }
 
         // description
