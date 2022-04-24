@@ -145,12 +145,12 @@ public class TopostoreRelation implements Serializable {
 
         // property
         if (dict.containsKey(Consts.TOPOSTORE_RELATION_PROPERTY)) {
-            setDescription(dict.getString(Consts.TOPOSTORE_RELATION_PROPERTY));
+            setProperty(dict.getString(Consts.TOPOSTORE_RELATION_PROPERTY));
         }
 
         // displayName
         if (dict.containsKey(Consts.TOPOSTORE_RELATION_DISPLAY_NAME)) {
-            setDescription(dict.getString(Consts.TOPOSTORE_RELATION_DISPLAY_NAME));
+            setDisplayName(dict.getString(Consts.TOPOSTORE_RELATION_DISPLAY_NAME));
         }
 
         // description
