@@ -236,6 +236,7 @@ public class LogStore implements Serializable {
         logStoreDict.put("resourceQuota", resourceQuota);
         logStoreDict.put("archiveSeconds", archiveSeconds);
         logStoreDict.put("telemetryType", telemetryType);
+        logStoreDict.put("productType", productType);
         if(hotTTL > 0) {
             logStoreDict.put("hot_ttl",hotTTL);
         }
