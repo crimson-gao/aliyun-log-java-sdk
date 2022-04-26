@@ -283,9 +283,8 @@ public class Consts {
 
     public static final String CONST_LOCAL_IP = "127.0.0.1";
     public static int CONST_MAX_PUT_SIZE = 50 * 1024 * 1024;
-    public static int CONST_MAX_PUT_LINES = 40960;
+    public static int CONST_MAX_POST_BODY_SIZE = 10 * 1024 * 1024;
 
-    public static final int CONST_UN_AUTHORIZATION_CODE = 401;
     public static final int CONST_HTTP_OK = 200;
     public static int HTTP_CONNECT_MAX_COUNT = 1000;
     public static int HTTP_CONNECT_TIME_OUT = 5 * 1000;

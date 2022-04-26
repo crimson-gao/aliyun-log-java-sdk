@@ -553,10 +553,6 @@ public class Client implements LogService {
 		byte[] logBytes = request.GetLogGroupBytes();
 		if (logBytes == null) {
 			List<LogItem> logItems = request.GetLogItems();
-			if (logItems.size() > Consts.CONST_MAX_PUT_LINES) {
-				throw new LogException("InvalidLogSize",
-						"logItems' length exceeds maximum limitation : " + Consts.CONST_MAX_PUT_LINES + " lines", "");
-			}
 			String topic = request.GetTopic();
 			CodingUtils.assertParameterNotNull(topic, "topic");
 			String source = request.GetSource();
@@ -579,7 +575,7 @@ public class Client implements LogService {
 				if (this.mUUIDTag) {
 					Logs.LogTag.Builder tagBuilder = logs.addLogTagsBuilder();
 					tagBuilder.setKey("__pack_unique_id__");
-					tagBuilder.setValue(UUID.randomUUID().toString() + "-" + String.valueOf(Math.random()));
+					tagBuilder.setValue(UUID.randomUUID().toString() + "-" + Math.random());
 				}
 				for (LogItem item : logItems) {
 					Logs.Log.Builder log = logs.addLogsBuilder();
@@ -623,7 +619,7 @@ public class Client implements LogService {
 					}
 				}
 				if (this.mUUIDTag)  {
-					tagObj.put("__pack_unique_id__", UUID.randomUUID().toString() + "-" + String.valueOf(Math.random()));
+					tagObj.put("__pack_unique_id__", UUID.randomUUID().toString() + "-" + Math.random());
 				}
 				if (tagObj.size() > 0) {
 					jsonObj.put("__tags__", tagObj);
@@ -631,11 +627,15 @@ public class Client implements LogService {
 				logBytes = encodeToUtf8(jsonObj.toString());
 			}
 		}
-		if (logBytes.length > Consts.CONST_MAX_PUT_SIZE) {
+		int bodySize = logBytes.length;
+		if (bodySize > Consts.CONST_MAX_PUT_SIZE) {
 			throw new LogException("InvalidLogSize",
 					"logItems' size exceeds maximum limitation : "
 							+ Consts.CONST_MAX_PUT_SIZE
 							+ " bytes", "");
+		} else if (bodySize > Consts.CONST_MAX_POST_BODY_SIZE) {
+			throw new LogException("PostBodyTooLarge",
+					"body size " + bodySize + " must little than " + Consts.CONST_MAX_POST_BODY_SIZE, "");
 		}
 
 		Map<String, String> headParameter = GetCommonHeadPara(project);
