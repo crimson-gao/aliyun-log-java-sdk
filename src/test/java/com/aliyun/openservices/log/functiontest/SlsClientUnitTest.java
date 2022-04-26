@@ -1474,7 +1474,7 @@ public class SlsClientUnitTest {
             mock.PutLogs("project", "logStore", "topic", logs, "source");
 
         } catch (LogException e) {
-            assertTrue(e.getMessage(), false);
+            fail(e.getMessage());
         }
 
         List<LogItem> maxLineLogs = new ArrayList<LogItem>();
@@ -1486,9 +1486,7 @@ public class SlsClientUnitTest {
             mock.ChangeResponse(response);
             mock.PutLogs("project", "logStore", "topic", maxLineLogs, "source");
         } catch (LogException e) {
-            assertEquals("InvalidLogSize", e.GetErrorCode());
-            assertEquals("logItems' length exceeds maximum limitation : " + String.valueOf(Consts.CONST_MAX_PUT_LINES) + " lines",
-                    e.GetErrorMessage());
+            fail(e.getMessage());
         }
 
         LogItem overloadLog = new LogItem(time1);
