@@ -363,10 +363,10 @@ public class ScheduledSqlE2E extends FunctionTest {
         try {
             destClient.DeleteLogStore(project, logstore);
         } catch (LogException ex) {
-            System.out.println("ERROR: errorCode=" + ex.GetErrorCode()
-                    + ", httpCode=" + ex.GetHttpCode()
-                    + ", errorMessage=" + ex.GetErrorMessage()
-                    + ", requestId=" + ex.GetRequestId());
+            System.out.println("ERROR: errorCode=" + ex.getErrorCode()
+                    + ", httpCode=" + ex.getHttpCode()
+                    + ", errorMessage=" + ex.getMessage()
+                    + ", requestId=" + ex.getRequestId());
             assertEquals(ex.GetHttpCode(), 404);
         }
         destClient.CreateLogStore(project, structureLogStore(logstore));

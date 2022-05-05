@@ -16,9 +16,9 @@ public class DomainTest extends MetaAPIBaseFunctionTest {
             client.deleteDomain(TEST_PROJECT, "test-domain");
             fail();
         } catch (LogException e) {
-            assertEquals("Unauthorized", e.GetErrorCode());
-            assertEquals("this api does not support sub user or role", e.GetErrorMessage());
-            assertEquals(401, e.GetHttpCode());
+            assertEquals("Unauthorized", e.getErrorCode());
+            assertEquals("this api does not support sub user or role", e.getMessage());
+            assertEquals(401, e.getHttpCode());
         }
         //create
         client.createDomain(TEST_PROJECT, new Domain("test-domain"));

@@ -686,8 +686,8 @@ public class Client implements LogService {
 				}
 				return putLogsResponse;
 			} catch (LogException e) {
-				String request_id = e.GetRequestId();
-				if (i == 1 || request_id != null && !request_id.isEmpty())
+				String requestId = e.getRequestId();
+				if (i == 1 || requestId != null && !requestId.isEmpty())
 				{
 					throw e;
 				}
@@ -887,7 +887,7 @@ public class Client implements LogService {
 					JSONObject object = parseResponseBody(response, requestId);
 					ErrorCheck(object, requestId, statusCode);
 				} catch (LogException ex) {
-					ex.SetHttpCode(response.getStatusCode());
+					ex.setHttpCode(response.getStatusCode());
 					throw ex;
 				}
 			}
@@ -1297,7 +1297,7 @@ public class Client implements LogService {
 				}
 				return batchGetLogResponse;
 			} catch (LogException e) {
-				if (i == 1 || e.GetRequestId() != null && !e.GetRequestId().isEmpty()) {
+				if (i == 1 || e.getRequestId() != null && !e.getRequestId().isEmpty()) {
 					throw e;
 				}
 				if (connection_status != null) {
@@ -1338,7 +1338,7 @@ public class Client implements LogService {
                 }
                 return plr;
             } catch (LogException ex) {
-                if (i == 1 || ex.GetRequestId() != null && !ex.GetRequestId().isEmpty()) {
+                if (i == 1 || ex.getRequestId() != null && !ex.getRequestId().isEmpty()) {
                     throw ex;
                 }
                 if (connectionStatus != null) {
@@ -2238,7 +2238,7 @@ public class Client implements LogService {
 					JSONObject object = parseResponseBody(response, requestId);
 					ErrorCheck(object, requestId, statusCode);
 				} catch (LogException ex) {
-					ex.SetHttpCode(response.getStatusCode());
+					ex.setHttpCode(response.getStatusCode());
 					throw ex;
 				}
 			}

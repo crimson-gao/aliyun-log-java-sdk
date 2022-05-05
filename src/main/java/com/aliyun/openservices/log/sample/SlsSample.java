@@ -55,7 +55,7 @@ public class SlsSample {
 			}
 		}
 		catch(LogException e) {
-			System.out.println(e.GetRequestId() + e.GetErrorMessage());
+			System.out.println(e.getRequestId() + e.getMessage());
 		}
 	
 		if (shardId > 0)

@@ -2912,7 +2912,7 @@ public class SlsClientUnitTest {
     @Test
     public void TestExceptionMisc() {
         LogException e = new LogException("", "", "test");
-        assertEquals("test", e.GetRequestId());
+        assertEquals("test", e.getRequestId());
     }
 
     @Test
