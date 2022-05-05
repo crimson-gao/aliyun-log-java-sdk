@@ -403,7 +403,7 @@ public class Client implements LogService {
 			}
 			return new GetLogtailProfileResponse(resHeaders, count, total, logtailProfiles);
 		} catch (LogException e) {
-			throw new LogException(e.GetErrorCode(), e.GetErrorMessage(),
+			throw new LogException(e.getErrorCode(), e.getMessage(),
 					e.getCause(), GetRequestId(resHeaders));
 		}
 	}
@@ -1403,7 +1403,7 @@ public class Client implements LogService {
 		try {
 			config.FromJsonString(dict.toString());
 		} catch (LogException e) {
-			throw new LogException(e.GetErrorCode(), e.GetErrorMessage(),
+			throw new LogException(e.getErrorCode(), e.getMessage(),
 					e.getCause(), requestId);
 		}
 		return config;
@@ -1587,7 +1587,7 @@ public class Client implements LogService {
 		try {
 			group.FromJsonString(dict.toString());
 		} catch (LogException e) {
-			throw new LogException(e.GetErrorCode(), e.GetErrorMessage(),
+			throw new LogException(e.getErrorCode(), e.getMessage(),
 					e.getCause(), requestId);
 		}
 		return group;
