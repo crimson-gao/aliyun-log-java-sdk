@@ -16,6 +16,15 @@ public class AliyunODPSSink extends DataSink {
     private List<String> partitionColumn;
     private String odpsAccessKeyId;
     private String odpsAccessSecret;
+    private String mode;
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
 
     public String getOdpsAccessKeyId() {
         return odpsAccessKeyId;
