@@ -152,8 +152,8 @@ public class Consts {
     public static final String CONST_LINE = "line";
     public static final String CONST_OFFSET = "offset";
     public static final String CONST_REVERSE = "reverse";
-    public static final String CONST_POWER_SQL="powerSql";
-    public static final String CONST_FORWARD="forward";
+    public static final String CONST_POWER_SQL = "powerSql";
+    public static final String CONST_FORWARD = "forward";
     public static final String CONST_QUERY = "query";
     public static final String CONST_TOKEN = "token";
     public static final String CONST_CURSOR = "cursor";
@@ -416,7 +416,7 @@ public class Consts {
     public static final String TOPOSTORE_TAG = "tag";
     public static final String TOPOSTORE_TAG_KEY = "tagKey";
     public static final String TOPOSTORE_SCHEMA = "schema";
-    public static final String TOPOSTORE_EXTINFO  = "extInfo";
+    public static final String TOPOSTORE_EXTINFO = "extInfo";
     public static final String TOPOSTORE_ACL = "acl";
     public static final String TOPOSTORE_TAG_VALUE = "tagValue";
     public static final String TOPOSTORE_LIST_OFFSET = "offset";
@@ -483,6 +483,6 @@ public class Consts {
     public static final String JOB_INSTANCES_START_TIME = "start";
     public static final String JOB_INSTANCES_END_TIME = "end";
     public static final String SCHEDULED_SQL_RUNNING = "RUNNING";
-    
+
     public static final String INVALID_LOG_TIME = "InvalidLogTime";
 }

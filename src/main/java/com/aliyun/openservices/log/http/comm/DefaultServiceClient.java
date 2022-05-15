@@ -21,6 +21,7 @@ package com.aliyun.openservices.log.http.comm;
 
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.http.client.ClientConfiguration;
+import com.aliyun.openservices.log.http.client.ClientErrorCode;
 import com.aliyun.openservices.log.http.client.ClientException;
 import com.aliyun.openservices.log.http.utils.ExceptionFactory;
 import com.aliyun.openservices.log.http.utils.HttpHeaders;
@@ -162,6 +163,35 @@ public class DefaultServiceClient extends ServiceClient {
         byte[] contentBytes = IOUtils.readStreamAsByteArray(originalContent);
         response.setErrorResponseAsString(new String(contentBytes));
         response.setContent(new ByteArrayInputStream(contentBytes));
+    }
+
+    @Override
+    protected RetryStrategy getDefaultRetryStrategy() {
+        return new DefaultRetryStrategy();
+    }
+
+    private static class DefaultRetryStrategy extends RetryStrategy {
+
+        @Override
+        public boolean shouldRetry(Exception ex, RequestMessage request, int retries) {
+            if (ex instanceof ClientException) {
+                String errorCode = ((ClientException) ex).getErrorCode();
+                if (errorCode.equals(ClientErrorCode.CONNECTION_TIMEOUT)
+                        || errorCode.equals(ClientErrorCode.SOCKET_TIMEOUT)
+                        || errorCode.equals(ClientErrorCode.CONNECTION_REFUSED)
+                        || errorCode.equals(ClientErrorCode.UNKNOWN_HOST)
+                        || errorCode.equals(ClientErrorCode.SOCKET_EXCEPTION)
+                        || errorCode.equals(ClientErrorCode.SSL_EXCEPTION)) {
+                    return true;
+                }
+
+                // Don't retry when request input stream is non-repeatable
+                if (errorCode.equals(ClientErrorCode.NONREPEATABLE_REQUEST)) {
+                    return false;
+                }
+            }
+            return false;
+        }
     }
 
     protected CloseableHttpClient createHttpClient(HttpClientConnectionManager connectionManager,
