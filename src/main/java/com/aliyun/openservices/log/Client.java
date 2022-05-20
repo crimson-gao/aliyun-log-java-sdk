@@ -429,6 +429,11 @@ public class Client implements LogService {
         return new TagResourcesResponse(resHeaders);
 	}
 
+	public TagResourcesResponse tagResources(TagResourcesRequest request) throws LogException {
+		Args.notNull(request, "request");
+		return tagResources(JsonUtils.serialize(request));
+	}
+
 	public UntagResourcesResponse untagResources(String untagResourcesStr) throws LogException {
 		CodingUtils.assertParameterNotNull(untagResourcesStr, "tagResourcesStr");
 		Map<String, String> headParameter = GetCommonHeadPara("");
@@ -438,6 +443,35 @@ public class Client implements LogService {
 		ResponseMessage response = SendData("", HttpMethod.POST, resourceUri, urlParameter, headParameter, body);
         Map<String, String> resHeaders = response.getHeaders();
         return new UntagResourcesResponse(resHeaders);
+	}
+
+	public UntagResourcesResponse untagResources(UntagResourcesRequest request) throws LogException {
+		Args.notNull(request, "request");
+		return untagResources(JsonUtils.serialize(request));
+	}
+
+	public TagResourcesResponse tagResourcesSystemTags(TagResourcesSystemTagsRequest request) throws LogException {
+		Args.notNull(request, "request");
+		Map<String, String> headParameter = GetCommonHeadPara("");
+		String tagResourcesStr = JsonUtils.serialize(request);
+		byte[] body = encodeToUtf8(tagResourcesStr);
+		String resourceUri = "/systemtag";
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData("", HttpMethod.POST, resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new TagResourcesResponse(resHeaders);
+	}
+
+	public UntagResourcesResponse untagResourcesSystemTags(UntagResourcesSystemTagsRequest request) throws LogException {
+		Args.notNull(request, "request");
+		String untagResourcesStr = JsonUtils.serialize(request);
+		Map<String, String> headParameter = GetCommonHeadPara("");
+		byte[] body = encodeToUtf8(untagResourcesStr);
+		String resourceUri = "/systemuntag";
+		Map<String, String> urlParameter = new HashMap<String, String>();
+		ResponseMessage response = SendData("", HttpMethod.POST, resourceUri, urlParameter, headParameter, body);
+		Map<String, String> resHeaders = response.getHeaders();
+		return new UntagResourcesResponse(resHeaders);
 	}
 
 	public ListTagResourcesResponse listTagResources(ListTagResourcesRequest request) throws LogException {

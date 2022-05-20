@@ -2,11 +2,15 @@ package com.aliyun.openservices.log.functiontest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.openservices.log.common.Tag;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.ListTagResourcesRequest;
+import com.aliyun.openservices.log.request.TagResourcesRequest;
+import com.aliyun.openservices.log.request.UntagResourcesRequest;
 import com.aliyun.openservices.log.response.ListTagResourcesResponse;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,6 +57,25 @@ public class TagResourcesTest extends MetaAPIBaseFunctionTest {
         }
         //created correctly
         client.tagResources(createTagSources("project", TEST_PROJECT, 3, false));
+
+        List<Tag> tags = new ArrayList<Tag>();
+        tags.add(new Tag("t1", "k1"));
+        TagResourcesRequest request = new TagResourcesRequest("project",
+                Collections.singletonList(TEST_PROJECT), tags);
+        client.tagResources(request);
+
+        List<String> tagKeys = new ArrayList<String>();
+        for (Tag t : tags) {
+            tagKeys.add(t.getKey());
+        }
+        UntagResourcesRequest untagResourcesRequest = new UntagResourcesRequest(
+                "project",
+                Collections.singletonList(TEST_PROJECT),
+                tagKeys);
+        client.untagResources(untagResourcesRequest);
+        untagResourcesRequest = new UntagResourcesRequest("project",
+                Collections.singletonList(TEST_PROJECT));
+        client.untagResources(untagResourcesRequest);
     }
 //
 //    @Test
