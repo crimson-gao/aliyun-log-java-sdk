@@ -580,7 +580,7 @@ public class Client implements LogService {
 		CodingUtils.assertStringNotNullOrEmpty(project, "project");
 		String logStore = request.GetLogStore();
 		CodingUtils.assertStringNotNullOrEmpty(logStore, "logStore");
-		String shardKey = request.GetRouteKey();
+		String shardKey = request.getHashKey();
 		CompressType compressType = request.GetCompressType();
 		CodingUtils.assertParameterNotNull(compressType, "compressType");
 
