@@ -115,6 +115,7 @@ public class ExportConfiguration extends JobConfiguration {
         accessKeySecret = value.getString("accessKeySecret");
         instanceType = value.getString("instanceType");
         fromTime = value.getIntValue("fromTime");
+        toTime = value.getIntValue("toTime");
         version = value.getString("version");
         JSONObject obj = value.getJSONObject("sink");
         // if version is exist, use ExportGeneralSink
