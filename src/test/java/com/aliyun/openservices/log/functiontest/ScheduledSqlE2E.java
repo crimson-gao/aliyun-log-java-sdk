@@ -491,7 +491,7 @@ public class ScheduledSqlE2E extends FunctionTest {
 
     private String getDestLogsIdNumbers(String project, String logStore, int fromTime, int toTime, String query, Client client) throws LogException {
         GetLogsResponse getLogsResponse = client.GetLogs(project, logStore, fromTime, toTime, "", query);
-        return getLogsResponse.GetLogs().get(0).GetLogItem().mContents.get(0).GetValue();
+        return getLogsResponse.getLogs().get(0).GetLogItem().mContents.get(0).GetValue();
     }
 
     private Integer getLastTimeInSecond(int n) {

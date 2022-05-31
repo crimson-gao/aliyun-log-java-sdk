@@ -29,9 +29,9 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
             client.CreateLogStore(TEST_PROJECT, logStore1);
             fail("Create invalid logstore should fail");
         } catch (LogException ex) {
-            assertEquals(ex.GetErrorCode(), "LogStoreInfoInvalid");
-            assertEquals(ex.GetErrorMessage(), "logstore name  is invalid");
-            assertEquals(ex.GetHttpCode(), 400);
+            assertEquals(ex.getErrorCode(), "LogStoreInfoInvalid");
+            assertEquals(ex.getMessage(), "logstore name  is invalid");
+            assertEquals(ex.getHttpCode(), 400);
         }
 
         LogStore logStore = new LogStore();
@@ -48,9 +48,9 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
                 client.CreateLogStore(TEST_PROJECT, logStore);
                 fail("Create invalid logstore should fail");
             } catch (LogException ex) {
-                assertEquals(ex.GetErrorCode(), "LogStoreInfoInvalid");
-                assertEquals(ex.GetErrorMessage(), "maxSplitShard must be within range [1, 64]");
-                assertEquals(ex.GetHttpCode(), 400);
+                assertEquals(ex.getErrorCode(), "LogStoreInfoInvalid");
+                assertEquals(ex.getMessage(), "maxSplitShard must be within range [1, 64]");
+                assertEquals(ex.getHttpCode(), 400);
             }
             logStore.setmMaxSplitShard(randomBetween(1, 64));
         }
@@ -80,9 +80,9 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
             client.CreateLogStore(TEST_PROJECT, logStore);
             fail("Create invalid archive seconds should fail");
         } catch (LogException ex) {
-            assertEquals(ex.GetErrorCode(), "ParameterInvalid");
-            assertEquals(ex.GetErrorMessage(), "invalid archive seconds " + logStore.getArchiveSeconds());
-            assertEquals(ex.GetHttpCode(), 400);
+            assertEquals(ex.getErrorCode(), "ParameterInvalid");
+            assertEquals(ex.getMessage(), "invalid archive seconds " + logStore.getArchiveSeconds());
+            assertEquals(ex.getHttpCode(), 400);
         }
 
         logStore.setArchiveSeconds(randomBetween(86400, logStore.GetTtl() * 86400));
@@ -115,9 +115,9 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
             client.CreateLogStore(TEST_PROJECT, logStore);
             fail("Create duplicate logstore should fail");
         } catch (LogException ex) {
-            assertEquals(ex.GetErrorCode(), "LogStoreAlreadyExist");
-            assertEquals(ex.GetErrorMessage(), "logstore logstore-for-testing1 already exists");
-            assertEquals(ex.GetHttpCode(), 400);
+            assertEquals(ex.getErrorCode(), "LogStoreAlreadyExist");
+            assertEquals(ex.getMessage(), "logstore logstore-for-testing1 already exists");
+            assertEquals(ex.getHttpCode(), 400);
         }
 
         logStore = new LogStore();
@@ -231,14 +231,12 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
             client.UpdateLogStore(TEST_PROJECT, logStore);
             fail("update logstore mode should fail");
         } catch (LogException ex) {
-            assertEquals(ex.GetErrorCode(), "ParameterInvalid");
-            assertEquals(ex.GetErrorMessage(), "logstore mode cannot be modified after creation");
-            assertEquals(ex.GetHttpCode(), 400);
+            assertEquals(ex.getErrorCode(), "ParameterInvalid");
+            assertEquals(ex.getMessage(), "logstore mode cannot be modified after creation");
+            assertEquals(ex.getHttpCode(), 400);
         }
 
-
         logstoreName = "logstore-for-testing2";
-
         logStore = new LogStore();
         logStore.SetLogStoreName(logstoreName);
         logStore.SetShardCount(2);
@@ -269,9 +267,9 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
             client.UpdateLogStore(TEST_PROJECT, logStore);
             fail("update logstore mode should fail");
         } catch (LogException ex) {
-            assertEquals(ex.GetErrorCode(), "ParameterInvalid");
-            assertEquals(ex.GetErrorMessage(), "logstore mode cannot be modified after creation");
-            assertEquals(ex.GetHttpCode(), 400);
+            assertEquals(ex.getErrorCode(), "ParameterInvalid");
+            assertEquals(ex.getMessage(), "logstore mode cannot be modified after creation");
+            assertEquals(ex.getHttpCode(), 400);
         }
         client.DeleteLogStore(TEST_PROJECT, "logstore-for-testing1");
         client.DeleteLogStore(TEST_PROJECT, "logstore-for-testing2");

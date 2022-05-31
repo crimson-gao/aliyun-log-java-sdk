@@ -101,7 +101,7 @@ public abstract class BaseDataTest extends FunctionTest {
                     timestamp + 1800, "", "", 100, totalSize, true);
             size = logs.GetCount();
             totalSize += size;
-            for (QueriedLog log : logs.GetLogs()) {
+            for (QueriedLog log : logs.getLogs()) {
                 for (LogContent mContent : log.mLogItem.mContents) {
                     String mKey = mContent.mKey;
                     String mValue = mContent.mValue;

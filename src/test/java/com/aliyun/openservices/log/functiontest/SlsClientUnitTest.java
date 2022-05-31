@@ -104,7 +104,7 @@ public class SlsClientUnitTest {
         // assertEquals(100, meta.mTotalogNum);
         assertEquals(response_1.GetCount(), 1);
         assertEquals(response_1.IsCompleted(), false);
-        ArrayList<QueriedLog> logs_1 = response_1.GetLogs();
+        List<QueriedLog> logs_1 = response_1.getLogs();
         assertEquals(logs_1.size(), 1);
         QueriedLog queriedLog = logs_1.get(0);
         LogItem logItem = queriedLog.GetLogItem();
@@ -126,7 +126,7 @@ public class SlsClientUnitTest {
         // assertEquals(100, meta.mTotalogNum);
         assertEquals(response_2.GetCount(), 2);
         assertEquals(response_2.IsCompleted(), true);
-        ArrayList<QueriedLog> logs_2 = response_2.GetLogs();
+        List<QueriedLog> logs_2 = response_2.getLogs();
         assertEquals(logs_2.size(), 2);
         queriedLog = logs_2.get(0);
         logItem = queriedLog.GetLogItem();
@@ -2433,13 +2433,13 @@ public class SlsClientUnitTest {
             assertEquals("Complete", resComplete);
             assertEquals(queriedLogs.size(), res.GetCount());
             for (int i = 0; i < res.GetCount(); i++) {
-                assertEquals(queriedLogs.get(i).GetLogItem().GetTime(), res.GetLogs().get(i).GetLogItem().GetTime());
-                assertEquals(queriedLogs.get(i).GetSource(), res.GetLogs().get(i).GetSource());
+                assertEquals(queriedLogs.get(i).GetLogItem().GetTime(), res.getLogs().get(i).GetLogItem().GetTime());
+                assertEquals(queriedLogs.get(i).GetSource(), res.getLogs().get(i).GetSource());
 
-                assertEquals(queriedLogs.get(i).GetLogItem().GetLogContents().size(), res.GetLogs().get(i).GetLogItem().GetLogContents().size());
+                assertEquals(queriedLogs.get(i).GetLogItem().GetLogContents().size(), res.getLogs().get(i).GetLogItem().GetLogContents().size());
 
                 LogItem originLog = queriedLogs.get(i).GetLogItem();
-                LogItem resultLog = res.GetLogs().get(i).GetLogItem();
+                LogItem resultLog = res.getLogs().get(i).GetLogItem();
 
                 for (int j = 0; j < originLog.GetLogContents().size(); j++) {
                     assertEquals(originLog.GetLogContents().get(j).GetKey(), resultLog.GetLogContents().get(j).GetKey());
@@ -2720,7 +2720,7 @@ public class SlsClientUnitTest {
         logs.add(queriedLog);
 
         res2.SetLogs(logs);
-        List<QueriedLog> resLogs = res2.GetLogs();
+        List<QueriedLog> resLogs = res2.getLogs();
 
         assertEquals(logs.size(), resLogs.size());
         assertEquals(logs.get(0).GetSource(), resLogs.get(0).GetSource());

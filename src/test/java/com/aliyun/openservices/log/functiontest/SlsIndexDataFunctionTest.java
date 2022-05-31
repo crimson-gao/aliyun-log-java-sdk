@@ -200,11 +200,10 @@ public class SlsIndexDataFunctionTest extends FunctionTest {
                     this.startTime, this.startTime + 3600, topic, "ID", 100, 50, false);
             assertEquals(res.GetCount(), 100);
             assertTrue(res.IsCompleted());
-            ArrayList<QueriedLog> queriedLogs = res.GetLogs();
+            List<QueriedLog> queriedLogs = res.getLogs();
             for (QueriedLog log : queriedLogs) {
                 LogItem item = log.GetLogItem();
-                assertEquals(topic, item.GetLogContents().get(0)
-                        .GetValue());
+                assertEquals(topic, item.GetLogContents().get(0).GetValue());
             }
         } catch (LogException e) {
             fail(e.GetErrorCode() + ":" + e.GetErrorMessage());

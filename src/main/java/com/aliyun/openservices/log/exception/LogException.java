@@ -105,7 +105,9 @@ public class LogException extends Exception {
      * Set the http response code
      *
      * @param httpCode http code, -1 the error is happened in the client
+     * @deprecated Use setHttpCode(int httpCode) instead.
      */
+    @Deprecated
     public void SetHttpCode(int httpCode) {
         this.httpCode = httpCode;
     }
