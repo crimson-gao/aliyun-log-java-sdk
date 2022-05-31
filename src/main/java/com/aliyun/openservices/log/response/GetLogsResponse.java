@@ -233,12 +233,7 @@ public class GetLogsResponse extends BasicGetLogsResponse {
 	 *            process status(Complete/InComplete only)
 	 */
 	public void SetProcessStatus(String processStatus) {
-		if (processStatus.equals(Consts.CONST_RESULT_COMPLETE)) {
-			mIsCompleted = true;
-		} else {
-			mIsCompleted = false;
-		}
-
+		mIsCompleted = processStatus.equals(Consts.CONST_RESULT_COMPLETE);
 	}
 
 	/**
@@ -265,6 +260,7 @@ public class GetLogsResponse extends BasicGetLogsResponse {
 	 * 
 	 * @param log
 	 *            log data to add
+	 * @deprecated Use addLog(QueriedLog log) instead.
 	 */
 	@Deprecated
 	public void AddLog(QueriedLog log) {
@@ -273,6 +269,8 @@ public class GetLogsResponse extends BasicGetLogsResponse {
 
 	/**
 	 * Get all logs from the response
+	 *
+	 * @deprecated Use getLogs() instead.
 	 * 
 	 * @return all log data
 	 */
