@@ -80,14 +80,8 @@ public class PutLogsRequest extends Request {
      */
     public PutLogsRequest(String project, String logStore, String topic,
                           String source, List<LogItem> logItems) {
-        super(project);
-        mLogStore = logStore;
-        mTopic = topic;
-        mSource = source;
-        mlogItems = new ArrayList<LogItem>(logItems);
-        mHashKey = null;
+        this(project, logStore, topic, source, logItems, null);
     }
-
 
     /**
      * Construct a put log request
@@ -223,16 +217,18 @@ public class PutLogsRequest extends Request {
      * Use setHashKey
      *
      * @param hashKey The hash key
+     * @deprecated Use setHashKey() instead.
      */
     @Deprecated
     public void SetRouteKey(String hashKey) {
-        mHashKey = hashKey;
+        setHashKey(hashKey);
     }
 
     /**
      * Use getHashKey
      *
-     * @return
+     * @return The hash key
+     * @deprecated Use getHashKey() instead.
      */
     @Deprecated
     public String GetRouteKey() {
