@@ -458,6 +458,10 @@ public class Consts {
     public static final String TOPOSTORE_RELATION_COUNT = "count";
     public static final String TOPOSTORE_RELATION_TOTAL = "total";
     public static final String TOPOSTORE_RELATION_ITEMS = "items";
+    public static final String TOPOSTORE_RELATION_DIRECTION_IN = "in";
+    public static final String TOPOSTORE_RELATION_DIRECTION_OUT = "out";
+    public static final String TOPOSTORE_RELATION_DIRECTION_BOTH = "both";
+
 
     public static final String LOGGING_URI = "/logging";
     public static final String METHOD = "method";

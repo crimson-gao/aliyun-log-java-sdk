@@ -26,6 +26,10 @@ public class ListTopostoreRelationRequest extends TopostoreRequest {
         this.topostoreName = topostoreName;
     }
 
+    public ListTopostoreRelationRequest(String topostoreName, List<String> relationIds) {
+        this.topostoreName = topostoreName;
+        this.relationIds = relationIds;
+    }
 
     public ListTopostoreRelationRequest(String topostoreName, List<String> relationIds, List<String> relationTypes, 
         String propertyKey, String propertyValue, Integer offset, Integer size) {

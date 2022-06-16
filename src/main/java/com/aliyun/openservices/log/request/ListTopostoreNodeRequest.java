@@ -23,6 +23,11 @@ public class ListTopostoreNodeRequest extends TopostoreRequest {
         this.topostoreName = topostoreName;
     }
 
+    public ListTopostoreNodeRequest(String topostoreName, List<String> nodeIds) {
+        this.topostoreName = topostoreName;
+        this.nodeIds = nodeIds;
+    }
+
     public ListTopostoreNodeRequest(String topostoreName, List<String> nodeIds, List<String> nodeTypes, 
         String propertyKey, String propertyValue, Integer offset, Integer size) {
         this.topostoreName = topostoreName;
