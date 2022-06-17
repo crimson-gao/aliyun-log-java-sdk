@@ -11,7 +11,7 @@ public class ListTopostoreResponse extends Response{
     private int total = 0;
     private List<Topostore> topostores = new ArrayList<Topostore>();
 
-    public ListTopostoreResponse(Map<String, String> headers, int count, int total, List<Topostore> topostores) {
+    public ListTopostoreResponse(Map<String, String> headers,  List<Topostore> topostores, int count, int total) {
         super(headers);
         setCount(count);
         setTotal(total);

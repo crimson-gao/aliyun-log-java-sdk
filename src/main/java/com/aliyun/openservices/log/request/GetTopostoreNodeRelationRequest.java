@@ -11,9 +11,8 @@ public class GetTopostoreNodeRelationRequest {
 
     // relation selection
     private List<String> relationTypes;
-    private int relationDepth=0;
-    private String relationDirection;
-
+    private int relationDepth = 1;
+    private String relationDirection = "both";
 
     public GetTopostoreNodeRelationRequest() {
     }

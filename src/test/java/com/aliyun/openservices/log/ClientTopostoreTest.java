@@ -13,6 +13,8 @@ import com.aliyun.openservices.log.request.CreateTopostoreRequest;
 import com.aliyun.openservices.log.request.DeleteTopostoreNodeRequest;
 import com.aliyun.openservices.log.request.DeleteTopostoreRelationRequest;
 import com.aliyun.openservices.log.request.DeleteTopostoreRequest;
+import com.aliyun.openservices.log.request.GetTopostoreNodeRelationRequest;
+import com.aliyun.openservices.log.request.GetTopostoreNodeRelationResponse;
 import com.aliyun.openservices.log.request.GetTopostoreNodeRequest;
 import com.aliyun.openservices.log.request.GetTopostoreRelationRequest;
 import com.aliyun.openservices.log.request.GetTopostoreRequest;
@@ -363,6 +365,44 @@ public class ClientTopostoreTest {
         DeleteTopostoreRelationRequest request = new DeleteTopostoreRelationRequest(topostoreName, relationIds);
         DeleteTopostoreRelationResponse response = client.deleteTopostoreRelation(request);
         System.out.println(response.toString());
+    }
+
+    @Test
+    public void testGetTopostoreNodeRelations() throws LogException{
+
+        String endpoint = System.getenv("LOG_TEST_ENDPOINT");
+        String accessKeyId = System.getenv("LOG_TEST_ACCESS_KEY_ID");
+        String accessKeySecret = System.getenv("LOG_TEST_ACCESS_KEY_SECRET");
+
+        Client client = new Client(endpoint, accessKeyId, accessKeySecret);
+
+        GetTopostoreNodeRelationRequest request = new GetTopostoreNodeRelationRequest();
+        request.setTopostoreName("sls");
+        request.setDirection("out");
+        request.setDepth(-1);
+        List<String> nodeIds = new ArrayList<String>();
+        // nodeIds.add("front");
+        request.setNodeIds(nodeIds);
+        GetTopostoreNodeRelationResponse resp = client.getTopostoreNodeRelations(request);
+        System.out.println("nodes:");
+        for(TopostoreNode node: resp.getNodes()){
+            System.out.println("\t" + node.getNodeId());
+        }
+        System.out.println("\nrelations:");
+
+        for(TopostoreRelation relation: resp.getRelations()){
+            System.out.println("\t" + relation.getRelationId());
+        }
+
+        // relation op
+
+        // List<String> relationIds = new ArrayList<String>();
+        // relationIds.add("relation1");
+        // relationIds.add("relation2");
+
+        // DeleteTopostoreRelationRequest request = new DeleteTopostoreRelationRequest(topostoreName, relationIds);
+        // DeleteTopostoreRelationResponse response = client.deleteTopostoreRelation(request);
+        // System.out.println(response.toString());
     }
 
 }
