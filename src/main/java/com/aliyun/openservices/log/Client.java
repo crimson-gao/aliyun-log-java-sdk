@@ -2740,7 +2740,7 @@ public class Client implements LogService {
 		list.add(new SubStoreKey("__labels__", "text"));
 		list.add(new SubStoreKey("__time_nano__", "long"));
 		list.add(new SubStoreKey("__value__", "double"));
-		SubStore subStore = new SubStore("prom", 30, 2, 2, list);
+		SubStore subStore = new SubStore("prom", metricStore.GetTtl(), 2, 2, list);
 		createSubStore(project, metricStore.GetLogStoreName(), subStore);
 		return createLogStoreResponse;
 	}
