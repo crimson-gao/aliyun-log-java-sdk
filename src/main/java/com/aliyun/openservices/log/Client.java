@@ -2733,7 +2733,7 @@ public class Client implements LogService {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			throw new LogException("Sleep Interrupted", e.getMessage(), "");
 		}
 		List<SubStoreKey> list = new ArrayList<SubStoreKey>();
 		list.add(new SubStoreKey("__name__", "text"));
