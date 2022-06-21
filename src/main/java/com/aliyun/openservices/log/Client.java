@@ -50,6 +50,7 @@ import com.aliyun.openservices.log.common.ShipperTask;
 import com.aliyun.openservices.log.common.ShipperTasksStatistic;
 import com.aliyun.openservices.log.common.SqlInstance;
 import com.aliyun.openservices.log.common.SubStore;
+import com.aliyun.openservices.log.common.SubStoreKey;
 import com.aliyun.openservices.log.common.TagContent;
 import com.aliyun.openservices.log.common.Topostore;
 import com.aliyun.openservices.log.common.TopostoreNode;
@@ -2722,6 +2723,70 @@ public class Client implements LogService {
 		JSONObject object = parseResponseBody(response, requestId);
 		LogStore logStore = ExtractLogStoreFromResponse(object, requestId);
 		return new GetLogStoreResponse(resHeaders, logStore);
+	}
+
+	@Override
+	public CreateLogStoreResponse createMetricStore(String project,
+													LogStore metricStore) throws LogException {
+		metricStore.setTelemetryType("Metrics");
+		CreateLogStoreResponse createLogStoreResponse = CreateLogStore(project, metricStore);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		List<SubStoreKey> list = new ArrayList<SubStoreKey>();
+		list.add(new SubStoreKey("__name__", "text"));
+		list.add(new SubStoreKey("__labels__", "text"));
+		list.add(new SubStoreKey("__time_nano__", "long"));
+		list.add(new SubStoreKey("__value__", "double"));
+		SubStore subStore = new SubStore("prom", 30, 2, 2, list);
+		createSubStore(project, metricStore.GetLogStoreName(), subStore);
+		return createLogStoreResponse;
+	}
+
+	@Override
+	public CreateLogStoreResponse createMetricStore(CreateLogStoreRequest request)
+			throws LogException {
+		return createMetricStore(request.GetProject(), request.GetLogStore());
+	}
+
+	@Override
+	public UpdateLogStoreResponse updateMetricStore(String project,
+													LogStore metricStore) throws LogException {
+		metricStore.setTelemetryType("Metrics");
+		UpdateLogStoreResponse updateLogStoreResponse = UpdateLogStore(project, metricStore);
+		updateSubStoreTTL(project, metricStore.GetLogStoreName(), metricStore.GetTtl());
+		return updateLogStoreResponse;
+	}
+
+	@Override
+	public UpdateLogStoreResponse updateMetricStore(UpdateLogStoreRequest request)
+			throws LogException {
+		return updateMetricStore(request.GetProject(), request.GetLogStore());
+	}
+
+	@Override
+	public DeleteLogStoreResponse deleteMetricStore(String project,
+													String metricStoreName) throws LogException {
+		return DeleteLogStore(project, metricStoreName);
+	}
+
+	@Override
+	public DeleteLogStoreResponse deleteMetricStore(DeleteLogStoreRequest request)
+			throws LogException {
+		return deleteMetricStore(request.GetProject(), request.GetLogStoreName());
+	}
+
+	@Override
+	public GetLogStoreResponse getMetricStore(String project, String metricStoreName)
+			throws LogException {
+		return GetLogStore(project, metricStoreName);
+	}
+
+	@Override
+	public GetLogStoreResponse getMetricStore(GetLogStoreRequest request) throws LogException {
+		return getMetricStore(request.GetProject(), request.GetLogStore());
 	}
 
 	@Override

@@ -1885,6 +1885,148 @@ public interface LogService {
     GetLogStoreResponse GetLogStore(GetLogStoreRequest request) throws LogException;
 
 	/**
+	 * create a metric store in a project
+	 *
+	 * @param project
+	 *            the project name
+	 * @param metricStore
+	 *            the config
+	 * @return the create log store response
+	 * @throws LogException
+	 *             if any error happen when creasting logstore
+	 *
+	 * @throws NullPointerException
+	 *             if any parameter is null
+	 * @throws IllegalArgumentException
+	 *             if project is empty
+	 */
+	CreateLogStoreResponse createMetricStore(String project,
+											 LogStore metricStore) throws LogException;
+
+	/**
+	 * create a metric store in a project
+	 *
+	 * @param request
+	 *            logstore create request
+	 * @return the create log store response
+	 * @throws LogException
+	 *             if any error happen when creasting logstore
+	 *
+	 * @throws NullPointerException
+	 *             if required parameter is null
+	 * @throws IllegalArgumentException
+	 *             if any required string parameter is empty
+	 */
+	CreateLogStoreResponse createMetricStore(CreateLogStoreRequest request)
+			throws LogException;
+
+	/**
+	 * Update metric store config
+	 *
+	 * @param project
+	 *            the project name
+	 * @param metricStore
+	 *            the logsotre config
+	 * @return update logstore response
+	 * @throws LogException
+	 *             if any error happen when updating logstore
+	 *
+	 * @throws NullPointerException
+	 *             if any parameter is null
+	 * @throws IllegalArgumentException
+	 *             if project is empty
+	 */
+	UpdateLogStoreResponse updateMetricStore(String project,
+											 LogStore metricStore) throws LogException;
+
+	/**
+	 * Update metric store config
+	 *
+	 * @param request
+	 *            update logstore requst
+	 * @return Update logstore response
+	 *
+	 * @throws LogException
+	 *             if any error happen when updating logstore
+	 * @throws NullPointerException
+	 *             if required parameter is null
+	 * @throws IllegalArgumentException
+	 *             if any required string parameter is empty
+	 */
+	UpdateLogStoreResponse updateMetricStore(UpdateLogStoreRequest request)
+			throws LogException;
+
+	/**
+	 * Delete the metric store
+	 *
+	 * @param project
+	 *            the project name
+	 * @param metricStoreName
+	 *            the lostore to delete
+	 * @return delete logstore response
+	 * @throws LogException
+	 *             if any error happen when deleting logstore
+	 *
+	 * @throws NullPointerException
+	 *             if any parameter is null
+	 * @throws IllegalArgumentException
+	 *             if an param is empty
+	 */
+	DeleteLogStoreResponse deleteMetricStore(String project,
+											 String metricStoreName) throws LogException;
+
+	/**
+	 * Delete the metric store
+	 *
+	 * @param request
+	 *            delete logstore request
+	 * @return the delete logstore response
+	 * @throws LogException
+	 *             if any error happen when deleting logstore
+	 * @throws NullPointerException
+	 *             if required parameter is null
+	 * @throws IllegalArgumentException
+	 *             if any required string parameter is empty
+	 */
+	DeleteLogStoreResponse deleteMetricStore(DeleteLogStoreRequest request)
+			throws LogException;
+
+	/**
+	 * get the metric store config
+	 *
+	 * @param project
+	 *            the project name
+	 * @param metricStoreName
+	 *            the logstore name
+	 * @return the get logstore response
+	 * @throws LogException
+	 *             if any error happen when getting logstore config
+	 *
+	 * @throws NullPointerException
+	 *             if any parameter is null
+	 * @throws IllegalArgumentException
+	 *             if any parameter is empty
+	 */
+	GetLogStoreResponse getMetricStore(String project, String metricStoreName)
+			throws LogException;
+
+	/**
+	 * get the metric store config
+	 *
+	 * @param request
+	 *            the get logstore config request
+	 * @return the get logstore response
+	 * @throws LogException
+	 *             if any error happen when getting logstore config
+	 *
+	 * @throws NullPointerException
+	 *             if required parameter is null
+	 * @throws IllegalArgumentException
+	 *             if any required string parameter is empty
+	 */
+	GetLogStoreResponse getMetricStore(GetLogStoreRequest request) throws LogException;
+
+	/**
 	 * create logstore index
 	 *
 	 * @param project
