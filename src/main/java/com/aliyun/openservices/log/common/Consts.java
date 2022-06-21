@@ -419,6 +419,7 @@ public class Consts {
     public static final String TOPOSTORE_EXTINFO = "extInfo";
     public static final String TOPOSTORE_ACL = "acl";
     public static final String TOPOSTORE_TAG_VALUE = "tagValue";
+    public static final String TOPOSTORE_TAGS = "tags";
     public static final String TOPOSTORE_LIST_OFFSET = "offset";
     public static final String TOPOSTORE_LIST_LIMIT = "limit";
     public static final String TOPOSTORE_DESCRIPTION = "description";
@@ -432,6 +433,7 @@ public class Consts {
     public static final String TOPOSTORE_NODE_PROPERTY = "property";
     public static final String TOPOSTORE_NODE_PROPERTY_KEY = "propertyKey";
     public static final String TOPOSTORE_NODE_PROPERTY_VALUE = "propertyValue";
+    public static final String TOPOSTORE_NODE_PROPERTIES = "properties";
     public static final String TOPOSTORE_NODE_DESCRIPTION = "description";
     public static final String TOPOSTORE_NODE_DISPLAY_NAME = "displayName";
     public static final String TOPOSTORE_NODE_CREATE_TIME = "createTime";
@@ -450,6 +452,7 @@ public class Consts {
     public static final String TOPOSTORE_RELATION_TYPE_LIST = "relationTypes";
     public static final String TOPOSTORE_RELATION_PROPERTY = "property";
     public static final String TOPOSTORE_RELATION_PROPERTY_KEY = "propertyKey";
+    public static final String TOPOSTORE_RELATION_PROPERTIES = "properties";
     public static final String TOPOSTORE_RELATION_DESCRIPTION = "description";
     public static final String TOPOSTORE_RELATION_DISPLAY_NAME = "displayName";
     public static final String TOPOSTORE_RELATION_PROPERTY_VALUE = "propertyValue";

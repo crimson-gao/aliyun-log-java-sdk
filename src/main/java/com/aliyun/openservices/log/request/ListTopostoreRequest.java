@@ -13,6 +13,15 @@ public class ListTopostoreRequest extends TopostoreRequest{
     private String tagKey;
     private String tagValue;
     private List<String> topostoreNames = new ArrayList<String>();
+    private Map<String, String> tags;
+
+    public Map<String,String> getTags() {
+        return this.tags;
+    }
+
+    public void setTags(Map<String,String> tags) {
+        this.tags = tags;
+    }
 
     public ListTopostoreRequest(Integer offset, Integer size, String tagKey, String tagValue, List<String> topostoreNames) {
         this.offset = offset;
@@ -86,6 +95,14 @@ public class ListTopostoreRequest extends TopostoreRequest{
 
         if (tagValue != null) {
             SetParam(Consts.TOPOSTORE_TAG_VALUE, tagValue);
+        }
+
+        if(tags!=null){
+            List<String> mTags = new ArrayList<String>();
+            for(Map.Entry<String, String> kv : tags.entrySet()){
+                mTags.add(kv.getKey() + ":::" + kv.getValue());
+            }
+            SetParam(Consts.TOPOSTORE_TAGS, String.join("|||", mTags));
         }
 
         if (topostoreNames != null && !topostoreNames.isEmpty()) {

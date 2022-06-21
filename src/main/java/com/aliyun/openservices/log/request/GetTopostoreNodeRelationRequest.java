@@ -1,18 +1,21 @@
 package com.aliyun.openservices.log.request;
 
 import java.util.List;
+import java.util.Map;
+
+import com.aliyun.openservices.log.common.Consts;
 
 public class GetTopostoreNodeRelationRequest {
     private String topostoreName;
     // node selection
     private List<String> nodeIds;
     private List<String> nodeTypes;
-    private String nodeProperities;
+    private Map<String, String> nodeProperities;
 
     // relation selection
     private List<String> relationTypes;
     private int relationDepth = 1;
-    private String relationDirection = "both";
+    private String relationDirection = Consts.TOPOSTORE_RELATION_DIRECTION_BOTH;
 
     public GetTopostoreNodeRelationRequest() {
     }
@@ -24,7 +27,7 @@ public class GetTopostoreNodeRelationRequest {
     }
 
     public GetTopostoreNodeRelationRequest(String topostoreName, List<String> nodeIds, List<String> nodeTypes,
-         String nodeProperities, List<String> relationTypes, int relationDepth, String relationDirection) {
+        Map<String, String> nodeProperities, List<String> relationTypes, int relationDepth, String relationDirection) {
         this.topostoreName = topostoreName;
         this.nodeIds = nodeIds;
         this.nodeTypes = nodeTypes;
@@ -58,11 +61,11 @@ public class GetTopostoreNodeRelationRequest {
         this.nodeTypes = nodeTypes;
     }
 
-    public String getNodeProperities() {
+    public Map<String, String> getNodeProperities() {
         return this.nodeProperities;
     }
 
-    public void setNodeProperities(String nodeProperities) {
+    public void setNodeProperities(Map<String, String> nodeProperities) {
         this.nodeProperities = nodeProperities;
     }
 

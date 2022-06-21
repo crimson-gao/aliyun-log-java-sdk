@@ -1,5 +1,6 @@
 package com.aliyun.openservices.log.request;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,16 @@ public class ListTopostoreNodeRequest extends TopostoreRequest {
     private List<String> nodeTypes;
     private String propertyKey;
     private String propertyValue;
+    private Map<String, String> properties;
+
+    public Map<String,String> getProperties() {
+        return this.properties;
+    }
+
+    public void setProperties(Map<String,String> properties) {
+        this.properties = properties;
+    }
+
     private Integer offset=0;
     private Integer size=200;
 
@@ -125,6 +136,14 @@ public class ListTopostoreNodeRequest extends TopostoreRequest {
 
         if(propertyValue!=null){
             SetParam(Consts.TOPOSTORE_NODE_PROPERTY_VALUE, propertyValue);
+        }
+
+        if(properties!=null){
+            List<String> mProperty = new ArrayList<String>();
+            for(Map.Entry<String, String> kv : properties.entrySet()){
+                mProperty.add(kv.getKey() + ":::" + kv.getValue());
+            }
+            SetParam(Consts.TOPOSTORE_NODE_PROPERTIES, String.join("|||", mProperty));
         }
         return super.GetAllParams();
     }

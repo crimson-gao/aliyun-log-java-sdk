@@ -4796,7 +4796,7 @@ public class Client implements LogService {
 			listNodeReq.setNodeIds(request.getNodeIds());
 			listNodeReq.setNodeTypes(request.getNodeTypes());
 			listNodeReq.setOffset(nodeOffset);
-			// TODO add properities filter
+			listNodeReq.setProperties(request.getNodeProperities());
 			ListTopostoreNodeResponse listNodeResp = this.listTopostoreNode(listNodeReq);
 	
 			nodeTotal = listNodeResp.getTotal();

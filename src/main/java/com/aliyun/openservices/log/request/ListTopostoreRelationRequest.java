@@ -1,5 +1,6 @@
 package com.aliyun.openservices.log.request;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,15 @@ public class ListTopostoreRelationRequest extends TopostoreRequest {
     private String propertyValue;
     private Integer offset=0;
     private Integer size=200;
+    private Map<String, String> properties;
+
+    public Map<String,String> getProperties() {
+        return this.properties;
+    }
+
+    public void setProperties(Map<String,String> properties) {
+        this.properties = properties;
+    }
 
     public ListTopostoreRelationRequest() {
     }
@@ -152,6 +162,14 @@ public class ListTopostoreRelationRequest extends TopostoreRequest {
 
         if(propertyValue!=null){
             SetParam(Consts.TOPOSTORE_RELATION_PROPERTY_VALUE, propertyValue);
+        }
+
+        if(properties!=null){
+            List<String> mProperty = new ArrayList<String>();
+            for(Map.Entry<String, String> kv : properties.entrySet()){
+                mProperty.add(kv.getKey() + ":::" + kv.getValue());
+            }
+            SetParam(Consts.TOPOSTORE_RELATION_PROPERTIES, String.join("|||", mProperty));
         }
         return super.GetAllParams();
     }

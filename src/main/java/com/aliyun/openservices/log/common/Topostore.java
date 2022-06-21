@@ -6,6 +6,7 @@ import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.internal.ErrorCodes;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class Topostore implements Serializable {
     private String name = "";
@@ -60,6 +61,14 @@ public class Topostore implements Serializable {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public void setTag(Map<String, String> tag) {
+        JSONObject tagObj = new JSONObject();
+        for(Map.Entry<String, String> kv : tag.entrySet()){
+            tagObj.put(kv.getKey(), kv.getValue());
+        }
+        setTag(tagObj.toString());
     }
 
     public String getSchema() {
