@@ -155,6 +155,8 @@ public class Job implements Serializable {
                 return new IngestionConfiguration();
             case REBUILD_INDEX:
                 return new RebuildIndexConfiguration();
+            case SCHEDULED_SQL:
+                return new ScheduledSQLConfiguration();
             default:
                 return null;
         }
