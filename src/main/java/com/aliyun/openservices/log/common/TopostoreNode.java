@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.exception.LogException;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class TopostoreNode implements Serializable {
     private String nodeId = "";
@@ -73,6 +74,14 @@ public class TopostoreNode implements Serializable {
 
     public void setProperty(String property) {
         this.property = property;
+    }
+
+    public void setProperty(Map<String, String> properties) {
+        JSONObject proObj = new JSONObject();
+        for(Map.Entry<String, String> kv : properties.entrySet()){
+            proObj.put(kv.getKey(), kv.getValue());
+        }
+        setProperty(proObj.toString());
     }
 
     public String getDescription() {

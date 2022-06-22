@@ -16,6 +16,8 @@ public class GetTopostoreNodeRelationRequest {
     private List<String> relationTypes;
     private int relationDepth = 1;
     private String relationDirection = Consts.TOPOSTORE_RELATION_DIRECTION_BOTH;
+    private long from;
+    private long to;
 
     public GetTopostoreNodeRelationRequest() {
     }
@@ -35,6 +37,22 @@ public class GetTopostoreNodeRelationRequest {
         this.relationTypes = relationTypes;
         this.relationDepth = relationDepth;
         this.relationDirection = relationDirection;
+    }
+
+    public long getFrom() {
+        return this.from;
+    }
+
+    public void setFrom(long from) {
+        this.from = from;
+    }
+
+    public long getTo() {
+        return this.to;
+    }
+
+    public void setTo(long to) {
+        this.to = to;
     }
 
     public String getTopostoreName() {

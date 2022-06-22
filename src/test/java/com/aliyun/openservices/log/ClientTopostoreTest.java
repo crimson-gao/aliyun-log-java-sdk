@@ -389,6 +389,7 @@ public class ClientTopostoreTest {
 
         // test relation list
         ListTopostoreRelationRequest req = new ListTopostoreRelationRequest();
+
         req.setTopostoreName("sls");
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("env", "prod");
@@ -403,6 +404,7 @@ public class ClientTopostoreTest {
         // test node list
         ListTopostoreNodeRequest req2 = new ListTopostoreNodeRequest();
         req2.setTopostoreName("sls");
+
         Map<String, String> properties2 = new HashMap<String, String>();
         properties2.put("env", "prod");
         properties2.put("name", "host1");
@@ -410,7 +412,7 @@ public class ClientTopostoreTest {
 
         ListTopostoreNodeResponse resp2 = client.listTopostoreNode(req2);
 
-        for(TopostoreNode node:resp2.getTopostoreNodes()        ){
+        for(TopostoreNode node:resp2.getTopostoreNodes()){
             System.out.println(node.ToJsonString());
         }
 
