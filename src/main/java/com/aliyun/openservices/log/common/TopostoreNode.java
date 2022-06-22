@@ -32,14 +32,11 @@ public class TopostoreNode implements Serializable {
     }
 
     public TopostoreNode(String nodeId, String nodeType) {
-        this.nodeId = nodeId;
-        this.nodeType = nodeType;
+        this(nodeId, nodeType, null, null);
     }
 
-    public TopostoreNode(String nodeId, String nodeType, String property) {
-        this.nodeId = nodeId;
-        this.nodeType = nodeType;
-        this.property = property;
+    public TopostoreNode(String nodeId, String nodeType, String property) { 
+        this(nodeId, nodeType, property, null);
     }
 
     public TopostoreNode(String nodeId, String nodeType, String property, String description) {

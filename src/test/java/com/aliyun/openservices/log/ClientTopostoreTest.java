@@ -422,7 +422,7 @@ public class ClientTopostoreTest {
     }
 
     @Test
-    public void testGetTopostoreNodeRelations() throws LogException{
+    public void testListTopostoreNodeRelations() throws LogException{
 
         String endpoint = System.getenv("LOG_TEST_ENDPOINT");
         String accessKeyId = System.getenv("LOG_TEST_ACCESS_KEY_ID");

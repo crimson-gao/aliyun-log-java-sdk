@@ -36,12 +36,11 @@ public class Topostore implements Serializable {
     }
 
     public Topostore(String name, String tag) {
-        this.name = name;
-        this.tag = tag;
+        this(name, tag, null, null, null, null);
     }
 
     public Topostore(String name) {
-        this.name = name;
+        this(name, "", null, null, null, null);
     }
 
     public Topostore() {

@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.aliyun.openservices.log.common.Consts;
 
-public class ListTopostoreNodeRelationRequest {
+public class ListTopostoreNodeRelationRequest{
     private String topostoreName;
     // node selection
     private List<String> nodeIds = new ArrayList<String>();
@@ -21,6 +21,9 @@ public class ListTopostoreNodeRelationRequest {
     private String relationDirection = Consts.TOPOSTORE_RELATION_DIRECTION_BOTH;
     private long from;
     private long to;
+
+    // extParams;
+    private Map<String, String> params = new HashMap<String,String>();
 
     public ListTopostoreNodeRelationRequest() {
     }
@@ -105,6 +108,14 @@ public class ListTopostoreNodeRelationRequest {
         this.nodeIds = nodeIds;
     }
 
+    public void SetParams(String key, String value) {
+        this.params.put(key, value);
+    }
+
+    public Map<String, String> GetParams() {
+        return this.params;
+    }
+    
     public List<String> getNodeTypes() {
         return this.nodeTypes;
     }

@@ -27,18 +27,11 @@ public class TopostoreRelation implements Serializable {
     }
 
     public TopostoreRelation(String relationId, String relationType, String srcNodeId, String dstNodeId) {
-        this.relationId = relationId;
-        this.relationType = relationType;
-        this.srcNodeId = srcNodeId;
-        this.dstNodeId = dstNodeId;
+        this(relationId, relationType, srcNodeId, dstNodeId, null, null);
     }
 
     public TopostoreRelation(String relationId, String relationType, String srcNodeId, String dstNodeId, String property) {
-        this.relationId = relationId;
-        this.relationType = relationType;
-        this.srcNodeId = srcNodeId;
-        this.dstNodeId = dstNodeId;
-        this.property = property;
+        this(relationId, relationType, srcNodeId, dstNodeId, property, null);
     }
 
     public TopostoreRelation(String relationId, String relationType, String srcNodeId, String dstNodeId, String property, String description) {
@@ -190,7 +183,7 @@ public class TopostoreRelation implements Serializable {
             throw new IllegalArgumentException("topostore relation type is null/empty");
         }
 
-        if (property != null) {
+        if (property != null && property.length()>0) {
             try {
                 JSONObject.parseObject(property);
             } catch (JSONException e) {

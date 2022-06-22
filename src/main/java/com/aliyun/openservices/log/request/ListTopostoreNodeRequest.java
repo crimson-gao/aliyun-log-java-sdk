@@ -9,8 +9,6 @@ import java.util.Map;
 import com.aliyun.openservices.log.common.Consts;
 import com.aliyun.openservices.log.util.Utils;
 
-import org.apache.commons.codec.binary.StringUtils;
-
 public class ListTopostoreNodeRequest extends TopostoreRequest {
 
     private String topostoreName;
