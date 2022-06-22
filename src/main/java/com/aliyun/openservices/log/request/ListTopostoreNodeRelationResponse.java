@@ -5,15 +5,15 @@ import java.util.List;
 import com.aliyun.openservices.log.common.TopostoreNode;
 import com.aliyun.openservices.log.common.TopostoreRelation;
 
-public class GetTopostoreNodeRelationResponse {
+public class ListTopostoreNodeRelationResponse {
     private List<TopostoreNode> nodes;
     private List<TopostoreRelation> relations;
 
 
-    public GetTopostoreNodeRelationResponse() {
+    public ListTopostoreNodeRelationResponse() {
     }
 
-    public GetTopostoreNodeRelationResponse(List<TopostoreNode> nodes, List<TopostoreRelation> relations) {
+    public ListTopostoreNodeRelationResponse(List<TopostoreNode> nodes, List<TopostoreRelation> relations) {
         this.nodes = nodes;
         this.relations = relations;
     }

@@ -1,6 +1,8 @@
 package com.aliyun.openservices.log.request;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,21 +12,24 @@ import com.aliyun.openservices.log.util.Utils;
 public class ListTopostoreRelationRequest extends TopostoreRequest {
 
     private String topostoreName;
-    private List<String> relationIds;
-    private List<String> relationTypes;
-    private List<String> srcNodeIds;
-    private List<String> dstNodeIds;
-    private String propertyKey;
-    private String propertyValue;
+    private List<String> relationIds = new ArrayList<String>();
+    private List<String> relationTypes = new ArrayList<String>();
+    private List<String> srcNodeIds = new ArrayList<String>();
+    private List<String> dstNodeIds = new ArrayList<String>();
+    private String propertyKey = "";
+    private String propertyValue = "";
     private Integer offset=0;
     private Integer size=200;
-    private Map<String, String> properties;
+    private Map<String, String> properties =  new HashMap<String,String>();
 
     public Map<String,String> getProperties() {
         return this.properties;
     }
 
     public void setProperties(Map<String,String> properties) {
+        if(properties==null){
+            return;
+        }
         this.properties = properties;
     }
 
@@ -33,19 +38,22 @@ public class ListTopostoreRelationRequest extends TopostoreRequest {
 
 
     public ListTopostoreRelationRequest(String topostoreName) {
-        this.topostoreName = topostoreName;
+        this(topostoreName, new ArrayList<String>(),new ArrayList<String>(), "", "", 0, 200 );
     }
 
     public ListTopostoreRelationRequest(String topostoreName, List<String> relationIds) {
-        this.topostoreName = topostoreName;
-        this.relationIds = relationIds;
+        this(topostoreName, relationIds,new ArrayList<String>(), "", "", 0, 200 );
     }
 
     public ListTopostoreRelationRequest(String topostoreName, List<String> relationIds, List<String> relationTypes, 
         String propertyKey, String propertyValue, Integer offset, Integer size) {
         this.topostoreName = topostoreName;
-        this.relationIds = relationIds;
-        this.relationTypes = relationTypes;
+        if(relationIds != null ){
+            this.relationIds = relationIds;
+        }
+        if(relationTypes!=null){
+            this.relationTypes = relationTypes;
+        }
         this.propertyKey = propertyKey;
         this.propertyValue = propertyValue;
         this.offset = offset;
@@ -53,9 +61,7 @@ public class ListTopostoreRelationRequest extends TopostoreRequest {
     }
 
     public ListTopostoreRelationRequest(String topostoreName,String propertyKey, String propertyValue) {
-        this.topostoreName = topostoreName;
-        this.propertyKey = propertyKey;
-        this.propertyValue = propertyValue;
+        this(topostoreName, new ArrayList<String>(),new ArrayList<String>(), propertyKey, propertyValue, 0, 200 );
     }
 
     public String getTopostoreName() {
@@ -71,7 +77,51 @@ public class ListTopostoreRelationRequest extends TopostoreRequest {
     }
 
     public void setRelationIds(List<String> relationIds) {
+        if(relationIds == null ) {
+            return ;
+        }
         this.relationIds = relationIds;
+    }
+
+    public ListTopostoreRelationRequest addProperties(String key, String value){
+        this.properties.put(key, value);
+        return this;
+    }
+
+    public void setRelationIds(String... relationIds){
+        this.relationIds = Arrays.asList(relationIds);
+    }
+
+    public ListTopostoreRelationRequest addRelationId(String relationId){
+        this.relationIds.add(relationId);
+        return this;
+    }
+
+    public void setRelationTypes(String... relationTypes){
+        this.relationTypes = Arrays.asList(relationTypes);
+    }
+
+    public ListTopostoreRelationRequest addRelationType(String relationType){
+        this.relationTypes.add(relationType);
+        return this;
+    }
+
+    public void setSrcNodeIds(String... srcNodeIds){
+        this.srcNodeIds = Arrays.asList(srcNodeIds);
+    }
+
+    public ListTopostoreRelationRequest addSrcNodeId(String srcNodeId){
+        this.srcNodeIds.add(srcNodeId);
+        return this;
+    }
+
+    public void setDstNodeIds(String... dstNodeIds){
+        this.dstNodeIds = Arrays.asList(dstNodeIds);
+    }
+
+    public ListTopostoreRelationRequest addDstNodeId(String dstNodeId){
+        this.dstNodeIds.add(dstNodeId);
+        return this;
     }
 
     public List<String> getRelationTypes() {
@@ -79,6 +129,9 @@ public class ListTopostoreRelationRequest extends TopostoreRequest {
     }
 
     public void setRelationTypes(List<String> relationTypes) {
+        if(relationTypes == null ) {
+            return ;
+        }
         this.relationTypes = relationTypes;
     }
 
@@ -119,6 +172,9 @@ public class ListTopostoreRelationRequest extends TopostoreRequest {
     }
 
     public void setSrcNodeIds(List<String> srcNodeIds) {
+        if(srcNodeIds == null ) {
+            return ;
+        }
         this.srcNodeIds = srcNodeIds;
     }
 
@@ -127,6 +183,9 @@ public class ListTopostoreRelationRequest extends TopostoreRequest {
     }
 
     public void setDstNodeIds(List<String> dstNodeIds) {
+        if(dstNodeIds == null ) {
+            return ;
+        }
         this.dstNodeIds = dstNodeIds;
     }
     
@@ -156,15 +215,15 @@ public class ListTopostoreRelationRequest extends TopostoreRequest {
             SetParam(Consts.TOPOSTORE_RELATION_DST_NODE_ID_LIST, Utils.join(",", dstNodeIds));
         }
 
-        if(propertyKey!=null){
+        if(propertyKey!=null&&propertyKey.length()>0){
             SetParam(Consts.TOPOSTORE_RELATION_PROPERTY_KEY, propertyKey);
         }
 
-        if(propertyValue!=null){
+        if(propertyValue!=null&&propertyValue.length()>0){
             SetParam(Consts.TOPOSTORE_RELATION_PROPERTY_VALUE, propertyValue);
         }
 
-        if(properties!=null){
+        if(properties!=null && !properties.isEmpty()){
             List<String> mProperty = new ArrayList<String>();
             for(Map.Entry<String, String> kv : properties.entrySet()){
                 mProperty.add(kv.getKey() + ":::" + kv.getValue());

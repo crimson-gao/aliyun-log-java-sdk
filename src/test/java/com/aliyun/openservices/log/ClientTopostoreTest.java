@@ -15,8 +15,8 @@ import com.aliyun.openservices.log.request.CreateTopostoreRequest;
 import com.aliyun.openservices.log.request.DeleteTopostoreNodeRequest;
 import com.aliyun.openservices.log.request.DeleteTopostoreRelationRequest;
 import com.aliyun.openservices.log.request.DeleteTopostoreRequest;
-import com.aliyun.openservices.log.request.GetTopostoreNodeRelationRequest;
-import com.aliyun.openservices.log.request.GetTopostoreNodeRelationResponse;
+import com.aliyun.openservices.log.request.ListTopostoreNodeRelationRequest;
+import com.aliyun.openservices.log.request.ListTopostoreNodeRelationResponse;
 import com.aliyun.openservices.log.request.GetTopostoreNodeRequest;
 import com.aliyun.openservices.log.request.GetTopostoreRelationRequest;
 import com.aliyun.openservices.log.request.GetTopostoreRequest;
@@ -380,6 +380,9 @@ public class ClientTopostoreTest {
         Client client = new Client(endpoint, accessKeyId, accessKeySecret);
 
         ListTopostoreRequest tReq = new ListTopostoreRequest();
+
+        tReq.SetParam("key", "value");
+
         Map<String, String> tags = new HashMap<String, String>();
         tags.put("a-1", "b-1");
         tags.put("a-2", "b-2");
@@ -427,14 +430,14 @@ public class ClientTopostoreTest {
 
         Client client = new Client(endpoint, accessKeyId, accessKeySecret);
 
-        GetTopostoreNodeRelationRequest request = new GetTopostoreNodeRelationRequest();
+        ListTopostoreNodeRelationRequest request = new ListTopostoreNodeRelationRequest();
         request.setTopostoreName("sls");
         request.setDirection("out");
         request.setDepth(-1);
         List<String> nodeIds = new ArrayList<String>();
         // nodeIds.add("front");
         request.setNodeIds(nodeIds);
-        GetTopostoreNodeRelationResponse resp = client.getTopostoreNodeRelations(request);
+        ListTopostoreNodeRelationResponse resp = client.listTopostoreNodeRelations(request);
         System.out.println("nodes:");
         for(TopostoreNode node: resp.getNodes()){
             System.out.println("\t" + node.getNodeId());
@@ -455,5 +458,6 @@ public class ClientTopostoreTest {
         // DeleteTopostoreRelationResponse response = client.deleteTopostoreRelation(request);
         // System.out.println(response.toString());
     }
+
 
 }

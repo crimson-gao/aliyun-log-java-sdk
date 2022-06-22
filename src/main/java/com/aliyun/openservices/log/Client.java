@@ -4783,27 +4783,64 @@ public class Client implements LogService {
 		return ret;
 	}
 
-	public GetTopostoreNodeRelationResponse getTopostoreNodeRelations(GetTopostoreNodeRelationRequest request) throws LogException {
+	private List<TopostoreNode> listTopostoreNodeByIds(String topostoreName, List<String> reqNodeIds) throws LogException{
+		List<List<String>> reqNodeIdLists = new ArrayList<List<String>>();
+		for(int i=0; i<reqNodeIds.size();i++) {
+			if(i % 200 == 0){
+				reqNodeIdLists.add(new ArrayList<String>());
+			}
+			reqNodeIdLists.get(i/200).add(reqNodeIds.get(i));
+		}
+		List<TopostoreNode> finalNodes = new ArrayList<TopostoreNode>();
+		for(int i=0; i<reqNodeIdLists.size(); i++){
+			ListTopostoreNodeRequest listNodeReq = new ListTopostoreNodeRequest();
+			listNodeReq.setTopostoreName(topostoreName);
+			listNodeReq.setNodeIds(reqNodeIdLists.get(i));
+			ListTopostoreNodeResponse listNodeResp = this.listTopostoreNode(listNodeReq);
+			for (TopostoreNode n: listNodeResp.getTopostoreNodes()){
+				finalNodes.add(n);
+			}
+		}
+		return finalNodes;
+	}
+
+	private List<TopostoreRelation> listTopostoreRelationByIds(String topostoreName, List<String> reqRelationIds) throws LogException{
+		List<List<String>> reqRelationIdLists = new ArrayList<List<String>>();
+		for(int i=0; i<reqRelationIds.size();i++) {
+			if(i % 200 == 0){
+				reqRelationIdLists.add(new ArrayList<String>());
+			}
+			reqRelationIdLists.get(i/200).add(reqRelationIds.get(i));
+		}
+		List<TopostoreRelation> finalRelations = new ArrayList<TopostoreRelation>();
+		for(int i=0; i<reqRelationIdLists.size(); i++){
+			ListTopostoreRelationRequest listRelationReq = new ListTopostoreRelationRequest();
+			listRelationReq.setTopostoreName(topostoreName);
+			listRelationReq.setRelationIds(reqRelationIdLists.get(i));
+			ListTopostoreRelationResponse listRelationResp = this.listTopostoreRelation(listRelationReq);
+			for (TopostoreRelation r: listRelationResp.getTopostoreRelations()){
+				finalRelations.add(r);
+			}
+		}
+		return finalRelations;
+	}
+
+
+	public ListTopostoreNodeRelationResponse listTopostoreNodeRelations(ListTopostoreNodeRelationRequest request) throws LogException {
+		ListTopostoreNodeRelationResponse response = new ListTopostoreNodeRelationResponse();
 
 		// get all nodes
-		int nodeOffset = 0;
-		int nodeTotal = 100000;
 		List<String> allNodeIds = new ArrayList<String>();
+		List<TopostoreNode> allTopoNodes = this.listTopostoreNodeByIds(request.getTopostoreName(), request.getNodeIds());
 
-		while( nodeOffset < nodeTotal ){
-			ListTopostoreNodeRequest listNodeReq = new ListTopostoreNodeRequest();
-			listNodeReq.setTopostoreName(request.getTopostoreName());
-			listNodeReq.setNodeIds(request.getNodeIds());
-			listNodeReq.setNodeTypes(request.getNodeTypes());
-			listNodeReq.setOffset(nodeOffset);
-			listNodeReq.setProperties(request.getNodeProperities());
-			ListTopostoreNodeResponse listNodeResp = this.listTopostoreNode(listNodeReq);
-	
-			nodeTotal = listNodeResp.getTotal();
-			for (TopostoreNode n: listNodeResp.getTopostoreNodes()){
-				nodeOffset++;
-				allNodeIds.add(n.getNodeId());
-			}
+		for(TopostoreNode n: allTopoNodes){
+			allNodeIds.add(n.getNodeId());
+		}
+
+		if(request.getDepth()==0){
+			response.setRelations(new ArrayList<TopostoreRelation>());
+			response.setNodes(allTopoNodes);
+			return response;
 		}
 
 		// prepare relation maps
@@ -4864,15 +4901,12 @@ public class Client implements LogService {
 		}
 
 		// prepare results
-		GetTopostoreNodeRelationResponse response = new GetTopostoreNodeRelationResponse();
 
 		List<String> reqNodeIds = new ArrayList<String>();
 		reqNodeIds.addAll(finalNodeIds);
 				
 		if(reqNodeIds.size()>0){
-			ListTopostoreNodeResponse  finalListNodeResp = this.listTopostoreNode(
-				new ListTopostoreNodeRequest(request.getTopostoreName(), reqNodeIds));
-			response.setNodes(finalListNodeResp.getTopostoreNodes());
+			response.setNodes(this.listTopostoreNodeByIds(request.getTopostoreName(), reqNodeIds));
 		} else {
 			response.setNodes(new ArrayList<TopostoreNode>());
 		}
@@ -4880,9 +4914,7 @@ public class Client implements LogService {
 		List<String> reqRelationIds = new ArrayList<String>();
 		reqRelationIds.addAll(finalRelationIds);
 		if(reqRelationIds.size()>0){
-			ListTopostoreRelationResponse  finalListRelationResp = this.listTopostoreRelation(
-				new ListTopostoreRelationRequest(request.getTopostoreName(), reqRelationIds));
-			response.setRelations(finalListRelationResp.getTopostoreRelations());
+			response.setRelations(this.listTopostoreRelationByIds(request.getTopostoreName(), reqRelationIds));
 		} else {
 			response.setRelations(new ArrayList<TopostoreRelation>());
 		}
