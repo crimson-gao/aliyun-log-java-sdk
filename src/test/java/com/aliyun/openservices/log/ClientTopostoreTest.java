@@ -433,9 +433,9 @@ public class ClientTopostoreTest {
         ListTopostoreNodeRelationRequest request = new ListTopostoreNodeRelationRequest();
         request.setTopostoreName("sls");
         request.setDirection("out");
-        request.setDepth(-1);
+        request.setDepth(2);
         List<String> nodeIds = new ArrayList<String>();
-        // nodeIds.add("front");
+        nodeIds.add("front");
         request.setNodeIds(nodeIds);
         ListTopostoreNodeRelationResponse resp = client.listTopostoreNodeRelations(request);
         System.out.println("nodes:");

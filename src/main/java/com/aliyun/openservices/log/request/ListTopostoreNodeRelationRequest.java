@@ -93,7 +93,7 @@ public class ListTopostoreNodeRelationRequest {
         this.relationTypes = Arrays.asList(relationTypes);
     }
 
-    public ListTopostoreNodeRelationRequest addNodeProperties(String key, String value){
+    public ListTopostoreNodeRelationRequest addNodeProperty(String key, String value){
         this.nodeProperties.put(key, value);
         return this;
     }

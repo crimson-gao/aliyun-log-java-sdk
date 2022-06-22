@@ -4783,28 +4783,51 @@ public class Client implements LogService {
 		return ret;
 	}
 
-	private List<TopostoreNode> listTopostoreNodeByIds(String topostoreName, List<String> reqNodeIds) throws LogException{
-		List<List<String>> reqNodeIdLists = new ArrayList<List<String>>();
-		for(int i=0; i<reqNodeIds.size();i++) {
-			if(i % 200 == 0){
-				reqNodeIdLists.add(new ArrayList<String>());
-			}
-			reqNodeIdLists.get(i/200).add(reqNodeIds.get(i));
-		}
+	private List<TopostoreNode> listTopostoreNodeWithAutoPage(String topostoreName, List<String> reqNodeIds, 
+		List<String> nodeTypes, Map<String, String> nodeProperties) throws LogException{
 		List<TopostoreNode> finalNodes = new ArrayList<TopostoreNode>();
-		for(int i=0; i<reqNodeIdLists.size(); i++){
-			ListTopostoreNodeRequest listNodeReq = new ListTopostoreNodeRequest();
-			listNodeReq.setTopostoreName(topostoreName);
-			listNodeReq.setNodeIds(reqNodeIdLists.get(i));
-			ListTopostoreNodeResponse listNodeResp = this.listTopostoreNode(listNodeReq);
-			for (TopostoreNode n: listNodeResp.getTopostoreNodes()){
-				finalNodes.add(n);
+
+		if(reqNodeIds.size()==0){
+			int offset = 0;
+			int total = 100000;
+
+			while( offset < total ){
+				ListTopostoreNodeRequest listNodeReq = new ListTopostoreNodeRequest();
+				listNodeReq.setTopostoreName(topostoreName);
+				listNodeReq.setProperties(nodeProperties);
+				listNodeReq.setNodeTypes(nodeTypes);
+				ListTopostoreNodeResponse listNodeResp = this.listTopostoreNode(listNodeReq);
+				total = listNodeResp.getTotal();
+				for (TopostoreNode n: listNodeResp.getTopostoreNodes()){
+					offset++;
+					finalNodes.add(n);
+				}
+			}
+		} else {
+			List<List<String>> reqNodeIdLists = new ArrayList<List<String>>();
+			for(int i=0; i<reqNodeIds.size();i++) {
+				if(i % 200 == 0){
+					reqNodeIdLists.add(new ArrayList<String>());
+				}
+				reqNodeIdLists.get(i/200).add(reqNodeIds.get(i));
+			}
+			for(int i=0; i<reqNodeIdLists.size(); i++){
+				ListTopostoreNodeRequest listNodeReq = new ListTopostoreNodeRequest();
+				listNodeReq.setTopostoreName(topostoreName);
+				listNodeReq.setNodeIds(reqNodeIdLists.get(i));
+				listNodeReq.setProperties(nodeProperties);
+				listNodeReq.setNodeTypes(nodeTypes);
+				ListTopostoreNodeResponse listNodeResp = this.listTopostoreNode(listNodeReq);
+				for (TopostoreNode n: listNodeResp.getTopostoreNodes()){
+					finalNodes.add(n);
+				}
 			}
 		}
+
 		return finalNodes;
 	}
 
-	private List<TopostoreRelation> listTopostoreRelationByIds(String topostoreName, List<String> reqRelationIds) throws LogException{
+	private List<TopostoreRelation> listTopostoreRelationWithAutoPage(String topostoreName, List<String> reqRelationIds) throws LogException{
 		List<List<String>> reqRelationIdLists = new ArrayList<List<String>>();
 		for(int i=0; i<reqRelationIds.size();i++) {
 			if(i % 200 == 0){
@@ -4831,7 +4854,8 @@ public class Client implements LogService {
 
 		// get all nodes
 		List<String> allNodeIds = new ArrayList<String>();
-		List<TopostoreNode> allTopoNodes = this.listTopostoreNodeByIds(request.getTopostoreName(), request.getNodeIds());
+		List<TopostoreNode> allTopoNodes = this.listTopostoreNodeWithAutoPage(request.getTopostoreName(), request.getNodeIds(), 
+			request.getNodeTypes(), request.getNodeProperities());
 
 		for(TopostoreNode n: allTopoNodes){
 			allNodeIds.add(n.getNodeId());
@@ -4906,7 +4930,7 @@ public class Client implements LogService {
 		reqNodeIds.addAll(finalNodeIds);
 				
 		if(reqNodeIds.size()>0){
-			response.setNodes(this.listTopostoreNodeByIds(request.getTopostoreName(), reqNodeIds));
+			response.setNodes(this.listTopostoreNodeWithAutoPage(request.getTopostoreName(), reqNodeIds, null, null));
 		} else {
 			response.setNodes(new ArrayList<TopostoreNode>());
 		}
@@ -4914,7 +4938,7 @@ public class Client implements LogService {
 		List<String> reqRelationIds = new ArrayList<String>();
 		reqRelationIds.addAll(finalRelationIds);
 		if(reqRelationIds.size()>0){
-			response.setRelations(this.listTopostoreRelationByIds(request.getTopostoreName(), reqRelationIds));
+			response.setRelations(this.listTopostoreRelationWithAutoPage(request.getTopostoreName(), reqRelationIds));
 		} else {
 			response.setRelations(new ArrayList<TopostoreRelation>());
 		}

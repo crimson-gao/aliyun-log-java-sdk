@@ -159,7 +159,7 @@ public class ListTopostoreNodeRequest extends TopostoreRequest {
             SetParam(Consts.TOPOSTORE_NODE_PROPERTY_KEY, propertyKey);
         }
 
-        if(propertyValue!= null & propertyValue.length()>0){
+        if(propertyValue!= null && propertyValue.length()>0){
             SetParam(Consts.TOPOSTORE_NODE_PROPERTY_VALUE, propertyValue);
         }
 
