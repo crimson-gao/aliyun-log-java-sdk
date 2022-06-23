@@ -108,11 +108,11 @@ public class ListTopostoreNodeRelationRequest{
         this.nodeIds = nodeIds;
     }
 
-    public void SetParams(String key, String value) {
+    public void SetParam(String key, String value) {
         this.params.put(key, value);
     }
 
-    public Map<String, String> GetParams() {
+    public Map<String, String> GetParam() {
         return this.params;
     }
     
