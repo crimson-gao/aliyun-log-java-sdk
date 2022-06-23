@@ -1,6 +1,8 @@
 package com.aliyun.openservices.log;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -432,11 +434,12 @@ public class ClientTopostoreTest {
 
         ListTopostoreNodeRelationRequest request = new ListTopostoreNodeRelationRequest();
         request.setTopostoreName("sls");
-        request.setDirection("out");
+        request.setDirection("in");
         request.setDepth(2);
         List<String> nodeIds = new ArrayList<String>();
-        nodeIds.add("front");
+        nodeIds.add("host1");
         request.setNodeIds(nodeIds);
+
         ListTopostoreNodeRelationResponse resp = client.listTopostoreNodeRelations(request);
         System.out.println("nodes:");
         for(TopostoreNode node: resp.getNodes()){
@@ -460,4 +463,23 @@ public class ClientTopostoreTest {
     }
 
 
+    @Test
+    public void testUrlEncode() throws Exception{
+    
+        // String sampleURL = new String("{\"aaa\" : \"=fsdfasf\", \"bbb\" : \"@r4qr!kk\", \"c\" : 1}");
+        String sampleURL = new String("{\"k1\":\"v1\",\"k2\" : \"v2\"}");
+        // String encodedURL = Base64.getUrlEncoder()
+
+
+        String x = URLEncoder.encode(new String(Base64.getEncoder().encodeToString(sampleURL.getBytes())), "utf8");
+        
+        // Base64.getEncoder().encodeToString(sampleURL.getBytes())
+        
+        
+        // .encodeToString(sampleURL.getBytes());
+        System.out.println("encoded URL:\n"
+                           + x);
+    }
+
+  
 }

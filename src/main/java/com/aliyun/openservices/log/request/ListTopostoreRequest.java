@@ -1,9 +1,13 @@
 package com.aliyun.openservices.log.request;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.Consts;
 import com.aliyun.openservices.log.util.Utils;
 
@@ -98,11 +102,17 @@ public class ListTopostoreRequest extends TopostoreRequest{
         }
 
         if(tags!=null){
-            List<String> mTags = new ArrayList<String>();
+            JSONObject tagObj = new JSONObject();
             for(Map.Entry<String, String> kv : tags.entrySet()){
-                mTags.add(kv.getKey() + ":::" + kv.getValue());
+                tagObj.put(kv.getKey(), kv.getValue());
             }
-            SetParam(Consts.TOPOSTORE_TAGS, String.join("|||", mTags));
+            
+            try{
+                SetParam(Consts.TOPOSTORE_TAGS, URLEncoder.encode(new String(
+                    Base64.getEncoder().encodeToString(tagObj.toJSONString().getBytes())), "utf-8"));
+            } catch(UnsupportedEncodingException e){
+                throw new RuntimeException(e);
+            }
         }
 
         if (topostoreNames != null && !topostoreNames.isEmpty()) {

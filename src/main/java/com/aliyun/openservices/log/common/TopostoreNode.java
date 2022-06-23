@@ -78,7 +78,7 @@ public class TopostoreNode implements Serializable {
         for(Map.Entry<String, String> kv : properties.entrySet()){
             proObj.put(kv.getKey(), kv.getValue());
         }
-        setProperty(proObj.toString());
+        setProperty(proObj.toJSONString());
     }
 
     public String getDescription() {
@@ -117,7 +117,7 @@ public class TopostoreNode implements Serializable {
     }
 
     public String ToJsonString() throws LogException {
-        return ToJsonObject().toString();
+        return ToJsonObject().toJSONString();
     }
 
     public void FromJsonObject(JSONObject dict) throws LogException {

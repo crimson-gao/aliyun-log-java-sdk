@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Topostore implements Serializable {
     private String name = "";
-    private String tag = "";
+    private String tag = "{}";
     private String schema = null;
     private String acl = null;
     private String description = null;
@@ -40,7 +40,7 @@ public class Topostore implements Serializable {
     }
 
     public Topostore(String name) {
-        this(name, "", null, null, null, null);
+        this(name, "{}", null, null, null, null);
     }
 
     public Topostore() {
@@ -67,7 +67,7 @@ public class Topostore implements Serializable {
         for(Map.Entry<String, String> kv : tag.entrySet()){
             tagObj.put(kv.getKey(), kv.getValue());
         }
-        setTag(tagObj.toString());
+        setTag(tagObj.toJSONString());
     }
 
     public String getSchema() {
@@ -125,7 +125,7 @@ public class Topostore implements Serializable {
     }
 
     public String ToJsonString() throws LogException {
-        return ToJsonObject().toString();
+        return ToJsonObject().toJSONString();
     }
 
     public void FromJsonObject(JSONObject dict) throws LogException {
