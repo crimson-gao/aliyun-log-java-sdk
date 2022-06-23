@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.exception.LogException;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class TopostoreNode implements Serializable {
     private String nodeId = "";
@@ -31,14 +32,11 @@ public class TopostoreNode implements Serializable {
     }
 
     public TopostoreNode(String nodeId, String nodeType) {
-        this.nodeId = nodeId;
-        this.nodeType = nodeType;
+        this(nodeId, nodeType, null, null);
     }
 
-    public TopostoreNode(String nodeId, String nodeType, String property) {
-        this.nodeId = nodeId;
-        this.nodeType = nodeType;
-        this.property = property;
+    public TopostoreNode(String nodeId, String nodeType, String property) { 
+        this(nodeId, nodeType, property, null);
     }
 
     public TopostoreNode(String nodeId, String nodeType, String property, String description) {
@@ -73,6 +71,14 @@ public class TopostoreNode implements Serializable {
 
     public void setProperty(String property) {
         this.property = property;
+    }
+
+    public void setProperty(Map<String, String> properties) {
+        JSONObject proObj = new JSONObject();
+        for(Map.Entry<String, String> kv : properties.entrySet()){
+            proObj.put(kv.getKey(), kv.getValue());
+        }
+        setProperty(proObj.toJSONString());
     }
 
     public String getDescription() {
@@ -111,7 +117,7 @@ public class TopostoreNode implements Serializable {
     }
 
     public String ToJsonString() throws LogException {
-        return ToJsonObject().toString();
+        return ToJsonObject().toJSONString();
     }
 
     public void FromJsonObject(JSONObject dict) throws LogException {

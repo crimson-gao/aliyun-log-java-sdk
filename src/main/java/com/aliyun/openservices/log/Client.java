@@ -99,9 +99,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.UUID;
 
 /**
@@ -4498,7 +4500,7 @@ public class Client implements LogService {
 		int count = object.getIntValue(Consts.CONST_COUNT);
 		int total = object.getIntValue(Consts.CONST_TOTAL);
 		List<Topostore> topostores = extractTopostores(object, requestId);
-		return new ListTopostoreResponse(response.getHeaders(), count, total, topostores);
+		return new ListTopostoreResponse(response.getHeaders(), topostores, count, total);
 	}
 
 	@Override
@@ -4632,7 +4634,9 @@ public class Client implements LogService {
 		String requestId = GetRequestId(response.getHeaders());
 		JSONObject object = parseResponseBody(response, requestId);
 		List<TopostoreNode> nodes = extractTopostoreNodesFromResponse(object, requestId);
-		return new ListTopostoreNodeResponse(response.getHeaders(), nodes);
+		int total = object.getIntValue(Consts.CONST_TOTAL);
+		int count = object.getIntValue(Consts.CONST_COUNT);
+		return new ListTopostoreNodeResponse(response.getHeaders(), nodes, count, total);
 	}
 
 	@Override
@@ -4770,7 +4774,9 @@ public class Client implements LogService {
 		String requestId = GetRequestId(response.getHeaders());
 		JSONObject object = parseResponseBody(response, requestId);
 		List<TopostoreRelation> relations = extractTopostoreRelationsFromResponse(object, requestId);
-		return new ListTopostoreRelationResponse(response.getHeaders(), relations);
+		int total = object.getIntValue(Consts.CONST_TOTAL);
+		int count = object.getIntValue(Consts.CONST_COUNT);
+		return new ListTopostoreRelationResponse(response.getHeaders(), relations, count, total);
 	}
 
 	@Override
@@ -4791,6 +4797,234 @@ public class Client implements LogService {
 		return new UpsertTopostoreRelationResponse(response.getHeaders());
 	}
 
+	public List<Set<String>> traverseNodeRelations(Map<String, List<TopostoreRelation>> nodeRelationMap,String direction,
+			String nodeId, long depth, boolean depthMode, List<String> relationTypes){
+		if(depthMode && depth<0){
+			return new ArrayList<Set<String>>();
+		}
+
+		Set<String> nodeIds = new HashSet<String>();
+		nodeIds.add(nodeId);
+		Set<String> relationIds = new HashSet<String>();
+		List<Set<String>>  ret = new ArrayList<Set<String>>();
+
+		if(depthMode && depth==0){
+			ret.add(nodeIds);
+			ret.add(relationIds);
+			return ret;
+		}
+
+		if(nodeRelationMap.containsKey(nodeId)){
+			for(TopostoreRelation relation: nodeRelationMap.get(nodeId)){
+				if(relationTypes == null || relationTypes.size()==0 || relationTypes.contains(relation.getRelationType())){	
+					String mNodeId=null;
+					if(direction.equals(Consts.TOPOSTORE_RELATION_DIRECTION_IN)){
+						mNodeId = relation.getSrcNodeId();
+					} else if(direction.equals(Consts.TOPOSTORE_RELATION_DIRECTION_OUT)){	
+						mNodeId = relation.getDstNodeId();
+					}
+
+					if(mNodeId!=null){
+						nodeIds.add(mNodeId);
+						relationIds.add(relation.getRelationId());
+
+						List<Set<String>> childs =  traverseNodeRelations(nodeRelationMap, direction, mNodeId, depth-1, depthMode, relationTypes);
+						if(childs.size()==2){
+							for(String n: childs.get(0)){
+								nodeIds.add(n);
+							}
+							for(String r: childs.get(1)){
+								relationIds.add(r);
+							}
+						}
+					}
+
+				}
+			}
+		}
+
+		ret.add(nodeIds);
+		ret.add(relationIds);
+		return ret;
+	}
+
+	private List<TopostoreNode> listTopostoreNodeWithAutoPage(String topostoreName, List<String> reqNodeIds, 
+		List<String> nodeTypes, Map<String, String> nodeProperties, Map<String, String> params) throws LogException{
+		List<TopostoreNode> finalNodes = new ArrayList<TopostoreNode>();
+
+		if(reqNodeIds.size()==0){
+			int offset = 0;
+			int total = 100000;
+
+			while( offset < total ){
+				ListTopostoreNodeRequest listNodeReq = new ListTopostoreNodeRequest();
+				listNodeReq.setTopostoreName(topostoreName);
+				listNodeReq.setProperties(nodeProperties);
+				listNodeReq.setNodeTypes(nodeTypes);
+				for(Map.Entry<String, String> kv: params.entrySet()){
+					listNodeReq.SetParam(kv.getKey(), kv.getValue());
+				}
+				ListTopostoreNodeResponse listNodeResp = this.listTopostoreNode(listNodeReq);
+				total = listNodeResp.getTotal();
+				for (TopostoreNode n: listNodeResp.getTopostoreNodes()){
+					offset++;
+					finalNodes.add(n);
+				}
+			}
+		} else {
+			List<List<String>> reqNodeIdLists = new ArrayList<List<String>>();
+			for(int i=0; i<reqNodeIds.size();i++) {
+				if(i % 200 == 0){
+					reqNodeIdLists.add(new ArrayList<String>());
+				}
+				reqNodeIdLists.get(i/200).add(reqNodeIds.get(i));
+			}
+			for(int i=0; i<reqNodeIdLists.size(); i++){
+				ListTopostoreNodeRequest listNodeReq = new ListTopostoreNodeRequest();
+				listNodeReq.setTopostoreName(topostoreName);
+				listNodeReq.setNodeIds(reqNodeIdLists.get(i));
+				listNodeReq.setProperties(nodeProperties);
+				listNodeReq.setNodeTypes(nodeTypes);
+				for(Map.Entry<String, String> kv: params.entrySet()){
+					listNodeReq.SetParam(kv.getKey(), kv.getValue());
+				}
+				ListTopostoreNodeResponse listNodeResp = this.listTopostoreNode(listNodeReq);
+				for (TopostoreNode n: listNodeResp.getTopostoreNodes()){
+					finalNodes.add(n);
+				}
+			}
+		}
+
+		return finalNodes;
+	}
+
+	private List<TopostoreRelation> listTopostoreRelationWithAutoPage(String topostoreName, List<String> reqRelationIds,
+		Map<String, String> params) throws LogException{
+		List<List<String>> reqRelationIdLists = new ArrayList<List<String>>();
+		for(int i=0; i<reqRelationIds.size();i++) {
+			if(i % 200 == 0){
+				reqRelationIdLists.add(new ArrayList<String>());
+			}
+			reqRelationIdLists.get(i/200).add(reqRelationIds.get(i));
+		}
+		List<TopostoreRelation> finalRelations = new ArrayList<TopostoreRelation>();
+		for(int i=0; i<reqRelationIdLists.size(); i++){
+			ListTopostoreRelationRequest listRelationReq = new ListTopostoreRelationRequest();
+			listRelationReq.setTopostoreName(topostoreName);
+			listRelationReq.setRelationIds(reqRelationIdLists.get(i));
+			for(Map.Entry<String, String> kv: params.entrySet()){
+				listRelationReq.SetParam(kv.getKey(), kv.getValue());
+			}
+			ListTopostoreRelationResponse listRelationResp = this.listTopostoreRelation(listRelationReq);
+			for (TopostoreRelation r: listRelationResp.getTopostoreRelations()){
+				finalRelations.add(r);
+			}
+		}
+		return finalRelations;
+	}
+
+
+	public ListTopostoreNodeRelationResponse listTopostoreNodeRelations(ListTopostoreNodeRelationRequest request) throws LogException {
+		ListTopostoreNodeRelationResponse response = new ListTopostoreNodeRelationResponse();
+
+		// get all nodes
+		List<String> allNodeIds = new ArrayList<String>();
+		List<TopostoreNode> allTopoNodes = this.listTopostoreNodeWithAutoPage(request.getTopostoreName(), request.getNodeIds(), 
+			request.getNodeTypes(), request.getNodeProperities(), request.GetParam());
+		
+		for(TopostoreNode n: allTopoNodes){
+			allNodeIds.add(n.getNodeId());
+		}
+
+		if(request.getDepth()==0){
+			response.setRelations(new ArrayList<TopostoreRelation>());
+			response.setNodes(allTopoNodes);
+			return response;
+		}
+
+		// prepare relation maps
+		int relationOffset = 0;
+		int relationTotal = 100000;
+		Map<String, Map<String, List<TopostoreRelation>>> nodeRelationMap = new HashMap<String,Map<String,List<TopostoreRelation>>>();
+		nodeRelationMap.put(Consts.TOPOSTORE_RELATION_DIRECTION_IN, new HashMap<String,List<TopostoreRelation>>());
+		nodeRelationMap.put(Consts.TOPOSTORE_RELATION_DIRECTION_OUT, new HashMap<String,List<TopostoreRelation>>());
+
+		while( relationOffset < relationTotal ){
+			ListTopostoreRelationRequest listRelationReq = new ListTopostoreRelationRequest();
+			listRelationReq.setTopostoreName(request.getTopostoreName());
+			for(Map.Entry<String, String> kv: request.GetParam().entrySet()){
+				listRelationReq.SetParam(kv.getKey(), kv.getValue());
+			}
+
+			ListTopostoreRelationResponse listRelationResp = this.listTopostoreRelation(listRelationReq);
+	
+			relationTotal = listRelationResp.getTotal();
+			
+			for(TopostoreRelation relation: listRelationResp.getTopostoreRelations()){
+				String srcNodeId = relation.getSrcNodeId();
+				String dstNodeId = relation.getDstNodeId();
+	
+				relationOffset++;
+				if (!nodeRelationMap.get(Consts.TOPOSTORE_RELATION_DIRECTION_IN).containsKey(dstNodeId)){
+					nodeRelationMap.get(Consts.TOPOSTORE_RELATION_DIRECTION_IN).put(dstNodeId, new ArrayList<TopostoreRelation>());
+				}
+				nodeRelationMap.get(Consts.TOPOSTORE_RELATION_DIRECTION_IN).get(dstNodeId).add(relation);
+	
+				if (!nodeRelationMap.get(Consts.TOPOSTORE_RELATION_DIRECTION_OUT).containsKey(srcNodeId)){
+					nodeRelationMap.get(Consts.TOPOSTORE_RELATION_DIRECTION_OUT).put(srcNodeId, new ArrayList<TopostoreRelation>());
+				}
+				nodeRelationMap.get(Consts.TOPOSTORE_RELATION_DIRECTION_OUT).get(srcNodeId).add(relation);
+			}
+		}
+
+		// traverse
+		Set<String> finalNodeIds = new HashSet<String>();
+		Set<String> finalRelationIds = new HashSet<String>();
+
+		for(String nodeId : allNodeIds){
+			for(Map.Entry<String, Map<String, List<TopostoreRelation>>> entry: nodeRelationMap.entrySet()){
+				if(request.getDirection().equals(entry.getKey())
+					||request.getDirection().equals(Consts.TOPOSTORE_RELATION_DIRECTION_BOTH)){
+						boolean depthMode=false;
+						if(request.getDepth()>0){
+							depthMode = true;
+						}
+						List<Set<String>>  ret = traverseNodeRelations(entry.getValue(), entry.getKey(), nodeId, 
+						request.getDepth(), depthMode, request.getRelationTypes());
+						if(ret.size() == 2){
+							for(String n: ret.get(0)){
+								finalNodeIds.add(n);
+							}
+							for(String r: ret.get(1)){
+								finalRelationIds.add(r);
+							}
+						}
+				}
+			}
+		}
+
+		// prepare results
+
+		List<String> reqNodeIds = new ArrayList<String>();
+		reqNodeIds.addAll(finalNodeIds);
+				
+		if(reqNodeIds.size()>0){
+			response.setNodes(this.listTopostoreNodeWithAutoPage(request.getTopostoreName(), reqNodeIds, null, null, request.GetParam()));
+		} else {
+			response.setNodes(new ArrayList<TopostoreNode>());
+		}
+
+		List<String> reqRelationIds = new ArrayList<String>();
+		reqRelationIds.addAll(finalRelationIds);
+		if(reqRelationIds.size()>0){
+			response.setRelations(this.listTopostoreRelationWithAutoPage(request.getTopostoreName(), reqRelationIds, request.GetParam()));
+		} else {
+			response.setRelations(new ArrayList<TopostoreRelation>());
+		}
+
+		
+		return response;
+	}
 	
 	@Override
 	public CreateResourceResponse createResource(CreateResourceRequest request) throws LogException {
