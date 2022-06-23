@@ -4733,7 +4733,7 @@ public class Client implements LogService {
 	}
 
 	public List<Set<String>> traverseNodeRelations(Map<String, List<TopostoreRelation>> nodeRelationMap,String direction,
-			String nodeId, int depth, boolean depthMode, List<String> relationTypes){
+			String nodeId, long depth, boolean depthMode, List<String> relationTypes){
 		if(depthMode && depth<0){
 			return new ArrayList<Set<String>>();
 		}

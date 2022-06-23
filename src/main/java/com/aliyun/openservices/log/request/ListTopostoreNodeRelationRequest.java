@@ -17,7 +17,7 @@ public class ListTopostoreNodeRelationRequest{
 
     // relation selection
     private List<String> relationTypes;
-    private int relationDepth = 0;
+    private long relationDepth = 0;
     private String relationDirection = Consts.TOPOSTORE_RELATION_DIRECTION_BOTH;
     private long from;
     private long to;
@@ -146,11 +146,11 @@ public class ListTopostoreNodeRelationRequest{
         this.relationTypes = relationTypes;
     }
 
-    public int getDepth() {
+    public long getDepth() {
         return this.relationDepth;
     }
 
-    public void setDepth(int depth) {
+    public void setDepth(long depth) {
         this.relationDepth = depth;
     }
 
