@@ -28,6 +28,9 @@ public class ListTopostoreNodeRelationRequest{
     public ListTopostoreNodeRelationRequest() {
     }
 
+    public ListTopostoreNodeRelationRequest(String topostoreName)  {
+        this(topostoreName, new ArrayList<String>(), new ArrayList<String>(), new HashMap<String,String>(), new ArrayList<String>(), 0, Consts.TOPOSTORE_RELATION_DIRECTION_BOTH);
+    }
 
     public ListTopostoreNodeRelationRequest(String topostoreName, List<String> nodeIds)  {
         this(topostoreName, nodeIds, new ArrayList<String>(), new HashMap<String,String>(), new ArrayList<String>(), 0, Consts.TOPOSTORE_RELATION_DIRECTION_BOTH);
