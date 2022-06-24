@@ -1,9 +1,13 @@
 package com.aliyun.openservices.log.request;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.Consts;
 import com.aliyun.openservices.log.util.Utils;
 
@@ -13,6 +17,15 @@ public class ListTopostoreRequest extends TopostoreRequest{
     private String tagKey;
     private String tagValue;
     private List<String> topostoreNames = new ArrayList<String>();
+    private Map<String, String> tags;
+
+    public Map<String,String> getTags() {
+        return this.tags;
+    }
+
+    public void setTags(Map<String,String> tags) {
+        this.tags = tags;
+    }
 
     public ListTopostoreRequest(Integer offset, Integer size, String tagKey, String tagValue, List<String> topostoreNames) {
         this.offset = offset;
@@ -86,6 +99,20 @@ public class ListTopostoreRequest extends TopostoreRequest{
 
         if (tagValue != null) {
             SetParam(Consts.TOPOSTORE_TAG_VALUE, tagValue);
+        }
+
+        if(tags!=null){
+            JSONObject tagObj = new JSONObject();
+            for(Map.Entry<String, String> kv : tags.entrySet()){
+                tagObj.put(kv.getKey(), kv.getValue());
+            }
+            
+            try{
+                SetParam(Consts.TOPOSTORE_TAGS, URLEncoder.encode(new String(
+                    Base64.getEncoder().encodeToString(tagObj.toJSONString().getBytes())), "utf-8"));
+            } catch(UnsupportedEncodingException e){
+                throw new RuntimeException(e);
+            }
         }
 
         if (topostoreNames != null && !topostoreNames.isEmpty()) {

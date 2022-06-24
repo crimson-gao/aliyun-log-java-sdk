@@ -1,7 +1,11 @@
 package com.aliyun.openservices.log;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.aliyun.openservices.log.common.Topostore;
 import com.aliyun.openservices.log.common.TopostoreNode;
@@ -13,9 +17,12 @@ import com.aliyun.openservices.log.request.CreateTopostoreRequest;
 import com.aliyun.openservices.log.request.DeleteTopostoreNodeRequest;
 import com.aliyun.openservices.log.request.DeleteTopostoreRelationRequest;
 import com.aliyun.openservices.log.request.DeleteTopostoreRequest;
+import com.aliyun.openservices.log.request.ListTopostoreNodeRelationRequest;
+import com.aliyun.openservices.log.request.ListTopostoreNodeRelationResponse;
 import com.aliyun.openservices.log.request.GetTopostoreNodeRequest;
 import com.aliyun.openservices.log.request.GetTopostoreRelationRequest;
 import com.aliyun.openservices.log.request.GetTopostoreRequest;
+import com.aliyun.openservices.log.request.ListTopostoreNodeRequest;
 import com.aliyun.openservices.log.request.ListTopostoreRelationRequest;
 import com.aliyun.openservices.log.request.ListTopostoreRequest;
 import com.aliyun.openservices.log.request.UpdateTopostoreNodeRequest;
@@ -32,6 +39,7 @@ import com.aliyun.openservices.log.response.DeleteTopostoreResponse;
 import com.aliyun.openservices.log.response.GetTopostoreNodeResponse;
 import com.aliyun.openservices.log.response.GetTopostoreRelationResponse;
 import com.aliyun.openservices.log.response.GetTopostoreResponse;
+import com.aliyun.openservices.log.response.ListTopostoreNodeResponse;
 import com.aliyun.openservices.log.response.ListTopostoreRelationResponse;
 import com.aliyun.openservices.log.response.ListTopostoreResponse;
 import com.aliyun.openservices.log.response.UpdateTopostoreNodeResponse;
@@ -365,4 +373,113 @@ public class ClientTopostoreTest {
         System.out.println(response.toString());
     }
 
+    @Test
+    public void testGetTopostoreProperities() throws LogException{
+        String endpoint = System.getenv("LOG_TEST_ENDPOINT");
+        String accessKeyId = System.getenv("LOG_TEST_ACCESS_KEY_ID");
+        String accessKeySecret = System.getenv("LOG_TEST_ACCESS_KEY_SECRET");
+
+        Client client = new Client(endpoint, accessKeyId, accessKeySecret);
+
+        ListTopostoreRequest tReq = new ListTopostoreRequest();
+
+        tReq.SetParam("key", "value");
+
+        Map<String, String> tags = new HashMap<String, String>();
+        tags.put("a-1", "b-1");
+        tags.put("a-2", "b-2");
+
+        tReq.setTags(tags);
+        client.listTopostore(tReq);
+
+        // test relation list
+        ListTopostoreRelationRequest req = new ListTopostoreRelationRequest();
+
+        req.setTopostoreName("sls");
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put("env", "prod");
+        req.setProperties(properties);
+
+        ListTopostoreRelationResponse resp = client.listTopostoreRelation(req);
+
+        for(TopostoreRelation relation:resp.getTopostoreRelations()        ){
+            System.out.println(relation.ToJsonString());
+        }
+
+        // test node list
+        ListTopostoreNodeRequest req2 = new ListTopostoreNodeRequest();
+        req2.setTopostoreName("sls");
+
+        Map<String, String> properties2 = new HashMap<String, String>();
+        properties2.put("env", "prod");
+        properties2.put("name", "host1");
+        req2.setProperties(properties2);
+
+        ListTopostoreNodeResponse resp2 = client.listTopostoreNode(req2);
+
+        for(TopostoreNode node:resp2.getTopostoreNodes()){
+            System.out.println(node.ToJsonString());
+        }
+
+    }
+
+    @Test
+    public void testListTopostoreNodeRelations() throws LogException{
+
+        String endpoint = System.getenv("LOG_TEST_ENDPOINT");
+        String accessKeyId = System.getenv("LOG_TEST_ACCESS_KEY_ID");
+        String accessKeySecret = System.getenv("LOG_TEST_ACCESS_KEY_SECRET");
+
+        Client client = new Client(endpoint, accessKeyId, accessKeySecret);
+
+        ListTopostoreNodeRelationRequest request = new ListTopostoreNodeRelationRequest();
+        request.setTopostoreName("sls");
+        request.setDirection("in");
+        request.setDepth(2);
+        List<String> nodeIds = new ArrayList<String>();
+        nodeIds.add("host1");
+        request.setNodeIds(nodeIds);
+
+        ListTopostoreNodeRelationResponse resp = client.listTopostoreNodeRelations(request);
+        System.out.println("nodes:");
+        for(TopostoreNode node: resp.getNodes()){
+            System.out.println("\t" + node.getNodeId());
+        }
+        System.out.println("\nrelations:");
+
+        for(TopostoreRelation relation: resp.getRelations()){
+            System.out.println("\t" + relation.getRelationId());
+        }
+
+        // relation op
+
+        // List<String> relationIds = new ArrayList<String>();
+        // relationIds.add("relation1");
+        // relationIds.add("relation2");
+
+        // DeleteTopostoreRelationRequest request = new DeleteTopostoreRelationRequest(topostoreName, relationIds);
+        // DeleteTopostoreRelationResponse response = client.deleteTopostoreRelation(request);
+        // System.out.println(response.toString());
+    }
+
+
+    @Test
+    public void testUrlEncode() throws Exception{
+    
+        // String sampleURL = new String("{\"aaa\" : \"=fsdfasf\", \"bbb\" : \"@r4qr!kk\", \"c\" : 1}");
+        String sampleURL = new String("{\"k1\":\"v1\",\"k2\" : \"v2\"}");
+        // String encodedURL = Base64.getUrlEncoder()
+
+
+        String x = URLEncoder.encode(new String(Base64.getEncoder().encodeToString(sampleURL.getBytes())), "utf8");
+        
+        // Base64.getEncoder().encodeToString(sampleURL.getBytes())
+        
+        
+        // .encodeToString(sampleURL.getBytes());
+        System.out.println("encoded URL:\n"
+                           + x);
+    }
+
+  
 }

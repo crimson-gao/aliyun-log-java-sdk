@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.exception.LogException;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class TopostoreRelation implements Serializable {
     private String relationId = "";
@@ -26,18 +27,11 @@ public class TopostoreRelation implements Serializable {
     }
 
     public TopostoreRelation(String relationId, String relationType, String srcNodeId, String dstNodeId) {
-        this.relationId = relationId;
-        this.relationType = relationType;
-        this.srcNodeId = srcNodeId;
-        this.dstNodeId = dstNodeId;
+        this(relationId, relationType, srcNodeId, dstNodeId, null, null);
     }
 
     public TopostoreRelation(String relationId, String relationType, String srcNodeId, String dstNodeId, String property) {
-        this.relationId = relationId;
-        this.relationType = relationType;
-        this.srcNodeId = srcNodeId;
-        this.dstNodeId = dstNodeId;
-        this.property = property;
+        this(relationId, relationType, srcNodeId, dstNodeId, property, null);
     }
 
     public TopostoreRelation(String relationId, String relationType, String srcNodeId, String dstNodeId, String property, String description) {
@@ -95,6 +89,14 @@ public class TopostoreRelation implements Serializable {
         this.property = property;
     }
 
+    public void setProperty(Map<String, String> properties) {
+        JSONObject proObj = new JSONObject();
+        for(Map.Entry<String, String> kv : properties.entrySet()){
+            proObj.put(kv.getKey(), kv.getValue());
+        }
+        setProperty(proObj.toJSONString());
+    }
+
     public String getDescription() {
         return description;
     }
@@ -134,7 +136,7 @@ public class TopostoreRelation implements Serializable {
     }
 
     public String ToJsonString() throws LogException {
-        return ToJsonObject().toString();
+        return ToJsonObject().toJSONString();
     }
 
     public void FromJsonObject(JSONObject dict) throws LogException {
@@ -181,7 +183,7 @@ public class TopostoreRelation implements Serializable {
             throw new IllegalArgumentException("topostore relation type is null/empty");
         }
 
-        if (property != null) {
+        if (property != null && property.length()>0) {
             try {
                 JSONObject.parseObject(property);
             } catch (JSONException e) {
