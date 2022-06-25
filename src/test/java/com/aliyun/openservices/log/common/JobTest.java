@@ -311,7 +311,7 @@ public class JobTest {
         exportGeneralSink.put("someInt", 33);
         exportConfiguration.setSink(exportGeneralSink);
         job.setConfiguration(exportConfiguration);
-        String jobStr = "{\"configuration\":{\"fromTime\":0,\"sink\":{\"batchMaxSize\":\"0\",\"timeZone\":\"Asia/Shanghai\",\"type\":\"RDS\",\"someInt\":33}},\"displayName\":\"test export\",\"name\":\"test-export-general\",\"schedule\":{\"interval\":\"2m\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"state\":\"Enabled\",\"type\":\"Export\"}";
+        String jobStr = "{\"configuration\":{\"fromTime\":0,\"sink\":{\"batchMaxSize\":\"0\",\"timeZone\":\"Asia/Shanghai\",\"type\":\"RDS\",\"someInt\":33},\"toTime\":0},\"displayName\":\"test export\",\"name\":\"test-export-general\",\"schedule\":{\"interval\":\"2m\",\"runImmediately\":false,\"type\":\"FixedRate\"},\"state\":\"Enabled\",\"type\":\"Export\"}";
         assertEquals(jobStr, JSONObject.toJSONString(job));
         System.out.println(JSONObject.toJSONString(job.getConfiguration()));
     }
