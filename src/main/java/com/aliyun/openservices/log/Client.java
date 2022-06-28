@@ -52,6 +52,7 @@ import com.aliyun.openservices.log.common.SqlInstance;
 import com.aliyun.openservices.log.common.SubStore;
 import com.aliyun.openservices.log.common.SubStoreKey;
 import com.aliyun.openservices.log.common.TagContent;
+import com.aliyun.openservices.log.common.TagResources;
 import com.aliyun.openservices.log.common.Topostore;
 import com.aliyun.openservices.log.common.TopostoreNode;
 import com.aliyun.openservices.log.common.TopostoreRelation;
@@ -477,6 +478,30 @@ public class Client implements LogService {
 		return new UntagResourcesResponse(resHeaders);
 	}
 
+	protected List<TagResources> ExtractTagResources(JSONObject object, String requestId)
+			throws LogException {
+		List<TagResources> tagResources = new ArrayList<TagResources>();
+		if (object == null) {
+			return tagResources;
+		}
+		JSONArray array = new JSONArray();
+		try {
+			array = object.getJSONArray("tagResources");
+			if (array == null) {
+				return tagResources;
+			}
+
+			for (int index = 0; index < array.size(); index++) {
+				tagResources.add(TagResources.FromJsonObject(array.getJSONObject(index)));
+			}
+		} catch (JSONException e) {
+			throw new LogException(ErrorCodes.BAD_RESPONSE, "The response is not valid config json array string : " + array.toString(), e, requestId);
+		}
+
+		return tagResources;
+	}
+
+
 	public ListTagResourcesResponse listTagResources(ListTagResourcesRequest request) throws LogException {
 		CodingUtils.assertParameterNotNull(request, "request");
 		Map<String, String> urlParameter = request.GetAllParams();
@@ -484,7 +509,10 @@ public class Client implements LogService {
 		String resourceUri = "/tags";
 		ResponseMessage response = SendData("", HttpMethod.GET, resourceUri, urlParameter, headParameter);
 		Map<String, String> resHeaders = response.getHeaders();
-		return new ListTagResourcesResponse(resHeaders, response.GetStringBody());
+		String requestId = GetRequestId(response.getHeaders());
+		JSONObject object = parseResponseBody(response, requestId);
+		List<TagResources> tagResources = ExtractTagResources(object, requestId);
+		return new ListTagResourcesResponse(resHeaders, response.GetStringBody(), tagResources);
 	}
 
 	public GetLogtailProfileResponse GetLogtailProfile(String project, String logstore, String source,
