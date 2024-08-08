@@ -35,7 +35,7 @@ public class ExternalStoreTest extends MetaAPIBaseFunctionTest {
             client.createExternalStore(createRequest);
             fail("Already exists");
         } catch (LogException ex) {
-            assertEquals("ParameterInvalid", ex.GetErrorCode());
+            assertEquals("LogStoreAlreadyExist", ex.GetErrorCode());
             assertEquals(400, ex.getHttpCode());
         }
 

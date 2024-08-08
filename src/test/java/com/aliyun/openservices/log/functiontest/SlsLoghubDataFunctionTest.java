@@ -19,7 +19,6 @@ import com.aliyun.openservices.log.response.BatchGetLogResponse;
 import com.aliyun.openservices.log.response.GetCursorResponse;
 import com.aliyun.openservices.log.response.ListShardResponse;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.junit.After;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -34,8 +33,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class SlsLoghubDataFunctionTest extends FunctionTest {
-    static private final String project = "project1";
+public class SlsLoghubDataFunctionTest extends MetaAPIBaseFunctionTest {
+    static private final String project = TEST_PROJECT;
     static private final String logStore = "javasdk2";
     private final int startTime = getNowTimestamp();
     private final String topic = "sls_java_topic_" + startTime;
@@ -589,17 +588,5 @@ public class SlsLoghubDataFunctionTest extends FunctionTest {
         }
 
         assertTrue("Verify failed", verified);
-    }
-
-    @After
-    public void tearDown() {
-        try {
-            client.DeleteLogStore(project, logStore);
-            waitOneMinutes();
-        } catch (LogException e) {
-            System.out.println("ErrorCode:" + e.GetErrorCode());
-            System.out.println("ErrorMessage:" + e.GetErrorMessage());
-            fail();
-        }
     }
 }

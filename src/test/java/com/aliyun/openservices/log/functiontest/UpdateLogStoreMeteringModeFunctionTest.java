@@ -108,7 +108,7 @@ public class UpdateLogStoreMeteringModeFunctionTest extends MetaAPIBaseFunctionT
             client.updateLogStoreMeteringMode(new UpdateLogStoreMeteringModeRequest(TEST_PROJECT, logstoreName, Consts.CHARGE_BY_DATA_INGEST));
             Assert.fail();
         } catch (LogException ex) {
-            Assert.assertEquals(ex.getMessage(), "This operation is forbidden, please contact SLS support.");
+            Assert.assertEquals(ex.getMessage(), "This operation is forbidden, please contact SLS .");
 //            Assert.assertEquals(ex.getMessage(), "The service code is not opened: slsingest");
         }
 

@@ -1,8 +1,5 @@
 package com.aliyun.openservices.log.functiontest;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.aliyun.openservices.log.Client;
 import com.aliyun.openservices.log.common.*;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.request.*;
@@ -11,14 +8,9 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class ExportOSSTest {
-    private static final String endpoint = "http://cn-hangzhou.log.aliyuncs.com";
-    private static final String accessKeyId = "";
-    private static final String accessKeySecret = "";
+public class ExportOSSTest extends MetaAPIBaseFunctionTest {
 
-    private static final Client client = new Client(endpoint, accessKeyId, accessKeySecret);
-
-    private static final String project = "test";
+    private static final String project = TEST_PROJECT;
 
     private static final String roleArn = "test";
 

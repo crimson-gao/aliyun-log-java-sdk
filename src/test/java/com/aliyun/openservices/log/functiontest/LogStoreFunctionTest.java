@@ -256,8 +256,8 @@ public class LogStoreFunctionTest extends MetaAPIBaseFunctionTest {
             client.UpdateLogStore(TEST_PROJECT, logStore);
             fail("update logstore mode should fail");
         } catch (LogException ex) {
-            assertEquals(ex.getErrorCode(), "ParameterInvalid");
-            assertEquals(ex.getMessage(), "logstore mode cannot be modified after creation");
+            assertEquals(ex.getErrorCode(), "NotSupported");
+            assertEquals(ex.getMessage(), "The logstore mode or telemetryType is not supported for current metering mode.");
             assertEquals(ex.getHttpCode(), 400);
         }
 

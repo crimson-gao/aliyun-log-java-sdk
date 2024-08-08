@@ -17,19 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class SlsIndexJsonFunctionTest {
-
-    static final Credentials credentials = Credentials.load();
-    static private String accessId = credentials.getAccessKeyId();
-    static private String accessKey = credentials.getAccessKey();
-
-    static private String project = "test-lichao-3";
-    static private String host = credentials.getEndpoint();
-    static private String logStore = "test-java-sdk";
-    static private Client client = new Client(host, accessId, accessKey);
-
-    public SlsIndexJsonFunctionTest() {
-    }
+public class SlsIndexJsonFunctionTest extends BaseDataTest{
 
     @Test
     public void TestUpdateIndex() {
@@ -64,8 +52,8 @@ public class SlsIndexJsonFunctionTest {
         keys.AddKey("json1", indexJsonKey);
         index.SetKeys(keys);
         try {
-            client.UpdateIndex(project, logStore, index);
-            Index res = client.GetIndex(project, logStore).GetIndex();
+            client.UpdateIndex(project, logStore.GetLogStoreName(), index);
+            Index res = client.GetIndex(project, logStore.GetLogStoreName()).GetIndex();
             assertEquals(res.getMaxTextLen(), index.getMaxTextLen());
             assertEquals(res.getLogReduceWhiteList(), whiteBlackList);
             assertEquals(res.getLogReduceBlackList(), whiteBlackList);

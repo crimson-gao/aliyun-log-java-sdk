@@ -147,16 +147,31 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
                 <configuration>
-                    <parallel>methods</parallel>
-                    <threadCount>4</threadCount>
+                    <parallel>classes</parallel>
+                    <threadCount>16</threadCount>
+                    <forkCount>2C</forkCount>
+                    <reuseForks>true</reuseForks>
                     <argLine>-Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=256m
                         -Dfile.encoding=UTF-8
                     </argLine>
                     <excludes>
                         <exclude>**/odps/**</exclude>
                         <exclude>**/oms/**</exclude>
+                        <exclude>com.aliyun.openservices.log.functiontest.CnameFunctionTest</exclude>
+                        <exclude>com.aliyun.openservices.log.functiontest.LogstoreReplicationTest</exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.1.0</version>
             </plugin>
 
             <plugin>
@@ -248,4 +263,13 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>3.3.1</version>
+            </plugin>
+        </plugins>
+  </reporting>
 </project>

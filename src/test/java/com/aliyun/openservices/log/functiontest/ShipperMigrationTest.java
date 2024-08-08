@@ -1,6 +1,7 @@
 package com.aliyun.openservices.log.functiontest;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.openservices.log.common.LogStore;
 import com.aliyun.openservices.log.common.Logs;
 import com.aliyun.openservices.log.common.ShipperMigration;
 import com.aliyun.openservices.log.exception.LogException;
@@ -10,16 +11,27 @@ import com.aliyun.openservices.log.request.ListShipperMigrationRequest;
 import com.aliyun.openservices.log.response.CreateShipperMigrationResponse;
 import com.aliyun.openservices.log.response.GetShipperMigrationResponse;
 import com.aliyun.openservices.log.response.ListShipperMigrationResponse;
+
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
 import org.junit.Test;
 
-public class ShipperMigrationTest extends FunctionTest {
+public class ShipperMigrationTest extends MetaAPIBaseFunctionTest {
 
-    private static String testProject = "zhongzhou-shipper";
+    private static String testProject = TEST_PROJECT;
     private static String testLogstore = "oss-shipper";
     private static String testOssShipper = "testosssdk";
 
+    @Before
+    public void setUp() {
+        super.setUp();
+        assertTrue(safeCreateLogStore(TEST_PROJECT, new LogStore(testLogstore, 1, 1))); 
+    }
+
     @Test
-    public void testMigration() throws LogException {
+    public void testMigration() throws LogException, InterruptedException {
+        Thread.sleep(1000 * 10);
 //        testCreateMigration();
         testListMigration();
         testGetMigration();

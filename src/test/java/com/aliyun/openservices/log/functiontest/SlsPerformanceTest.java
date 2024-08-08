@@ -31,9 +31,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class SlsPerformanceTest extends FunctionTest {
+public class SlsPerformanceTest extends MetaAPIBaseFunctionTest {
 
-    private String project = "ali-cn-yunlei-sls-admin";
+    private String project = TEST_PROJECT;
     private String logStore = "data-ft";
 
     private int logItemLine = 30;

@@ -47,7 +47,7 @@ public class BssTest extends JobIntgTest {
     public void testCrud() throws Exception {
         Ingestion ingestion = createIngestion();
         String jobName = ingestion.getName();
-        String project = "sls-jsk-log";
+        String project = TEST_PROJECT;
         client.createIngestion(new CreateIngestionRequest(project, ingestion));
         client.updateIngestion(new UpdateIngestionRequest(project, ingestion));
         GetIngestionResponse response = client.getIngestion(new GetIngestionRequest(project, jobName));

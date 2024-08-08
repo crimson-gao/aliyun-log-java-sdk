@@ -5,7 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.log.common.*;
 import com.aliyun.openservices.log.exception.LogException;
 import com.aliyun.openservices.log.response.*;
+
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -14,8 +17,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class SlsScmFunctionTest extends FunctionTest {
-	static private String project = "project-test-scm";
+public class SlsScmFunctionTest extends MetaAPIBaseFunctionTest {
+	static private String project = TEST_PROJECT;
 	static private String logStore = "test-java-sdk";
 	static private String configName;
 	static private String syslogConfigName;
@@ -25,8 +28,10 @@ public class SlsScmFunctionTest extends FunctionTest {
 	static private String groupName;
 	static private String uuid1;
 	static private String uuid2;
-	@BeforeClass
-	public static void SetupOnce() {
+
+	@Before
+	public void setUp() {
+		super.setUp();
 		int timestamp = getNowTimestamp();
 		configName = "sdkftconfig" + timestamp;
 		syslogConfigName = "syslogConfig" + timestamp;
@@ -42,8 +47,8 @@ public class SlsScmFunctionTest extends FunctionTest {
 		reCreateLogStore(project, logStoreRes);
 	}
 
-    @AfterClass
-	public static void CleanUpOnce() {
+    @After
+	public void tearDown() {
 		try {
 			client.DeleteConfig(project, configName);
 		} catch (LogException e) {
@@ -55,6 +60,7 @@ public class SlsScmFunctionTest extends FunctionTest {
 		} catch (LogException e) {
 			System.out.println(e.getMessage());
 		}
+		super.clearDown();
 	}
 
 	@Test
